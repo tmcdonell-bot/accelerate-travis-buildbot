@@ -15,6 +15,7 @@ Status of individual repositories:
  - [![Build Status](https://travis-ci.org/{REPO_accelerate}.svg?branch=master)](https://travis-ci.org/{REPO_accelerate}) [{REPO_accelerate}](https://github.com/{REPO_accelerate})
  - [![Build Status](https://travis-ci.org/{REPO_accelerate-cuda}.svg?branch=master)](https://travis-ci.org/{REPO_accelerate-cuda}) [{REPO_accelerate-cuda}](https://github.com/{REPO_accelerate-cuda})
  - [![Build Status](https://travis-ci.org/{REPO_accelerate-fft}.svg?branch=master)](https://travis-ci.org/{REPO_accelerate-fft}) [{REPO_accelerate-fft}](https://github.com/{REPO_accelerate-fft})
+ - [![Build Status](https://travis-ci.org/{REPO_accelerate-io}.svg?branch=master)](https://travis-ci.org/{REPO_accelerate-io}) [{REPO_accelerate-io}](https://github.com/{REPO_accelerate-io})
  - [![Build Status](https://travis-ci.org/{REPO_cuda}.svg?branch=master)](https://travis-ci.org/{REPO_cuda}) [{REPO_cuda}](https://github.com/{REPO_cuda})
  - [![Build Status](https://travis-ci.org/{REPO_cufft}.svg?branch=master)](https://travis-ci.org/{REPO_cufft}) [{REPO_cufft}](https://github.com/{REPO_cufft})
 
