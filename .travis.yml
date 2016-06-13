@@ -26,39 +26,22 @@ matrix:
       compiler: "GHC 8.0"
       addons: { apt: { sources: [ hvr-ghc, ubuntu-toolchain-r-test ], packages: [ nvidia-cuda-toolkit, libstdc++6, libgmp-dev, cabal-install-1.24, happy-1.19.5, alex-3.1.7 ] }}
 
-    - env: GHC=head CABAL=head LLVM=3.8.0
-      compiler: "GHC HEAD"
-      addons: { apt: { sources: [ hvr-ghc, ubuntu-toolchain-r-test ], packages: [ nvidia-cuda-toolkit, libstdc++6, ghc-head, cabal-install-head, happy-1.19.5, alex-3.1.7 ] }}
-
-  allow_failures:
-    - env: GHC=head CABAL=head LLVM=3.8.0
-
   fast_finish: true
 
 before_install:
   - export PATH=/opt/cabal/$CABAL/bin:/opt/alex/3.1.7/bin:/opt/happy/1.19.5/bin:$HOME/.cabal/bin:$PATH
+  - export UPGRADE_CABAL=1
   - source .travis/install-stack.sh
   - source .travis/install-llvm-trusty.sh
 
 install:
-  - echo "$(ghc --version) [$(ghc --print-project-git-commit-id 2> /dev/null || echo '?')]"
+  - echo "$(stack exec ghc -- --version) [$(stack exec ghc -- --print-project-git-commit-id 2> /dev/null || echo '?')]"
   - cabal --version
   - stack --version
   - llc --version; true
   - opt --version; true
-  - |
-      if [ ${GHC} == head -o ! -e stack.yaml ]; then
-        travis_retry cabal install --only-dependencies
-      else
-        travis_retry stack build --only-dependencies --no-terminal --no-haddock-deps
-      fi
+  - travis_retry stack build --only-dependencies --no-terminal --no-haddock-deps
 
 script:
-  - |
-      if [ ${GHC} == head -o ! -e stack.yaml ]; then
-        cabal install
-        cabal haddock
-      else
-        stack build --no-terminal --haddock --no-haddock-deps
-      fi
+  - stack build --no-terminal --haddock --no-haddock-deps
 
