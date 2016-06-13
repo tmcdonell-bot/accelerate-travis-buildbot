@@ -18,7 +18,7 @@ packages:
 
 - location:
     git:    https://github.com/tmcdonell/accelerate-io.git
-    commit: 8d3e412442502aba1506f899b1bad240cde19593
+    commit: 968575fd1ab7306cc21ca273cdca02e516aae4c2
 
 - location:
     git:    https://github.com/tmcdonell/cuda.git
