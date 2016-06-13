@@ -10,7 +10,7 @@ packages:
 
 - location:
     git:    https://github.com/tmcdonell/accelerate-cuda.git
-    commit: 05acd3adca9fd89a8ac19184afbed47d1b7d1505
+    commit: 06337364e94c051407141fd5a00cf6256b0bf4c7
 
 - location:
     git:    https://github.com/tmcdonell/accelerate-fft.git
