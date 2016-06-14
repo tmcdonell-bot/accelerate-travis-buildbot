@@ -16,9 +16,9 @@ packages:
     git:    https://github.com/tmcdonell/accelerate-fft.git
     commit: cede00c627ce3c82d6076134c2928a1bd2bc028f
 
-- location:
-    git:    https://github.com/tmcdonell/accelerate-io.git
-    commit: 968575fd1ab7306cc21ca273cdca02e516aae4c2
+# - location:
+#     git:    https://github.com/tmcdonell/accelerate-io.git
+#     commit: 968575fd1ab7306cc21ca273cdca02e516aae4c2
 
 - location:
     git:    https://github.com/tmcdonell/cuda.git
