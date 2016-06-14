@@ -29,6 +29,10 @@ packages:
     commit: {SHA_accelerate-io}
 
 - location:
+    git:    https://github.com/tmcdonell/{REPO_lens-accelerate}.git
+    commit: {SHA_lens-accelerate}
+
+- location:
     git:    https://github.com/{REPO_cuda}.git
     commit: {SHA_cuda}
 

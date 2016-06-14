@@ -29,6 +29,10 @@ packages:
     commit: 968575fd1ab7306cc21ca273cdca02e516aae4c2
 
 - location:
+    git:    https://github.com/tmcdonell/tmcdonell/lens-accelerate.git
+    commit: c119c9c32d4fbf0d53b8eb906de03fa22ede2e87
+
+- location:
     git:    https://github.com/tmcdonell/cuda.git
     commit: 28ee2bd8ef94eb0e6231373ee2b5e0c9187bf5c7
 
@@ -43,11 +47,11 @@ extra-deps:
 - 'libffi-0.1'
 - 'llvm-general-3.4.6.0'
 - 'llvm-general-pure-3.4.5.4'
-- 'SafeSemaphore-0.10.1'
-- 'unique-0'
 - 'mtl-2.2.1'
+- 'SafeSemaphore-0.10.1'
 - 'transformers-0.4.3.0'
 - 'transformers-compat-0.4.0.4'
+- 'unique-0'
 
 # Override default flag values for local packages and extra-deps
 flags: {}

@@ -1,8 +1,6 @@
-<!-- vim: filetype=markdown
- -->
 
 accelerate-travis-buildbot
---------------------------
+==========================
 
 [![Build Status](https://travis-ci.org/tmcdonell/accelerate-travis-buildbot.svg?branch=master)](https://travis-ci.org/tmcdonell/accelerate-travis-buildbot)
 
@@ -17,6 +15,7 @@ Status of individual repositories:
  - [![Build Status](https://travis-ci.org/{REPO_accelerate-llvm}.svg?branch=master)](https://travis-ci.org/{REPO_accelerate-llvm}) [{REPO_accelerate-llvm}](https://github.com/{REPO_accelerate-llvm})
  - [![Build Status](https://travis-ci.org/{REPO_accelerate-fft}.svg?branch=master)](https://travis-ci.org/{REPO_accelerate-fft}) [{REPO_accelerate-fft}](https://github.com/{REPO_accelerate-fft})
  - [![Build Status](https://travis-ci.org/{REPO_accelerate-io}.svg?branch=master)](https://travis-ci.org/{REPO_accelerate-io}) [{REPO_accelerate-io}](https://github.com/{REPO_accelerate-io})
+ - [![Build Status](https://travis-ci.org/{REPO_lens-accelerate}.svg?branch=master)](https://travis-ci.org/{REPO_lens-accelerate}) [{REPO_lens-accelerate}](https://github.com/{REPO_lens-accelerate})
  - [![Build Status](https://travis-ci.org/{REPO_cuda}.svg?branch=master)](https://travis-ci.org/{REPO_cuda}) [{REPO_cuda}](https://github.com/{REPO_cuda})
  - [![Build Status](https://travis-ci.org/{REPO_cufft}.svg?branch=master)](https://travis-ci.org/{REPO_cufft}) [{REPO_cufft}](https://github.com/{REPO_cufft})
 
