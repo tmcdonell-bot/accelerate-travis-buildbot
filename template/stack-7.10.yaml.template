@@ -13,6 +13,14 @@ packages:
     commit: {SHA_accelerate-cuda}
 
 - location:
+    git:    https://github.com/{REPO_accelerate-llvm}.git
+    commit: {SHA_accelerate-llvm}
+  subdirs:
+    - 'accelerate-llvm'
+    - 'accelerate-llvm-native'
+    - 'accelerate-llvm-ptx'
+
+- location:
     git:    https://github.com/{REPO_accelerate-fft}.git
     commit: {SHA_accelerate-fft}
 
@@ -29,6 +37,10 @@ packages:
     commit: {SHA_cufft}
 
 extra-deps:
+- 'chaselev-deque-0.5.0.5'
+- 'libffi-0.1'
+- 'llvm-general-3.5.1.2'
+- 'llvm-general-pure-3.5.1.0'
 - 'unique-0'
 
 # Override default flag values for local packages and extra-deps

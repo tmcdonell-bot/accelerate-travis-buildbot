@@ -13,6 +13,14 @@ packages:
     commit: f70211c167db0dfb70375e82f69273a6354e6ede
 
 - location:
+    git:    https://github.com/tmcdonell/accelerate-llvm.git
+    commit: a1fddcf4b15127cd6357e41bb115f980ef119de1
+  subdirs:
+    - 'accelerate-llvm'
+    - 'accelerate-llvm-native'
+    - 'accelerate-llvm-ptx'
+
+- location:
     git:    https://github.com/tmcdonell/accelerate-fft.git
     commit: cede00c627ce3c82d6076134c2928a1bd2bc028f
 
@@ -29,9 +37,17 @@ packages:
     commit: 370e9945cbc1e5f6c113c849f6b16ae04475110d
 
 extra-deps:
+- 'atomic-primops-0.8.0.4'
 - 'base-orphans-0.4.4'
+- 'chaselev-deque-0.5.0.5'
+- 'libffi-0.1'
+- 'llvm-general-3.4.6.0'
+- 'llvm-general-pure-3.4.5.4'
 - 'SafeSemaphore-0.10.1'
 - 'unique-0'
+- 'mtl-2.2.1'
+- 'transformers-0.4.3.0'
+- 'transformers-compat-0.4.0.4'
 
 # Override default flag values for local packages and extra-deps
 flags: {}
