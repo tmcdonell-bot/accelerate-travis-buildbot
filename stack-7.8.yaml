@@ -41,6 +41,10 @@ packages:
     commit: 114c1dae1aba7b2da83d5c6e811d73059297abfc
 
 - location:
+    git:    https://github.com/tmcdonell/gloss-accelerate.git
+    commit: f120dfba7c2228f72fd0ba199ea5662fc802a08f
+
+- location:
     git:    https://github.com/tmcdonell/cuda.git
     commit: 28ee2bd8ef94eb0e6231373ee2b5e0c9187bf5c7
 
@@ -52,10 +56,16 @@ extra-deps:
 - 'atomic-primops-0.8.0.4'
 - 'base-orphans-0.4.4'
 - 'chaselev-deque-0.5.0.5'
+- 'gloss-1.9.2.1'
+- 'gloss-rendering-1.9.2.1'
+- 'GLURaw-1.4.0.2'
+- 'GLUT-2.5.1.1'
 - 'libffi-0.1'
 - 'llvm-general-3.4.6.0'
 - 'llvm-general-pure-3.4.5.4'
 - 'mtl-2.2.1'
+- 'OpenGL-2.9.2.0'
+- 'OpenGLRaw-1.5.0.1'
 - 'SafeSemaphore-0.10.1'
 - 'transformers-0.4.3.0'
 - 'transformers-compat-0.4.0.4'

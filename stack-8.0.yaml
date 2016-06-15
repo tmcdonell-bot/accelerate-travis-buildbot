@@ -40,6 +40,10 @@ packages:
     git:    https://github.com/tmcdonell/linear-accelerate.git
     commit: 114c1dae1aba7b2da83d5c6e811d73059297abfc
 
+# - location:
+#     git:    https://github.com/tmcdonell/gloss-accelerate.git
+#     commit: f120dfba7c2228f72fd0ba199ea5662fc802a08f
+
 - location:
     git:    https://github.com/tmcdonell/cuda.git
     commit: 28ee2bd8ef94eb0e6231373ee2b5e0c9187bf5c7

@@ -41,6 +41,10 @@ packages:
     commit: {SHA_linear-accelerate}
 
 - location:
+    git:    https://github.com/{REPO_gloss-accelerate}.git
+    commit: {SHA_gloss-accelerate}
+
+- location:
     git:    https://github.com/{REPO_cuda}.git
     commit: {SHA_cuda}
 
@@ -50,6 +54,8 @@ packages:
 
 extra-deps:
 - 'chaselev-deque-0.5.0.5'
+- 'gloss-1.10.1.1'
+- 'gloss-rendering-1.10.1.1'
 - 'libffi-0.1'
 - 'llvm-general-3.5.1.2'
 - 'llvm-general-pure-3.5.1.0'

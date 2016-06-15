@@ -41,6 +41,10 @@ packages:
     commit: {SHA_linear-accelerate}
 
 - location:
+    git:    https://github.com/{REPO_gloss-accelerate}.git
+    commit: {SHA_gloss-accelerate}
+
+- location:
     git:    https://github.com/{REPO_cuda}.git
     commit: {SHA_cuda}
 
@@ -52,10 +56,16 @@ extra-deps:
 - 'atomic-primops-0.8.0.4'
 - 'base-orphans-0.4.4'
 - 'chaselev-deque-0.5.0.5'
+- 'gloss-1.9.2.1'
+- 'gloss-rendering-1.9.2.1'
+- 'GLURaw-1.4.0.2'
+- 'GLUT-2.5.1.1'
 - 'libffi-0.1'
 - 'llvm-general-3.4.6.0'
 - 'llvm-general-pure-3.4.5.4'
 - 'mtl-2.2.1'
+- 'OpenGL-2.9.2.0'
+- 'OpenGLRaw-1.5.0.1'
 - 'SafeSemaphore-0.10.1'
 - 'transformers-0.4.3.0'
 - 'transformers-compat-0.4.0.4'
