@@ -37,6 +37,10 @@ packages:
     commit: f7070c85c5e0eef5b2163ac3fcd104db6fb8be21
 
 - location:
+    git:    https://github.com/tmcdonell/linear-accelerate.git
+    commit: 114c1dae1aba7b2da83d5c6e811d73059297abfc
+
+- location:
     git:    https://github.com/tmcdonell/cuda.git
     commit: 28ee2bd8ef94eb0e6231373ee2b5e0c9187bf5c7
 

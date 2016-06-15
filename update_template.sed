@@ -14,6 +14,7 @@ s|{SHA_accelerate-io}|968575fd1ab7306cc21ca273cdca02e516aae4c2|
 s|{SHA_accelerate-llvm}|7fde958be5493b9984ac90b3b95ec5680b196a5b|
 s|{SHA_lens-accelerate}|c119c9c32d4fbf0d53b8eb906de03fa22ede2e87|
 s|{SHA_colour-accelerate}|f7070c85c5e0eef5b2163ac3fcd104db6fb8be21|
+s|{SHA_linear-accelerate}|114c1dae1aba7b2da83d5c6e811d73059297abfc|
 s|{SHA_cuda}|28ee2bd8ef94eb0e6231373ee2b5e0c9187bf5c7|
 s|{SHA_cufft}|370e9945cbc1e5f6c113c849f6b16ae04475110d|
 
@@ -25,6 +26,7 @@ s|{REPO_accelerate-io}|tmcdonell/accelerate-io|g
 s|{REPO_accelerate-llvm}|tmcdonell/accelerate-llvm|g
 s|{REPO_lens-accelerate}|tmcdonell/lens-accelerate|g
 s|{REPO_colour-accelerate}|tmcdonell/colour-accelerate|g
+s|{REPO_linear-accelerate}|tmcdonell/linear-accelerate|g
 s|{REPO_cuda}|tmcdonell/cuda|g
 s|{REPO_cufft}|tmcdonell/cufft|g
 

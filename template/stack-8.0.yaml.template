@@ -37,6 +37,10 @@ packages:
     commit: {SHA_colour-accelerate}
 
 - location:
+    git:    https://github.com/{REPO_linear-accelerate}.git
+    commit: {SHA_linear-accelerate}
+
+- location:
     git:    https://github.com/{REPO_cuda}.git
     commit: {SHA_cuda}
 
