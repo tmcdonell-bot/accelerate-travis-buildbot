@@ -33,6 +33,10 @@ packages:
     commit: {SHA_lens-accelerate}
 
 - location:
+    git:    https://github.com/{REPO_colour-accelerate}.git
+    commit: {SHA_colour-accelerate}
+
+- location:
     git:    https://github.com/{REPO_cuda}.git
     commit: {SHA_cuda}
 

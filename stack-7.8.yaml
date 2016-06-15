@@ -33,6 +33,10 @@ packages:
     commit: c119c9c32d4fbf0d53b8eb906de03fa22ede2e87
 
 - location:
+    git:    https://github.com/tmcdonell/colour-accelerate.git
+    commit: 56952d4333f524d333e1941a39e83810307ad883
+
+- location:
     git:    https://github.com/tmcdonell/cuda.git
     commit: 28ee2bd8ef94eb0e6231373ee2b5e0c9187bf5c7
 

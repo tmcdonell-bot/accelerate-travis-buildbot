@@ -16,6 +16,7 @@ Status of individual repositories:
  - [![Build Status](https://travis-ci.org/tmcdonell/accelerate-fft.svg?branch=master)](https://travis-ci.org/tmcdonell/accelerate-fft) [tmcdonell/accelerate-fft](https://github.com/tmcdonell/accelerate-fft)
  - [![Build Status](https://travis-ci.org/tmcdonell/accelerate-io.svg?branch=master)](https://travis-ci.org/tmcdonell/accelerate-io) [tmcdonell/accelerate-io](https://github.com/tmcdonell/accelerate-io)
  - [![Build Status](https://travis-ci.org/tmcdonell/lens-accelerate.svg?branch=master)](https://travis-ci.org/tmcdonell/lens-accelerate) [tmcdonell/lens-accelerate](https://github.com/tmcdonell/lens-accelerate)
+ - [![Build Status](https://travis-ci.org/tmcdonell/colour-accelerate.svg?branch=master)](https://travis-ci.org/tmcdonell/colour-accelerate) [tmcdonell/colour-accelerate](https://github.com/tmcdonell/colour-accelerate)
  - [![Build Status](https://travis-ci.org/tmcdonell/cuda.svg?branch=master)](https://travis-ci.org/tmcdonell/cuda) [tmcdonell/cuda](https://github.com/tmcdonell/cuda)
  - [![Build Status](https://travis-ci.org/tmcdonell/cufft.svg?branch=master)](https://travis-ci.org/tmcdonell/cufft) [tmcdonell/cufft](https://github.com/tmcdonell/cufft)
 
