@@ -19,6 +19,7 @@ Status of individual repositories:
  - [![Build Status](https://travis-ci.org/tmcdonell/colour-accelerate.svg?branch=master)](https://travis-ci.org/tmcdonell/colour-accelerate) [tmcdonell/colour-accelerate](https://github.com/tmcdonell/colour-accelerate)
  - [![Build Status](https://travis-ci.org/tmcdonell/linear-accelerate.svg?branch=master)](https://travis-ci.org/tmcdonell/linear-accelerate) [tmcdonell/linear-accelerate](https://github.com/tmcdonell/linear-accelerate)
  - [![Build Status](https://travis-ci.org/tmcdonell/gloss-accelerate.svg?branch=master)](https://travis-ci.org/tmcdonell/gloss-accelerate) [tmcdonell/gloss-accelerate](https://github.com/tmcdonell/gloss-accelerate)
+ - [![Build Status](https://travis-ci.org/tmcdonell/gloss-raster-accelerate.svg?branch=master)](https://travis-ci.org/tmcdonell/gloss-raster-accelerate) [tmcdonell/gloss-raster-accelerate](https://github.com/tmcdonell/gloss-raster-accelerate)
  - [![Build Status](https://travis-ci.org/tmcdonell/cuda.svg?branch=master)](https://travis-ci.org/tmcdonell/cuda) [tmcdonell/cuda](https://github.com/tmcdonell/cuda)
  - [![Build Status](https://travis-ci.org/tmcdonell/cufft.svg?branch=master)](https://travis-ci.org/tmcdonell/cufft) [tmcdonell/cufft](https://github.com/tmcdonell/cufft)
 
