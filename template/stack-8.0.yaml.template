@@ -40,6 +40,10 @@ packages:
     git:    https://github.com/{REPO_linear-accelerate}.git
     commit: {SHA_linear-accelerate}
 
+- location:
+    git:    https://github.com/{REPO_mwc-random-accelerate}.git
+    commit: {SHA_mwc-random-accelerate}
+
 # - location:
 #     git:    https://github.com/{REPO_gloss-accelerate}.git
 #     commit: {SHA_gloss-accelerate}

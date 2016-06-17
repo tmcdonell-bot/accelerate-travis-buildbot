@@ -15,6 +15,7 @@ s|{SHA_accelerate-llvm}|7fde958be5493b9984ac90b3b95ec5680b196a5b|
 s|{SHA_lens-accelerate}|c119c9c32d4fbf0d53b8eb906de03fa22ede2e87|
 s|{SHA_colour-accelerate}|f7070c85c5e0eef5b2163ac3fcd104db6fb8be21|
 s|{SHA_linear-accelerate}|114c1dae1aba7b2da83d5c6e811d73059297abfc|
+s|{SHA_mwc-random-accelerate}|e1e153645ac25898144e29574f3499b7b4eba3d5|
 s|{SHA_gloss-accelerate}|30d14e750db5e65e43fca0e7d3374ac74ce22b0f|
 s|{SHA_gloss-raster-accelerate}|c2d4e476f553db9f1f4d7186a1d82179c06e70e0|
 s|{SHA_cuda}|28ee2bd8ef94eb0e6231373ee2b5e0c9187bf5c7|
@@ -29,6 +30,7 @@ s|{REPO_accelerate-llvm}|tmcdonell/accelerate-llvm|g
 s|{REPO_lens-accelerate}|tmcdonell/lens-accelerate|g
 s|{REPO_colour-accelerate}|tmcdonell/colour-accelerate|g
 s|{REPO_linear-accelerate}|tmcdonell/linear-accelerate|g
+s|{REPO_mwc-random-accelerate}|tmcdonell/mwc-random-accelerate|g
 s|{REPO_gloss-accelerate}|tmcdonell/gloss-accelerate|g
 s|{REPO_gloss-raster-accelerate}|tmcdonell/gloss-raster-accelerate|g
 s|{REPO_cuda}|tmcdonell/cuda|g

@@ -18,6 +18,7 @@ Status of individual repositories:
  - [![Build Status](https://travis-ci.org/{REPO_lens-accelerate}.svg?branch=master)](https://travis-ci.org/{REPO_lens-accelerate}) [{REPO_lens-accelerate}](https://github.com/{REPO_lens-accelerate})
  - [![Build Status](https://travis-ci.org/{REPO_colour-accelerate}.svg?branch=master)](https://travis-ci.org/{REPO_colour-accelerate}) [{REPO_colour-accelerate}](https://github.com/{REPO_colour-accelerate})
  - [![Build Status](https://travis-ci.org/{REPO_linear-accelerate}.svg?branch=master)](https://travis-ci.org/{REPO_linear-accelerate}) [{REPO_linear-accelerate}](https://github.com/{REPO_linear-accelerate})
+ - [![Build Status](https://travis-ci.org/{REPO_mwc-random-accelerate}.svg?branch=master)](https://travis-ci.org/{REPO_mwc-random-accelerate}) [{REPO_mwc-random-accelerate}](https://github.com/{REPO_mwc-random-accelerate})
  - [![Build Status](https://travis-ci.org/{REPO_gloss-accelerate}.svg?branch=master)](https://travis-ci.org/{REPO_gloss-accelerate}) [{REPO_gloss-accelerate}](https://github.com/{REPO_gloss-accelerate})
  - [![Build Status](https://travis-ci.org/{REPO_gloss-raster-accelerate}.svg?branch=master)](https://travis-ci.org/{REPO_gloss-raster-accelerate}) [{REPO_gloss-raster-accelerate}](https://github.com/{REPO_gloss-raster-accelerate})
  - [![Build Status](https://travis-ci.org/{REPO_cuda}.svg?branch=master)](https://travis-ci.org/{REPO_cuda}) [{REPO_cuda}](https://github.com/{REPO_cuda})

@@ -40,6 +40,10 @@ packages:
     git:    https://github.com/tmcdonell/linear-accelerate.git
     commit: 114c1dae1aba7b2da83d5c6e811d73059297abfc
 
+- location:
+    git:    https://github.com/tmcdonell/mwc-random-accelerate.git
+    commit: e1e153645ac25898144e29574f3499b7b4eba3d5
+
 # - location:
 #     git:    https://github.com/tmcdonell/gloss-accelerate.git
 #     commit: 30d14e750db5e65e43fca0e7d3374ac74ce22b0f
