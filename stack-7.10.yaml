@@ -71,6 +71,9 @@ extra-deps:
 - 'libffi-0.1'
 - 'llvm-general-3.5.1.2'
 - 'llvm-general-pure-3.5.1.0'
+- 'non-negative-0.1.1'
+- 'numeric-prelude-0.4.2'
+- 'storable-record-0.0.3.1'
 - 'unique-0'
 
 # Override default flag values for local packages and extra-deps
