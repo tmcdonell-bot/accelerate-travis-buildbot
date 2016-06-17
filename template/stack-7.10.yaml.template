@@ -29,12 +29,20 @@ packages:
     commit: {SHA_accelerate-io}
 
 - location:
-    git:    https://github.com/{REPO_lens-accelerate}.git
-    commit: {SHA_lens-accelerate}
-
-- location:
     git:    https://github.com/{REPO_colour-accelerate}.git
     commit: {SHA_colour-accelerate}
+
+- location:
+    git:    https://github.com/{REPO_gloss-accelerate}.git
+    commit: {SHA_gloss-accelerate}
+
+- location:
+    git:    https://github.com/{REPO_gloss-raster-accelerate}.git
+    commit: {SHA_gloss-raster-accelerate}
+
+- location:
+    git:    https://github.com/{REPO_lens-accelerate}.git
+    commit: {SHA_lens-accelerate}
 
 - location:
     git:    https://github.com/{REPO_linear-accelerate}.git
@@ -45,12 +53,8 @@ packages:
     commit: {SHA_mwc-random-accelerate}
 
 - location:
-    git:    https://github.com/{REPO_gloss-accelerate}.git
-    commit: {SHA_gloss-accelerate}
-
-- location:
-    git:    https://github.com/{REPO_gloss-raster-accelerate}.git
-    commit: {SHA_gloss-raster-accelerate}
+    git:    https://github.com/{REPO_numeric-prelude-accelerate}.git
+    commit: {SHA_numeric-prelude-accelerate}
 
 - location:
     git:    https://github.com/{REPO_cuda}.git

@@ -29,12 +29,20 @@ packages:
     commit: 968575fd1ab7306cc21ca273cdca02e516aae4c2
 
 - location:
-    git:    https://github.com/tmcdonell/lens-accelerate.git
-    commit: c119c9c32d4fbf0d53b8eb906de03fa22ede2e87
-
-- location:
     git:    https://github.com/tmcdonell/colour-accelerate.git
     commit: f7070c85c5e0eef5b2163ac3fcd104db6fb8be21
+
+- location:
+    git:    https://github.com/tmcdonell/gloss-accelerate.git
+    commit: 30d14e750db5e65e43fca0e7d3374ac74ce22b0f
+
+- location:
+    git:    https://github.com/tmcdonell/gloss-raster-accelerate.git
+    commit: c2d4e476f553db9f1f4d7186a1d82179c06e70e0
+
+- location:
+    git:    https://github.com/tmcdonell/lens-accelerate.git
+    commit: c119c9c32d4fbf0d53b8eb906de03fa22ede2e87
 
 - location:
     git:    https://github.com/tmcdonell/linear-accelerate.git
@@ -45,12 +53,8 @@ packages:
     commit: e1e153645ac25898144e29574f3499b7b4eba3d5
 
 - location:
-    git:    https://github.com/tmcdonell/gloss-accelerate.git
-    commit: 30d14e750db5e65e43fca0e7d3374ac74ce22b0f
-
-- location:
-    git:    https://github.com/tmcdonell/gloss-raster-accelerate.git
-    commit: c2d4e476f553db9f1f4d7186a1d82179c06e70e0
+    git:    https://github.com/tmcdonell/numeric-prelude-accelerate.git
+    commit: f692b641220520661a4d37835e805fe256730126
 
 - location:
     git:    https://github.com/tmcdonell/cuda.git
