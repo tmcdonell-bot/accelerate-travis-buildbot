@@ -1,10 +1,13 @@
 # vim: nospell
 #
-# Basic template to test with GHC=[7.8, 7.10, 8.0], but also installs the
-# relevant version of LLVM as (a very old version of) the CUDA toolkit (4.0).
-# Caches the 'stack' build directory to speed subsequent compilations.
+# In this setup we attempt to build all the accelerate-related packages
+# together. Also build them individually, to make it easier to diagnose which
+# package(s) are broken when one of the dependencies is updated.
 #
-language: generic
+# Set the language type to 'c' so that the 'compiler' key becomes active and our
+# build matrix is constructed as the product of compiler x target.
+#
+language: c
 dist: trusty
 sudo: false
 
@@ -13,24 +16,64 @@ cache:
     - $HOME/.stack
     - $HOME/llvm
 
+addons:
+  apt:
+    sources:
+      - hvr-ghc
+      - ubuntu-toolchain-r-test
+    packages:
+      - nvidia-cuda-toolkit
+      - g++-4.8
+      - libgmp-dev
+      - cabal-install-1.24
+      - happy-1.19.5
+      - alex-3.1.7
+
+compiler:
+  - GHC-7.8.4
+  - GHC-7.10.3
+  - GHC-8.0.1
+
+env:
+  - TARGET="" # all packages
+  - TARGET=accelerate
+  - TARGET=accelerate-cuda
+  - TARGET=accelerate-fft
+  - TARGET=accelerate-io
+  - TARGET=accelerate-llvm
+  - TARGET=colour-accelerate
+  - TARGET=gloss-accelerate
+  - TARGET=gloss-raster-accelerate
+  - TARGET=lens-accelerate
+  - TARGET=linear-accelerate
+  - TARGET=mwc-random-accelerate
+  - TARGET=numeric-prelude-accelerate
+
 matrix:
-  include:
-    - env: GHC=7.8.4 CABAL=1.18 LLVM=3.4.2
-      compiler: "GHC 7.8"
-      addons: { apt: { sources: [ hvr-ghc, ubuntu-toolchain-r-test ], packages: [ nvidia-cuda-toolkit, g++-4.8, libgmp-dev, freeglut3-dev, cabal-install-1.18, happy-1.19.5, alex-3.1.7 ] }}
-
-    - env: GHC=7.10.3 CABAL=1.22 LLVM=3.5.2
-      compiler: "GHC 7.10"
-      addons: { apt: { sources: [ hvr-ghc, ubuntu-toolchain-r-test ], packages: [ nvidia-cuda-toolkit, g++-4.8, libgmp-dev, freeglut3-dev, cabal-install-1.22, happy-1.19.5, alex-3.1.7 ] }}
-
-    - env: GHC=8.0.1 CABAL=1.24 LLVM=3.6.2
-      compiler: "GHC 8.0"
-      addons: { apt: { sources: [ hvr-ghc, ubuntu-toolchain-r-test ], packages: [ nvidia-cuda-toolkit, g++-4.8, libgmp-dev, freeglut3-dev, cabal-install-1.24, happy-1.19.5, alex-3.1.7 ] }}
-
   fast_finish: true
+  allow_failures:
+    - compiler: GHC-8.0.1
+      env: TARGET=accelerate-llvm
+
+    - compiler: GHC-8.0.1
+      env: TARGET=accelerate-io
+
+    - compiler: GHC-8.0.1
+      env: TARGET=gloss-accelerate
+
+    - compiler: GHC-8.0.1
+      env: TARGET=gloss-raster-accelerate
+
 
 before_install:
-  - export PATH=/opt/cabal/$CABAL/bin:/opt/alex/3.1.7/bin:/opt/happy/1.19.5/bin:$HOME/.cabal/bin:$PATH
+  - export GHC=${CC:4}
+  - |
+      case ${GHC%.*} in
+        7.8)  export LLVM="3.4.2" ;;
+        7.10) export LLVM="3.5.2" ;;
+        8.0)  export LLVM="3.6.2" ;;
+      esac
+  - export PATH=/opt/cabal/1.24/bin:/opt/alex/3.1.7/bin:/opt/happy/1.19.5/bin:$HOME/.cabal/bin:$PATH
   - export UPGRADE_CABAL=1
   - source .travis/install-stack.sh
   - source .travis/install-llvm-trusty.sh
@@ -41,8 +84,8 @@ install:
   - stack --version
   - llc --version; true
   - opt --version; true
-  - travis_retry stack build --only-dependencies --no-terminal --no-haddock-deps
+  - travis_retry stack build --only-dependencies --no-terminal --no-haddock-deps ${TARGET}
 
 script:
-  - stack build --no-terminal --haddock --no-haddock-deps
+  - stack build --no-terminal --haddock --no-haddock-deps ${TARGET}
 

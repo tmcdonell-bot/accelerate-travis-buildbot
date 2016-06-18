@@ -12,33 +12,33 @@ packages:
     git:    https://github.com/{REPO_accelerate-cuda}.git
     commit: {SHA_accelerate-cuda}
 
-# - location:
-#     git:    https://github.com/{REPO_accelerate-llvm}.git
-#     commit: {SHA_accelerate-llvm}
-#   subdirs:
-#     - 'accelerate-llvm'
-#     - 'accelerate-llvm-native'
-#     - 'accelerate-llvm-ptx'
+- location:
+    git:    https://github.com/{REPO_accelerate-llvm}.git
+    commit: {SHA_accelerate-llvm}
+  subdirs:
+    - 'accelerate-llvm'
+    - 'accelerate-llvm-native'
+    - 'accelerate-llvm-ptx'
 
 - location:
     git:    https://github.com/{REPO_accelerate-fft}.git
     commit: {SHA_accelerate-fft}
 
-# - location:
-#     git:    https://github.com/{REPO_accelerate-io}.git
-#     commit: {SHA_accelerate-io}
+- location:
+    git:    https://github.com/{REPO_accelerate-io}.git
+    commit: {SHA_accelerate-io}
 
 - location:
     git:    https://github.com/{REPO_colour-accelerate}.git
     commit: {SHA_colour-accelerate}
 
-# - location:
-#     git:    https://github.com/{REPO_gloss-accelerate}.git
-#     commit: {SHA_gloss-accelerate}
+- location:
+    git:    https://github.com/{REPO_gloss-accelerate}.git
+    commit: {SHA_gloss-accelerate}
 
-# - location:
-#     git:    https://github.com/{REPO_gloss-raster-accelerate}.git
-#     commit: {SHA_gloss-raster-accelerate}
+- location:
+    git:    https://github.com/{REPO_gloss-raster-accelerate}.git
+    commit: {SHA_gloss-raster-accelerate}
 
 - location:
     git:    https://github.com/{REPO_lens-accelerate}.git
