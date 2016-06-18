@@ -54,7 +54,7 @@ packages:
 
 - location:
     git:    https://github.com/tmcdonell/numeric-prelude-accelerate.git
-    commit: 8a333994a508ff28d6f68d7cd4b671bc8c977a42
+    commit: abd54b4156353278652b532e9869b676dfccf9c8
 
 - location:
     git:    https://github.com/tmcdonell/cuda.git
