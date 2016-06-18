@@ -54,6 +54,9 @@ matrix:
   fast_finish: true
   allow_failures:
     - compiler: GHC-8.0.1
+      env: TARGET=""
+
+    - compiler: GHC-8.0.1
       env: TARGET=accelerate-llvm
 
     - compiler: GHC-8.0.1
