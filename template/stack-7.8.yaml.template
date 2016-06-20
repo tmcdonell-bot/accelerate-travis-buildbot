@@ -57,6 +57,10 @@ packages:
     commit: {SHA_numeric-prelude-accelerate}
 
 - location:
+    git:    https://github.com/{REPO_lulesh-accelerate}.git
+    commit: {SHA_lulesh-accelerate}
+
+- location:
     git:    https://github.com/{REPO_cuda}.git
     commit: {SHA_cuda}
 

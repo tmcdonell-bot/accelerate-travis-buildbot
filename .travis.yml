@@ -49,6 +49,7 @@ env:
   - TARGET=linear-accelerate
   - TARGET=mwc-random-accelerate
   - TARGET=numeric-prelude-accelerate
+  - TARGET=lulesh-accelerate
 
 matrix:
   fast_finish: true
