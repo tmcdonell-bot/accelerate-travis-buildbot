@@ -26,7 +26,7 @@ packages:
 
 - location:
     git:    https://github.com/tmcdonell/accelerate-io.git
-    commit: 968575fd1ab7306cc21ca273cdca02e516aae4c2
+    commit: 4e3637469972993a4b160af39b00ea7a7ec6f1e2
 
 - location:
     git:    https://github.com/tmcdonell/colour-accelerate.git
