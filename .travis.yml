@@ -61,9 +61,6 @@ matrix:
       env: TARGET=accelerate-llvm
 
     - compiler: GHC-8.0.1
-      env: TARGET=accelerate-io
-
-    - compiler: GHC-8.0.1
       env: TARGET=gloss-accelerate
 
     - compiler: GHC-8.0.1
