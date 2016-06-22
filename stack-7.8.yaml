@@ -34,7 +34,7 @@ packages:
 
 - location:
     git:    https://github.com/tmcdonell/gloss-accelerate.git
-    commit: 30d14e750db5e65e43fca0e7d3374ac74ce22b0f
+    commit: 0cfc66ee09b50d5ed2eaa6fb5df68dc720e3a7dd
 
 - location:
     git:    https://github.com/tmcdonell/gloss-raster-accelerate.git
