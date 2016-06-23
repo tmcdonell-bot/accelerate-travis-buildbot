@@ -60,12 +60,6 @@ matrix:
     - compiler: GHC-8.0.1
       env: TARGET=accelerate-llvm
 
-    - compiler: GHC-8.0.1
-      env: TARGET=gloss-accelerate
-
-    - compiler: GHC-8.0.1
-      env: TARGET=gloss-raster-accelerate
-
 
 before_install:
   - export GHC=${CC:4}

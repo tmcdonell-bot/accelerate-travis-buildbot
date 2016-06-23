@@ -72,6 +72,8 @@ extra-deps:
 - 'binary-0.8.4.0'
 - 'bmp-1.2.6.1'
 - 'chaselev-deque-0.5.0.5'
+- 'gloss-1.10.2.2'
+- 'gloss-rendering-1.10.2.1'
 - 'libffi-0.1'
 - 'llvm-general-3.5.1.2'
 - 'llvm-general-pure-3.5.1.0'
