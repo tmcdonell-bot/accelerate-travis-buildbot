@@ -29,6 +29,10 @@ packages:
     commit: {SHA_accelerate-io}
 
 - location:
+    git:    https://github.com/{REPO_accelerate-examples}.git
+    commit: {SHA_accelerate-examples}
+
+- location:
     git:    https://github.com/{REPO_colour-accelerate}.git
     commit: {SHA_colour-accelerate}
 
@@ -71,7 +75,11 @@ packages:
 extra-deps:
 - 'atomic-primops-0.8.0.4'
 - 'base-orphans-0.4.4'
+- 'bytestring-lexing-0.5.0.2'
 - 'chaselev-deque-0.5.0.5'
+- 'ekg-0.4.0.10'
+- 'ekg-core-0.1.1.1'
+- 'ekg-json-0.1.0.2'
 - 'gloss-1.9.2.1'
 - 'gloss-rendering-1.9.2.1'
 - 'GLURaw-1.4.0.2'
@@ -81,6 +89,7 @@ extra-deps:
 - 'llvm-general-pure-3.4.5.4'
 - 'mtl-2.2.1'
 - 'non-negative-0.1.1'
+- 'normaldistribution-1.1.0.3'
 - 'numeric-prelude-0.4.2'
 - 'OpenGL-2.9.2.0'
 - 'OpenGLRaw-1.5.0.1'
@@ -95,6 +104,26 @@ extra-deps:
 flags:
   llvm-general:
     shared-llvm: true
+  accelerate-examples:
+    cuda:       true
+    llvm-cpu:   true
+    llvm-gpu:   true
+    gui:        true
+    ekg:        true
+    codespeed:  false
+    nofib:      true
+    smvm:       true
+    crystal:    true
+    canny:      true
+    mandelbrot: true
+    fluid:      true
+    nbody:      true
+    smoothlife: true
+    hashcat:    true
+    fft:        true
+    pagerank:   true
+    ray:        true
+    kmeans:     true
 
 # Extra package databases containing global packages
 extra-package-dbs: []

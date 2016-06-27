@@ -29,6 +29,10 @@ packages:
     commit: 4e3637469972993a4b160af39b00ea7a7ec6f1e2
 
 - location:
+    git:    https://github.com/tmcdonell/accelerate-examples.git
+    commit: d53c8db39c05c2181412479092984ef8dd991e9e
+
+- location:
     git:    https://github.com/tmcdonell/colour-accelerate.git
     commit: c7e5f87e49d6842effd10b8cc86d7c9574ca76f8
 
@@ -76,6 +80,7 @@ extra-deps:
 - 'llvm-general-3.5.1.2'
 - 'llvm-general-pure-3.5.1.0'
 - 'non-negative-0.1.1'
+- 'normaldistribution-1.1.0.3'
 - 'numeric-prelude-0.4.2'
 - 'storable-record-0.0.3.1'
 - 'unique-0'
@@ -84,6 +89,26 @@ extra-deps:
 flags:
   llvm-general:
     shared-llvm: true
+  accelerate-examples:
+    cuda:       true
+    llvm-cpu:   true
+    llvm-gpu:   true
+    gui:        true
+    ekg:        true
+    codespeed:  false
+    nofib:      true
+    smvm:       true
+    crystal:    true
+    canny:      true
+    mandelbrot: true
+    fluid:      true
+    nbody:      true
+    smoothlife: true
+    hashcat:    true
+    fft:        true
+    pagerank:   true
+    ray:        true
+    kmeans:     true
 
 # Extra package databases containing global packages
 extra-package-dbs: []
