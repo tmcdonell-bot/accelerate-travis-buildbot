@@ -7,230 +7,231 @@
 <link type='text/css' rel='stylesheet' href='hscolour.css' />
 </head>
 <body>
-<pre><a name="line-1"></a><span class='hs-comment'>-- |</span>
-<a name="line-2"></a><span class='hs-comment'>-- Module      : Control.Parallel.Meta</span>
-<a name="line-3"></a><span class='hs-comment'>-- Copyright   : [2014..2015] Trevor L. McDonell</span>
-<a name="line-4"></a><span class='hs-comment'>--               [2014..2014] Vinod Grover (NVIDIA Corporation)</span>
-<a name="line-5"></a><span class='hs-comment'>-- License     : BSD3</span>
-<a name="line-6"></a><span class='hs-comment'>--</span>
-<a name="line-7"></a><span class='hs-comment'>-- Maintainer  : Trevor L. McDonell &lt;tmcdonell@cse.unsw.edu.au&gt;</span>
-<a name="line-8"></a><span class='hs-comment'>-- Stability   : experimental</span>
-<a name="line-9"></a><span class='hs-comment'>-- Portability : non-portable (GHC extensions)</span>
-<a name="line-10"></a><span class='hs-comment'>--</span>
-<a name="line-11"></a>
-<a name="line-12"></a><span class='hs-keyword'>module</span> <span class='hs-conid'>Control</span><span class='hs-varop'>.</span><span class='hs-conid'>Parallel</span><span class='hs-varop'>.</span><span class='hs-conid'>Meta</span>
-<a name="line-13"></a>  <span class='hs-keyword'>where</span>
-<a name="line-14"></a>
-<a name="line-15"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>Data</span><span class='hs-varop'>.</span><span class='hs-conid'>Maybe</span>
-<a name="line-16"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>Data</span><span class='hs-varop'>.</span><span class='hs-conid'>Monoid</span>
-<a name="line-17"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>Control</span><span class='hs-varop'>.</span><span class='hs-conid'>Parallel</span><span class='hs-varop'>.</span><span class='hs-conid'>Meta</span><span class='hs-varop'>.</span><span class='hs-conid'>Worker</span>
-<a name="line-18"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>Data</span><span class='hs-varop'>.</span><span class='hs-conid'>Concurrent</span><span class='hs-varop'>.</span><span class='hs-conid'>Deque</span><span class='hs-varop'>.</span><span class='hs-conid'>Class</span>
-<a name="line-19"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>Data</span><span class='hs-varop'>.</span><span class='hs-conid'>Sequence</span>                                            <span class='hs-layout'>(</span> <span class='hs-conid'>Seq</span> <span class='hs-layout'>)</span>
-<a name="line-20"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>Data</span><span class='hs-varop'>.</span><span class='hs-conid'>Range</span><span class='hs-varop'>.</span><span class='hs-conid'>Range</span>                                         <span class='hs-keyword'>as</span> <span class='hs-conid'>R</span>
-<a name="line-21"></a><span class='hs-keyword'>import</span> <span class='hs-keyword'>qualified</span> <span class='hs-conid'>Data</span><span class='hs-varop'>.</span><span class='hs-conid'>Vector</span>                                    <span class='hs-keyword'>as</span> <span class='hs-conid'>V</span>
-<a name="line-22"></a><span class='hs-keyword'>import</span> <span class='hs-keyword'>qualified</span> <span class='hs-conid'>Data</span><span class='hs-varop'>.</span><span class='hs-conid'>Sequence</span>                                  <span class='hs-keyword'>as</span> <span class='hs-conid'>Seq</span>
-<a name="line-23"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>Prelude</span>                                                  <span class='hs-varid'>hiding</span> <span class='hs-layout'>(</span> <span class='hs-varid'>init</span> <span class='hs-layout'>)</span>
-<a name="line-24"></a>
-<a name="line-25"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>GHC</span><span class='hs-varop'>.</span><span class='hs-conid'>Base</span>                                                 <span class='hs-layout'>(</span> <span class='hs-varid'>quotInt</span><span class='hs-layout'>,</span> <span class='hs-varid'>remInt</span> <span class='hs-layout'>)</span>
-<a name="line-26"></a>
+<pre><a name="line-1"></a><span class='hs-comment'>{-# OPTIONS_HADDOCK hide #-}</span>
+<a name="line-2"></a><span class='hs-comment'>-- |</span>
+<a name="line-3"></a><span class='hs-comment'>-- Module      : Control.Parallel.Meta</span>
+<a name="line-4"></a><span class='hs-comment'>-- Copyright   : [2014..2015] Trevor L. McDonell</span>
+<a name="line-5"></a><span class='hs-comment'>--               [2014..2014] Vinod Grover (NVIDIA Corporation)</span>
+<a name="line-6"></a><span class='hs-comment'>-- License     : BSD3</span>
+<a name="line-7"></a><span class='hs-comment'>--</span>
+<a name="line-8"></a><span class='hs-comment'>-- Maintainer  : Trevor L. McDonell &lt;tmcdonell@cse.unsw.edu.au&gt;</span>
+<a name="line-9"></a><span class='hs-comment'>-- Stability   : experimental</span>
+<a name="line-10"></a><span class='hs-comment'>-- Portability : non-portable (GHC extensions)</span>
+<a name="line-11"></a><span class='hs-comment'>--</span>
+<a name="line-12"></a>
+<a name="line-13"></a><span class='hs-keyword'>module</span> <span class='hs-conid'>Control</span><span class='hs-varop'>.</span><span class='hs-conid'>Parallel</span><span class='hs-varop'>.</span><span class='hs-conid'>Meta</span>
+<a name="line-14"></a>  <span class='hs-keyword'>where</span>
+<a name="line-15"></a>
+<a name="line-16"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>Data</span><span class='hs-varop'>.</span><span class='hs-conid'>Maybe</span>
+<a name="line-17"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>Data</span><span class='hs-varop'>.</span><span class='hs-conid'>Monoid</span>
+<a name="line-18"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>Control</span><span class='hs-varop'>.</span><span class='hs-conid'>Parallel</span><span class='hs-varop'>.</span><span class='hs-conid'>Meta</span><span class='hs-varop'>.</span><span class='hs-conid'>Worker</span>
+<a name="line-19"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>Data</span><span class='hs-varop'>.</span><span class='hs-conid'>Concurrent</span><span class='hs-varop'>.</span><span class='hs-conid'>Deque</span><span class='hs-varop'>.</span><span class='hs-conid'>Class</span>
+<a name="line-20"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>Data</span><span class='hs-varop'>.</span><span class='hs-conid'>Sequence</span>                                            <span class='hs-layout'>(</span> <span class='hs-conid'>Seq</span> <span class='hs-layout'>)</span>
+<a name="line-21"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>Data</span><span class='hs-varop'>.</span><span class='hs-conid'>Range</span><span class='hs-varop'>.</span><span class='hs-conid'>Range</span>                                         <span class='hs-keyword'>as</span> <span class='hs-conid'>R</span>
+<a name="line-22"></a><span class='hs-keyword'>import</span> <span class='hs-keyword'>qualified</span> <span class='hs-conid'>Data</span><span class='hs-varop'>.</span><span class='hs-conid'>Vector</span>                                    <span class='hs-keyword'>as</span> <span class='hs-conid'>V</span>
+<a name="line-23"></a><span class='hs-keyword'>import</span> <span class='hs-keyword'>qualified</span> <span class='hs-conid'>Data</span><span class='hs-varop'>.</span><span class='hs-conid'>Sequence</span>                                  <span class='hs-keyword'>as</span> <span class='hs-conid'>Seq</span>
+<a name="line-24"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>Prelude</span>                                                  <span class='hs-varid'>hiding</span> <span class='hs-layout'>(</span> <span class='hs-varid'>init</span> <span class='hs-layout'>)</span>
+<a name="line-25"></a>
+<a name="line-26"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>GHC</span><span class='hs-varop'>.</span><span class='hs-conid'>Base</span>                                                 <span class='hs-layout'>(</span> <span class='hs-varid'>quotInt</span><span class='hs-layout'>,</span> <span class='hs-varid'>remInt</span> <span class='hs-layout'>)</span>
 <a name="line-27"></a>
-<a name="line-28"></a><a name="Startup"></a><span class='hs-comment'>-- | The 'Startup' component of a 'Resource' is a callback that implements</span>
-<a name="line-29"></a><a name="Startup"></a><span class='hs-comment'>-- initialisation behaviour. For example, it might contact remote hosts, spawn</span>
-<a name="line-30"></a><a name="Startup"></a><span class='hs-comment'>-- threads, or initialise hardware such as GPUs.</span>
-<a name="line-31"></a><a name="Startup"></a><span class='hs-comment'>--</span>
-<a name="line-32"></a><a name="Startup"></a><span class='hs-keyword'>data</span> <span class='hs-conid'>Startup</span> <span class='hs-keyglyph'>=</span> <span class='hs-conid'>Startup</span> <span class='hs-layout'>{</span>
-<a name="line-33"></a>  <span class='hs-varid'>runStartup</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Gang</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>IO</span> <span class='hs-conid'>()</span> <span class='hs-layout'>}</span>
-<a name="line-34"></a>
-<a name="line-35"></a><a name="instance%20Monoid%20Startup"></a><span class='hs-keyword'>instance</span> <span class='hs-conid'>Monoid</span> <span class='hs-conid'>Startup</span> <span class='hs-keyword'>where</span>
-<a name="line-36"></a>  <span class='hs-varid'>mempty</span>                            <span class='hs-keyglyph'>=</span> <span class='hs-conid'>Startup</span> <span class='hs-varop'>$</span> <span class='hs-keyglyph'>\</span><span class='hs-keyword'>_</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>return</span> <span class='hs-conid'>()</span>
-<a name="line-37"></a>  <span class='hs-conid'>Startup</span> <span class='hs-varid'>st1</span> <span class='hs-varop'>`mappend`</span> <span class='hs-conid'>Startup</span> <span class='hs-varid'>st2</span> <span class='hs-keyglyph'>=</span> <span class='hs-conid'>Startup</span> <span class='hs-varop'>$</span> <span class='hs-keyglyph'>\</span><span class='hs-varid'>g</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>st1</span> <span class='hs-varid'>g</span> <span class='hs-varop'>&gt;&gt;</span> <span class='hs-varid'>st2</span> <span class='hs-varid'>g</span>
-<a name="line-38"></a>
+<a name="line-28"></a>
+<a name="line-29"></a><a name="Startup"></a><span class='hs-comment'>-- | The 'Startup' component of a 'Resource' is a callback that implements</span>
+<a name="line-30"></a><a name="Startup"></a><span class='hs-comment'>-- initialisation behaviour. For example, it might contact remote hosts, spawn</span>
+<a name="line-31"></a><a name="Startup"></a><span class='hs-comment'>-- threads, or initialise hardware such as GPUs.</span>
+<a name="line-32"></a><a name="Startup"></a><span class='hs-comment'>--</span>
+<a name="line-33"></a><a name="Startup"></a><span class='hs-keyword'>data</span> <span class='hs-conid'>Startup</span> <span class='hs-keyglyph'>=</span> <span class='hs-conid'>Startup</span> <span class='hs-layout'>{</span>
+<a name="line-34"></a>  <span class='hs-varid'>runStartup</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Gang</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>IO</span> <span class='hs-conid'>()</span> <span class='hs-layout'>}</span>
+<a name="line-35"></a>
+<a name="line-36"></a><a name="instance%20Monoid%20Startup"></a><span class='hs-keyword'>instance</span> <span class='hs-conid'>Monoid</span> <span class='hs-conid'>Startup</span> <span class='hs-keyword'>where</span>
+<a name="line-37"></a>  <span class='hs-varid'>mempty</span>                            <span class='hs-keyglyph'>=</span> <span class='hs-conid'>Startup</span> <span class='hs-varop'>$</span> <span class='hs-keyglyph'>\</span><span class='hs-keyword'>_</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>return</span> <span class='hs-conid'>()</span>
+<a name="line-38"></a>  <span class='hs-conid'>Startup</span> <span class='hs-varid'>st1</span> <span class='hs-varop'>`mappend`</span> <span class='hs-conid'>Startup</span> <span class='hs-varid'>st2</span> <span class='hs-keyglyph'>=</span> <span class='hs-conid'>Startup</span> <span class='hs-varop'>$</span> <span class='hs-keyglyph'>\</span><span class='hs-varid'>g</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>st1</span> <span class='hs-varid'>g</span> <span class='hs-varop'>&gt;&gt;</span> <span class='hs-varid'>st2</span> <span class='hs-varid'>g</span>
 <a name="line-39"></a>
-<a name="line-40"></a><a name="WorkSearch"></a><span class='hs-comment'>-- | The 'WorkSearch' component of a 'Resource' is a callback that responds to</span>
-<a name="line-41"></a><a name="WorkSearch"></a><span class='hs-comment'>-- requests for work from meta-workers. The arguments to 'WorkSearch' are the</span>
-<a name="line-42"></a><a name="WorkSearch"></a><span class='hs-comment'>-- scheduler state for the current thread and a reference to all workers in the</span>
-<a name="line-43"></a><a name="WorkSearch"></a><span class='hs-comment'>-- program.</span>
-<a name="line-44"></a><a name="WorkSearch"></a><span class='hs-comment'>--</span>
-<a name="line-45"></a><a name="WorkSearch"></a><span class='hs-keyword'>data</span> <span class='hs-conid'>WorkSearch</span> <span class='hs-keyglyph'>=</span> <span class='hs-conid'>WorkSearch</span> <span class='hs-layout'>{</span>
-<a name="line-46"></a>  <span class='hs-varid'>runWorkSearch</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Worker</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>IO</span> <span class='hs-layout'>(</span><span class='hs-conid'>Maybe</span> <span class='hs-conid'>Range</span><span class='hs-layout'>)</span> <span class='hs-layout'>}</span>
-<a name="line-47"></a>
-<a name="line-48"></a><a name="instance%20Monoid%20WorkSearch"></a><span class='hs-keyword'>instance</span> <span class='hs-conid'>Monoid</span> <span class='hs-conid'>WorkSearch</span> <span class='hs-keyword'>where</span>
-<a name="line-49"></a>  <span class='hs-varid'>mempty</span>                                  <span class='hs-keyglyph'>=</span> <span class='hs-conid'>WorkSearch</span> <span class='hs-varop'>$</span> <span class='hs-keyglyph'>\</span><span class='hs-keyword'>_</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>return</span> <span class='hs-conid'>Nothing</span>
-<a name="line-50"></a>  <span class='hs-conid'>WorkSearch</span> <span class='hs-varid'>ws1</span> <span class='hs-varop'>`mappend`</span> <span class='hs-conid'>WorkSearch</span> <span class='hs-varid'>ws2</span> <span class='hs-keyglyph'>=</span>
-<a name="line-51"></a>    <span class='hs-conid'>WorkSearch</span> <span class='hs-varop'>$</span> <span class='hs-keyglyph'>\</span><span class='hs-varid'>st</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-keyword'>do</span>
-<a name="line-52"></a>        <span class='hs-varid'>mwork</span> <span class='hs-keyglyph'>&lt;-</span> <span class='hs-varid'>ws1</span> <span class='hs-varid'>st</span>
-<a name="line-53"></a>        <span class='hs-keyword'>case</span> <span class='hs-varid'>mwork</span> <span class='hs-keyword'>of</span>
-<a name="line-54"></a>          <span class='hs-conid'>Nothing</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>ws2</span> <span class='hs-varid'>st</span>
-<a name="line-55"></a>          <span class='hs-keyword'>_</span>       <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>return</span> <span class='hs-varid'>mwork</span>
-<a name="line-56"></a>
+<a name="line-40"></a>
+<a name="line-41"></a><a name="WorkSearch"></a><span class='hs-comment'>-- | The 'WorkSearch' component of a 'Resource' is a callback that responds to</span>
+<a name="line-42"></a><a name="WorkSearch"></a><span class='hs-comment'>-- requests for work from meta-workers. The arguments to 'WorkSearch' are the</span>
+<a name="line-43"></a><a name="WorkSearch"></a><span class='hs-comment'>-- scheduler state for the current thread and a reference to all workers in the</span>
+<a name="line-44"></a><a name="WorkSearch"></a><span class='hs-comment'>-- program.</span>
+<a name="line-45"></a><a name="WorkSearch"></a><span class='hs-comment'>--</span>
+<a name="line-46"></a><a name="WorkSearch"></a><span class='hs-keyword'>data</span> <span class='hs-conid'>WorkSearch</span> <span class='hs-keyglyph'>=</span> <span class='hs-conid'>WorkSearch</span> <span class='hs-layout'>{</span>
+<a name="line-47"></a>  <span class='hs-varid'>runWorkSearch</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Worker</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>IO</span> <span class='hs-layout'>(</span><span class='hs-conid'>Maybe</span> <span class='hs-conid'>Range</span><span class='hs-layout'>)</span> <span class='hs-layout'>}</span>
+<a name="line-48"></a>
+<a name="line-49"></a><a name="instance%20Monoid%20WorkSearch"></a><span class='hs-keyword'>instance</span> <span class='hs-conid'>Monoid</span> <span class='hs-conid'>WorkSearch</span> <span class='hs-keyword'>where</span>
+<a name="line-50"></a>  <span class='hs-varid'>mempty</span>                                  <span class='hs-keyglyph'>=</span> <span class='hs-conid'>WorkSearch</span> <span class='hs-varop'>$</span> <span class='hs-keyglyph'>\</span><span class='hs-keyword'>_</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>return</span> <span class='hs-conid'>Nothing</span>
+<a name="line-51"></a>  <span class='hs-conid'>WorkSearch</span> <span class='hs-varid'>ws1</span> <span class='hs-varop'>`mappend`</span> <span class='hs-conid'>WorkSearch</span> <span class='hs-varid'>ws2</span> <span class='hs-keyglyph'>=</span>
+<a name="line-52"></a>    <span class='hs-conid'>WorkSearch</span> <span class='hs-varop'>$</span> <span class='hs-keyglyph'>\</span><span class='hs-varid'>st</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-keyword'>do</span>
+<a name="line-53"></a>        <span class='hs-varid'>mwork</span> <span class='hs-keyglyph'>&lt;-</span> <span class='hs-varid'>ws1</span> <span class='hs-varid'>st</span>
+<a name="line-54"></a>        <span class='hs-keyword'>case</span> <span class='hs-varid'>mwork</span> <span class='hs-keyword'>of</span>
+<a name="line-55"></a>          <span class='hs-conid'>Nothing</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>ws2</span> <span class='hs-varid'>st</span>
+<a name="line-56"></a>          <span class='hs-keyword'>_</span>       <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>return</span> <span class='hs-varid'>mwork</span>
 <a name="line-57"></a>
-<a name="line-58"></a><a name="Resource"></a><span class='hs-comment'>-- | A 'Resource' provides an abstraction of heterogeneous execution resources</span>
-<a name="line-59"></a><a name="Resource"></a><span class='hs-comment'>-- that may be combined. Composition of resources is left-biased. That is, if if</span>
-<a name="line-60"></a><a name="Resource"></a><span class='hs-comment'>-- @resource1@ always returns work from its 'WorkSearch', then the composed</span>
-<a name="line-61"></a><a name="Resource"></a><span class='hs-comment'>-- resource @resource1 &lt;&gt; resource2@ will never request work from @resource2@.</span>
-<a name="line-62"></a><a name="Resource"></a><span class='hs-comment'>--</span>
-<a name="line-63"></a><a name="Resource"></a><span class='hs-keyword'>data</span> <span class='hs-conid'>Resource</span> <span class='hs-keyglyph'>=</span> <span class='hs-conid'>Resource</span> <span class='hs-layout'>{</span>
-<a name="line-64"></a>    <span class='hs-varid'>startup</span>     <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Startup</span>
-<a name="line-65"></a>  <span class='hs-layout'>,</span> <span class='hs-varid'>workSearch</span>  <span class='hs-keyglyph'>::</span> <span class='hs-conid'>WorkSearch</span>
-<a name="line-66"></a>  <span class='hs-layout'>}</span>
-<a name="line-67"></a>
-<a name="line-68"></a><a name="instance%20Monoid%20Resource"></a><span class='hs-keyword'>instance</span> <span class='hs-conid'>Monoid</span> <span class='hs-conid'>Resource</span> <span class='hs-keyword'>where</span>
-<a name="line-69"></a>  <span class='hs-varid'>mempty</span>                                        <span class='hs-keyglyph'>=</span> <span class='hs-conid'>Resource</span> <span class='hs-varid'>mempty</span> <span class='hs-varid'>mempty</span>
-<a name="line-70"></a>  <span class='hs-varid'>mappend</span> <span class='hs-layout'>(</span><span class='hs-conid'>Resource</span> <span class='hs-varid'>st1</span> <span class='hs-varid'>ws1</span><span class='hs-layout'>)</span> <span class='hs-layout'>(</span><span class='hs-conid'>Resource</span> <span class='hs-varid'>st2</span> <span class='hs-varid'>ws2</span><span class='hs-layout'>)</span> <span class='hs-keyglyph'>=</span> <span class='hs-conid'>Resource</span> <span class='hs-layout'>(</span><span class='hs-varid'>st1</span> <span class='hs-varop'>&lt;&gt;</span> <span class='hs-varid'>st2</span><span class='hs-layout'>)</span> <span class='hs-layout'>(</span><span class='hs-varid'>ws1</span> <span class='hs-varop'>&lt;&gt;</span> <span class='hs-varid'>ws2</span><span class='hs-layout'>)</span>
-<a name="line-71"></a>
+<a name="line-58"></a>
+<a name="line-59"></a><a name="Resource"></a><span class='hs-comment'>-- | A 'Resource' provides an abstraction of heterogeneous execution resources</span>
+<a name="line-60"></a><a name="Resource"></a><span class='hs-comment'>-- that may be combined. Composition of resources is left-biased. That is, if if</span>
+<a name="line-61"></a><a name="Resource"></a><span class='hs-comment'>-- @resource1@ always returns work from its 'WorkSearch', then the composed</span>
+<a name="line-62"></a><a name="Resource"></a><span class='hs-comment'>-- resource @resource1 &lt;&gt; resource2@ will never request work from @resource2@.</span>
+<a name="line-63"></a><a name="Resource"></a><span class='hs-comment'>--</span>
+<a name="line-64"></a><a name="Resource"></a><span class='hs-keyword'>data</span> <span class='hs-conid'>Resource</span> <span class='hs-keyglyph'>=</span> <span class='hs-conid'>Resource</span> <span class='hs-layout'>{</span>
+<a name="line-65"></a>    <span class='hs-varid'>startup</span>     <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Startup</span>
+<a name="line-66"></a>  <span class='hs-layout'>,</span> <span class='hs-varid'>workSearch</span>  <span class='hs-keyglyph'>::</span> <span class='hs-conid'>WorkSearch</span>
+<a name="line-67"></a>  <span class='hs-layout'>}</span>
+<a name="line-68"></a>
+<a name="line-69"></a><a name="instance%20Monoid%20Resource"></a><span class='hs-keyword'>instance</span> <span class='hs-conid'>Monoid</span> <span class='hs-conid'>Resource</span> <span class='hs-keyword'>where</span>
+<a name="line-70"></a>  <span class='hs-varid'>mempty</span>                                        <span class='hs-keyglyph'>=</span> <span class='hs-conid'>Resource</span> <span class='hs-varid'>mempty</span> <span class='hs-varid'>mempty</span>
+<a name="line-71"></a>  <span class='hs-varid'>mappend</span> <span class='hs-layout'>(</span><span class='hs-conid'>Resource</span> <span class='hs-varid'>st1</span> <span class='hs-varid'>ws1</span><span class='hs-layout'>)</span> <span class='hs-layout'>(</span><span class='hs-conid'>Resource</span> <span class='hs-varid'>st2</span> <span class='hs-varid'>ws2</span><span class='hs-layout'>)</span> <span class='hs-keyglyph'>=</span> <span class='hs-conid'>Resource</span> <span class='hs-layout'>(</span><span class='hs-varid'>st1</span> <span class='hs-varop'>&lt;&gt;</span> <span class='hs-varid'>st2</span><span class='hs-layout'>)</span> <span class='hs-layout'>(</span><span class='hs-varid'>ws1</span> <span class='hs-varop'>&lt;&gt;</span> <span class='hs-varid'>ws2</span><span class='hs-layout'>)</span>
 <a name="line-72"></a>
-<a name="line-73"></a><a name="Action"></a><span class='hs-comment'>-- | An action to execute. The first parameters are the start and end indices of</span>
-<a name="line-74"></a><a name="Action"></a><span class='hs-comment'>-- the range this action should process, and the final is the ID of the thread</span>
-<a name="line-75"></a><a name="Action"></a><span class='hs-comment'>-- doing the work.</span>
-<a name="line-76"></a><a name="Action"></a><span class='hs-comment'>--</span>
-<a name="line-77"></a><a name="Action"></a><span class='hs-keyword'>type</span> <span class='hs-conid'>Action</span> <span class='hs-keyglyph'>=</span> <span class='hs-conid'>Int</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Int</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Int</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>IO</span> <span class='hs-conid'>()</span>
-<a name="line-78"></a><span class='hs-comment'>-- data Action = Action {</span>
-<a name="line-79"></a><span class='hs-comment'>--     runAction :: Int -&gt; Int -&gt; Int -&gt; IO }</span>
-<a name="line-80"></a><span class='hs-comment'>--   }</span>
-<a name="line-81"></a>
-<a name="line-82"></a><span class='hs-comment'>-- instance Monoid Action where</span>
-<a name="line-83"></a><span class='hs-comment'>--   mempty                        = Action $ \_ _ _ -&gt; return ()</span>
-<a name="line-84"></a><span class='hs-comment'>--   Action f1 `mappend` Action f2 = Action $ \m n i -&gt; f1 m n i &gt;&gt; f1 m n i</span>
-<a name="line-85"></a>
+<a name="line-73"></a>
+<a name="line-74"></a><a name="Action"></a><span class='hs-comment'>-- | An action to execute. The first parameters are the start and end indices of</span>
+<a name="line-75"></a><a name="Action"></a><span class='hs-comment'>-- the range this action should process, and the final is the ID of the thread</span>
+<a name="line-76"></a><a name="Action"></a><span class='hs-comment'>-- doing the work.</span>
+<a name="line-77"></a><a name="Action"></a><span class='hs-comment'>--</span>
+<a name="line-78"></a><a name="Action"></a><span class='hs-keyword'>type</span> <span class='hs-conid'>Action</span> <span class='hs-keyglyph'>=</span> <span class='hs-conid'>Int</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Int</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Int</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>IO</span> <span class='hs-conid'>()</span>
+<a name="line-79"></a><span class='hs-comment'>-- data Action = Action {</span>
+<a name="line-80"></a><span class='hs-comment'>--     runAction :: Int -&gt; Int -&gt; Int -&gt; IO }</span>
+<a name="line-81"></a><span class='hs-comment'>--   }</span>
+<a name="line-82"></a>
+<a name="line-83"></a><span class='hs-comment'>-- instance Monoid Action where</span>
+<a name="line-84"></a><span class='hs-comment'>--   mempty                        = Action $ \_ _ _ -&gt; return ()</span>
+<a name="line-85"></a><span class='hs-comment'>--   Action f1 `mappend` Action f2 = Action $ \m n i -&gt; f1 m n i &gt;&gt; f1 m n i</span>
 <a name="line-86"></a>
-<a name="line-87"></a><a name="Executable"></a><span class='hs-comment'>-- | An 'Executable' provides a callback that can be used to run a provided</span>
-<a name="line-88"></a><a name="Executable"></a><span class='hs-comment'>-- function using an encapsulated work-stealing gang of threads.</span>
-<a name="line-89"></a><a name="Executable"></a><span class='hs-comment'>--</span>
-<a name="line-90"></a><a name="Executable"></a><span class='hs-keyword'>data</span> <span class='hs-conid'>Executable</span> <span class='hs-keyglyph'>=</span> <span class='hs-conid'>Executable</span> <span class='hs-layout'>{</span>
-<a name="line-91"></a>    <span class='hs-varid'>runExecutable</span>
-<a name="line-92"></a>        <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Int</span>          <span class='hs-comment'>-- Profitable parallelism threshold (PPT)</span>
-<a name="line-93"></a>        <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Range</span>        <span class='hs-comment'>-- The range to execute over</span>
-<a name="line-94"></a>        <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Finalise</span>     <span class='hs-comment'>-- Post-processing function, given the ranges processed by this thread.</span>
-<a name="line-95"></a>        <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Maybe</span> <span class='hs-conid'>Action</span> <span class='hs-comment'>-- Initialisation to execute over the first range only</span>
-<a name="line-96"></a>        <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Action</span>       <span class='hs-comment'>-- The main function to execute</span>
-<a name="line-97"></a>        <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>IO</span> <span class='hs-conid'>()</span>
-<a name="line-98"></a>  <span class='hs-layout'>}</span>
-<a name="line-99"></a>
+<a name="line-87"></a>
+<a name="line-88"></a><a name="Executable"></a><span class='hs-comment'>-- | An 'Executable' provides a callback that can be used to run a provided</span>
+<a name="line-89"></a><a name="Executable"></a><span class='hs-comment'>-- function using an encapsulated work-stealing gang of threads.</span>
+<a name="line-90"></a><a name="Executable"></a><span class='hs-comment'>--</span>
+<a name="line-91"></a><a name="Executable"></a><span class='hs-keyword'>data</span> <span class='hs-conid'>Executable</span> <span class='hs-keyglyph'>=</span> <span class='hs-conid'>Executable</span> <span class='hs-layout'>{</span>
+<a name="line-92"></a>    <span class='hs-varid'>runExecutable</span>
+<a name="line-93"></a>        <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Int</span>          <span class='hs-comment'>-- Profitable parallelism threshold (PPT)</span>
+<a name="line-94"></a>        <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Range</span>        <span class='hs-comment'>-- The range to execute over</span>
+<a name="line-95"></a>        <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Finalise</span>     <span class='hs-comment'>-- Post-processing function, given the ranges processed by this thread.</span>
+<a name="line-96"></a>        <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Maybe</span> <span class='hs-conid'>Action</span> <span class='hs-comment'>-- Initialisation to execute over the first range only</span>
+<a name="line-97"></a>        <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Action</span>       <span class='hs-comment'>-- The main function to execute</span>
+<a name="line-98"></a>        <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>IO</span> <span class='hs-conid'>()</span>
+<a name="line-99"></a>  <span class='hs-layout'>}</span>
 <a name="line-100"></a>
-<a name="line-101"></a><a name="Finalise"></a><span class='hs-comment'>-- | The 'Finalise' component of an executable is an action the thread applies</span>
-<a name="line-102"></a><a name="Finalise"></a><span class='hs-comment'>-- after processing the work function, given its thread id the ranges that this</span>
-<a name="line-103"></a><a name="Finalise"></a><span class='hs-comment'>-- thread actually handled.</span>
-<a name="line-104"></a><a name="Finalise"></a><span class='hs-comment'>--</span>
-<a name="line-105"></a><a name="Finalise"></a><span class='hs-keyword'>data</span> <span class='hs-conid'>Finalise</span> <span class='hs-keyglyph'>=</span> <span class='hs-conid'>Finalise</span> <span class='hs-layout'>{</span>
-<a name="line-106"></a>    <span class='hs-varid'>runFinalise</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Int</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Seq</span> <span class='hs-conid'>Range</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>IO</span> <span class='hs-conid'>()</span>
-<a name="line-107"></a>  <span class='hs-layout'>}</span>
-<a name="line-108"></a>
-<a name="line-109"></a><a name="instance%20Monoid%20Finalise"></a><span class='hs-keyword'>instance</span> <span class='hs-conid'>Monoid</span> <span class='hs-conid'>Finalise</span> <span class='hs-keyword'>where</span>
-<a name="line-110"></a>  <span class='hs-varid'>mempty</span>                            <span class='hs-keyglyph'>=</span> <span class='hs-conid'>Finalise</span> <span class='hs-varop'>$</span> <span class='hs-keyglyph'>\</span><span class='hs-keyword'>_</span>   <span class='hs-keyword'>_</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>return</span> <span class='hs-conid'>()</span>
-<a name="line-111"></a>  <span class='hs-conid'>Finalise</span> <span class='hs-varid'>f1</span> <span class='hs-varop'>`mappend`</span> <span class='hs-conid'>Finalise</span> <span class='hs-varid'>f2</span> <span class='hs-keyglyph'>=</span> <span class='hs-conid'>Finalise</span> <span class='hs-varop'>$</span> <span class='hs-keyglyph'>\</span><span class='hs-varid'>tid</span> <span class='hs-varid'>r</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>f1</span> <span class='hs-varid'>tid</span> <span class='hs-varid'>r</span> <span class='hs-varop'>&gt;&gt;</span> <span class='hs-varid'>f2</span> <span class='hs-varid'>tid</span> <span class='hs-varid'>r</span>
-<a name="line-112"></a>
+<a name="line-101"></a>
+<a name="line-102"></a><a name="Finalise"></a><span class='hs-comment'>-- | The 'Finalise' component of an executable is an action the thread applies</span>
+<a name="line-103"></a><a name="Finalise"></a><span class='hs-comment'>-- after processing the work function, given its thread id the ranges that this</span>
+<a name="line-104"></a><a name="Finalise"></a><span class='hs-comment'>-- thread actually handled.</span>
+<a name="line-105"></a><a name="Finalise"></a><span class='hs-comment'>--</span>
+<a name="line-106"></a><a name="Finalise"></a><span class='hs-keyword'>data</span> <span class='hs-conid'>Finalise</span> <span class='hs-keyglyph'>=</span> <span class='hs-conid'>Finalise</span> <span class='hs-layout'>{</span>
+<a name="line-107"></a>    <span class='hs-varid'>runFinalise</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Int</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Seq</span> <span class='hs-conid'>Range</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>IO</span> <span class='hs-conid'>()</span>
+<a name="line-108"></a>  <span class='hs-layout'>}</span>
+<a name="line-109"></a>
+<a name="line-110"></a><a name="instance%20Monoid%20Finalise"></a><span class='hs-keyword'>instance</span> <span class='hs-conid'>Monoid</span> <span class='hs-conid'>Finalise</span> <span class='hs-keyword'>where</span>
+<a name="line-111"></a>  <span class='hs-varid'>mempty</span>                            <span class='hs-keyglyph'>=</span> <span class='hs-conid'>Finalise</span> <span class='hs-varop'>$</span> <span class='hs-keyglyph'>\</span><span class='hs-keyword'>_</span>   <span class='hs-keyword'>_</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>return</span> <span class='hs-conid'>()</span>
+<a name="line-112"></a>  <span class='hs-conid'>Finalise</span> <span class='hs-varid'>f1</span> <span class='hs-varop'>`mappend`</span> <span class='hs-conid'>Finalise</span> <span class='hs-varid'>f2</span> <span class='hs-keyglyph'>=</span> <span class='hs-conid'>Finalise</span> <span class='hs-varop'>$</span> <span class='hs-keyglyph'>\</span><span class='hs-varid'>tid</span> <span class='hs-varid'>r</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>f1</span> <span class='hs-varid'>tid</span> <span class='hs-varid'>r</span> <span class='hs-varop'>&gt;&gt;</span> <span class='hs-varid'>f2</span> <span class='hs-varid'>tid</span> <span class='hs-varid'>r</span>
 <a name="line-113"></a>
-<a name="line-114"></a><a name="runParIO"></a><span class='hs-comment'>-- | Run a parallel work-stealing operation.</span>
-<a name="line-115"></a><span class='hs-comment'>--</span>
-<a name="line-116"></a><span class='hs-comment'>-- Each thread initialises its work queue with an equally sized chunk of the</span>
-<a name="line-117"></a><span class='hs-comment'>-- work. Threads keep working until their work search returns Nothing, at which</span>
-<a name="line-118"></a><span class='hs-comment'>-- point the thread exits. In our LBS implementation, a worker thread takes a</span>
-<a name="line-119"></a><span class='hs-comment'>-- small chunk of its work range to process, and places the remainder back onto</span>
-<a name="line-120"></a><span class='hs-comment'>-- its deque. Thus the work queues are only empty:</span>
-<a name="line-121"></a><span class='hs-comment'>--</span>
-<a name="line-122"></a><span class='hs-comment'>--   (a) Briefly during the scheduling process; or</span>
-<a name="line-123"></a><span class='hs-comment'>--</span>
-<a name="line-124"></a><span class='hs-comment'>--   (b) After the deque has been robbed. If the stolen chunk is large enough,</span>
-<a name="line-125"></a><span class='hs-comment'>--       the stealee will split the remainder onto its deque to be stolen; or</span>
-<a name="line-126"></a><span class='hs-comment'>--</span>
-<a name="line-127"></a><span class='hs-comment'>--   (c) There is no more work.</span>
-<a name="line-128"></a><span class='hs-comment'>--</span>
-<a name="line-129"></a><span class='hs-comment'>-- As long as the thread makes a small number of retries, this should correctly</span>
-<a name="line-130"></a><span class='hs-comment'>-- balance the work without too much scheduler overhead.</span>
-<a name="line-131"></a><span class='hs-comment'>--</span>
-<a name="line-132"></a><span class='hs-comment'>-- An alternative to every thread initialising with an even chunk size is to put</span>
-<a name="line-133"></a><span class='hs-comment'>-- the entire range onto the first worker and then have the scheduler handle the</span>
-<a name="line-134"></a><span class='hs-comment'>-- decomposition. However, since we are playing fast-and-loose with the exit</span>
-<a name="line-135"></a><span class='hs-comment'>-- condition, this is a little racy.</span>
-<a name="line-136"></a><span class='hs-comment'>--</span>
-<a name="line-137"></a><span class='hs-comment'>-- TLM NOTE:</span>
-<a name="line-138"></a><span class='hs-comment'>--</span>
-<a name="line-139"></a><span class='hs-comment'>-- Should threads check whether the work queues of all threads are empty before</span>
-<a name="line-140"></a><span class='hs-comment'>-- deciding to exit? If the PPT is too large then threads might not react</span>
-<a name="line-141"></a><span class='hs-comment'>-- quickly enough to splitting once their deque is emptied. Maybe the first</span>
-<a name="line-142"></a><span class='hs-comment'>-- thread to return Nothing can probe the queues to see if they are all empty.</span>
-<a name="line-143"></a><span class='hs-comment'>-- If True, write into a shared MVar to signal to the others that it is time to</span>
-<a name="line-144"></a><span class='hs-comment'>-- exit. But, that still assumes that the PPT is not so large that the queues</span>
-<a name="line-145"></a><span class='hs-comment'>-- are always empty.</span>
-<a name="line-146"></a><span class='hs-comment'>--</span>
-<a name="line-147"></a><span class='hs-comment'>-- TLM TODO:</span>
-<a name="line-148"></a><span class='hs-comment'>--</span>
-<a name="line-149"></a><span class='hs-comment'>-- Splitting work should probably be biased to cache-size chunks, rather</span>
-<a name="line-150"></a><span class='hs-comment'>-- than trying to split exactly evenly.</span>
-<a name="line-151"></a><span class='hs-comment'>--</span>
-<a name="line-152"></a><span class='hs-definition'>runParIO</span>
-<a name="line-153"></a>    <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Resource</span>
-<a name="line-154"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Gang</span>
-<a name="line-155"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Range</span>
-<a name="line-156"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Maybe</span> <span class='hs-conid'>Action</span>
-<a name="line-157"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Action</span>
-<a name="line-158"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Finalise</span>
-<a name="line-159"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>IO</span> <span class='hs-conid'>()</span>
-<a name="line-160"></a><span class='hs-definition'>runParIO</span> <span class='hs-varid'>resource</span> <span class='hs-varid'>gang</span> <span class='hs-varid'>range</span> <span class='hs-varid'>init</span> <span class='hs-varid'>action</span> <span class='hs-varid'>after</span>
-<a name="line-161"></a>  <span class='hs-keyglyph'>|</span> <span class='hs-varid'>gangSize</span> <span class='hs-varid'>gang</span> <span class='hs-varop'>==</span> <span class='hs-num'>1</span>  <span class='hs-keyglyph'>=</span> <span class='hs-varid'>seqIO</span> <span class='hs-varid'>resource</span> <span class='hs-varid'>gang</span> <span class='hs-varid'>range</span> <span class='hs-varid'>init</span> <span class='hs-varid'>action</span> <span class='hs-varid'>after</span>
-<a name="line-162"></a>  <span class='hs-keyglyph'>|</span> <span class='hs-varid'>otherwise</span>           <span class='hs-keyglyph'>=</span> <span class='hs-varid'>parIO</span> <span class='hs-varid'>resource</span> <span class='hs-varid'>gang</span> <span class='hs-varid'>range</span> <span class='hs-varid'>init</span> <span class='hs-varid'>action</span> <span class='hs-varid'>after</span>
-<a name="line-163"></a>
-<a name="line-164"></a><a name="seqIO"></a><span class='hs-definition'>seqIO</span>
-<a name="line-165"></a>    <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Resource</span>
-<a name="line-166"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Gang</span>
-<a name="line-167"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Range</span>
-<a name="line-168"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Maybe</span> <span class='hs-conid'>Action</span>
-<a name="line-169"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Action</span>
-<a name="line-170"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Finalise</span>
-<a name="line-171"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>IO</span> <span class='hs-conid'>()</span>
-<a name="line-172"></a><span class='hs-definition'>seqIO</span> <span class='hs-keyword'>_</span> <span class='hs-keyword'>_</span>    <span class='hs-conid'>Empty</span>    <span class='hs-keyword'>_</span>    <span class='hs-keyword'>_</span>      <span class='hs-varid'>after</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>runFinalise</span> <span class='hs-varid'>after</span> <span class='hs-num'>0</span> <span class='hs-conid'>Seq</span><span class='hs-varop'>.</span><span class='hs-varid'>empty</span>
-<a name="line-173"></a><span class='hs-definition'>seqIO</span> <span class='hs-keyword'>_</span> <span class='hs-varid'>gang</span> <span class='hs-layout'>(</span><span class='hs-conid'>IE</span> <span class='hs-varid'>u</span> <span class='hs-varid'>v</span><span class='hs-layout'>)</span> <span class='hs-varid'>init</span> <span class='hs-varid'>action</span> <span class='hs-varid'>after</span> <span class='hs-keyglyph'>=</span>
-<a name="line-174"></a>  <span class='hs-varid'>gangIO</span> <span class='hs-varid'>gang</span> <span class='hs-varop'>$</span> <span class='hs-keyglyph'>\</span><span class='hs-varid'>thread</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-keyword'>do</span>
-<a name="line-175"></a>    <span class='hs-varid'>fromMaybe</span> <span class='hs-varid'>action</span> <span class='hs-varid'>init</span> <span class='hs-varid'>u</span> <span class='hs-varid'>v</span> <span class='hs-varid'>thread</span>
-<a name="line-176"></a>    <span class='hs-varid'>runFinalise</span> <span class='hs-varid'>after</span> <span class='hs-varid'>thread</span> <span class='hs-layout'>(</span><span class='hs-conid'>Seq</span><span class='hs-varop'>.</span><span class='hs-varid'>singleton</span> <span class='hs-layout'>(</span><span class='hs-conid'>IE</span> <span class='hs-varid'>u</span> <span class='hs-varid'>v</span><span class='hs-layout'>)</span><span class='hs-layout'>)</span>
-<a name="line-177"></a>
-<a name="line-178"></a><a name="parIO"></a><span class='hs-definition'>parIO</span>
-<a name="line-179"></a>    <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Resource</span>
-<a name="line-180"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Gang</span>
-<a name="line-181"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Range</span>
-<a name="line-182"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Maybe</span> <span class='hs-conid'>Action</span>
-<a name="line-183"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Action</span>
-<a name="line-184"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Finalise</span>
-<a name="line-185"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>IO</span> <span class='hs-conid'>()</span>
-<a name="line-186"></a><span class='hs-definition'>parIO</span> <span class='hs-keyword'>_</span>        <span class='hs-keyword'>_</span>    <span class='hs-conid'>Empty</span>        <span class='hs-keyword'>_</span>    <span class='hs-keyword'>_</span>      <span class='hs-varid'>after</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>runFinalise</span> <span class='hs-varid'>after</span> <span class='hs-num'>0</span> <span class='hs-conid'>Seq</span><span class='hs-varop'>.</span><span class='hs-varid'>empty</span>
-<a name="line-187"></a><span class='hs-definition'>parIO</span> <span class='hs-varid'>resource</span> <span class='hs-varid'>gang</span> <span class='hs-layout'>(</span><span class='hs-conid'>IE</span> <span class='hs-varid'>inf</span> <span class='hs-varid'>sup</span><span class='hs-layout'>)</span> <span class='hs-varid'>init</span> <span class='hs-varid'>action</span> <span class='hs-varid'>after</span> <span class='hs-keyglyph'>=</span>
-<a name="line-188"></a>  <span class='hs-varid'>gangIO</span> <span class='hs-varid'>gang</span> <span class='hs-varop'>$</span> <span class='hs-keyglyph'>\</span><span class='hs-varid'>thread</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-keyword'>do</span>
-<a name="line-189"></a>      <span class='hs-keyword'>let</span> <span class='hs-varid'>start</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>splitIx</span> <span class='hs-varid'>thread</span>
-<a name="line-190"></a>          <span class='hs-varid'>end</span>   <span class='hs-keyglyph'>=</span> <span class='hs-varid'>splitIx</span> <span class='hs-layout'>(</span><span class='hs-varid'>thread</span> <span class='hs-varop'>+</span> <span class='hs-num'>1</span><span class='hs-layout'>)</span>
-<a name="line-191"></a>          <span class='hs-varid'>me</span>    <span class='hs-keyglyph'>=</span> <span class='hs-conid'>V</span><span class='hs-varop'>.</span><span class='hs-varid'>unsafeIndex</span> <span class='hs-varid'>gang</span> <span class='hs-varid'>thread</span>
-<a name="line-192"></a>
-<a name="line-193"></a>          <span class='hs-varid'>loop</span> <span class='hs-varid'>go</span> <span class='hs-varid'>rs</span> <span class='hs-keyglyph'>=</span> <span class='hs-keyword'>do</span>
-<a name="line-194"></a>            <span class='hs-varid'>work</span> <span class='hs-keyglyph'>&lt;-</span> <span class='hs-varid'>runWorkSearch</span> <span class='hs-layout'>(</span><span class='hs-varid'>workSearch</span> <span class='hs-varid'>resource</span><span class='hs-layout'>)</span> <span class='hs-varid'>me</span>
-<a name="line-195"></a>            <span class='hs-keyword'>case</span> <span class='hs-varid'>work</span> <span class='hs-keyword'>of</span>
-<a name="line-196"></a>              <span class='hs-comment'>-- Got a work unit. Execute it then search for more.</span>
-<a name="line-197"></a>              <span class='hs-conid'>Just</span> <span class='hs-varid'>r</span><span class='hs-keyglyph'>@</span><span class='hs-layout'>(</span><span class='hs-conid'>IE</span> <span class='hs-varid'>u</span> <span class='hs-varid'>v</span><span class='hs-layout'>)</span>   <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>go</span> <span class='hs-varid'>u</span> <span class='hs-varid'>v</span> <span class='hs-varid'>thread</span> <span class='hs-varop'>&gt;&gt;</span> <span class='hs-varid'>loop</span> <span class='hs-varid'>action</span> <span class='hs-layout'>(</span><span class='hs-varid'>rs</span> <span class='hs-varop'>`</span><span class='hs-conid'>R</span><span class='hs-varop'>.</span><span class='hs-varid'>append</span><span class='hs-varop'>`</span> <span class='hs-varid'>r</span><span class='hs-layout'>)</span>
-<a name="line-198"></a>
-<a name="line-199"></a>              <span class='hs-comment'>-- If the work search failed (which is random), to be extra safe</span>
-<a name="line-200"></a>              <span class='hs-comment'>-- make sure all the work queues are exhausted before exiting.</span>
-<a name="line-201"></a>              <span class='hs-keyword'>_</span>                 <span class='hs-keyglyph'>-&gt;</span> <span class='hs-keyword'>do</span>
-<a name="line-202"></a>                <span class='hs-varid'>done</span> <span class='hs-keyglyph'>&lt;-</span> <span class='hs-varid'>exhausted</span> <span class='hs-varid'>gang</span>
-<a name="line-203"></a>                <span class='hs-keyword'>if</span> <span class='hs-varid'>done</span>
-<a name="line-204"></a>                   <span class='hs-keyword'>then</span> <span class='hs-varid'>return</span> <span class='hs-varid'>rs</span>
-<a name="line-205"></a>                   <span class='hs-keyword'>else</span> <span class='hs-varid'>loop</span> <span class='hs-varid'>go</span> <span class='hs-varid'>rs</span>
-<a name="line-206"></a>
-<a name="line-207"></a>      <span class='hs-varid'>ranges</span> <span class='hs-keyglyph'>&lt;-</span> <span class='hs-keyword'>if</span> <span class='hs-varid'>start</span> <span class='hs-varop'>&gt;=</span> <span class='hs-varid'>end</span>
-<a name="line-208"></a>                  <span class='hs-keyword'>then</span> <span class='hs-varid'>return</span> <span class='hs-conid'>Seq</span><span class='hs-varop'>.</span><span class='hs-varid'>empty</span>
-<a name="line-209"></a>                  <span class='hs-keyword'>else</span> <span class='hs-varid'>pushL</span> <span class='hs-layout'>(</span><span class='hs-varid'>workpool</span> <span class='hs-varid'>me</span><span class='hs-layout'>)</span> <span class='hs-layout'>(</span><span class='hs-conid'>IE</span> <span class='hs-varid'>start</span> <span class='hs-varid'>end</span><span class='hs-layout'>)</span> <span class='hs-varop'>&gt;&gt;</span>
-<a name="line-210"></a>                       <span class='hs-varid'>loop</span> <span class='hs-layout'>(</span><span class='hs-varid'>fromMaybe</span> <span class='hs-varid'>action</span> <span class='hs-varid'>init</span><span class='hs-layout'>)</span> <span class='hs-conid'>Seq</span><span class='hs-varop'>.</span><span class='hs-varid'>empty</span>
-<a name="line-211"></a>
-<a name="line-212"></a>      <span class='hs-varid'>runFinalise</span> <span class='hs-varid'>after</span> <span class='hs-varid'>thread</span> <span class='hs-layout'>(</span><span class='hs-varid'>compress</span> <span class='hs-varid'>ranges</span><span class='hs-layout'>)</span>
-<a name="line-213"></a>  <span class='hs-keyword'>where</span>
-<a name="line-214"></a>    <span class='hs-varid'>len</span>                 <span class='hs-keyglyph'>=</span> <span class='hs-varid'>sup</span> <span class='hs-comment'>-</span> <span class='hs-varid'>inf</span>
-<a name="line-215"></a>    <span class='hs-varid'>workers</span>             <span class='hs-keyglyph'>=</span> <span class='hs-varid'>gangSize</span> <span class='hs-varid'>gang</span>
-<a name="line-216"></a>    <span class='hs-varid'>chunkLen</span>            <span class='hs-keyglyph'>=</span> <span class='hs-varid'>len</span> <span class='hs-varop'>`quotInt`</span> <span class='hs-varid'>workers</span>
-<a name="line-217"></a>    <span class='hs-varid'>chunkLeftover</span>       <span class='hs-keyglyph'>=</span> <span class='hs-varid'>len</span> <span class='hs-varop'>`remInt`</span>  <span class='hs-varid'>workers</span>
-<a name="line-218"></a>
-<a name="line-219"></a>    <span class='hs-varid'>splitIx</span> <span class='hs-varid'>thread</span>
-<a name="line-220"></a>      <span class='hs-keyglyph'>|</span> <span class='hs-varid'>thread</span> <span class='hs-varop'>&lt;</span> <span class='hs-varid'>chunkLeftover</span>
-<a name="line-221"></a>      <span class='hs-keyglyph'>=</span> <span class='hs-varid'>inf</span> <span class='hs-varop'>+</span> <span class='hs-varid'>thread</span> <span class='hs-varop'>*</span> <span class='hs-layout'>(</span><span class='hs-varid'>chunkLen</span> <span class='hs-varop'>+</span> <span class='hs-num'>1</span><span class='hs-layout'>)</span>
-<a name="line-222"></a>
-<a name="line-223"></a>      <span class='hs-keyglyph'>|</span> <span class='hs-varid'>otherwise</span>
-<a name="line-224"></a>      <span class='hs-keyglyph'>=</span> <span class='hs-varid'>inf</span> <span class='hs-varop'>+</span> <span class='hs-varid'>thread</span> <span class='hs-varop'>*</span> <span class='hs-varid'>chunkLen</span> <span class='hs-varop'>+</span> <span class='hs-varid'>chunkLeftover</span>
-<a name="line-225"></a>
+<a name="line-114"></a>
+<a name="line-115"></a><a name="runParIO"></a><span class='hs-comment'>-- | Run a parallel work-stealing operation.</span>
+<a name="line-116"></a><span class='hs-comment'>--</span>
+<a name="line-117"></a><span class='hs-comment'>-- Each thread initialises its work queue with an equally sized chunk of the</span>
+<a name="line-118"></a><span class='hs-comment'>-- work. Threads keep working until their work search returns Nothing, at which</span>
+<a name="line-119"></a><span class='hs-comment'>-- point the thread exits. In our LBS implementation, a worker thread takes a</span>
+<a name="line-120"></a><span class='hs-comment'>-- small chunk of its work range to process, and places the remainder back onto</span>
+<a name="line-121"></a><span class='hs-comment'>-- its deque. Thus the work queues are only empty:</span>
+<a name="line-122"></a><span class='hs-comment'>--</span>
+<a name="line-123"></a><span class='hs-comment'>--   (a) Briefly during the scheduling process; or</span>
+<a name="line-124"></a><span class='hs-comment'>--</span>
+<a name="line-125"></a><span class='hs-comment'>--   (b) After the deque has been robbed. If the stolen chunk is large enough,</span>
+<a name="line-126"></a><span class='hs-comment'>--       the stealee will split the remainder onto its deque to be stolen; or</span>
+<a name="line-127"></a><span class='hs-comment'>--</span>
+<a name="line-128"></a><span class='hs-comment'>--   (c) There is no more work.</span>
+<a name="line-129"></a><span class='hs-comment'>--</span>
+<a name="line-130"></a><span class='hs-comment'>-- As long as the thread makes a small number of retries, this should correctly</span>
+<a name="line-131"></a><span class='hs-comment'>-- balance the work without too much scheduler overhead.</span>
+<a name="line-132"></a><span class='hs-comment'>--</span>
+<a name="line-133"></a><span class='hs-comment'>-- An alternative to every thread initialising with an even chunk size is to put</span>
+<a name="line-134"></a><span class='hs-comment'>-- the entire range onto the first worker and then have the scheduler handle the</span>
+<a name="line-135"></a><span class='hs-comment'>-- decomposition. However, since we are playing fast-and-loose with the exit</span>
+<a name="line-136"></a><span class='hs-comment'>-- condition, this is a little racy.</span>
+<a name="line-137"></a><span class='hs-comment'>--</span>
+<a name="line-138"></a><span class='hs-comment'>-- TLM NOTE:</span>
+<a name="line-139"></a><span class='hs-comment'>--</span>
+<a name="line-140"></a><span class='hs-comment'>-- Should threads check whether the work queues of all threads are empty before</span>
+<a name="line-141"></a><span class='hs-comment'>-- deciding to exit? If the PPT is too large then threads might not react</span>
+<a name="line-142"></a><span class='hs-comment'>-- quickly enough to splitting once their deque is emptied. Maybe the first</span>
+<a name="line-143"></a><span class='hs-comment'>-- thread to return Nothing can probe the queues to see if they are all empty.</span>
+<a name="line-144"></a><span class='hs-comment'>-- If True, write into a shared MVar to signal to the others that it is time to</span>
+<a name="line-145"></a><span class='hs-comment'>-- exit. But, that still assumes that the PPT is not so large that the queues</span>
+<a name="line-146"></a><span class='hs-comment'>-- are always empty.</span>
+<a name="line-147"></a><span class='hs-comment'>--</span>
+<a name="line-148"></a><span class='hs-comment'>-- TLM TODO:</span>
+<a name="line-149"></a><span class='hs-comment'>--</span>
+<a name="line-150"></a><span class='hs-comment'>-- Splitting work should probably be biased to cache-size chunks, rather</span>
+<a name="line-151"></a><span class='hs-comment'>-- than trying to split exactly evenly.</span>
+<a name="line-152"></a><span class='hs-comment'>--</span>
+<a name="line-153"></a><span class='hs-definition'>runParIO</span>
+<a name="line-154"></a>    <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Resource</span>
+<a name="line-155"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Gang</span>
+<a name="line-156"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Range</span>
+<a name="line-157"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Maybe</span> <span class='hs-conid'>Action</span>
+<a name="line-158"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Action</span>
+<a name="line-159"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Finalise</span>
+<a name="line-160"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>IO</span> <span class='hs-conid'>()</span>
+<a name="line-161"></a><span class='hs-definition'>runParIO</span> <span class='hs-varid'>resource</span> <span class='hs-varid'>gang</span> <span class='hs-varid'>range</span> <span class='hs-varid'>init</span> <span class='hs-varid'>action</span> <span class='hs-varid'>after</span>
+<a name="line-162"></a>  <span class='hs-keyglyph'>|</span> <span class='hs-varid'>gangSize</span> <span class='hs-varid'>gang</span> <span class='hs-varop'>==</span> <span class='hs-num'>1</span>  <span class='hs-keyglyph'>=</span> <span class='hs-varid'>seqIO</span> <span class='hs-varid'>resource</span> <span class='hs-varid'>gang</span> <span class='hs-varid'>range</span> <span class='hs-varid'>init</span> <span class='hs-varid'>action</span> <span class='hs-varid'>after</span>
+<a name="line-163"></a>  <span class='hs-keyglyph'>|</span> <span class='hs-varid'>otherwise</span>           <span class='hs-keyglyph'>=</span> <span class='hs-varid'>parIO</span> <span class='hs-varid'>resource</span> <span class='hs-varid'>gang</span> <span class='hs-varid'>range</span> <span class='hs-varid'>init</span> <span class='hs-varid'>action</span> <span class='hs-varid'>after</span>
+<a name="line-164"></a>
+<a name="line-165"></a><a name="seqIO"></a><span class='hs-definition'>seqIO</span>
+<a name="line-166"></a>    <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Resource</span>
+<a name="line-167"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Gang</span>
+<a name="line-168"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Range</span>
+<a name="line-169"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Maybe</span> <span class='hs-conid'>Action</span>
+<a name="line-170"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Action</span>
+<a name="line-171"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Finalise</span>
+<a name="line-172"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>IO</span> <span class='hs-conid'>()</span>
+<a name="line-173"></a><span class='hs-definition'>seqIO</span> <span class='hs-keyword'>_</span> <span class='hs-keyword'>_</span>    <span class='hs-conid'>Empty</span>    <span class='hs-keyword'>_</span>    <span class='hs-keyword'>_</span>      <span class='hs-varid'>after</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>runFinalise</span> <span class='hs-varid'>after</span> <span class='hs-num'>0</span> <span class='hs-conid'>Seq</span><span class='hs-varop'>.</span><span class='hs-varid'>empty</span>
+<a name="line-174"></a><span class='hs-definition'>seqIO</span> <span class='hs-keyword'>_</span> <span class='hs-varid'>gang</span> <span class='hs-layout'>(</span><span class='hs-conid'>IE</span> <span class='hs-varid'>u</span> <span class='hs-varid'>v</span><span class='hs-layout'>)</span> <span class='hs-varid'>init</span> <span class='hs-varid'>action</span> <span class='hs-varid'>after</span> <span class='hs-keyglyph'>=</span>
+<a name="line-175"></a>  <span class='hs-varid'>gangIO</span> <span class='hs-varid'>gang</span> <span class='hs-varop'>$</span> <span class='hs-keyglyph'>\</span><span class='hs-varid'>thread</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-keyword'>do</span>
+<a name="line-176"></a>    <span class='hs-varid'>fromMaybe</span> <span class='hs-varid'>action</span> <span class='hs-varid'>init</span> <span class='hs-varid'>u</span> <span class='hs-varid'>v</span> <span class='hs-varid'>thread</span>
+<a name="line-177"></a>    <span class='hs-varid'>runFinalise</span> <span class='hs-varid'>after</span> <span class='hs-varid'>thread</span> <span class='hs-layout'>(</span><span class='hs-conid'>Seq</span><span class='hs-varop'>.</span><span class='hs-varid'>singleton</span> <span class='hs-layout'>(</span><span class='hs-conid'>IE</span> <span class='hs-varid'>u</span> <span class='hs-varid'>v</span><span class='hs-layout'>)</span><span class='hs-layout'>)</span>
+<a name="line-178"></a>
+<a name="line-179"></a><a name="parIO"></a><span class='hs-definition'>parIO</span>
+<a name="line-180"></a>    <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Resource</span>
+<a name="line-181"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Gang</span>
+<a name="line-182"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Range</span>
+<a name="line-183"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Maybe</span> <span class='hs-conid'>Action</span>
+<a name="line-184"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Action</span>
+<a name="line-185"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Finalise</span>
+<a name="line-186"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>IO</span> <span class='hs-conid'>()</span>
+<a name="line-187"></a><span class='hs-definition'>parIO</span> <span class='hs-keyword'>_</span>        <span class='hs-keyword'>_</span>    <span class='hs-conid'>Empty</span>        <span class='hs-keyword'>_</span>    <span class='hs-keyword'>_</span>      <span class='hs-varid'>after</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>runFinalise</span> <span class='hs-varid'>after</span> <span class='hs-num'>0</span> <span class='hs-conid'>Seq</span><span class='hs-varop'>.</span><span class='hs-varid'>empty</span>
+<a name="line-188"></a><span class='hs-definition'>parIO</span> <span class='hs-varid'>resource</span> <span class='hs-varid'>gang</span> <span class='hs-layout'>(</span><span class='hs-conid'>IE</span> <span class='hs-varid'>inf</span> <span class='hs-varid'>sup</span><span class='hs-layout'>)</span> <span class='hs-varid'>init</span> <span class='hs-varid'>action</span> <span class='hs-varid'>after</span> <span class='hs-keyglyph'>=</span>
+<a name="line-189"></a>  <span class='hs-varid'>gangIO</span> <span class='hs-varid'>gang</span> <span class='hs-varop'>$</span> <span class='hs-keyglyph'>\</span><span class='hs-varid'>thread</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-keyword'>do</span>
+<a name="line-190"></a>      <span class='hs-keyword'>let</span> <span class='hs-varid'>start</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>splitIx</span> <span class='hs-varid'>thread</span>
+<a name="line-191"></a>          <span class='hs-varid'>end</span>   <span class='hs-keyglyph'>=</span> <span class='hs-varid'>splitIx</span> <span class='hs-layout'>(</span><span class='hs-varid'>thread</span> <span class='hs-varop'>+</span> <span class='hs-num'>1</span><span class='hs-layout'>)</span>
+<a name="line-192"></a>          <span class='hs-varid'>me</span>    <span class='hs-keyglyph'>=</span> <span class='hs-conid'>V</span><span class='hs-varop'>.</span><span class='hs-varid'>unsafeIndex</span> <span class='hs-varid'>gang</span> <span class='hs-varid'>thread</span>
+<a name="line-193"></a>
+<a name="line-194"></a>          <span class='hs-varid'>loop</span> <span class='hs-varid'>go</span> <span class='hs-varid'>rs</span> <span class='hs-keyglyph'>=</span> <span class='hs-keyword'>do</span>
+<a name="line-195"></a>            <span class='hs-varid'>work</span> <span class='hs-keyglyph'>&lt;-</span> <span class='hs-varid'>runWorkSearch</span> <span class='hs-layout'>(</span><span class='hs-varid'>workSearch</span> <span class='hs-varid'>resource</span><span class='hs-layout'>)</span> <span class='hs-varid'>me</span>
+<a name="line-196"></a>            <span class='hs-keyword'>case</span> <span class='hs-varid'>work</span> <span class='hs-keyword'>of</span>
+<a name="line-197"></a>              <span class='hs-comment'>-- Got a work unit. Execute it then search for more.</span>
+<a name="line-198"></a>              <span class='hs-conid'>Just</span> <span class='hs-varid'>r</span><span class='hs-keyglyph'>@</span><span class='hs-layout'>(</span><span class='hs-conid'>IE</span> <span class='hs-varid'>u</span> <span class='hs-varid'>v</span><span class='hs-layout'>)</span>   <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>go</span> <span class='hs-varid'>u</span> <span class='hs-varid'>v</span> <span class='hs-varid'>thread</span> <span class='hs-varop'>&gt;&gt;</span> <span class='hs-varid'>loop</span> <span class='hs-varid'>action</span> <span class='hs-layout'>(</span><span class='hs-varid'>rs</span> <span class='hs-varop'>`</span><span class='hs-conid'>R</span><span class='hs-varop'>.</span><span class='hs-varid'>append</span><span class='hs-varop'>`</span> <span class='hs-varid'>r</span><span class='hs-layout'>)</span>
+<a name="line-199"></a>
+<a name="line-200"></a>              <span class='hs-comment'>-- If the work search failed (which is random), to be extra safe</span>
+<a name="line-201"></a>              <span class='hs-comment'>-- make sure all the work queues are exhausted before exiting.</span>
+<a name="line-202"></a>              <span class='hs-keyword'>_</span>                 <span class='hs-keyglyph'>-&gt;</span> <span class='hs-keyword'>do</span>
+<a name="line-203"></a>                <span class='hs-varid'>done</span> <span class='hs-keyglyph'>&lt;-</span> <span class='hs-varid'>exhausted</span> <span class='hs-varid'>gang</span>
+<a name="line-204"></a>                <span class='hs-keyword'>if</span> <span class='hs-varid'>done</span>
+<a name="line-205"></a>                   <span class='hs-keyword'>then</span> <span class='hs-varid'>return</span> <span class='hs-varid'>rs</span>
+<a name="line-206"></a>                   <span class='hs-keyword'>else</span> <span class='hs-varid'>loop</span> <span class='hs-varid'>go</span> <span class='hs-varid'>rs</span>
+<a name="line-207"></a>
+<a name="line-208"></a>      <span class='hs-varid'>ranges</span> <span class='hs-keyglyph'>&lt;-</span> <span class='hs-keyword'>if</span> <span class='hs-varid'>start</span> <span class='hs-varop'>&gt;=</span> <span class='hs-varid'>end</span>
+<a name="line-209"></a>                  <span class='hs-keyword'>then</span> <span class='hs-varid'>return</span> <span class='hs-conid'>Seq</span><span class='hs-varop'>.</span><span class='hs-varid'>empty</span>
+<a name="line-210"></a>                  <span class='hs-keyword'>else</span> <span class='hs-varid'>pushL</span> <span class='hs-layout'>(</span><span class='hs-varid'>workpool</span> <span class='hs-varid'>me</span><span class='hs-layout'>)</span> <span class='hs-layout'>(</span><span class='hs-conid'>IE</span> <span class='hs-varid'>start</span> <span class='hs-varid'>end</span><span class='hs-layout'>)</span> <span class='hs-varop'>&gt;&gt;</span>
+<a name="line-211"></a>                       <span class='hs-varid'>loop</span> <span class='hs-layout'>(</span><span class='hs-varid'>fromMaybe</span> <span class='hs-varid'>action</span> <span class='hs-varid'>init</span><span class='hs-layout'>)</span> <span class='hs-conid'>Seq</span><span class='hs-varop'>.</span><span class='hs-varid'>empty</span>
+<a name="line-212"></a>
+<a name="line-213"></a>      <span class='hs-varid'>runFinalise</span> <span class='hs-varid'>after</span> <span class='hs-varid'>thread</span> <span class='hs-layout'>(</span><span class='hs-varid'>compress</span> <span class='hs-varid'>ranges</span><span class='hs-layout'>)</span>
+<a name="line-214"></a>  <span class='hs-keyword'>where</span>
+<a name="line-215"></a>    <span class='hs-varid'>len</span>                 <span class='hs-keyglyph'>=</span> <span class='hs-varid'>sup</span> <span class='hs-comment'>-</span> <span class='hs-varid'>inf</span>
+<a name="line-216"></a>    <span class='hs-varid'>workers</span>             <span class='hs-keyglyph'>=</span> <span class='hs-varid'>gangSize</span> <span class='hs-varid'>gang</span>
+<a name="line-217"></a>    <span class='hs-varid'>chunkLen</span>            <span class='hs-keyglyph'>=</span> <span class='hs-varid'>len</span> <span class='hs-varop'>`quotInt`</span> <span class='hs-varid'>workers</span>
+<a name="line-218"></a>    <span class='hs-varid'>chunkLeftover</span>       <span class='hs-keyglyph'>=</span> <span class='hs-varid'>len</span> <span class='hs-varop'>`remInt`</span>  <span class='hs-varid'>workers</span>
+<a name="line-219"></a>
+<a name="line-220"></a>    <span class='hs-varid'>splitIx</span> <span class='hs-varid'>thread</span>
+<a name="line-221"></a>      <span class='hs-keyglyph'>|</span> <span class='hs-varid'>thread</span> <span class='hs-varop'>&lt;</span> <span class='hs-varid'>chunkLeftover</span>
+<a name="line-222"></a>      <span class='hs-keyglyph'>=</span> <span class='hs-varid'>inf</span> <span class='hs-varop'>+</span> <span class='hs-varid'>thread</span> <span class='hs-varop'>*</span> <span class='hs-layout'>(</span><span class='hs-varid'>chunkLen</span> <span class='hs-varop'>+</span> <span class='hs-num'>1</span><span class='hs-layout'>)</span>
+<a name="line-223"></a>
+<a name="line-224"></a>      <span class='hs-keyglyph'>|</span> <span class='hs-varid'>otherwise</span>
+<a name="line-225"></a>      <span class='hs-keyglyph'>=</span> <span class='hs-varid'>inf</span> <span class='hs-varop'>+</span> <span class='hs-varid'>thread</span> <span class='hs-varop'>*</span> <span class='hs-varid'>chunkLen</span> <span class='hs-varop'>+</span> <span class='hs-varid'>chunkLeftover</span>
+<a name="line-226"></a>
 </pre></body>
 </html>
