@@ -75,7 +75,7 @@ execZ2D :: Handle -> DevicePtr Double -> DevicePtr Double -> IO ()
 -- | Operations handle
 newtype Handle
 Handle :: (CUInt) -> Handle
-useHandle :: Handle -> (CUInt)
+[useHandle] :: Handle -> (CUInt)
 data Type
 C2C :: Type
 R2C :: Type
