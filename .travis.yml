@@ -87,3 +87,9 @@ install:
 script:
   - stack build --no-terminal --haddock --no-haddock-deps ${TARGET}
 
+after_success:
+  - |
+      if [ -z ${TARGET} ]; then
+        source .travis/update-docs.sh
+      fi
+
