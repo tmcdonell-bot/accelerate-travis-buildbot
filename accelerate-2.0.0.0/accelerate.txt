@@ -143,119 +143,64 @@ module Data.Array.Accelerate.Data.Bits
 --   expression types. As usual, bits are numbered from zero, with zero
 --   being the least significant bit.
 class Eq a => Bits a where shift x i = cond (i <* 0) (x `shiftR` (- i)) $ cond (i >* 0) (x `shiftL` i) $ x rotate x i = cond (i <* 0) (x `rotateR` (- i)) $ cond (i >* 0) (x `rotateL` i) $ x zeroBits = clearBit (bit 0) 0 setBit x i = x .|. bit i clearBit x i = x .&. complement (bit i) complementBit x i = x `xor` bit i shiftL x i = x `shift` i shiftR x i = x `shift` (- i) rotateL x i = x `rotate` i rotateR x i = x `rotate` (- i)
-
--- | Bitwise "and"
 (.&.) :: Bits a => Exp a -> Exp a -> Exp a
-
--- | Bitwise "or"
 (.|.) :: Bits a => Exp a -> Exp a -> Exp a
-
--- | Bitwise "xor"
 xor :: Bits a => Exp a -> Exp a -> Exp a
-
--- | Reverse all bits in the argument
 complement :: Bits a => Exp a -> Exp a
-
--- | <tt><a>shift</a> x i</tt> shifts <tt>x</tt> left by <tt>i</tt> bits if
---   <tt>i</tt> is positive, or right by <tt>-i</tt> bits otherwise. Right
---   shifts perform sign extension on signed number types; i.e. they fill
---   the top bits with 1 if the <tt>x</tt> is negative and with 0
---   otherwise.
 shift :: Bits a => Exp a -> Exp Int -> Exp a
-
--- | <tt><a>rotate</a> x i</tt> rotates <tt>x</tt> left by <tt>i</tt> bits
---   if <tt>i</tt> is positive, or right by <tt>-i</tt> bits otherwise.
 rotate :: Bits a => Exp a -> Exp Int -> Exp a
-
--- | The value with all bits unset
 zeroBits :: Bits a => Exp a
-
--- | <tt>bit <i>i</i></tt> is a value with the <tt><i>i</i></tt>th bit set
---   and all other bits clear.
 bit :: Bits a => Exp Int -> Exp a
-
--- | <tt>x `setBit` i</tt> is the same as <tt>x .|. bit i</tt>
 setBit :: Bits a => Exp a -> Exp Int -> Exp a
-
--- | <tt>x `clearBit` i</tt> is the same as <tt>x .&amp;. complement (bit
---   i)</tt>
 clearBit :: Bits a => Exp a -> Exp Int -> Exp a
-
--- | <tt>x `complementBit` i</tt> is the same as <tt>x `xor` bit i</tt>
 complementBit :: Bits a => Exp a -> Exp Int -> Exp a
-
--- | Return <a>True</a> if the <tt>n</tt>th bit of the argument is 1
 testBit :: Bits a => Exp a -> Exp Int -> Exp Bool
-
--- | Return <a>True</a> if the argument is a signed type.
 isSigned :: Bits a => Exp a -> Exp Bool
-
--- | Shift the argument left by the specified number of bits (which must be
---   non-negative).
 shiftL :: Bits a => Exp a -> Exp Int -> Exp a
-
--- | Shift the first argument right by the specified number of bits. The
---   result is undefined for negative shift amounts and shift amounts
---   greater or equal to the <tt>bitSize</tt>.
---   
---   Right shifts perform sign extension on signed number types; i.e. they
---   fill the top bits with 1 if the <tt>x</tt> is negative and with 0
---   otherwise.
 shiftR :: Bits a => Exp a -> Exp Int -> Exp a
-
--- | Rotate the argument left by the specified number of bits (which must
---   be non-negative).
 rotateL :: Bits a => Exp a -> Exp Int -> Exp a
-
--- | Rotate the argument right by the specified number of bits (which must
---   be non-negative).
 rotateR :: Bits a => Exp a -> Exp Int -> Exp a
-
--- | Return the number of set bits in the argument. This number is known as
---   the population count or the Hamming weight.
 popCount :: Bits a => Exp a -> Exp Int
 class Bits b => FiniteBits b
-
--- | Return the number of bits in the type of the argument.
 finiteBitSize :: FiniteBits b => Exp b -> Exp Int
-instance Data.Array.Accelerate.Data.Bits.Bits GHC.Types.Bool
-instance Data.Array.Accelerate.Data.Bits.Bits GHC.Types.Int
-instance Data.Array.Accelerate.Data.Bits.Bits GHC.Int.Int8
-instance Data.Array.Accelerate.Data.Bits.Bits GHC.Int.Int16
-instance Data.Array.Accelerate.Data.Bits.Bits GHC.Int.Int32
-instance Data.Array.Accelerate.Data.Bits.Bits GHC.Int.Int64
-instance Data.Array.Accelerate.Data.Bits.Bits GHC.Types.Word
-instance Data.Array.Accelerate.Data.Bits.Bits GHC.Word.Word8
-instance Data.Array.Accelerate.Data.Bits.Bits GHC.Word.Word16
-instance Data.Array.Accelerate.Data.Bits.Bits GHC.Word.Word32
-instance Data.Array.Accelerate.Data.Bits.Bits GHC.Word.Word64
-instance Data.Array.Accelerate.Data.Bits.Bits Foreign.C.Types.CInt
-instance Data.Array.Accelerate.Data.Bits.Bits Foreign.C.Types.CUInt
-instance Data.Array.Accelerate.Data.Bits.Bits Foreign.C.Types.CLong
-instance Data.Array.Accelerate.Data.Bits.Bits Foreign.C.Types.CULong
-instance Data.Array.Accelerate.Data.Bits.Bits Foreign.C.Types.CLLong
-instance Data.Array.Accelerate.Data.Bits.Bits Foreign.C.Types.CULLong
-instance Data.Array.Accelerate.Data.Bits.Bits Foreign.C.Types.CShort
-instance Data.Array.Accelerate.Data.Bits.Bits Foreign.C.Types.CUShort
-instance Data.Array.Accelerate.Data.Bits.FiniteBits GHC.Types.Bool
-instance Data.Array.Accelerate.Data.Bits.FiniteBits GHC.Types.Int
-instance Data.Array.Accelerate.Data.Bits.FiniteBits GHC.Int.Int8
-instance Data.Array.Accelerate.Data.Bits.FiniteBits GHC.Int.Int16
-instance Data.Array.Accelerate.Data.Bits.FiniteBits GHC.Int.Int32
-instance Data.Array.Accelerate.Data.Bits.FiniteBits GHC.Int.Int64
-instance Data.Array.Accelerate.Data.Bits.FiniteBits GHC.Types.Word
-instance Data.Array.Accelerate.Data.Bits.FiniteBits GHC.Word.Word8
-instance Data.Array.Accelerate.Data.Bits.FiniteBits GHC.Word.Word16
-instance Data.Array.Accelerate.Data.Bits.FiniteBits GHC.Word.Word32
-instance Data.Array.Accelerate.Data.Bits.FiniteBits GHC.Word.Word64
-instance Data.Array.Accelerate.Data.Bits.FiniteBits Foreign.C.Types.CInt
-instance Data.Array.Accelerate.Data.Bits.FiniteBits Foreign.C.Types.CUInt
-instance Data.Array.Accelerate.Data.Bits.FiniteBits Foreign.C.Types.CLong
-instance Data.Array.Accelerate.Data.Bits.FiniteBits Foreign.C.Types.CULong
-instance Data.Array.Accelerate.Data.Bits.FiniteBits Foreign.C.Types.CLLong
-instance Data.Array.Accelerate.Data.Bits.FiniteBits Foreign.C.Types.CULLong
-instance Data.Array.Accelerate.Data.Bits.FiniteBits Foreign.C.Types.CShort
-instance Data.Array.Accelerate.Data.Bits.FiniteBits Foreign.C.Types.CUShort
+instance FiniteBits CUShort
+instance FiniteBits CShort
+instance FiniteBits CULLong
+instance FiniteBits CLLong
+instance FiniteBits CULong
+instance FiniteBits CLong
+instance FiniteBits CUInt
+instance FiniteBits CInt
+instance FiniteBits Word64
+instance FiniteBits Word32
+instance FiniteBits Word16
+instance FiniteBits Word8
+instance FiniteBits Word
+instance FiniteBits Int64
+instance FiniteBits Int32
+instance FiniteBits Int16
+instance FiniteBits Int8
+instance FiniteBits Int
+instance FiniteBits Bool
+instance Bits CUShort
+instance Bits CShort
+instance Bits CULLong
+instance Bits CLLong
+instance Bits CULong
+instance Bits CLong
+instance Bits CUInt
+instance Bits CInt
+instance Bits Word64
+instance Bits Word32
+instance Bits Word16
+instance Bits Word8
+instance Bits Word
+instance Bits Int64
+instance Bits Int32
+instance Bits Int16
+instance Bits Int8
+instance Bits Int
+instance Bits Bool
 
 
 -- | Complex numbers
@@ -305,15 +250,15 @@ phase :: (Elt a, RealFloat a) => Exp (Complex a) -> Exp a
 --   conjugate(Z) = X - iY
 --   </pre>
 conjugate :: (Elt a, Num a) => Exp (Complex a) -> Exp (Complex a)
-instance Data.Array.Accelerate.Array.Sugar.Elt a => Data.Array.Accelerate.Array.Sugar.Elt (Data.Complex.Complex a)
-instance cst a => Data.Array.Accelerate.Product.IsProduct cst (Data.Complex.Complex a)
-instance (Data.Array.Accelerate.Lift.Lift Data.Array.Accelerate.Smart.Exp a, Data.Array.Accelerate.Array.Sugar.Elt (Data.Array.Accelerate.Lift.Plain a)) => Data.Array.Accelerate.Lift.Lift Data.Array.Accelerate.Smart.Exp (Data.Complex.Complex a)
-instance Data.Array.Accelerate.Array.Sugar.Elt a => Data.Array.Accelerate.Lift.Unlift Data.Array.Accelerate.Smart.Exp (Data.Complex.Complex (Data.Array.Accelerate.Smart.Exp a))
-instance Data.Array.Accelerate.Classes.Eq.Eq a => Data.Array.Accelerate.Classes.Eq.Eq (Data.Complex.Complex a)
-instance Data.Array.Accelerate.Classes.RealFloat.RealFloat a => GHC.Num.Num (Data.Array.Accelerate.Smart.Exp (Data.Complex.Complex a))
-instance Data.Array.Accelerate.Classes.RealFloat.RealFloat a => GHC.Real.Fractional (Data.Array.Accelerate.Smart.Exp (Data.Complex.Complex a))
-instance Data.Array.Accelerate.Classes.RealFloat.RealFloat a => GHC.Float.Floating (Data.Array.Accelerate.Smart.Exp (Data.Complex.Complex a))
-instance (Data.Array.Accelerate.Classes.FromIntegral.FromIntegral a b, Data.Array.Accelerate.Classes.Num.Num b) => Data.Array.Accelerate.Classes.FromIntegral.FromIntegral a (Data.Complex.Complex b)
+instance (FromIntegral a b, Num b) => FromIntegral a (Complex b)
+instance RealFloat a => Floating (Exp (Complex a))
+instance RealFloat a => Fractional (Exp (Complex a))
+instance RealFloat a => Num (Exp (Complex a))
+instance Eq a => Eq (Complex a)
+instance Elt a => Unlift Exp (Complex (Exp a))
+instance (Lift Exp a, Elt (Plain a)) => Lift Exp (Complex a)
+instance (cst a) => IsProduct cst (Complex a)
+instance Elt a => Elt (Complex a)
 
 
 -- | This interpreter is meant to be a reference implementation of the
@@ -488,7 +433,7 @@ sliceIndex :: Slice sl => sl -> SliceIndex (EltRepr sl) (EltRepr (SliceShape sl)
 
 -- | Generalised array division, like above but use for splitting an array
 --   into many subarrays, as opposed to extracting a single subarray.
-class (Slice (DivisionSlice sl)) => Division sl where type family DivisionSlice sl :: *
+class Slice (DivisionSlice sl) => Division sl where type family DivisionSlice sl :: *
 slicesIndex :: (Division sl, slix ~ DivisionSlice sl) => sl -> SliceIndex (EltRepr slix) (EltRepr (SliceShape slix)) (EltRepr (CoSliceShape slix)) (EltRepr (FullShape slix))
 type DIM0 = Z
 type DIM1 = DIM0 :. Int
@@ -649,7 +594,7 @@ enumFromStepN :: (Shape sh, Elt e, Num e, FromIntegral Int e) => Exp sh -> Exp e
 --   second.
 --   
 --   See also: <a>ifThenElse</a>.
-(?|) :: (Arrays a) => Exp Bool -> (Acc a, Acc a) -> Acc a
+(?|) :: Arrays a => Exp Bool -> (Acc a, Acc a) -> Acc a
 
 -- | An array-level if-then-else construct.
 acond :: Arrays a => Exp Bool -> Acc a -> Acc a -> Acc a
@@ -1373,78 +1318,27 @@ logBase :: Floating a => a -> a -> a
 
 -- | Extracting components of fractions.
 class (Real a, Fractional a) => RealFrac a
-
--- | <tt>truncate x</tt> returns the integer nearest <tt>x</tt> between
---   zero and <tt>x</tt>
 truncate :: (RealFrac a, Elt b, IsIntegral b) => Exp a -> Exp b
-
--- | <tt><a>round</a> x</tt> returns the nearest integer to <tt>x</tt>; the
---   even integer if <tt>x</tt> is equidistant between two integers
 round :: (RealFrac a, Elt b, IsIntegral b) => Exp a -> Exp b
-
--- | <tt><a>ceiling</a> x</tt> returns the least integer not less than
---   <tt>x</tt>
 ceiling :: (RealFrac a, Elt b, IsIntegral b) => Exp a -> Exp b
-
--- | <tt><a>floor</a> x</tt> returns the greatest integer not greater than
---   <tt>x</tt>
 floor :: (RealFrac a, Elt b, IsIntegral b) => Exp a -> Exp b
 
 -- | Efficient, machine-independent access to the components of a
 --   floating-point number
-class (RealFrac a, Floating a) => RealFloat a where floatRadix _ = fromInteger (floatRadix (undefined :: a)) floatDigits _ = constant (floatDigits (undefined :: a)) floatRange _ = let (m, n) = floatRange (undefined :: a) in (constant m, constant n) isIEEE _ = constant (isIEEE (undefined :: Float)) decodeFloat = \ format_abFZ7 kind_abFZ8 fn_abFZ9 msg_abFZa -> error (format_abFZ7 kind_abFZ8 (call fn_abFZ9 msg_abFZa)) (\ kind_abFZb msg_abFZc -> message kind_abFZb ("Data/Array/Accelerate/Classes/RealFloat.hs:100:21: " ++ msg_abFZc)) Internal "RealFloat.decodeFloat" "Not implemented yet" encodeFloat = \ format_abFZg kind_abFZh fn_abFZi msg_abFZj -> error (format_abFZg kind_abFZh (call fn_abFZi msg_abFZj)) (\ kind_abFZk msg_abFZl -> message kind_abFZk ("Data/Array/Accelerate/Classes/RealFloat.hs:101:21: " ++ msg_abFZl)) Internal "RealFloat.encodeFloat" "Not implemented yet" exponent = \ format_abFZp kind_abFZq fn_abFZr msg_abFZs -> error (format_abFZp kind_abFZq (call fn_abFZr msg_abFZs)) (\ kind_abFZt msg_abFZu -> message kind_abFZt ("Data/Array/Accelerate/Classes/RealFloat.hs:102:21: " ++ msg_abFZu)) Internal "RealFloat.exponent" "Not implemented yet" significand = \ format_abFZy kind_abFZz fn_abFZA msg_abFZB -> error (format_abFZy kind_abFZz (call fn_abFZA msg_abFZB)) (\ kind_abFZC msg_abFZD -> message kind_abFZC ("Data/Array/Accelerate/Classes/RealFloat.hs:103:21: " ++ msg_abFZD)) Internal "RealFloat.significand" "Not implemented yet" scaleFloat = \ format_abFZH kind_abFZI fn_abFZJ msg_abFZK -> error (format_abFZH kind_abFZI (call fn_abFZJ msg_abFZK)) (\ kind_abFZL msg_abFZM -> message kind_abFZL ("Data/Array/Accelerate/Classes/RealFloat.hs:104:21: " ++ msg_abFZM)) Internal "RealFloat.scaleFloat" "Not implemented yet" isInfinite = \ format_abFZQ kind_abFZR fn_abFZS msg_abFZT -> error (format_abFZQ kind_abFZR (call fn_abFZS msg_abFZT)) (\ kind_abFZU msg_abFZV -> message kind_abFZU ("Data/Array/Accelerate/Classes/RealFloat.hs:105:21: " ++ msg_abFZV)) Internal "RealFloat.isInfinite" "Not implemented yet" isDenormalized = \ format_abFZZ kind_abG00 fn_abG01 msg_abG02 -> error (format_abFZZ kind_abG00 (call fn_abG01 msg_abG02)) (\ kind_abG03 msg_abG04 -> message kind_abG03 ("Data/Array/Accelerate/Classes/RealFloat.hs:106:21: " ++ msg_abG04)) Internal "RealFloat.isDenormalized" "Not implemented yet" isNegativeZero = \ format_abG08 kind_abG09 fn_abG0a msg_abG0b -> error (format_abG08 kind_abG09 (call fn_abG0a msg_abG0b)) (\ kind_abG0c msg_abG0d -> message kind_abG0c ("Data/Array/Accelerate/Classes/RealFloat.hs:107:21: " ++ msg_abG0d)) Internal "RealFloat.isNegativeZero" "Not implemented yet"
-
--- | The radix of the representation (often 2) (constant)
+class (RealFrac a, Floating a) => RealFloat a where floatRadix _ = fromInteger (floatRadix (undefined :: a)) floatDigits _ = constant (floatDigits (undefined :: a)) floatRange _ = let (m, n) = floatRange (undefined :: a) in (constant m, constant n) isIEEE _ = constant (isIEEE (undefined :: Float)) decodeFloat = \ format_a8tzH kind_a8tzI fn_a8tzJ msg_a8tzK -> error (format_a8tzH kind_a8tzI (call fn_a8tzJ msg_a8tzK)) (\ kind_a8tzL msg_a8tzM -> message kind_a8tzL ("Data/Array/Accelerate/Classes/RealFloat.hs:100:21: " ++ msg_a8tzM)) Internal "RealFloat.decodeFloat" "Not implemented yet" encodeFloat = \ format_a8tzQ kind_a8tzR fn_a8tzS msg_a8tzT -> error (format_a8tzQ kind_a8tzR (call fn_a8tzS msg_a8tzT)) (\ kind_a8tzU msg_a8tzV -> message kind_a8tzU ("Data/Array/Accelerate/Classes/RealFloat.hs:101:21: " ++ msg_a8tzV)) Internal "RealFloat.encodeFloat" "Not implemented yet" exponent = \ format_a8tzZ kind_a8tA0 fn_a8tA1 msg_a8tA2 -> error (format_a8tzZ kind_a8tA0 (call fn_a8tA1 msg_a8tA2)) (\ kind_a8tA3 msg_a8tA4 -> message kind_a8tA3 ("Data/Array/Accelerate/Classes/RealFloat.hs:102:21: " ++ msg_a8tA4)) Internal "RealFloat.exponent" "Not implemented yet" significand = \ format_a8tA8 kind_a8tA9 fn_a8tAa msg_a8tAb -> error (format_a8tA8 kind_a8tA9 (call fn_a8tAa msg_a8tAb)) (\ kind_a8tAc msg_a8tAd -> message kind_a8tAc ("Data/Array/Accelerate/Classes/RealFloat.hs:103:21: " ++ msg_a8tAd)) Internal "RealFloat.significand" "Not implemented yet" scaleFloat = \ format_a8tAh kind_a8tAi fn_a8tAj msg_a8tAk -> error (format_a8tAh kind_a8tAi (call fn_a8tAj msg_a8tAk)) (\ kind_a8tAl msg_a8tAm -> message kind_a8tAl ("Data/Array/Accelerate/Classes/RealFloat.hs:104:21: " ++ msg_a8tAm)) Internal "RealFloat.scaleFloat" "Not implemented yet" isInfinite = \ format_a8tAq kind_a8tAr fn_a8tAs msg_a8tAt -> error (format_a8tAq kind_a8tAr (call fn_a8tAs msg_a8tAt)) (\ kind_a8tAu msg_a8tAv -> message kind_a8tAu ("Data/Array/Accelerate/Classes/RealFloat.hs:105:21: " ++ msg_a8tAv)) Internal "RealFloat.isInfinite" "Not implemented yet" isDenormalized = \ format_a8tAz kind_a8tAA fn_a8tAB msg_a8tAC -> error (format_a8tAz kind_a8tAA (call fn_a8tAB msg_a8tAC)) (\ kind_a8tAD msg_a8tAE -> message kind_a8tAD ("Data/Array/Accelerate/Classes/RealFloat.hs:106:21: " ++ msg_a8tAE)) Internal "RealFloat.isDenormalized" "Not implemented yet" isNegativeZero = \ format_a8tAI kind_a8tAJ fn_a8tAK msg_a8tAL -> error (format_a8tAI kind_a8tAJ (call fn_a8tAK msg_a8tAL)) (\ kind_a8tAM msg_a8tAN -> message kind_a8tAM ("Data/Array/Accelerate/Classes/RealFloat.hs:107:21: " ++ msg_a8tAN)) Internal "RealFloat.isNegativeZero" "Not implemented yet"
 floatRadix :: RealFloat a => Exp a -> Exp Int64
-
--- | The number of digits of <a>floatRadix</a> in the significand
---   (constant)
 floatDigits :: RealFloat a => Exp a -> Exp Int
-
--- | The lowest and highest values the exponent may assume (constant)
 floatRange :: RealFloat a => Exp a -> (Exp Int, Exp Int)
-
--- | Return the significand and an appropriately scaled exponent. if
---   <tt>(m,n) = <a>decodeFloat</a> x</tt> then <tt>x = m*b^^n</tt>, where
---   <tt>b</tt> is the floating-point radix (<a>floatRadix</a>).
---   Furthermore, either <tt>m</tt> and <tt>n</tt> are both zero, or
---   <tt>b^(d-1) &lt;= <tt>abs</tt> m &lt; b^d</tt>, where <tt>d =
---   <a>floatDigits</a> x</tt>.
 decodeFloat :: RealFloat a => Exp a -> (Exp Int64, Exp Int)
-
--- | Inverse of <a>decodeFloat</a>
 encodeFloat :: RealFloat a => Exp Int64 -> Exp Int -> Exp a
-
--- | Corresponds to the second component of <a>decodeFloat</a>
 exponent :: RealFloat a => Exp a -> Exp Int
-
--- | Corresponds to the first component of <a>decodeFloat</a>
 significand :: RealFloat a => Exp a -> Exp a
-
--- | Multiply a floating point number by an integer power of the radix
 scaleFloat :: RealFloat a => Exp Int -> Exp a -> Exp a
-
--- | <a>True</a> if the argument is an IEEE "not-a-number" (NaN) value
 isNaN :: RealFloat a => Exp a -> Exp Bool
-
--- | <a>True</a> if the argument is an IEEE infinity or negative-infinity
 isInfinite :: RealFloat a => Exp a -> Exp Bool
-
--- | <a>True</a> if the argument is too small to be represented in
---   normalized format
 isDenormalized :: RealFloat a => Exp a -> Exp Bool
-
--- | <a>True</a> if the argument is an IEEE negative zero
 isNegativeZero :: RealFloat a => Exp a -> Exp Bool
-
--- | <a>True</a> if the argument is an IEEE floating point number
 isIEEE :: RealFloat a => Exp a -> Exp Bool
-
--- | A version of arctangent taking two real floating-point arguments. For
---   real floating <tt>x</tt> and <tt>y</tt>, <tt><a>atan2</a> y x</tt>
---   computes the angle (from the positive x-axis) of the vector from the
---   origin to the point <tt>(x,y)</tt>. <tt><a>atan2</a> y x</tt> returns
---   a value in the range [<tt>-pi</tt>, <tt>pi</tt>].
 atan2 :: RealFloat a => Exp a -> Exp a -> Exp a
 
 -- | Accelerate lacks a most-general lossless <a>Integer</a> type, which
@@ -1452,8 +1346,6 @@ atan2 :: RealFloat a => Exp a -> Exp a -> Exp a
 --   value when coercing from integral types. Instead, we use this class to
 --   capture a direct coercion between two types.
 class FromIntegral a b
-
--- | General coercion from integral types
 fromIntegral :: (FromIntegral a b, Integral a) => Exp a -> Exp b
 
 -- | Accelerate lacks an arbitrary-precision <a>Rational</a> type, which
@@ -1461,8 +1353,6 @@ fromIntegral :: (FromIntegral a b, Integral a) => Exp a -> Exp b
 --   coercing to floating-point types. Instead, we use this class to
 --   capture a direct coercion between to types.
 class ToFloating a b
-
--- | General coercion to floating types
 toFloating :: (ToFloating a b, Num a, Floating b) => Exp a -> Exp b
 
 -- | All scalar types
@@ -1584,19 +1474,10 @@ data CUChar :: *
 
 -- | The class of types <tt>e</tt> which can be lifted into <tt>c</tt>.
 class Lift c e where type family Plain e
-
--- | Lift the given value into a surface type <tt>c</tt> --- either
---   <a>Exp</a> for scalar expressions or <a>Acc</a> for array
---   computations. The value may already contain subexpressions in
---   <tt>c</tt>.
 lift :: Lift c e => e -> c (Plain e)
 
 -- | A limited subset of types which can be lifted, can also be unlifted.
 class Lift c e => Unlift c e
-
--- | Unlift the outermost constructor through the surface type. This is
---   only possible if the constructor is fully determined by its type -
---   i.e., it is a singleton.
 unlift :: Unlift c e => c (Plain e) -> e
 
 -- | Lift a unary function into <a>Exp</a>.

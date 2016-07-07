@@ -64,8 +64,8 @@ append :: Seq Range -> Range -> Seq Range
 -- | <i>O(n log n)</i>. Compress the given ranges into the fewest number of
 --   sections as possible. The ranges must not be empty.
 compress :: Seq Range -> Seq Range
-instance GHC.Classes.Eq Data.Range.Range.Range
-instance GHC.Show.Show Data.Range.Range.Range
+instance Eq Range
+instance Show Range
 
 
 module Control.Parallel.Meta.Worker
@@ -91,12 +91,12 @@ type Gang = Vector Worker
 --   that the second half can be stolen by another processor.
 data Worker
 Worker :: {-# UNPACK #-} !Int -> {-# UNPACK #-} !(MVar Req) -> {-# UNPACK #-} !(MVar ()) -> {-# UNPACK #-} !(WSDeque Range) -> {-# UNPACK #-} !(IORef Int) -> {-# UNPACK #-} !GenIO -> Worker
-[workerId] :: Worker -> {-# UNPACK #-} !Int
-[requestVar] :: Worker -> {-# UNPACK #-} !(MVar Req)
-[resultVar] :: Worker -> {-# UNPACK #-} !(MVar ())
-[workpool] :: Worker -> {-# UNPACK #-} !(WSDeque Range)
-[consecutiveFailures] :: Worker -> {-# UNPACK #-} !(IORef Int)
-[rngState] :: Worker -> {-# UNPACK #-} !GenIO
+workerId :: Worker -> {-# UNPACK #-} !Int
+requestVar :: Worker -> {-# UNPACK #-} !(MVar Req)
+resultVar :: Worker -> {-# UNPACK #-} !(MVar ())
+workpool :: Worker -> {-# UNPACK #-} !(WSDeque Range)
+consecutiveFailures :: Worker -> {-# UNPACK #-} !(IORef Int)
+rngState :: Worker -> {-# UNPACK #-} !GenIO
 
 -- | The <a>Req</a> type encapsulates work requests for individual workers
 data Req
@@ -126,7 +126,7 @@ gangIO :: Gang -> (Int -> IO ()) -> IO ()
 
 -- | Check whether the work queues of the gang are all empty
 exhausted :: Gang -> IO Bool
-instance GHC.Classes.Eq Control.Parallel.Meta.Worker.Worker
+instance Eq Worker
 
 
 module Control.Parallel.Meta
@@ -136,7 +136,7 @@ module Control.Parallel.Meta
 --   remote hosts, spawn threads, or initialise hardware such as GPUs.
 data Startup
 Startup :: (Gang -> IO ()) -> Startup
-[runStartup] :: Startup -> Gang -> IO ()
+runStartup :: Startup -> Gang -> IO ()
 
 -- | The <a>WorkSearch</a> component of a <a>Resource</a> is a callback
 --   that responds to requests for work from meta-workers. The arguments to
@@ -144,7 +144,7 @@ Startup :: (Gang -> IO ()) -> Startup
 --   reference to all workers in the program.
 data WorkSearch
 WorkSearch :: (Worker -> IO (Maybe Range)) -> WorkSearch
-[runWorkSearch] :: WorkSearch -> Worker -> IO (Maybe Range)
+runWorkSearch :: WorkSearch -> Worker -> IO (Maybe Range)
 
 -- | A <a>Resource</a> provides an abstraction of heterogeneous execution
 --   resources that may be combined. Composition of resources is
@@ -154,8 +154,8 @@ WorkSearch :: (Worker -> IO (Maybe Range)) -> WorkSearch
 --   <tt>resource2</tt>.
 data Resource
 Resource :: Startup -> WorkSearch -> Resource
-[startup] :: Resource -> Startup
-[workSearch] :: Resource -> WorkSearch
+startup :: Resource -> Startup
+workSearch :: Resource -> WorkSearch
 
 -- | An action to execute. The first parameters are the start and end
 --   indices of the range this action should process, and the final is the
@@ -166,14 +166,14 @@ type Action = Int -> Int -> Int -> IO ()
 --   provided function using an encapsulated work-stealing gang of threads.
 data Executable
 Executable :: (Int -> Range -> Finalise -> Maybe Action -> Action -> IO ()) -> Executable
-[runExecutable] :: Executable -> Int -> Range -> Finalise -> Maybe Action -> Action -> IO ()
+runExecutable :: Executable -> Int -> Range -> Finalise -> Maybe Action -> Action -> IO ()
 
 -- | The <a>Finalise</a> component of an executable is an action the thread
 --   applies after processing the work function, given its thread id the
 --   ranges that this thread actually handled.
 data Finalise
 Finalise :: (Int -> Seq Range -> IO ()) -> Finalise
-[runFinalise] :: Finalise -> Int -> Seq Range -> IO ()
+runFinalise :: Finalise -> Int -> Seq Range -> IO ()
 
 -- | Run a parallel work-stealing operation.
 --   
@@ -217,10 +217,10 @@ Finalise :: (Int -> Seq Range -> IO ()) -> Finalise
 runParIO :: Resource -> Gang -> Range -> Maybe Action -> Action -> Finalise -> IO ()
 seqIO :: Resource -> Gang -> Range -> Maybe Action -> Action -> Finalise -> IO ()
 parIO :: Resource -> Gang -> Range -> Maybe Action -> Action -> Finalise -> IO ()
-instance GHC.Base.Monoid Control.Parallel.Meta.Startup
-instance GHC.Base.Monoid Control.Parallel.Meta.WorkSearch
-instance GHC.Base.Monoid Control.Parallel.Meta.Resource
-instance GHC.Base.Monoid Control.Parallel.Meta.Finalise
+instance Monoid Finalise
+instance Monoid Resource
+instance Monoid WorkSearch
+instance Monoid Startup
 
 
 -- | This module implements exponential backoff so as to prevent spamming
@@ -340,13 +340,13 @@ data FastMathFlags :: *
 NoFastMathFlags :: FastMathFlags
 UnsafeAlgebra :: FastMathFlags
 FastMathFlags :: Bool -> Bool -> Bool -> Bool -> FastMathFlags
-[noNaNs] :: FastMathFlags -> Bool
-[noInfs] :: FastMathFlags -> Bool
-[noSignedZeros] :: FastMathFlags -> Bool
-[allowReciprocal] :: FastMathFlags -> Bool
-instance Data.Default.Class.Default LLVM.General.AST.Type.Flags.NSW
-instance Data.Default.Class.Default LLVM.General.AST.Type.Flags.NUW
-instance Data.Default.Class.Default LLVM.General.AST.Instruction.FastMathFlags
+noNaNs :: FastMathFlags -> Bool
+noInfs :: FastMathFlags -> Bool
+noSignedZeros :: FastMathFlags -> Bool
+allowReciprocal :: FastMathFlags -> Bool
+instance Default FastMathFlags
+instance Default NUW
+instance Default NSW
 
 
 module LLVM.General.AST.Type.Name
@@ -388,18 +388,20 @@ Name :: String -> Name a
 UnName :: Word -> Name a
 data Label
 Label :: String -> Label
-instance Data.Data.Data LLVM.General.AST.Type.Name.Label
-instance GHC.Show.Show LLVM.General.AST.Type.Name.Label
-instance GHC.Read.Read LLVM.General.AST.Type.Name.Label
-instance GHC.Classes.Ord LLVM.General.AST.Type.Name.Label
-instance GHC.Classes.Eq LLVM.General.AST.Type.Name.Label
-instance Data.Data.Data a => Data.Data.Data (LLVM.General.AST.Type.Name.Name a)
-instance GHC.Show.Show (LLVM.General.AST.Type.Name.Name a)
-instance GHC.Read.Read (LLVM.General.AST.Type.Name.Name a)
-instance GHC.Classes.Ord (LLVM.General.AST.Type.Name.Name a)
-instance GHC.Classes.Eq (LLVM.General.AST.Type.Name.Name a)
-instance Data.String.IsString (LLVM.General.AST.Type.Name.Name a)
-instance Data.String.IsString LLVM.General.AST.Type.Name.Label
+instance Typeable Name
+instance Typeable Label
+instance Eq (Name a)
+instance Ord (Name a)
+instance Read (Name a)
+instance Show (Name a)
+instance Data a => Data (Name a)
+instance Eq Label
+instance Ord Label
+instance Read Label
+instance Show Label
+instance Data Label
+instance IsString Label
+instance IsString (Name a)
 
 
 module LLVM.General.AST.Type.Constant
@@ -454,10 +456,10 @@ GroupID :: !Word -> GroupID
 --   Accelerate types, our functions are limited to operating over scalar
 --   types only; no pointers to functions and nothing that returns void.
 data GlobalFunction args t
-Body :: Maybe (ScalarType r) -> Label -> GlobalFunction '[] r
+Body :: Maybe (ScalarType r) -> Label -> GlobalFunction [] r
 Lam :: ScalarType a -> Operand a -> GlobalFunction args t -> GlobalFunction (a : args) t
 data HList (l :: [*])
-HNil :: HList '[]
+HNil :: HList []
 HCons :: e -> HList l -> HList (e : l)
 
 
@@ -511,7 +513,7 @@ IntToFP :: IntegralType a -> FloatingType b -> Operand a -> Instruction b
 BitCast :: ScalarType b -> Operand a -> Instruction b
 Cmp :: ScalarType a -> Predicate -> Operand a -> Operand a -> Instruction Bool
 Phi :: ScalarType a -> [(Operand a, Label)] -> Instruction a
-Call :: GlobalFunction args t -> [Either GroupID FunctionAttribute] -> Instruction t
+Call :: GlobalFunction args t -> [FunctionAttribute] -> Instruction t
 Select :: ScalarType a -> Operand Bool -> Operand a -> Operand a -> Instruction a
 
 -- | Instances of instructions may be given a name, allowing their results
@@ -546,15 +548,15 @@ unsigned :: IsSigned dict => dict a -> Bool
 -- | Extract the reified scalar type dictionary of an operation
 class TypeOf op
 typeOf :: TypeOf op => op a -> ScalarType a
-instance Data.Array.Accelerate.LLVM.CodeGen.Type.IsSigned Data.Array.Accelerate.Type.ScalarType
-instance Data.Array.Accelerate.LLVM.CodeGen.Type.IsSigned Data.Array.Accelerate.Type.BoundedType
-instance Data.Array.Accelerate.LLVM.CodeGen.Type.IsSigned Data.Array.Accelerate.Type.NumType
-instance Data.Array.Accelerate.LLVM.CodeGen.Type.IsSigned Data.Array.Accelerate.Type.IntegralType
-instance Data.Array.Accelerate.LLVM.CodeGen.Type.IsSigned Data.Array.Accelerate.Type.FloatingType
-instance Data.Array.Accelerate.LLVM.CodeGen.Type.IsSigned Data.Array.Accelerate.Type.NonNumType
-instance Data.Array.Accelerate.LLVM.CodeGen.Type.TypeOf LLVM.General.AST.Type.Instruction.Instruction
-instance Data.Array.Accelerate.LLVM.CodeGen.Type.TypeOf LLVM.General.AST.Type.Operand.Operand
-instance Data.Array.Accelerate.LLVM.CodeGen.Type.TypeOf LLVM.General.AST.Type.Constant.Constant
+instance TypeOf Constant
+instance TypeOf Operand
+instance TypeOf Instruction
+instance IsSigned NonNumType
+instance IsSigned FloatingType
+instance IsSigned IntegralType
+instance IsSigned NumType
+instance IsSigned BoundedType
+instance IsSigned ScalarType
 
 
 module LLVM.General.AST.Type.Terminator
@@ -579,13 +581,13 @@ module Data.Array.Accelerate.LLVM.CodeGen.Module
 -- | A compiled module consists of a number of global functions (kernels)
 data Module arch aenv a
 Module :: Module -> Module arch aenv a
-[unModule] :: Module arch aenv a -> Module
+unModule :: Module arch aenv a -> Module
 
 -- | A fully-instantiated skeleton is a [collection of] kernel(s) that can
 --   be compiled by LLVM into a global function that we can execute.
 data Kernel arch aenv a
 Kernel :: Global -> Kernel arch aenv a
-[unKernel] :: Kernel arch aenv a -> Global
+unKernel :: Kernel arch aenv a -> Global
 
 
 module Data.Array.Accelerate.LLVM.CodeGen.Intrinsic
@@ -620,11 +622,11 @@ op :: IROP dict => dict a -> IR a -> Operand a
 ir :: IROP dict => dict a -> Operand a -> IR a
 ir' :: IROP dict => dict a -> Operand a -> Operands a
 op' :: IROP dict => dict a -> Operands a -> Operand a
-instance Data.Array.Accelerate.LLVM.CodeGen.IR.IROP Data.Array.Accelerate.Type.ScalarType
-instance Data.Array.Accelerate.LLVM.CodeGen.IR.IROP Data.Array.Accelerate.Type.NumType
-instance Data.Array.Accelerate.LLVM.CodeGen.IR.IROP Data.Array.Accelerate.Type.IntegralType
-instance Data.Array.Accelerate.LLVM.CodeGen.IR.IROP Data.Array.Accelerate.Type.FloatingType
-instance Data.Array.Accelerate.LLVM.CodeGen.IR.IROP Data.Array.Accelerate.Type.NonNumType
+instance IROP NonNumType
+instance IROP FloatingType
+instance IROP IntegralType
+instance IROP NumType
+instance IROP ScalarType
 
 
 module Data.Array.Accelerate.LLVM.CodeGen.Sugar
@@ -638,23 +640,23 @@ type IRFun2 arch aenv t = IROpenFun2 arch () aenv t
 type IROpenExp arch env aenv t = CodeGen (IR t)
 data IROpenFun1 arch env aenv t
 IRFun1 :: (IR a -> IROpenExp arch (env, a) aenv b) -> IROpenFun1 arch env aenv (a -> b)
-[app1] :: IROpenFun1 arch env aenv (a -> b) -> IR a -> IROpenExp arch (env, a) aenv b
+app1 :: IROpenFun1 arch env aenv (a -> b) -> IR a -> IROpenExp arch (env, a) aenv b
 data IROpenFun2 arch env aenv t
 IRFun2 :: (IR a -> IR b -> IROpenExp arch ((env, a), b) aenv c) -> IROpenFun2 arch env aenv (a -> b -> c)
-[app2] :: IROpenFun2 arch env aenv (a -> b -> c) -> IR a -> IR b -> IROpenExp arch ((env, a), b) aenv c
+app2 :: IROpenFun2 arch env aenv (a -> b -> c) -> IR a -> IR b -> IROpenExp arch ((env, a), b) aenv c
 data IROpenAcc arch aenv arrs
 IROpenAcc :: [Kernel arch aenv a] -> IROpenAcc arch aenv arrs
 data IRDelayed arch aenv a
 IRDelayed :: IRExp arch aenv sh -> IRFun1 arch aenv (sh -> e) -> IRFun1 arch aenv (Int -> e) -> IRDelayed arch aenv (Array sh e)
-[delayedExtent] :: IRDelayed arch aenv (Array sh e) -> IRExp arch aenv sh
-[delayedIndex] :: IRDelayed arch aenv (Array sh e) -> IRFun1 arch aenv (sh -> e)
-[delayedLinearIndex] :: IRDelayed arch aenv (Array sh e) -> IRFun1 arch aenv (Int -> e)
+delayedExtent :: IRDelayed arch aenv (Array sh e) -> IRExp arch aenv sh
+delayedIndex :: IRDelayed arch aenv (Array sh e) -> IRFun1 arch aenv (sh -> e)
+delayedLinearIndex :: IRDelayed arch aenv (Array sh e) -> IRFun1 arch aenv (Int -> e)
 data IRManifest arch aenv a
 IRManifest :: Idx aenv arrs -> IRManifest arch aenv arrs
 data IRArray a
 IRArray :: IR sh -> IR e -> IRArray (Array sh e)
-[irArrayShape] :: IRArray (Array sh e) -> IR sh
-[irArrayData] :: IRArray (Array sh e) -> IR e
+irArrayShape :: IRArray (Array sh e) -> IR sh
+irArrayData :: IRArray (Array sh e) -> IR e
 
 
 module Data.Array.Accelerate.LLVM.CodeGen.Environment
@@ -712,37 +714,36 @@ module Data.Array.Accelerate.LLVM.CodeGen.Downcast
 --   information to generate the appropriate value-level types.
 class Downcast typed untyped
 downcast :: Downcast typed untyped => typed -> untyped
-instance Data.Array.Accelerate.LLVM.CodeGen.Downcast.Downcast a a' => Data.Array.Accelerate.LLVM.CodeGen.Downcast.Downcast [a] [a']
-instance Data.Array.Accelerate.LLVM.CodeGen.Downcast.Downcast a a' => Data.Array.Accelerate.LLVM.CodeGen.Downcast.Downcast (GHC.Base.Maybe a) (GHC.Base.Maybe a')
-instance (Data.Array.Accelerate.LLVM.CodeGen.Downcast.Downcast a a', Data.Array.Accelerate.LLVM.CodeGen.Downcast.Downcast b b') => Data.Array.Accelerate.LLVM.CodeGen.Downcast.Downcast (a, b) (a', b')
-instance (Data.Array.Accelerate.LLVM.CodeGen.Downcast.Downcast a a', Data.Array.Accelerate.LLVM.CodeGen.Downcast.Downcast b b') => Data.Array.Accelerate.LLVM.CodeGen.Downcast.Downcast (Data.Either.Either a b) (Data.Either.Either a' b')
-instance Data.Array.Accelerate.LLVM.CodeGen.Downcast.Downcast LLVM.General.AST.Type.Flags.NUW GHC.Types.Bool
-instance Data.Array.Accelerate.LLVM.CodeGen.Downcast.Downcast LLVM.General.AST.Type.Flags.NSW GHC.Types.Bool
-instance Data.Array.Accelerate.LLVM.CodeGen.Downcast.Downcast LLVM.General.AST.Instruction.FastMathFlags LLVM.General.AST.Instruction.FastMathFlags
-instance Data.Array.Accelerate.LLVM.CodeGen.Downcast.Downcast (LLVM.General.AST.Type.Name.Name a) LLVM.General.AST.Name.Name
-instance Data.Array.Accelerate.LLVM.CodeGen.Downcast.Downcast (LLVM.General.AST.Type.Instruction.Instruction a) LLVM.General.AST.Instruction.Instruction
-instance Data.Array.Accelerate.LLVM.CodeGen.Downcast.Downcast LLVM.General.AST.Type.Instruction.Volatile GHC.Types.Bool
-instance Data.Array.Accelerate.LLVM.CodeGen.Downcast.Downcast (i a) i' => Data.Array.Accelerate.LLVM.CodeGen.Downcast.Downcast (LLVM.General.AST.Type.Instruction.Named i a) (LLVM.General.AST.Instruction.Named i')
-instance Data.Array.Accelerate.LLVM.CodeGen.Downcast.Downcast a b => Data.Array.Accelerate.LLVM.CodeGen.Downcast.Downcast (LLVM.General.AST.Instruction.Named a) (LLVM.General.AST.Instruction.Named b)
-instance Data.Array.Accelerate.LLVM.CodeGen.Downcast.Downcast (LLVM.General.AST.Type.Constant.Constant a) LLVM.General.AST.Constant.Constant
-instance Data.Array.Accelerate.LLVM.CodeGen.Downcast.Downcast (LLVM.General.AST.Type.Operand.Operand a) LLVM.General.AST.Operand.Operand
-instance Data.Array.Accelerate.LLVM.CodeGen.Downcast.Downcast LLVM.General.AST.Type.Metadata.Metadata LLVM.General.AST.Operand.Operand
-instance Data.Array.Accelerate.LLVM.CodeGen.Downcast.Downcast LLVM.General.AST.Type.Metadata.MetadataNode LLVM.General.AST.Operand.MetadataNode
-instance Data.Array.Accelerate.LLVM.CodeGen.Downcast.Downcast (LLVM.General.AST.Type.Terminator.Terminator a) LLVM.General.AST.Instruction.Terminator
-instance Data.Array.Accelerate.LLVM.CodeGen.Downcast.Downcast LLVM.General.AST.Type.Name.Label LLVM.General.AST.Name.Name
-instance Data.Array.Accelerate.LLVM.CodeGen.Downcast.Downcast (LLVM.General.AST.Type.Global.Parameter a) LLVM.General.AST.Global.Parameter
-instance Data.Array.Accelerate.LLVM.CodeGen.Downcast.Downcast (LLVM.General.AST.Type.Global.GlobalFunction args t) LLVM.General.AST.Operand.CallableOperand
-instance Data.Array.Accelerate.LLVM.CodeGen.Downcast.Downcast (LLVM.General.AST.Type.Global.GlobalFunction args t) [(LLVM.General.AST.Operand.Operand, [LLVM.General.AST.ParameterAttribute.ParameterAttribute])]
-instance Data.Array.Accelerate.LLVM.CodeGen.Downcast.Downcast (LLVM.General.AST.Type.Global.GlobalFunction args t) LLVM.General.AST.Global.Global
-instance Data.Array.Accelerate.LLVM.CodeGen.Downcast.Downcast LLVM.General.AST.Type.Global.FunctionAttribute LLVM.General.AST.FunctionAttribute.FunctionAttribute
-instance Data.Array.Accelerate.LLVM.CodeGen.Downcast.Downcast LLVM.General.AST.Type.Global.GroupID LLVM.General.AST.FunctionAttribute.GroupID
-instance Data.Array.Accelerate.LLVM.CodeGen.Downcast.Downcast (dict a) LLVM.General.AST.Type.Type => Data.Array.Accelerate.LLVM.CodeGen.Downcast.Downcast (GHC.Base.Maybe (dict a)) LLVM.General.AST.Type.Type
-instance Data.Array.Accelerate.LLVM.CodeGen.Downcast.Downcast (Data.Array.Accelerate.Type.ScalarType a) LLVM.General.AST.Type.Type
-instance Data.Array.Accelerate.LLVM.CodeGen.Downcast.Downcast (Data.Array.Accelerate.Type.BoundedType t) LLVM.General.AST.Type.Type
-instance Data.Array.Accelerate.LLVM.CodeGen.Downcast.Downcast (Data.Array.Accelerate.Type.NumType a) LLVM.General.AST.Type.Type
-instance Data.Array.Accelerate.LLVM.CodeGen.Downcast.Downcast (Data.Array.Accelerate.Type.IntegralType a) LLVM.General.AST.Type.Type
-instance Data.Array.Accelerate.LLVM.CodeGen.Downcast.Downcast (Data.Array.Accelerate.Type.FloatingType a) LLVM.General.AST.Type.Type
-instance Data.Array.Accelerate.LLVM.CodeGen.Downcast.Downcast (Data.Array.Accelerate.Type.NonNumType a) LLVM.General.AST.Type.Type
+instance Downcast (NonNumType a) Type
+instance Downcast (FloatingType a) Type
+instance Downcast (IntegralType a) Type
+instance Downcast (NumType a) Type
+instance Downcast (BoundedType t) Type
+instance Downcast (ScalarType a) Type
+instance Downcast (dict a) Type => Downcast (Maybe (dict a)) Type
+instance Downcast FunctionAttribute FunctionAttribute
+instance Downcast (GlobalFunction args t) Global
+instance Downcast (GlobalFunction args t) [(Operand, [ParameterAttribute])]
+instance Downcast (GlobalFunction args t) CallableOperand
+instance Downcast (Parameter a) Parameter
+instance Downcast Label Name
+instance Downcast (Terminator a) Terminator
+instance Downcast MetadataNode MetadataNode
+instance Downcast Metadata Operand
+instance Downcast (Operand a) Operand
+instance Downcast (Constant a) Constant
+instance Downcast a b => Downcast (Named a) (Named b)
+instance Downcast (i a) i' => Downcast (Named i a) (Named i')
+instance Downcast Volatile Bool
+instance Downcast (Instruction a) Instruction
+instance Downcast (Name a) Name
+instance Downcast FastMathFlags FastMathFlags
+instance Downcast NSW Bool
+instance Downcast NUW Bool
+instance (Downcast a a', Downcast b b') => Downcast (Either a b) (Either a' b')
+instance (Downcast a a', Downcast b b') => Downcast (a, b) (a', b')
+instance Downcast a a' => Downcast (Maybe a) (Maybe a')
+instance Downcast a a' => Downcast [a] [a']
 
 
 module Data.Array.Accelerate.LLVM.Target
@@ -839,10 +840,10 @@ phi' :: Elt a => Block -> IR a -> [(IR a, Block)] -> CodeGen (IR a)
 
 -- | Insert a metadata key/value pair into the current module.
 addMetadata :: String -> [Maybe Metadata] -> CodeGen ()
-instance Control.Monad.State.Class.MonadState Data.Array.Accelerate.LLVM.CodeGen.Monad.CodeGenState Data.Array.Accelerate.LLVM.CodeGen.Monad.CodeGen
-instance GHC.Base.Monad Data.Array.Accelerate.LLVM.CodeGen.Monad.CodeGen
-instance GHC.Base.Applicative Data.Array.Accelerate.LLVM.CodeGen.Monad.CodeGen
-instance GHC.Base.Functor Data.Array.Accelerate.LLVM.CodeGen.Monad.CodeGen
+instance Functor CodeGen
+instance Applicative CodeGen
+instance Monad CodeGen
+instance MonadState CodeGenState CodeGen
 
 
 module Data.Array.Accelerate.LLVM.CodeGen.Base
@@ -979,7 +980,11 @@ pair :: IR a -> IR b -> IR (a, b)
 unpair :: IR (a, b) -> (IR a, IR b)
 uncurry :: (IR a -> IR b -> c) -> IR (a, b) -> c
 binop :: IROP dict => (dict a -> Operand a -> Operand a -> Instruction a) -> dict a -> IR a -> IR a -> CodeGen (IR a)
+
+-- | Standard if-then-else expression
 ifThenElse :: Elt a => CodeGen (IR Bool) -> CodeGen (IR a) -> CodeGen (IR a) -> CodeGen (IR a)
+when :: CodeGen (IR Bool) -> CodeGen () -> CodeGen ()
+unless :: CodeGen (IR Bool) -> CodeGen () -> CodeGen ()
 mathf :: String -> FloatingType t -> IR t -> CodeGen (IR t)
 mathf' :: String -> FloatingType t -> IR t -> IR t -> CodeGen (IR t)
 lm :: FloatingType t -> String -> CodeGen Label
@@ -1024,7 +1029,7 @@ module Data.Array.Accelerate.LLVM.CodeGen.Exp
 --   operations. All operations (except Foreign) have a default instance,
 --   but this allows a backend to specialise the implementation for the
 --   more complex operations.
-class Expression arch where eforeign = \ format_a1rW2 kind_a1rW3 fn_a1rW4 msg_a1rW5 -> error (format_a1rW2 kind_a1rW3 (call fn_a1rW4 msg_a1rW5)) (\ kind_a1rW6 msg_a1rW7 -> message kind_a1rW6 ("Data/Array/Accelerate/LLVM/CodeGen/Exp.hs:57:14: " ++ msg_a1rW7)) Internal "eforeign" "default instance not implemented yet" while p f x = while (app1 p) (app1 f) =<< x
+class Expression arch where eforeign = \ format_a1lG7 kind_a1lG8 fn_a1lG9 msg_a1lGa -> error (format_a1lG7 kind_a1lG8 (call fn_a1lG9 msg_a1lGa)) (\ kind_a1lGb msg_a1lGc -> message kind_a1lGb ("Data/Array/Accelerate/LLVM/CodeGen/Exp.hs:57:14: " ++ msg_a1lGc)) Internal "eforeign" "default instance not implemented yet" while p f x = while (app1 p) (app1 f) =<< x
 eforeign :: (Expression arch, Foreign f, Elt x, Elt y) => arch -> f x y -> IRFun1 arch () (x -> y) -> IROpenExp arch env aenv x -> IROpenExp arch env aenv y
 while :: (Expression arch, Elt a) => IROpenFun1 arch env aenv (a -> Bool) -> IROpenFun1 arch env aenv (a -> a) -> IROpenExp arch env aenv a -> IROpenExp arch env aenv a
 llvmOfFun1 :: Expression arch => arch -> DelayedFun aenv (a -> b) -> Gamma aenv -> IRFun1 arch aenv (a -> b)
@@ -1118,7 +1123,7 @@ stencil2 :: (Skeleton arch, Elt a, Elt b, Elt c, Stencil sh a stencil1, Stencil 
 --   operations. All operations (except Foreign) have a default instance,
 --   but this allows a backend to specialise the implementation for the
 --   more complex operations.
-class Expression arch where eforeign = \ format_a1rW2 kind_a1rW3 fn_a1rW4 msg_a1rW5 -> error (format_a1rW2 kind_a1rW3 (call fn_a1rW4 msg_a1rW5)) (\ kind_a1rW6 msg_a1rW7 -> message kind_a1rW6 ("Data/Array/Accelerate/LLVM/CodeGen/Exp.hs:57:14: " ++ msg_a1rW7)) Internal "eforeign" "default instance not implemented yet" while p f x = while (app1 p) (app1 f) =<< x
+class Expression arch where eforeign = \ format_a1lG7 kind_a1lG8 fn_a1lG9 msg_a1lGa -> error (format_a1lG7 kind_a1lG8 (call fn_a1lG9 msg_a1lGa)) (\ kind_a1lGb msg_a1lGc -> message kind_a1lGb ("Data/Array/Accelerate/LLVM/CodeGen/Exp.hs:57:14: " ++ msg_a1lGc)) Internal "eforeign" "default instance not implemented yet" while p f x = while (app1 p) (app1 f) =<< x
 eforeign :: (Expression arch, Foreign f, Elt x, Elt y) => arch -> f x y -> IRFun1 arch () (x -> y) -> IROpenExp arch env aenv x -> IROpenExp arch env aenv y
 while :: (Expression arch, Elt a) => IROpenFun1 arch env aenv (a -> Bool) -> IROpenFun1 arch env aenv (a -> a) -> IROpenExp arch env aenv a -> IROpenExp arch env aenv a
 
@@ -1233,7 +1238,7 @@ module Data.Array.Accelerate.LLVM.State
 --   target specific state <tt>target</tt>.
 newtype LLVM target a
 LLVM :: StateT target IO a -> LLVM target a
-[runLLVM] :: LLVM target a -> StateT target IO a
+runLLVM :: LLVM target a -> StateT target IO a
 
 -- | Extract the execution state: 'gets llvmTarget'
 llvmTarget :: t -> t
@@ -1249,14 +1254,14 @@ evalLLVM :: t -> LLVM t a -> IO a
 --   
 --   Broken in ghci-7.6.1 Mac OS X due to bug #7299.
 keepAlive :: a -> IO a
-instance Control.Monad.Catch.MonadMask (Data.Array.Accelerate.LLVM.State.LLVM target)
-instance Control.Monad.Catch.MonadCatch (Data.Array.Accelerate.LLVM.State.LLVM target)
-instance Control.Monad.Catch.MonadThrow (Data.Array.Accelerate.LLVM.State.LLVM target)
-instance Control.Monad.State.Class.MonadState target (Data.Array.Accelerate.LLVM.State.LLVM target)
-instance Control.Monad.IO.Class.MonadIO (Data.Array.Accelerate.LLVM.State.LLVM target)
-instance GHC.Base.Monad (Data.Array.Accelerate.LLVM.State.LLVM target)
-instance GHC.Base.Applicative (Data.Array.Accelerate.LLVM.State.LLVM target)
-instance GHC.Base.Functor (Data.Array.Accelerate.LLVM.State.LLVM target)
+instance Functor (LLVM target)
+instance Applicative (LLVM target)
+instance Monad (LLVM target)
+instance MonadIO (LLVM target)
+instance MonadState target (LLVM target)
+instance MonadThrow (LLVM target)
+instance MonadCatch (LLVM target)
+instance MonadMask (LLVM target)
 
 
 module Data.Array.Accelerate.LLVM.Execute.Async
@@ -1267,23 +1272,9 @@ module Data.Array.Accelerate.LLVM.Execute.Async
 data AsyncR arch a
 AsyncR :: !(EventR arch) -> !a -> AsyncR arch a
 class Async arch where type family StreamR arch type family EventR arch
-
--- | Create a new execution stream that can be used to track (potentially
---   parallel) computations
 spawn :: Async arch => LLVM arch (StreamR arch)
-
--- | Generate a new event at the end of the given execution stream. It will
---   be filled once all prior work submitted to the stream has completed.
 checkpoint :: Async arch => StreamR arch -> LLVM arch (EventR arch)
-
--- | Make all future work submitted to the given execution stream wait
---   until the given event has passed. Typically the event is from a
---   different execution stream, therefore this function is intended to
---   enable non-blocking cross-stream coordination.
 after :: Async arch => StreamR arch -> EventR arch -> LLVM arch ()
-
--- | Block execution of the calling thread until the given event has been
---   recorded.
 block :: Async arch => EventR arch -> LLVM arch ()
 
 -- | Wait for an asynchronous operation to complete, then return it.
@@ -1322,47 +1313,25 @@ marshal :: Marshalable t args => t -> StreamR t -> args -> IO [ArgR t]
 --   </ul>
 class Marshalable t a
 marshal' :: Marshalable t a => t -> StreamR t -> a -> IO (DList (ArgR t))
-instance Data.Array.Accelerate.LLVM.Execute.Marshal.Marshalable t ()
-instance (Data.Array.Accelerate.LLVM.Execute.Marshal.Marshalable t a, Data.Array.Accelerate.LLVM.Execute.Marshal.Marshalable t b) => Data.Array.Accelerate.LLVM.Execute.Marshal.Marshalable t (a, b)
-instance (Data.Array.Accelerate.LLVM.Execute.Marshal.Marshalable t a, Data.Array.Accelerate.LLVM.Execute.Marshal.Marshalable t b, Data.Array.Accelerate.LLVM.Execute.Marshal.Marshalable t c) => Data.Array.Accelerate.LLVM.Execute.Marshal.Marshalable t (a, b, c)
-instance (Data.Array.Accelerate.LLVM.Execute.Marshal.Marshalable t a, Data.Array.Accelerate.LLVM.Execute.Marshal.Marshalable t b, Data.Array.Accelerate.LLVM.Execute.Marshal.Marshalable t c, Data.Array.Accelerate.LLVM.Execute.Marshal.Marshalable t d) => Data.Array.Accelerate.LLVM.Execute.Marshal.Marshalable t (a, b, c, d)
-instance (Data.Array.Accelerate.LLVM.Execute.Marshal.Marshalable t a, Data.Array.Accelerate.LLVM.Execute.Marshal.Marshalable t b, Data.Array.Accelerate.LLVM.Execute.Marshal.Marshalable t c, Data.Array.Accelerate.LLVM.Execute.Marshal.Marshalable t d, Data.Array.Accelerate.LLVM.Execute.Marshal.Marshalable t e) => Data.Array.Accelerate.LLVM.Execute.Marshal.Marshalable t (a, b, c, d, e)
-instance (Data.Array.Accelerate.LLVM.Execute.Marshal.Marshalable t a, Data.Array.Accelerate.LLVM.Execute.Marshal.Marshalable t b, Data.Array.Accelerate.LLVM.Execute.Marshal.Marshalable t c, Data.Array.Accelerate.LLVM.Execute.Marshal.Marshalable t d, Data.Array.Accelerate.LLVM.Execute.Marshal.Marshalable t e, Data.Array.Accelerate.LLVM.Execute.Marshal.Marshalable t f) => Data.Array.Accelerate.LLVM.Execute.Marshal.Marshalable t (a, b, c, d, e, f)
-instance (Data.Array.Accelerate.LLVM.Execute.Marshal.Marshalable t a, Data.Array.Accelerate.LLVM.Execute.Marshal.Marshalable t b, Data.Array.Accelerate.LLVM.Execute.Marshal.Marshalable t c, Data.Array.Accelerate.LLVM.Execute.Marshal.Marshalable t d, Data.Array.Accelerate.LLVM.Execute.Marshal.Marshalable t e, Data.Array.Accelerate.LLVM.Execute.Marshal.Marshalable t f, Data.Array.Accelerate.LLVM.Execute.Marshal.Marshalable t g) => Data.Array.Accelerate.LLVM.Execute.Marshal.Marshalable t (a, b, c, d, e, f, g)
-instance (Data.Array.Accelerate.LLVM.Execute.Marshal.Marshalable t a, Data.Array.Accelerate.LLVM.Execute.Marshal.Marshalable t b, Data.Array.Accelerate.LLVM.Execute.Marshal.Marshalable t c, Data.Array.Accelerate.LLVM.Execute.Marshal.Marshalable t d, Data.Array.Accelerate.LLVM.Execute.Marshal.Marshalable t e, Data.Array.Accelerate.LLVM.Execute.Marshal.Marshalable t f, Data.Array.Accelerate.LLVM.Execute.Marshal.Marshalable t g, Data.Array.Accelerate.LLVM.Execute.Marshal.Marshalable t h) => Data.Array.Accelerate.LLVM.Execute.Marshal.Marshalable t (a, b, c, d, e, f, g, h)
-instance Data.Array.Accelerate.LLVM.Execute.Marshal.Marshalable t a => Data.Array.Accelerate.LLVM.Execute.Marshal.Marshalable t [a]
-instance (Data.Array.Accelerate.Array.Sugar.Shape sh, Data.Array.Accelerate.Array.Sugar.Elt e, Data.Array.Accelerate.LLVM.Execute.Marshal.Marshalable t GHC.Types.Int, Data.Array.Accelerate.LLVM.Execute.Marshal.Marshalable t (Data.Array.Accelerate.Array.Data.ArrayData (Data.Array.Accelerate.Array.Sugar.EltRepr e))) => Data.Array.Accelerate.LLVM.Execute.Marshal.Marshalable t (Data.Array.Accelerate.Array.Sugar.Array sh e)
+instance (Shape sh, Elt e, Marshalable t Int, Marshalable t (ArrayData (EltRepr e))) => Marshalable t (Array sh e)
+instance Marshalable t a => Marshalable t [a]
+instance (Marshalable t a, Marshalable t b, Marshalable t c, Marshalable t d, Marshalable t e, Marshalable t f, Marshalable t g, Marshalable t h) => Marshalable t (a, b, c, d, e, f, g, h)
+instance (Marshalable t a, Marshalable t b, Marshalable t c, Marshalable t d, Marshalable t e, Marshalable t f, Marshalable t g) => Marshalable t (a, b, c, d, e, f, g)
+instance (Marshalable t a, Marshalable t b, Marshalable t c, Marshalable t d, Marshalable t e, Marshalable t f) => Marshalable t (a, b, c, d, e, f)
+instance (Marshalable t a, Marshalable t b, Marshalable t c, Marshalable t d, Marshalable t e) => Marshalable t (a, b, c, d, e)
+instance (Marshalable t a, Marshalable t b, Marshalable t c, Marshalable t d) => Marshalable t (a, b, c, d)
+instance (Marshalable t a, Marshalable t b, Marshalable t c) => Marshalable t (a, b, c)
+instance (Marshalable t a, Marshalable t b) => Marshalable t (a, b)
+instance Marshalable t ()
 
 
 module Data.Array.Accelerate.LLVM.Array.Data
 class Async arch => Remote arch where allocateRemote sh = liftIO $ allocateArray sh useRemoteR _ _ _ = return () copyToRemoteR _ _ _ _ = return () copyToHostR _ _ _ _ = return () copyToPeerR _ _ _ _ _ = return () indexRemote (Array _ adata) i = return . toElt $! unsafeIndexArrayData adata i
-
--- | Allocate a new uninitialised array on the remote device.
 allocateRemote :: (Remote arch, Shape sh, Elt e) => sh -> LLVM arch (Array sh e)
-
--- | Use the given immutable array on the remote device. Since the source
---   array is immutable, the allocator can evict and re-upload the data as
---   necessary without copy-back.
 useRemoteR :: (Remote arch, ArrayElt e, ArrayPtrs e ~ Ptr a, Storable a, Typeable a, Typeable e) => Int -> Maybe (StreamR arch) -> ArrayData e -> LLVM arch ()
-
--- | Upload a section of an array from the host to the remote device. Only
---   the elements between the given indices (inclusive left, exclusive
---   right) are transferred.
 copyToRemoteR :: (Remote arch, ArrayElt e, ArrayPtrs e ~ Ptr a, Storable a, Typeable a, Typeable e) => Int -> Int -> Maybe (StreamR arch) -> ArrayData e -> LLVM arch ()
-
--- | Copy a section of an array from the remote device back to the host.
---   The elements between the given indices (inclusive left, exclusive
---   right) are transferred.,v
 copyToHostR :: (Remote arch, ArrayElt e, ArrayPtrs e ~ Ptr a, Storable a, Typeable a, Typeable e) => Int -> Int -> Maybe (StreamR arch) -> ArrayData e -> LLVM arch ()
-
--- | Copy a section of an array between two remote instances of the same
---   type. This may be more efficient than copying to the host and then to
---   the second remote instance (e.g. DMA between two CUDA devices). The
---   elements between the given indices (inclusive left, exclusive right)
---   are transferred.
 copyToPeerR :: (Remote arch, ArrayElt e, ArrayPtrs e ~ Ptr a, Storable a, Typeable a, Typeable e) => Int -> Int -> arch -> Maybe (StreamR arch) -> ArrayData e -> LLVM arch ()
-
--- | Read a single element from the array at a given row-major index
 indexRemote :: Remote arch => Array sh e -> Int -> LLVM arch e
 
 -- | Create a new array from its representation on the host, and upload it
@@ -1418,9 +1387,6 @@ runArray :: (Functor m, Applicative m, Monad m) => Array sh e -> (forall e' p. (
 
 module Data.Array.Accelerate.LLVM.Compile
 class Compile arch where data family ExecutableR arch
-
--- | Compile an accelerate computation into some backend-specific
---   executable format
 compileForTarget :: Compile arch => DelayedOpenAcc aenv a -> Gamma aenv -> LLVM arch (ExecutableR arch)
 
 -- | Initialise code generation, compilation, and data transfer (if

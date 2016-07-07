@@ -35,13 +35,14 @@ pointOfIndex :: Int -> Int -> Exp DIM2 -> Exp Point
 --      +-------+ P1
 --   </pre>
 pointInBox :: Exp Point -> Exp Point -> Exp Point -> Exp Bool
-instance GHC.Classes.Eq a => GHC.Classes.Eq (Graphics.Gloss.Accelerate.Data.Point.XY a)
-instance GHC.Show.Show a => GHC.Show.Show (Graphics.Gloss.Accelerate.Data.Point.XY a)
-instance GHC.Num.Num a => GHC.Num.Num (Graphics.Gloss.Accelerate.Data.Point.XY a)
-instance Data.Array.Accelerate.Array.Sugar.Elt a => Data.Array.Accelerate.Array.Sugar.Elt (Graphics.Gloss.Accelerate.Data.Point.XY a)
-instance Data.Array.Accelerate.Array.Sugar.Elt a => Data.Array.Accelerate.Product.IsProduct Data.Array.Accelerate.Array.Sugar.Elt (Graphics.Gloss.Accelerate.Data.Point.XY a)
-instance (Data.Array.Accelerate.Lift.Lift Data.Array.Accelerate.Smart.Exp a, Data.Array.Accelerate.Array.Sugar.Elt (Data.Array.Accelerate.Lift.Plain a)) => Data.Array.Accelerate.Lift.Lift Data.Array.Accelerate.Smart.Exp (Graphics.Gloss.Accelerate.Data.Point.XY a)
-instance Data.Array.Accelerate.Array.Sugar.Elt a => Data.Array.Accelerate.Lift.Unlift Data.Array.Accelerate.Smart.Exp (Graphics.Gloss.Accelerate.Data.Point.XY (Data.Array.Accelerate.Smart.Exp a))
+instance Typeable XY
+instance Show a => Show (XY a)
+instance Eq a => Eq (XY a)
+instance Elt a => Unlift Exp (XY (Exp a))
+instance (Lift Exp a, Elt (Plain a)) => Lift Exp (XY a)
+instance Elt a => IsProduct Elt (XY a)
+instance Elt a => Elt (XY a)
+instance Num a => Num (XY a)
 
 module Graphics.Gloss.Accelerate.Data.Picture
 

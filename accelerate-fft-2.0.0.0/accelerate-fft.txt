@@ -103,5 +103,5 @@ fft2D' :: (Num e, RealFloat e, FromIntegral Int e, IsFloating e) => Mode -> Int 
 fft3D :: (Num e, RealFloat e, FromIntegral Int e, IsFloating e) => Mode -> Array DIM3 (Complex e) -> Acc (Array DIM3 (Complex e))
 fft3D' :: (Num e, RealFloat e, FromIntegral Int e, IsFloating e) => Mode -> Int -> Int -> Int -> Acc (Array DIM3 (Complex e)) -> Acc (Array DIM3 (Complex e))
 fft :: (Slice sh, Shape sh, RealFloat e, FromIntegral Int e) => e -> sh -> Int -> Acc (Array (sh :. Int) (Complex e)) -> Acc (Array (sh :. Int) (Complex e))
-instance GHC.Show.Show Data.Array.Accelerate.Math.FFT.Mode
-instance GHC.Classes.Eq Data.Array.Accelerate.Math.FFT.Mode
+instance Eq Mode
+instance Show Mode

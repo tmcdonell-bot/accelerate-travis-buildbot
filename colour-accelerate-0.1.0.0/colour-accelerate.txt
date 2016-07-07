@@ -275,19 +275,20 @@ packRGBA8 :: Exp (RGBA Word8) -> Exp Word32
 packABGR8 :: Exp (RGBA Word8) -> Exp Word32
 unpackRGBA8 :: Exp Word32 -> Exp (RGBA Word8)
 unpackABGR8 :: Exp Word32 -> Exp (RGBA Word8)
-instance GHC.Base.Functor Data.Array.Accelerate.Data.Colour.RGBA.RGBA
-instance GHC.Classes.Eq a => GHC.Classes.Eq (Data.Array.Accelerate.Data.Colour.RGBA.RGBA a)
-instance GHC.Show.Show a => GHC.Show.Show (Data.Array.Accelerate.Data.Colour.RGBA.RGBA a)
-instance Data.Array.Accelerate.Array.Sugar.Elt a => Data.Array.Accelerate.Array.Sugar.Elt (Data.Array.Accelerate.Data.Colour.RGBA.RGBA a)
-instance Data.Array.Accelerate.Array.Sugar.Elt a => Data.Array.Accelerate.Product.IsProduct Data.Array.Accelerate.Array.Sugar.Elt (Data.Array.Accelerate.Data.Colour.RGBA.RGBA a)
-instance (Data.Array.Accelerate.Lift.Lift Data.Array.Accelerate.Smart.Exp a, Data.Array.Accelerate.Array.Sugar.Elt (Data.Array.Accelerate.Lift.Plain a)) => Data.Array.Accelerate.Lift.Lift Data.Array.Accelerate.Smart.Exp (Data.Array.Accelerate.Data.Colour.RGBA.RGBA a)
-instance Data.Array.Accelerate.Array.Sugar.Elt a => Data.Array.Accelerate.Lift.Unlift Data.Array.Accelerate.Smart.Exp (Data.Array.Accelerate.Data.Colour.RGBA.RGBA (Data.Array.Accelerate.Smart.Exp a))
-instance GHC.Num.Num a => GHC.Num.Num (Data.Array.Accelerate.Data.Colour.RGBA.RGBA a)
-instance (GHC.Num.Num a, GHC.Real.Fractional a) => GHC.Real.Fractional (Data.Array.Accelerate.Data.Colour.RGBA.RGBA a)
-instance Data.Array.Accelerate.Classes.Num.Num a => GHC.Num.Num (Data.Array.Accelerate.Smart.Exp (Data.Array.Accelerate.Data.Colour.RGBA.RGBA a))
-instance Data.Array.Accelerate.Classes.Fractional.Fractional a => GHC.Real.Fractional (Data.Array.Accelerate.Smart.Exp (Data.Array.Accelerate.Data.Colour.RGBA.RGBA a))
-instance Data.Array.Accelerate.Data.Colour.Names.NamedColour (Data.Array.Accelerate.Data.Colour.RGBA.RGBA GHC.Word.Word8)
-instance Data.Array.Accelerate.Data.Colour.Names.NamedColour (Data.Array.Accelerate.Data.Colour.RGBA.RGBA GHC.Types.Float)
+instance [overlap ok] Typeable RGBA
+instance [overlap ok] Show a => Show (RGBA a)
+instance [overlap ok] Eq a => Eq (RGBA a)
+instance [overlap ok] Functor RGBA
+instance [overlap ok] NamedColour (RGBA Float)
+instance [overlap ok] NamedColour (RGBA Word8)
+instance [overlap ok] (Fractional a) => Fractional (Exp (RGBA a))
+instance [overlap ok] (Num a) => Num (Exp (RGBA a))
+instance [overlap ok] (Num a, Fractional a) => Fractional (RGBA a)
+instance [overlap ok] Num a => Num (RGBA a)
+instance [overlap ok] Elt a => Unlift Exp (RGBA (Exp a))
+instance [overlap ok] (Lift Exp a, Elt (Plain a)) => Lift Exp (RGBA a)
+instance [overlap ok] Elt a => IsProduct Elt (RGBA a)
+instance [overlap ok] Elt a => Elt (RGBA a)
 
 
 -- | RGB triples for an unspecified colour space
@@ -341,19 +342,20 @@ packRGB8 :: Exp (RGB Word8) -> Exp Word32
 packBGR8 :: Exp (RGB Word8) -> Exp Word32
 unpackRGB8 :: Exp Word32 -> Exp (RGB Word8)
 unpackBGR8 :: Exp Word32 -> Exp (RGB Word8)
-instance GHC.Base.Functor Data.Array.Accelerate.Data.Colour.RGB.RGB
-instance GHC.Classes.Eq a => GHC.Classes.Eq (Data.Array.Accelerate.Data.Colour.RGB.RGB a)
-instance GHC.Show.Show a => GHC.Show.Show (Data.Array.Accelerate.Data.Colour.RGB.RGB a)
-instance Data.Array.Accelerate.Array.Sugar.Elt a => Data.Array.Accelerate.Array.Sugar.Elt (Data.Array.Accelerate.Data.Colour.RGB.RGB a)
-instance Data.Array.Accelerate.Array.Sugar.Elt a => Data.Array.Accelerate.Product.IsProduct Data.Array.Accelerate.Array.Sugar.Elt (Data.Array.Accelerate.Data.Colour.RGB.RGB a)
-instance (Data.Array.Accelerate.Lift.Lift Data.Array.Accelerate.Smart.Exp a, Data.Array.Accelerate.Array.Sugar.Elt (Data.Array.Accelerate.Lift.Plain a)) => Data.Array.Accelerate.Lift.Lift Data.Array.Accelerate.Smart.Exp (Data.Array.Accelerate.Data.Colour.RGB.RGB a)
-instance Data.Array.Accelerate.Array.Sugar.Elt a => Data.Array.Accelerate.Lift.Unlift Data.Array.Accelerate.Smart.Exp (Data.Array.Accelerate.Data.Colour.RGB.RGB (Data.Array.Accelerate.Smart.Exp a))
-instance GHC.Num.Num a => GHC.Num.Num (Data.Array.Accelerate.Data.Colour.RGB.RGB a)
-instance (GHC.Num.Num a, GHC.Real.Fractional a) => GHC.Real.Fractional (Data.Array.Accelerate.Data.Colour.RGB.RGB a)
-instance Data.Array.Accelerate.Classes.Num.Num a => GHC.Num.Num (Data.Array.Accelerate.Smart.Exp (Data.Array.Accelerate.Data.Colour.RGB.RGB a))
-instance Data.Array.Accelerate.Classes.Fractional.Fractional a => GHC.Real.Fractional (Data.Array.Accelerate.Smart.Exp (Data.Array.Accelerate.Data.Colour.RGB.RGB a))
-instance Data.Array.Accelerate.Data.Colour.Names.NamedColour (Data.Array.Accelerate.Data.Colour.RGB.RGB GHC.Word.Word8)
-instance Data.Array.Accelerate.Data.Colour.Names.NamedColour (Data.Array.Accelerate.Data.Colour.RGB.RGB GHC.Types.Float)
+instance [overlap ok] Typeable RGB
+instance [overlap ok] Show a => Show (RGB a)
+instance [overlap ok] Eq a => Eq (RGB a)
+instance [overlap ok] Functor RGB
+instance [overlap ok] NamedColour (RGB Float)
+instance [overlap ok] NamedColour (RGB Word8)
+instance [overlap ok] (Fractional a) => Fractional (Exp (RGB a))
+instance [overlap ok] (Num a) => Num (Exp (RGB a))
+instance [overlap ok] (Num a, Fractional a) => Fractional (RGB a)
+instance [overlap ok] Num a => Num (RGB a)
+instance [overlap ok] Elt a => Unlift Exp (RGB (Exp a))
+instance [overlap ok] (Lift Exp a, Elt (Plain a)) => Lift Exp (RGB a)
+instance [overlap ok] Elt a => IsProduct Elt (RGB a)
+instance [overlap ok] Elt a => Elt (RGB a)
 
 
 -- | Colours in the HSV (hue-saturation-value) cylindrical-coordinate
@@ -387,18 +389,19 @@ saturation :: Exp (RGB Float) -> Exp Float
 
 -- | Return the HSV-value of an RGB colour
 value :: Exp (RGB Float) -> Exp Float
-instance GHC.Base.Functor Data.Array.Accelerate.Data.Colour.HSV.HSV
-instance GHC.Classes.Eq a => GHC.Classes.Eq (Data.Array.Accelerate.Data.Colour.HSV.HSV a)
-instance GHC.Show.Show a => GHC.Show.Show (Data.Array.Accelerate.Data.Colour.HSV.HSV a)
-instance Data.Array.Accelerate.Array.Sugar.Elt a => Data.Array.Accelerate.Array.Sugar.Elt (Data.Array.Accelerate.Data.Colour.HSV.HSV a)
-instance Data.Array.Accelerate.Array.Sugar.Elt a => Data.Array.Accelerate.Product.IsProduct Data.Array.Accelerate.Array.Sugar.Elt (Data.Array.Accelerate.Data.Colour.HSV.HSV a)
-instance (Data.Array.Accelerate.Lift.Lift Data.Array.Accelerate.Smart.Exp a, Data.Array.Accelerate.Array.Sugar.Elt (Data.Array.Accelerate.Lift.Plain a)) => Data.Array.Accelerate.Lift.Lift Data.Array.Accelerate.Smart.Exp (Data.Array.Accelerate.Data.Colour.HSV.HSV a)
-instance Data.Array.Accelerate.Array.Sugar.Elt a => Data.Array.Accelerate.Lift.Unlift Data.Array.Accelerate.Smart.Exp (Data.Array.Accelerate.Data.Colour.HSV.HSV (Data.Array.Accelerate.Smart.Exp a))
-instance GHC.Num.Num a => GHC.Num.Num (Data.Array.Accelerate.Data.Colour.HSV.HSV a)
-instance (GHC.Num.Num a, GHC.Real.Fractional a) => GHC.Real.Fractional (Data.Array.Accelerate.Data.Colour.HSV.HSV a)
-instance Data.Array.Accelerate.Classes.Num.Num a => GHC.Num.Num (Data.Array.Accelerate.Smart.Exp (Data.Array.Accelerate.Data.Colour.HSV.HSV a))
-instance Data.Array.Accelerate.Classes.Fractional.Fractional a => GHC.Real.Fractional (Data.Array.Accelerate.Smart.Exp (Data.Array.Accelerate.Data.Colour.HSV.HSV a))
-instance Data.Array.Accelerate.Data.Colour.Names.NamedColour (Data.Array.Accelerate.Data.Colour.HSV.HSV GHC.Types.Float)
+instance [overlap ok] Typeable HSV
+instance [overlap ok] Show a => Show (HSV a)
+instance [overlap ok] Eq a => Eq (HSV a)
+instance [overlap ok] Functor HSV
+instance [overlap ok] NamedColour (HSV Float)
+instance [overlap ok] (Fractional a) => Fractional (Exp (HSV a))
+instance [overlap ok] (Num a) => Num (Exp (HSV a))
+instance [overlap ok] (Num a, Fractional a) => Fractional (HSV a)
+instance [overlap ok] Num a => Num (HSV a)
+instance [overlap ok] Elt a => Unlift Exp (HSV (Exp a))
+instance [overlap ok] (Lift Exp a, Elt (Plain a)) => Lift Exp (HSV a)
+instance [overlap ok] Elt a => IsProduct Elt (HSV a)
+instance [overlap ok] Elt a => Elt (HSV a)
 
 
 -- | Colours in the sRGB standard.
@@ -457,15 +460,16 @@ saturation :: Exp (RGB Float) -> Exp Float
 
 -- | Return the HSL-lightness of an RGB colour
 lightness :: Exp (RGB Float) -> Exp Float
-instance GHC.Base.Functor Data.Array.Accelerate.Data.Colour.HSL.HSL
-instance GHC.Classes.Eq a => GHC.Classes.Eq (Data.Array.Accelerate.Data.Colour.HSL.HSL a)
-instance GHC.Show.Show a => GHC.Show.Show (Data.Array.Accelerate.Data.Colour.HSL.HSL a)
-instance Data.Array.Accelerate.Array.Sugar.Elt a => Data.Array.Accelerate.Array.Sugar.Elt (Data.Array.Accelerate.Data.Colour.HSL.HSL a)
-instance Data.Array.Accelerate.Array.Sugar.Elt a => Data.Array.Accelerate.Product.IsProduct Data.Array.Accelerate.Array.Sugar.Elt (Data.Array.Accelerate.Data.Colour.HSL.HSL a)
-instance (Data.Array.Accelerate.Lift.Lift Data.Array.Accelerate.Smart.Exp a, Data.Array.Accelerate.Array.Sugar.Elt (Data.Array.Accelerate.Lift.Plain a)) => Data.Array.Accelerate.Lift.Lift Data.Array.Accelerate.Smart.Exp (Data.Array.Accelerate.Data.Colour.HSL.HSL a)
-instance Data.Array.Accelerate.Array.Sugar.Elt a => Data.Array.Accelerate.Lift.Unlift Data.Array.Accelerate.Smart.Exp (Data.Array.Accelerate.Data.Colour.HSL.HSL (Data.Array.Accelerate.Smart.Exp a))
-instance GHC.Num.Num a => GHC.Num.Num (Data.Array.Accelerate.Data.Colour.HSL.HSL a)
-instance (GHC.Num.Num a, GHC.Real.Fractional a) => GHC.Real.Fractional (Data.Array.Accelerate.Data.Colour.HSL.HSL a)
-instance Data.Array.Accelerate.Classes.Num.Num a => GHC.Num.Num (Data.Array.Accelerate.Smart.Exp (Data.Array.Accelerate.Data.Colour.HSL.HSL a))
-instance Data.Array.Accelerate.Classes.Fractional.Fractional a => GHC.Real.Fractional (Data.Array.Accelerate.Smart.Exp (Data.Array.Accelerate.Data.Colour.HSL.HSL a))
-instance Data.Array.Accelerate.Data.Colour.Names.NamedColour (Data.Array.Accelerate.Data.Colour.HSL.HSL GHC.Types.Float)
+instance [overlap ok] Typeable HSL
+instance [overlap ok] Show a => Show (HSL a)
+instance [overlap ok] Eq a => Eq (HSL a)
+instance [overlap ok] Functor HSL
+instance [overlap ok] NamedColour (HSL Float)
+instance [overlap ok] (Fractional a) => Fractional (Exp (HSL a))
+instance [overlap ok] (Num a) => Num (Exp (HSL a))
+instance [overlap ok] (Num a, Fractional a) => Fractional (HSL a)
+instance [overlap ok] Num a => Num (HSL a)
+instance [overlap ok] Elt a => Unlift Exp (HSL (Exp a))
+instance [overlap ok] (Lift Exp a, Elt (Plain a)) => Lift Exp (HSL a)
+instance [overlap ok] Elt a => IsProduct Elt (HSL a)
+instance [overlap ok] Elt a => Elt (HSL a)
