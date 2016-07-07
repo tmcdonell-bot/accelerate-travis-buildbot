@@ -34,6 +34,8 @@ module Data.Array.Accelerate.Linear.Epsilon
 --   True
 --   </pre>
 class Num a => Epsilon a
+
+-- | Determine if a quantity is near zero.
 nearZero :: Epsilon a => Exp a -> Exp Bool
 
 -- | <pre>
@@ -51,10 +53,10 @@ nearZero :: Epsilon a => Exp a -> Exp Bool
 -- | <pre>
 --   <a>abs</a> a <a>&lt;=</a> 1e-12
 --   </pre>
-instance Epsilon CDouble
-instance Epsilon CFloat
-instance Epsilon Double
-instance Epsilon Float
+instance Data.Array.Accelerate.Linear.Epsilon.Epsilon GHC.Types.Float
+instance Data.Array.Accelerate.Linear.Epsilon.Epsilon GHC.Types.Double
+instance Data.Array.Accelerate.Linear.Epsilon.Epsilon Foreign.C.Types.CFloat
+instance Data.Array.Accelerate.Linear.Epsilon.Epsilon Foreign.C.Types.CDouble
 
 
 module Data.Array.Accelerate.Linear.Type
@@ -69,16 +71,34 @@ module Data.Array.Accelerate.Linear.Vector
 --   
 --   TODO: Support both <a>Exp</a> and <a>Acc</a>
 class Additive f => Additive f where zero = constant (zero) (^+^) = lift2 ((^+^) :: f (Exp a) -> f (Exp a) -> f (Exp a)) (^-^) = lift2 ((^-^) :: f (Exp a) -> f (Exp a) -> f (Exp a)) lerp = lift3 (lerp :: Exp a -> f (Exp a) -> f (Exp a) -> f (Exp a))
+
+-- | The zero vector
 zero :: (Additive f, Elt (f a), Num a) => Exp (f a)
+
+-- | Compute the sum of two vectors
+--   
+--   <pre>
+--   &gt;&gt;&gt; V2 1 2 ^+^ V2 3 4
+--   V2 4 6
+--   </pre>
 (^+^) :: (Additive f, Num a, Box f a) => Exp (f a) -> Exp (f a) -> Exp (f a)
+
+-- | Compute the difference between two vectors
+--   
+--   <pre>
+--   &gt;&gt;&gt; V2 4 5 - V2 3 1
+--   V2 1 4
+--   </pre>
 (^-^) :: (Additive f, Num a, Box f a) => Exp (f a) -> Exp (f a) -> Exp (f a)
+
+-- | Linearly interpolate between two vectors
 lerp :: (Additive f, Num a, Box f a) => Exp a -> Exp (f a) -> Exp (f a) -> Exp (f a)
 type IsAdditive f a = (Additive f, Box f a)
 
 -- | Basis element
 newtype E t
 E :: (forall a. (Elt a, Box t a) => Lens' (Exp (t a)) (Exp a)) -> E t
-el :: E t -> forall a. (Elt a, Box t a) => Lens' (Exp (t a)) (Exp a)
+[el] :: E t -> forall a. (Elt a, Box t a) => Lens' (Exp (t a)) (Exp a)
 
 -- | Compute the negation of a vector
 --   
@@ -155,11 +175,30 @@ module Data.Array.Accelerate.Linear.Metric
 
 -- | Free and sparse inner product/metric spaces.
 class Metric f => Metric f where dot = lift2 (dot :: f (Exp a) -> f (Exp a) -> Exp a) quadrance = lift1 (quadrance :: f (Exp a) -> Exp a) qd = lift2 (qd :: f (Exp a) -> f (Exp a) -> Exp a) distance = lift2 (distance :: f (Exp a) -> f (Exp a) -> Exp a) norm = lift1 (norm :: f (Exp a) -> Exp a) signorm = lift1 (signorm :: f (Exp a) -> f (Exp a))
+
+-- | Compute the inner product of two vectors or (equivalently) convert a
+--   vector <tt>f a</tt> into a covector <tt>f a -&gt; a</tt>.
+--   
+--   <pre>
+--   &gt;&gt;&gt; V2 1 2 `dot` V2 3 4
+--   11
+--   </pre>
 dot :: (Metric f, Num a, Box f a) => Exp (f a) -> Exp (f a) -> Exp a
+
+-- | Compute the squared norm. The name quadrance arises from Norman J.
+--   Wildberger's rational trigonometry.
 quadrance :: (Metric f, Num a, Box f a) => Exp (f a) -> Exp a
+
+-- | Compute the <a>quadrance</a> of the difference
 qd :: (Metric f, Num a, Box f a) => Exp (f a) -> Exp (f a) -> Exp a
+
+-- | Compute the distance between two vectors in a metric space
 distance :: (Metric f, Floating a, Box f a) => Exp (f a) -> Exp (f a) -> Exp a
+
+-- | Compute the norm of a vector in a metric space
 norm :: (Metric f, Floating a, Box f a) => Exp (f a) -> Exp a
+
+-- | Convert a non-zero vector to unit vector.
 signorm :: (Metric f, Floating a, Box f a) => Exp (f a) -> Exp (f a)
 type IsMetric f a = (Metric f, Box f a)
 
@@ -176,14 +215,14 @@ project :: (Floating a, IsMetric f a) => Exp (f a) -> Exp (f a) -> Exp (f a)
 module Data.Array.Accelerate.Linear.V0
 data V0 a :: * -> *
 V0 :: V0 a
-instance [incoherent] (Elt a, Elt b) => Each (Exp (V0 a)) (Exp (V0 b)) (Exp a) (Exp b)
-instance [incoherent] (Num a) => Num (Exp (V0 a))
-instance [incoherent] Unlift Exp (V0 a)
-instance [incoherent] Lift Exp (V0 a)
-instance [incoherent] IsProduct cst (V0 a)
-instance [incoherent] Elt a => Elt (V0 a)
-instance [incoherent] Additive V0
-instance [incoherent] Metric V0
+instance Data.Array.Accelerate.Linear.Metric.Metric Linear.V0.V0
+instance Data.Array.Accelerate.Linear.Vector.Additive Linear.V0.V0
+instance Data.Array.Accelerate.Array.Sugar.Elt a => Data.Array.Accelerate.Array.Sugar.Elt (Linear.V0.V0 a)
+instance Data.Array.Accelerate.Product.IsProduct cst (Linear.V0.V0 a)
+instance Data.Array.Accelerate.Lift.Lift Data.Array.Accelerate.Smart.Exp (Linear.V0.V0 a)
+instance Data.Array.Accelerate.Lift.Unlift Data.Array.Accelerate.Smart.Exp (Linear.V0.V0 a)
+instance Data.Array.Accelerate.Classes.Num.Num a => GHC.Num.Num (Data.Array.Accelerate.Smart.Exp (Linear.V0.V0 a))
+instance (Data.Array.Accelerate.Array.Sugar.Elt a, Data.Array.Accelerate.Array.Sugar.Elt b) => Control.Lens.Each.Each (Data.Array.Accelerate.Smart.Exp (Linear.V0.V0 a)) (Data.Array.Accelerate.Smart.Exp (Linear.V0.V0 b)) (Data.Array.Accelerate.Smart.Exp a) (Data.Array.Accelerate.Smart.Exp b)
 
 
 -- | 1-D Vectors
@@ -193,19 +232,29 @@ V1 :: a -> V1 a
 
 -- | A space that has at least 1 basis vector <a>_x</a>.
 class R1 t => R1 t where _x = liftLens (_x :: Lens' (t (Exp a)) (Exp a))
+
+-- | <pre>
+--   &gt;&gt;&gt; V1 2 ^._x
+--   2
+--   </pre>
+--   
+--   <pre>
+--   &gt;&gt;&gt; V1 2 &amp; _x .~ 3
+--   V1 3
+--   </pre>
 _x :: (R1 t, Elt a, Box t a) => Lens' (Exp (t a)) (Exp a)
 ex :: R1 t => E t
-instance [incoherent] (Elt a, Elt b) => Each (Exp (V1 a)) (Exp (V1 b)) (Exp a) (Exp b)
-instance [incoherent] (Floating a) => Floating (Exp (V1 a))
-instance [incoherent] (Floating a) => Fractional (Exp (V1 a))
-instance [incoherent] (Num a) => Num (Exp (V1 a))
-instance [incoherent] Elt a => Unlift Exp (V1 (Exp a))
-instance [incoherent] (Lift Exp a, Elt (Plain a)) => Lift Exp (V1 a)
-instance [incoherent] (cst a) => IsProduct cst (V1 a)
-instance [incoherent] Elt a => Elt (V1 a)
-instance [incoherent] R1 V1
-instance [incoherent] Additive V1
-instance [incoherent] Metric V1
+instance Data.Array.Accelerate.Linear.Metric.Metric Linear.V1.V1
+instance Data.Array.Accelerate.Linear.Vector.Additive Linear.V1.V1
+instance Data.Array.Accelerate.Linear.V1.R1 Linear.V1.V1
+instance Data.Array.Accelerate.Array.Sugar.Elt a => Data.Array.Accelerate.Array.Sugar.Elt (Linear.V1.V1 a)
+instance cst a => Data.Array.Accelerate.Product.IsProduct cst (Linear.V1.V1 a)
+instance (Data.Array.Accelerate.Lift.Lift Data.Array.Accelerate.Smart.Exp a, Data.Array.Accelerate.Array.Sugar.Elt (Data.Array.Accelerate.Lift.Plain a)) => Data.Array.Accelerate.Lift.Lift Data.Array.Accelerate.Smart.Exp (Linear.V1.V1 a)
+instance Data.Array.Accelerate.Array.Sugar.Elt a => Data.Array.Accelerate.Lift.Unlift Data.Array.Accelerate.Smart.Exp (Linear.V1.V1 (Data.Array.Accelerate.Smart.Exp a))
+instance Data.Array.Accelerate.Classes.Num.Num a => GHC.Num.Num (Data.Array.Accelerate.Smart.Exp (Linear.V1.V1 a))
+instance Data.Array.Accelerate.Classes.Floating.Floating a => GHC.Real.Fractional (Data.Array.Accelerate.Smart.Exp (Linear.V1.V1 a))
+instance Data.Array.Accelerate.Classes.Floating.Floating a => GHC.Float.Floating (Data.Array.Accelerate.Smart.Exp (Linear.V1.V1 a))
+instance (Data.Array.Accelerate.Array.Sugar.Elt a, Data.Array.Accelerate.Array.Sugar.Elt b) => Control.Lens.Each.Each (Data.Array.Accelerate.Smart.Exp (Linear.V1.V1 a)) (Data.Array.Accelerate.Smart.Exp (Linear.V1.V1 b)) (Data.Array.Accelerate.Smart.Exp a) (Data.Array.Accelerate.Smart.Exp b)
 
 
 -- | 2-D Vectors
@@ -215,11 +264,31 @@ V2 :: SrictNotUnpackeda -> SrictNotUnpackeda -> V2 a
 
 -- | A space that has at least 1 basis vector <a>_x</a>.
 class R1 t => R1 t where _x = liftLens (_x :: Lens' (t (Exp a)) (Exp a))
+
+-- | <pre>
+--   &gt;&gt;&gt; V1 2 ^._x
+--   2
+--   </pre>
+--   
+--   <pre>
+--   &gt;&gt;&gt; V1 2 &amp; _x .~ 3
+--   V1 3
+--   </pre>
 _x :: (R1 t, Elt a, Box t a) => Lens' (Exp (t a)) (Exp a)
 
 -- | A space that distinguishes 2 orthogonal basis vectors <a>_x</a> and
 --   <a>_y</a>, but may have more.
 class (R2 t, R1 t) => R2 t where _y = liftLens (_y :: Lens' (t (Exp a)) (Exp a)) _xy = liftLens (_xy :: Lens' (t (Exp a)) (V2 (Exp a)))
+
+-- | <pre>
+--   &gt;&gt;&gt; V2 1 2 ^._y
+--   2
+--   </pre>
+--   
+--   <pre>
+--   &gt;&gt;&gt; V2 1 2 &amp; _y .~ 3
+--   V2 1 3
+--   </pre>
 _y :: (R2 t, Elt a, Box t a) => Lens' (Exp (t a)) (Exp a)
 _xy :: (R2 t, Elt a, Box t a) => Lens' (Exp (t a)) (Exp (V2 a))
 
@@ -241,18 +310,18 @@ perp :: Num a => Exp (V2 a) -> Exp (V2 a)
 
 -- | Unit vector with given phase angle (modulo 2*<a>pi</a>)
 angle :: Floating a => Exp a -> Exp (V2 a)
-instance [incoherent] (Elt a, Elt b) => Each (Exp (V2 a)) (Exp (V2 b)) (Exp a) (Exp b)
-instance [incoherent] (Floating a) => Floating (Exp (V2 a))
-instance [incoherent] (Floating a) => Fractional (Exp (V2 a))
-instance [incoherent] (Num a) => Num (Exp (V2 a))
-instance [incoherent] Elt a => Unlift Exp (V2 (Exp a))
-instance [incoherent] (Lift Exp a, Elt (Plain a)) => Lift Exp (V2 a)
-instance [incoherent] (cst a) => IsProduct cst (V2 a)
-instance [incoherent] Elt a => Elt (V2 a)
-instance [incoherent] R2 V2
-instance [incoherent] R1 V2
-instance [incoherent] Additive V2
-instance [incoherent] Metric V2
+instance Data.Array.Accelerate.Linear.Metric.Metric Linear.V2.V2
+instance Data.Array.Accelerate.Linear.Vector.Additive Linear.V2.V2
+instance Data.Array.Accelerate.Linear.V1.R1 Linear.V2.V2
+instance Data.Array.Accelerate.Linear.V2.R2 Linear.V2.V2
+instance Data.Array.Accelerate.Array.Sugar.Elt a => Data.Array.Accelerate.Array.Sugar.Elt (Linear.V2.V2 a)
+instance cst a => Data.Array.Accelerate.Product.IsProduct cst (Linear.V2.V2 a)
+instance (Data.Array.Accelerate.Lift.Lift Data.Array.Accelerate.Smart.Exp a, Data.Array.Accelerate.Array.Sugar.Elt (Data.Array.Accelerate.Lift.Plain a)) => Data.Array.Accelerate.Lift.Lift Data.Array.Accelerate.Smart.Exp (Linear.V2.V2 a)
+instance Data.Array.Accelerate.Array.Sugar.Elt a => Data.Array.Accelerate.Lift.Unlift Data.Array.Accelerate.Smart.Exp (Linear.V2.V2 (Data.Array.Accelerate.Smart.Exp a))
+instance Data.Array.Accelerate.Classes.Num.Num a => GHC.Num.Num (Data.Array.Accelerate.Smart.Exp (Linear.V2.V2 a))
+instance Data.Array.Accelerate.Classes.Floating.Floating a => GHC.Real.Fractional (Data.Array.Accelerate.Smart.Exp (Linear.V2.V2 a))
+instance Data.Array.Accelerate.Classes.Floating.Floating a => GHC.Float.Floating (Data.Array.Accelerate.Smart.Exp (Linear.V2.V2 a))
+instance (Data.Array.Accelerate.Array.Sugar.Elt a, Data.Array.Accelerate.Array.Sugar.Elt b) => Control.Lens.Each.Each (Data.Array.Accelerate.Smart.Exp (Linear.V2.V2 a)) (Data.Array.Accelerate.Smart.Exp (Linear.V2.V2 b)) (Data.Array.Accelerate.Smart.Exp a) (Data.Array.Accelerate.Smart.Exp b)
 
 
 -- | 3-D Vectors
@@ -268,11 +337,31 @@ triple :: Num a => Exp (V3 a) -> Exp (V3 a) -> Exp (V3 a) -> Exp a
 
 -- | A space that has at least 1 basis vector <a>_x</a>.
 class R1 t => R1 t where _x = liftLens (_x :: Lens' (t (Exp a)) (Exp a))
+
+-- | <pre>
+--   &gt;&gt;&gt; V1 2 ^._x
+--   2
+--   </pre>
+--   
+--   <pre>
+--   &gt;&gt;&gt; V1 2 &amp; _x .~ 3
+--   V1 3
+--   </pre>
 _x :: (R1 t, Elt a, Box t a) => Lens' (Exp (t a)) (Exp a)
 
 -- | A space that distinguishes 2 orthogonal basis vectors <a>_x</a> and
 --   <a>_y</a>, but may have more.
 class (R2 t, R1 t) => R2 t where _y = liftLens (_y :: Lens' (t (Exp a)) (Exp a)) _xy = liftLens (_xy :: Lens' (t (Exp a)) (V2 (Exp a)))
+
+-- | <pre>
+--   &gt;&gt;&gt; V2 1 2 ^._y
+--   2
+--   </pre>
+--   
+--   <pre>
+--   &gt;&gt;&gt; V2 1 2 &amp; _y .~ 3
+--   V2 1 3
+--   </pre>
 _y :: (R2 t, Elt a, Box t a) => Lens' (Exp (t a)) (Exp a)
 _xy :: (R2 t, Elt a, Box t a) => Lens' (Exp (t a)) (Exp (V2 a))
 
@@ -285,6 +374,11 @@ _yx :: (R2 t, Elt a, Box t a) => Lens' (Exp (t a)) (Exp (V2 a))
 -- | A space that distinguishes 3 orthogonal basis vectors: <a>_x</a>,
 --   <a>_y</a>, and <a>_z</a>. (Although it may have more)
 class (R3 t, R2 t) => R3 t where _z = liftLens (_z :: Lens' (t (Exp a)) (Exp a)) _xyz = liftLens (_xyz :: Lens' (t (Exp a)) (V3 (Exp a)))
+
+-- | <pre>
+--   &gt;&gt;&gt; V3 1 2 3 ^. _z
+--   3
+--   </pre>
 _z :: (R3 t, Elt a, Box t a) => Lens' (Exp (t a)) (Exp a)
 _xyz :: (R3 t, Elt a, Box t a) => Lens' (Exp (t a)) (Exp (V3 a))
 _xz :: (R3 t, Elt a, Box t a) => Lens' (Exp (t a)) (Exp (V2 a))
@@ -299,32 +393,32 @@ _zyx :: (R3 t, Elt a, Box t a) => Lens' (Exp (t a)) (Exp (V3 a))
 ex :: R1 t => E t
 ey :: R2 t => E t
 ez :: R3 t => E t
-instance [incoherent] (Elt a, Elt b) => Each (Exp (V3 a)) (Exp (V3 b)) (Exp a) (Exp b)
-instance [incoherent] (Floating a) => Floating (Exp (V3 a))
-instance [incoherent] (Floating a) => Fractional (Exp (V3 a))
-instance [incoherent] (Num a) => Num (Exp (V3 a))
-instance [incoherent] Elt a => Unlift Exp (V3 (Exp a))
-instance [incoherent] (Lift Exp a, Elt (Plain a)) => Lift Exp (V3 a)
-instance [incoherent] (cst a) => IsProduct cst (V3 a)
-instance [incoherent] Elt a => Elt (V3 a)
-instance [incoherent] R3 V3
-instance [incoherent] R2 V3
-instance [incoherent] R1 V3
-instance [incoherent] Additive V3
-instance [incoherent] Metric V3
+instance Data.Array.Accelerate.Linear.Metric.Metric Linear.V3.V3
+instance Data.Array.Accelerate.Linear.Vector.Additive Linear.V3.V3
+instance Data.Array.Accelerate.Linear.V1.R1 Linear.V3.V3
+instance Data.Array.Accelerate.Linear.V2.R2 Linear.V3.V3
+instance Data.Array.Accelerate.Linear.V3.R3 Linear.V3.V3
+instance Data.Array.Accelerate.Array.Sugar.Elt a => Data.Array.Accelerate.Array.Sugar.Elt (Linear.V3.V3 a)
+instance cst a => Data.Array.Accelerate.Product.IsProduct cst (Linear.V3.V3 a)
+instance (Data.Array.Accelerate.Lift.Lift Data.Array.Accelerate.Smart.Exp a, Data.Array.Accelerate.Array.Sugar.Elt (Data.Array.Accelerate.Lift.Plain a)) => Data.Array.Accelerate.Lift.Lift Data.Array.Accelerate.Smart.Exp (Linear.V3.V3 a)
+instance Data.Array.Accelerate.Array.Sugar.Elt a => Data.Array.Accelerate.Lift.Unlift Data.Array.Accelerate.Smart.Exp (Linear.V3.V3 (Data.Array.Accelerate.Smart.Exp a))
+instance Data.Array.Accelerate.Classes.Num.Num a => GHC.Num.Num (Data.Array.Accelerate.Smart.Exp (Linear.V3.V3 a))
+instance Data.Array.Accelerate.Classes.Floating.Floating a => GHC.Real.Fractional (Data.Array.Accelerate.Smart.Exp (Linear.V3.V3 a))
+instance Data.Array.Accelerate.Classes.Floating.Floating a => GHC.Float.Floating (Data.Array.Accelerate.Smart.Exp (Linear.V3.V3 a))
+instance (Data.Array.Accelerate.Array.Sugar.Elt a, Data.Array.Accelerate.Array.Sugar.Elt b) => Control.Lens.Each.Each (Data.Array.Accelerate.Smart.Exp (Linear.V3.V3 a)) (Data.Array.Accelerate.Smart.Exp (Linear.V3.V3 b)) (Data.Array.Accelerate.Smart.Exp a) (Data.Array.Accelerate.Smart.Exp b)
 
 
 -- | Quaternions
 module Data.Array.Accelerate.Linear.Quaternion
 data Quaternion a :: * -> *
 Quaternion :: SrictNotUnpackeda -> Unpk(V3 a) -> Quaternion a
-instance (Elt a, Elt b) => Each (Exp (Quaternion a)) (Exp (Quaternion b)) (Exp a) (Exp b)
-instance Elt a => Unlift Exp (Quaternion (Exp a))
-instance (Lift Exp a, Elt (Plain a)) => Lift Exp (Quaternion a)
-instance (cst a) => IsProduct cst (Quaternion a)
-instance Elt a => Elt (Quaternion a)
-instance Additive Quaternion
-instance Metric Quaternion
+instance Data.Array.Accelerate.Linear.Metric.Metric Linear.Quaternion.Quaternion
+instance Data.Array.Accelerate.Linear.Vector.Additive Linear.Quaternion.Quaternion
+instance Data.Array.Accelerate.Array.Sugar.Elt a => Data.Array.Accelerate.Array.Sugar.Elt (Linear.Quaternion.Quaternion a)
+instance cst a => Data.Array.Accelerate.Product.IsProduct cst (Linear.Quaternion.Quaternion a)
+instance (Data.Array.Accelerate.Lift.Lift Data.Array.Accelerate.Smart.Exp a, Data.Array.Accelerate.Array.Sugar.Elt (Data.Array.Accelerate.Lift.Plain a)) => Data.Array.Accelerate.Lift.Lift Data.Array.Accelerate.Smart.Exp (Linear.Quaternion.Quaternion a)
+instance Data.Array.Accelerate.Array.Sugar.Elt a => Data.Array.Accelerate.Lift.Unlift Data.Array.Accelerate.Smart.Exp (Linear.Quaternion.Quaternion (Data.Array.Accelerate.Smart.Exp a))
+instance (Data.Array.Accelerate.Array.Sugar.Elt a, Data.Array.Accelerate.Array.Sugar.Elt b) => Control.Lens.Each.Each (Data.Array.Accelerate.Smart.Exp (Linear.Quaternion.Quaternion a)) (Data.Array.Accelerate.Smart.Exp (Linear.Quaternion.Quaternion b)) (Data.Array.Accelerate.Smart.Exp a) (Data.Array.Accelerate.Smart.Exp b)
 
 
 -- | 4-D Vectors
@@ -349,11 +443,31 @@ normalizePoint :: Floating a => Exp (V4 a) -> Exp (V3 a)
 
 -- | A space that has at least 1 basis vector <a>_x</a>.
 class R1 t => R1 t where _x = liftLens (_x :: Lens' (t (Exp a)) (Exp a))
+
+-- | <pre>
+--   &gt;&gt;&gt; V1 2 ^._x
+--   2
+--   </pre>
+--   
+--   <pre>
+--   &gt;&gt;&gt; V1 2 &amp; _x .~ 3
+--   V1 3
+--   </pre>
 _x :: (R1 t, Elt a, Box t a) => Lens' (Exp (t a)) (Exp a)
 
 -- | A space that distinguishes 2 orthogonal basis vectors <a>_x</a> and
 --   <a>_y</a>, but may have more.
 class (R2 t, R1 t) => R2 t where _y = liftLens (_y :: Lens' (t (Exp a)) (Exp a)) _xy = liftLens (_xy :: Lens' (t (Exp a)) (V2 (Exp a)))
+
+-- | <pre>
+--   &gt;&gt;&gt; V2 1 2 ^._y
+--   2
+--   </pre>
+--   
+--   <pre>
+--   &gt;&gt;&gt; V2 1 2 &amp; _y .~ 3
+--   V2 1 3
+--   </pre>
 _y :: (R2 t, Elt a, Box t a) => Lens' (Exp (t a)) (Exp a)
 _xy :: (R2 t, Elt a, Box t a) => Lens' (Exp (t a)) (Exp (V2 a))
 
@@ -366,6 +480,11 @@ _yx :: (R2 t, Elt a, Box t a) => Lens' (Exp (t a)) (Exp (V2 a))
 -- | A space that distinguishes 3 orthogonal basis vectors: <a>_x</a>,
 --   <a>_y</a>, and <a>_z</a>. (Although it may have more)
 class (R3 t, R2 t) => R3 t where _z = liftLens (_z :: Lens' (t (Exp a)) (Exp a)) _xyz = liftLens (_xyz :: Lens' (t (Exp a)) (V3 (Exp a)))
+
+-- | <pre>
+--   &gt;&gt;&gt; V3 1 2 3 ^. _z
+--   3
+--   </pre>
 _z :: (R3 t, Elt a, Box t a) => Lens' (Exp (t a)) (Exp a)
 _xyz :: (R3 t, Elt a, Box t a) => Lens' (Exp (t a)) (Exp (V3 a))
 _xz :: (R3 t, Elt a, Box t a) => Lens' (Exp (t a)) (Exp (V2 a))
@@ -381,6 +500,11 @@ _zyx :: (R3 t, Elt a, Box t a) => Lens' (Exp (t a)) (Exp (V3 a))
 -- | A space that distinguishes orthogonal basis vectors <a>_x</a>,
 --   <a>_y</a>, <a>_z</a>, and <a>_w</a>. (Although it may have more.)
 class (R4 t, R3 t) => R4 t where _w = liftLens (_w :: Lens' (t (Exp a)) (Exp a)) _xyzw = liftLens (_xyzw :: Lens' (t (Exp a)) (V4 (Exp a)))
+
+-- | <pre>
+--   &gt;&gt;&gt; V4 1 2 3 4 ^._w
+--   4
+--   </pre>
 _w :: (R4 t, Elt a, Box t a) => Lens' (Exp (t a)) (Exp a)
 _xyzw :: (R4 t, Elt a, Box t a) => Lens' (Exp (t a)) (Exp (V4 a))
 _xw :: (R4 t, Elt a, Box t a) => Lens' (Exp (t a)) (Exp (V2 a))
@@ -434,20 +558,20 @@ ex :: R1 t => E t
 ey :: R2 t => E t
 ez :: R3 t => E t
 ew :: R4 t => E t
-instance [incoherent] (Elt a, Elt b) => Each (Exp (V4 a)) (Exp (V4 b)) (Exp a) (Exp b)
-instance [incoherent] (Floating a) => Floating (Exp (V4 a))
-instance [incoherent] (Floating a) => Fractional (Exp (V4 a))
-instance [incoherent] (Num a) => Num (Exp (V4 a))
-instance [incoherent] Elt a => Unlift Exp (V4 (Exp a))
-instance [incoherent] (Lift Exp a, Elt (Plain a)) => Lift Exp (V4 a)
-instance [incoherent] (cst a) => IsProduct cst (V4 a)
-instance [incoherent] Elt a => Elt (V4 a)
-instance [incoherent] R4 V4
-instance [incoherent] R3 V4
-instance [incoherent] R2 V4
-instance [incoherent] R1 V4
-instance [incoherent] Additive V4
-instance [incoherent] Metric V4
+instance Data.Array.Accelerate.Linear.Metric.Metric Linear.V4.V4
+instance Data.Array.Accelerate.Linear.Vector.Additive Linear.V4.V4
+instance Data.Array.Accelerate.Linear.V1.R1 Linear.V4.V4
+instance Data.Array.Accelerate.Linear.V2.R2 Linear.V4.V4
+instance Data.Array.Accelerate.Linear.V3.R3 Linear.V4.V4
+instance Data.Array.Accelerate.Linear.V4.R4 Linear.V4.V4
+instance Data.Array.Accelerate.Array.Sugar.Elt a => Data.Array.Accelerate.Array.Sugar.Elt (Linear.V4.V4 a)
+instance cst a => Data.Array.Accelerate.Product.IsProduct cst (Linear.V4.V4 a)
+instance (Data.Array.Accelerate.Lift.Lift Data.Array.Accelerate.Smart.Exp a, Data.Array.Accelerate.Array.Sugar.Elt (Data.Array.Accelerate.Lift.Plain a)) => Data.Array.Accelerate.Lift.Lift Data.Array.Accelerate.Smart.Exp (Linear.V4.V4 a)
+instance Data.Array.Accelerate.Array.Sugar.Elt a => Data.Array.Accelerate.Lift.Unlift Data.Array.Accelerate.Smart.Exp (Linear.V4.V4 (Data.Array.Accelerate.Smart.Exp a))
+instance Data.Array.Accelerate.Classes.Num.Num a => GHC.Num.Num (Data.Array.Accelerate.Smart.Exp (Linear.V4.V4 a))
+instance Data.Array.Accelerate.Classes.Floating.Floating a => GHC.Real.Fractional (Data.Array.Accelerate.Smart.Exp (Linear.V4.V4 a))
+instance Data.Array.Accelerate.Classes.Floating.Floating a => GHC.Float.Floating (Data.Array.Accelerate.Smart.Exp (Linear.V4.V4 a))
+instance (Data.Array.Accelerate.Array.Sugar.Elt a, Data.Array.Accelerate.Array.Sugar.Elt b) => Control.Lens.Each.Each (Data.Array.Accelerate.Smart.Exp (Linear.V4.V4 a)) (Data.Array.Accelerate.Smart.Exp (Linear.V4.V4 b)) (Data.Array.Accelerate.Smart.Exp a) (Data.Array.Accelerate.Smart.Exp b)
 
 
 -- | Plücker coordinates for lines in 3d homogeneous space.
@@ -474,14 +598,13 @@ plucker :: Num a => Exp (V4 a) -> Exp (V4 a) -> Exp (Plucker a)
 -- | Given a pair of 3D points, generate Plücker coordinates for the line
 --   through them, directed from the second towards the first.
 plucker3D :: Num a => Exp (V3 a) -> Exp (V3 a) -> Exp (Plucker a)
-instance Typeable Plucker
-instance (Elt a, Elt b) => Each (Exp (Plucker a)) (Exp (Plucker b)) (Exp a) (Exp b)
-instance Elt a => Unlift Exp (Plucker (Exp a))
-instance (Lift Exp a, Elt (Plain a)) => Lift Exp (Plucker a)
-instance (cst a) => IsProduct cst (Plucker a)
-instance Elt a => Elt (Plucker a)
-instance Additive Plucker
-instance Metric Plucker
+instance Data.Array.Accelerate.Linear.Metric.Metric Linear.Plucker.Plucker
+instance Data.Array.Accelerate.Linear.Vector.Additive Linear.Plucker.Plucker
+instance Data.Array.Accelerate.Array.Sugar.Elt a => Data.Array.Accelerate.Array.Sugar.Elt (Linear.Plucker.Plucker a)
+instance cst a => Data.Array.Accelerate.Product.IsProduct cst (Linear.Plucker.Plucker a)
+instance (Data.Array.Accelerate.Lift.Lift Data.Array.Accelerate.Smart.Exp a, Data.Array.Accelerate.Array.Sugar.Elt (Data.Array.Accelerate.Lift.Plain a)) => Data.Array.Accelerate.Lift.Lift Data.Array.Accelerate.Smart.Exp (Linear.Plucker.Plucker a)
+instance Data.Array.Accelerate.Array.Sugar.Elt a => Data.Array.Accelerate.Lift.Unlift Data.Array.Accelerate.Smart.Exp (Linear.Plucker.Plucker (Data.Array.Accelerate.Smart.Exp a))
+instance (Data.Array.Accelerate.Array.Sugar.Elt a, Data.Array.Accelerate.Array.Sugar.Elt b) => Control.Lens.Each.Each (Data.Array.Accelerate.Smart.Exp (Linear.Plucker.Plucker a)) (Data.Array.Accelerate.Smart.Exp (Linear.Plucker.Plucker b)) (Data.Array.Accelerate.Smart.Exp a) (Data.Array.Accelerate.Smart.Exp b)
 
 
 -- | Simple matrix operations for low-dimensional primitives
@@ -583,16 +706,20 @@ transpose :: (Distributive g, Functor f, Box2 f g a, Box2 g f a) => Exp (f (g a)
 --   </pre>
 identity :: (Traversable t, Applicative t, Num a, Box2 t t a) => Exp (t (t a))
 class Trace m => Trace m where trace = lift . trace . unlift' diagonal = lift . diagonal . unlift'
+
+-- | Compute the trace of a matrix
 trace :: (Trace m, Num a, Box2 m m a) => Exp (m (m a)) -> Exp a
+
+-- | Compute the diagonal of a matrix
 diagonal :: (Trace m, Box2 m m a) => Exp (m (m a)) -> Exp (m a)
-instance Trace Quaternion
-instance Trace Plucker
-instance Trace V4
-instance Trace V3
-instance Trace V2
-instance Trace V1
-instance Trace V0
-instance Trace Complex
+instance Data.Array.Accelerate.Linear.Matrix.Trace Data.Complex.Complex
+instance Data.Array.Accelerate.Linear.Matrix.Trace Linear.V0.V0
+instance Data.Array.Accelerate.Linear.Matrix.Trace Linear.V1.V1
+instance Data.Array.Accelerate.Linear.Matrix.Trace Linear.V2.V2
+instance Data.Array.Accelerate.Linear.Matrix.Trace Linear.V3.V3
+instance Data.Array.Accelerate.Linear.Matrix.Trace Linear.V4.V4
+instance Data.Array.Accelerate.Linear.Matrix.Trace Linear.Plucker.Plucker
+instance Data.Array.Accelerate.Linear.Matrix.Trace Linear.Quaternion.Quaternion
 
 
 -- | This module simply re-exports everything from the various modules that

@@ -172,13 +172,13 @@
 <a name="line-163"></a><span class='hs-comment'>-- Representation change for array element types</span>
 <a name="line-164"></a><span class='hs-comment'>-- ---------------------------------------------</span>
 <a name="line-165"></a>
-<a name="line-166"></a><span class='hs-comment'>-- | Type representation mapping</span>
-<a name="line-167"></a><span class='hs-comment'>--</span>
-<a name="line-168"></a><span class='hs-comment'>-- We represent tuples by using '()' and '(,)' as type-level nil and snoc to</span>
-<a name="line-169"></a><span class='hs-comment'>-- construct snoc-lists of types, and are flattened all the way down to</span>
-<a name="line-170"></a><span class='hs-comment'>-- primitive types.</span>
-<a name="line-171"></a><span class='hs-comment'>--</span>
-<a name="line-172"></a><span class='hs-keyword'>type</span> <span class='hs-varid'>family</span> <span class='hs-conid'>EltRepr</span> <span class='hs-varid'>a</span> <span class='hs-keyglyph'>::</span> <span class='hs-varop'>*</span>
+<a name="line-166"></a><a name="EltRepr"></a><span class='hs-comment'>-- | Type representation mapping</span>
+<a name="line-167"></a><a name="EltRepr"></a><span class='hs-comment'>--</span>
+<a name="line-168"></a><a name="EltRepr"></a><span class='hs-comment'>-- We represent tuples by using '()' and '(,)' as type-level nil and snoc to</span>
+<a name="line-169"></a><a name="EltRepr"></a><span class='hs-comment'>-- construct snoc-lists of types, and are flattened all the way down to</span>
+<a name="line-170"></a><a name="EltRepr"></a><span class='hs-comment'>-- primitive types.</span>
+<a name="line-171"></a><a name="EltRepr"></a><span class='hs-comment'>--</span>
+<a name="line-172"></a><a name="EltRepr"></a><span class='hs-keyword'>type</span> <span class='hs-keyword'>family</span> <span class='hs-conid'>EltRepr</span> <span class='hs-varid'>a</span> <span class='hs-keyglyph'>::</span> <span class='hs-varop'>*</span>
 <a name="line-173"></a><span class='hs-keyword'>type</span> <span class='hs-keyword'>instance</span> <span class='hs-conid'>EltRepr</span> <span class='hs-conid'>()</span>              <span class='hs-keyglyph'>=</span> <span class='hs-conid'>()</span>
 <a name="line-174"></a><span class='hs-keyword'>type</span> <span class='hs-keyword'>instance</span> <span class='hs-conid'>EltRepr</span> <span class='hs-conid'>Z</span>               <span class='hs-keyglyph'>=</span> <span class='hs-conid'>()</span>
 <a name="line-175"></a><span class='hs-keyword'>type</span> <span class='hs-keyword'>instance</span> <span class='hs-conid'>EltRepr</span> <span class='hs-layout'>(</span><span class='hs-varid'>t</span><span class='hs-conop'>:.</span><span class='hs-varid'>h</span><span class='hs-layout'>)</span>          <span class='hs-keyglyph'>=</span> <span class='hs-layout'>(</span><span class='hs-conid'>EltRepr</span> <span class='hs-varid'>t</span><span class='hs-layout'>,</span> <span class='hs-conid'>EltRepr</span> <span class='hs-varid'>h</span><span class='hs-layout'>)</span>
@@ -582,11 +582,11 @@
 <a name="line-573"></a><span class='hs-comment'>-- Surface arrays</span>
 <a name="line-574"></a><span class='hs-comment'>-- --------------</span>
 <a name="line-575"></a>
-<a name="line-576"></a><span class='hs-comment'>-- We represent tuples of arrays in the same way as tuples of scalars; using</span>
-<a name="line-577"></a><span class='hs-comment'>-- '()' and '(,)' as type-level nil and snoc. This characterises the domain of</span>
-<a name="line-578"></a><span class='hs-comment'>-- results of Accelerate array computations.</span>
-<a name="line-579"></a><span class='hs-comment'>--</span>
-<a name="line-580"></a><span class='hs-keyword'>type</span> <span class='hs-varid'>family</span> <span class='hs-conid'>ArrRepr</span> <span class='hs-varid'>a</span> <span class='hs-keyglyph'>::</span> <span class='hs-varop'>*</span>
+<a name="line-576"></a><a name="ArrRepr"></a><span class='hs-comment'>-- We represent tuples of arrays in the same way as tuples of scalars; using</span>
+<a name="line-577"></a><a name="ArrRepr"></a><span class='hs-comment'>-- '()' and '(,)' as type-level nil and snoc. This characterises the domain of</span>
+<a name="line-578"></a><a name="ArrRepr"></a><span class='hs-comment'>-- results of Accelerate array computations.</span>
+<a name="line-579"></a><a name="ArrRepr"></a><span class='hs-comment'>--</span>
+<a name="line-580"></a><a name="ArrRepr"></a><span class='hs-keyword'>type</span> <span class='hs-keyword'>family</span> <span class='hs-conid'>ArrRepr</span> <span class='hs-varid'>a</span> <span class='hs-keyglyph'>::</span> <span class='hs-varop'>*</span>
 <a name="line-581"></a><span class='hs-keyword'>type</span> <span class='hs-keyword'>instance</span> <span class='hs-conid'>ArrRepr</span> <span class='hs-conid'>()</span>           <span class='hs-keyglyph'>=</span> <span class='hs-conid'>()</span>
 <a name="line-582"></a><span class='hs-keyword'>type</span> <span class='hs-keyword'>instance</span> <span class='hs-conid'>ArrRepr</span> <span class='hs-layout'>(</span><span class='hs-conid'>Array</span> <span class='hs-varid'>sh</span> <span class='hs-varid'>e</span><span class='hs-layout'>)</span> <span class='hs-keyglyph'>=</span> <span class='hs-conid'>Array</span> <span class='hs-varid'>sh</span> <span class='hs-varid'>e</span>
 <a name="line-583"></a><span class='hs-keyword'>type</span> <span class='hs-keyword'>instance</span> <span class='hs-conid'>ArrRepr</span> <span class='hs-layout'>(</span><span class='hs-varid'>a</span><span class='hs-layout'>,</span> <span class='hs-varid'>b</span><span class='hs-layout'>)</span>       <span class='hs-keyglyph'>=</span> <span class='hs-conid'>TupleRepr</span> <span class='hs-layout'>(</span><span class='hs-conid'>ArrRepr</span> <span class='hs-varid'>a</span><span class='hs-layout'>,</span> <span class='hs-conid'>ArrRepr</span> <span class='hs-varid'>b</span><span class='hs-layout'>)</span>
@@ -1099,7 +1099,7 @@
 <a name="line-1090"></a>    <span class='hs-layout'>(</span><span class='hs-varid'>adata</span><span class='hs-layout'>,</span> <span class='hs-keyword'>_</span><span class='hs-layout'>)</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>runArrayData</span> <span class='hs-varop'>$</span> <span class='hs-layout'>(</span><span class='hs-layout'>,</span><span class='hs-varid'>undefined</span><span class='hs-layout'>)</span> <span class='hs-varop'>`fmap`</span> <span class='hs-varid'>newArrayData</span> <span class='hs-layout'>(</span><span class='hs-varid'>size</span> <span class='hs-varid'>sh</span><span class='hs-layout'>)</span>
 <a name="line-1091"></a>
 <a name="line-1092"></a>
-<a name="line-1093"></a><span class='hs-keyword'>type</span> <span class='hs-varid'>family</span> <span class='hs-conid'>IxShapeRepr</span> <span class='hs-varid'>e</span> <span class='hs-keyword'>where</span>
+<a name="line-1093"></a><a name="IxShapeRepr"></a><span class='hs-keyword'>type</span> <span class='hs-keyword'>family</span> <span class='hs-conid'>IxShapeRepr</span> <span class='hs-varid'>e</span> <span class='hs-keyword'>where</span>
 <a name="line-1094"></a>  <span class='hs-conid'>IxShapeRepr</span> <span class='hs-conid'>()</span>    <span class='hs-keyglyph'>=</span> <span class='hs-conid'>()</span>
 <a name="line-1095"></a>  <span class='hs-conid'>IxShapeRepr</span> <span class='hs-conid'>Int</span>   <span class='hs-keyglyph'>=</span> <span class='hs-layout'>(</span><span class='hs-conid'>()</span><span class='hs-layout'>,</span><span class='hs-conid'>Int</span><span class='hs-layout'>)</span>
 <a name="line-1096"></a>  <span class='hs-conid'>IxShapeRepr</span> <span class='hs-layout'>(</span><span class='hs-varid'>t</span><span class='hs-layout'>,</span><span class='hs-varid'>h</span><span class='hs-layout'>)</span> <span class='hs-keyglyph'>=</span> <span class='hs-layout'>(</span><span class='hs-conid'>IxShapeRepr</span> <span class='hs-varid'>t</span><span class='hs-layout'>,</span> <span class='hs-varid'>h</span><span class='hs-layout'>)</span>

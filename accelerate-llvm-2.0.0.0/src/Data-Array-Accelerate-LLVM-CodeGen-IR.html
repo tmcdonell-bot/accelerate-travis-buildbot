@@ -41,11 +41,11 @@
 <a name="line-32"></a>  <span class='hs-conid'>IR</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Operands</span> <span class='hs-layout'>(</span><span class='hs-conid'>EltRepr</span> <span class='hs-varid'>t</span><span class='hs-layout'>)</span>
 <a name="line-33"></a>     <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>IR</span> <span class='hs-varid'>t</span>
 <a name="line-34"></a>
-<a name="line-35"></a><span class='hs-comment'>-- We use a data family to represent sequences of LLVM (scalar) operands</span>
-<a name="line-36"></a><span class='hs-comment'>-- representing a single Accelerate type. Using a data family rather than a type</span>
-<a name="line-37"></a><span class='hs-comment'>-- family means that Operands is bijective.</span>
-<a name="line-38"></a><span class='hs-comment'>--</span>
-<a name="line-39"></a><span class='hs-keyword'>data</span> <span class='hs-varid'>family</span> <span class='hs-conid'>Operands</span> <span class='hs-varid'>e</span> <span class='hs-keyglyph'>::</span> <span class='hs-varop'>*</span>
+<a name="line-35"></a><a name="Operands"></a><span class='hs-comment'>-- We use a data family to represent sequences of LLVM (scalar) operands</span>
+<a name="line-36"></a><a name="Operands"></a><span class='hs-comment'>-- representing a single Accelerate type. Using a data family rather than a type</span>
+<a name="line-37"></a><a name="Operands"></a><span class='hs-comment'>-- family means that Operands is bijective.</span>
+<a name="line-38"></a><a name="Operands"></a><span class='hs-comment'>--</span>
+<a name="line-39"></a><a name="Operands"></a><span class='hs-keyword'>data</span> <span class='hs-keyword'>family</span> <span class='hs-conid'>Operands</span> <span class='hs-varid'>e</span> <span class='hs-keyglyph'>::</span> <span class='hs-varop'>*</span>
 <a name="line-40"></a><span class='hs-keyword'>data</span> <span class='hs-keyword'>instance</span> <span class='hs-conid'>Operands</span> <span class='hs-conid'>()</span>       <span class='hs-keyglyph'>=</span> <span class='hs-conid'>OP_Unit</span>
 <a name="line-41"></a><span class='hs-keyword'>data</span> <span class='hs-keyword'>instance</span> <span class='hs-conid'>Operands</span> <span class='hs-conid'>Int</span>      <span class='hs-keyglyph'>=</span> <span class='hs-conid'>OP_Int</span>     <span class='hs-layout'>(</span><span class='hs-conid'>Operand</span> <span class='hs-conid'>Int</span><span class='hs-layout'>)</span>
 <a name="line-42"></a><span class='hs-keyword'>data</span> <span class='hs-keyword'>instance</span> <span class='hs-conid'>Operands</span> <span class='hs-conid'>Int8</span>     <span class='hs-keyglyph'>=</span> <span class='hs-conid'>OP_Int8</span>    <span class='hs-layout'>(</span><span class='hs-conid'>Operand</span> <span class='hs-conid'>Int8</span><span class='hs-layout'>)</span>

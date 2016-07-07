@@ -106,12 +106,11 @@ resultIfOk :: (Status, a) -> IO a
 -- | Throw an exception with an error string associated with an
 --   unsuccessful return code, otherwise return unit.
 nothingIfOk :: Status -> IO ()
-instance Typeable CUDAException
-instance Eq Status
-instance Show Status
-instance Show CUDAException
-instance Exception CUDAException
-instance Enum Status
+instance GHC.Show.Show Foreign.CUDA.Driver.Error.Status
+instance GHC.Classes.Eq Foreign.CUDA.Driver.Error.Status
+instance GHC.Enum.Enum Foreign.CUDA.Driver.Error.Status
+instance GHC.Exception.Exception Foreign.CUDA.Driver.Error.CUDAException
+instance GHC.Show.Show Foreign.CUDA.Driver.Error.CUDAException
 
 
 -- | Utility functions
@@ -161,9 +160,9 @@ start :: IO ()
 --   
 --   <a>http://docs.nvidia.com/cuda/cuda-driver-api/group__CUDA__PROFILER.html#group__CUDA__PROFILER_1g4d8edef6174fd90165e6ac838f320a5f</a>
 stop :: IO ()
-instance Eq OutputMode
-instance Show OutputMode
-instance Enum OutputMode
+instance GHC.Show.Show Foreign.CUDA.Driver.Profiler.OutputMode
+instance GHC.Classes.Eq Foreign.CUDA.Driver.Profiler.OutputMode
+instance GHC.Enum.Enum Foreign.CUDA.Driver.Profiler.OutputMode
 
 
 -- | Error handling functions
@@ -247,12 +246,11 @@ requireSDK :: Name -> Double -> IO a
 --   return the error string associated with the return code
 resultIfOk :: (Status, a) -> IO a
 nothingIfOk :: Status -> IO ()
-instance Typeable CUDAException
-instance Eq Status
-instance Show Status
-instance Show CUDAException
-instance Exception CUDAException
-instance Enum Status
+instance GHC.Show.Show Foreign.CUDA.Runtime.Error.Status
+instance GHC.Classes.Eq Foreign.CUDA.Runtime.Error.Status
+instance GHC.Enum.Enum Foreign.CUDA.Runtime.Error.Status
+instance GHC.Exception.Exception Foreign.CUDA.Runtime.Error.CUDAException
+instance GHC.Show.Show Foreign.CUDA.Runtime.Error.CUDAException
 
 
 -- | Utility functions
@@ -267,6 +265,8 @@ driverVersion :: IO Int
 
 -- | Common device functions
 module Foreign.CUDA.Analysis.Device
+
+-- | GPU compute capability, major and minor revision number respectively.
 data Compute
 Compute :: !Int -> !Int -> Compute
 
@@ -282,132 +282,132 @@ data DeviceProperties
 DeviceProperties :: !String -> !Compute -> !Int64 -> !Int64 -> !Int64 -> !Int -> !Int -> !Int -> !Int -> !(Int, Int, Int) -> !(Int, Int, Int) -> !Int -> !(Int, Int) -> !(Int, Int, Int) -> !Int -> !Int -> !Int64 -> !Int -> !Int -> !Int64 -> !ComputeMode -> !Bool -> !Bool -> !Bool -> !Int -> !Int -> !PCI -> !Bool -> !Bool -> !Bool -> !Bool -> !Bool -> DeviceProperties
 
 -- | Identifier
-deviceName :: DeviceProperties -> !String
+[deviceName] :: DeviceProperties -> !String
 
 -- | Supported compute capability
-computeCapability :: DeviceProperties -> !Compute
+[computeCapability] :: DeviceProperties -> !Compute
 
 -- | Available global memory on the device in bytes
-totalGlobalMem :: DeviceProperties -> !Int64
+[totalGlobalMem] :: DeviceProperties -> !Int64
 
 -- | Available constant memory on the device in bytes
-totalConstMem :: DeviceProperties -> !Int64
+[totalConstMem] :: DeviceProperties -> !Int64
 
 -- | Available shared memory per block in bytes
-sharedMemPerBlock :: DeviceProperties -> !Int64
+[sharedMemPerBlock] :: DeviceProperties -> !Int64
 
 -- | 32-bit registers per block
-regsPerBlock :: DeviceProperties -> !Int
+[regsPerBlock] :: DeviceProperties -> !Int
 
 -- | Warp size in threads (SIMD width)
-warpSize :: DeviceProperties -> !Int
+[warpSize] :: DeviceProperties -> !Int
 
 -- | Maximum number of threads per block
-maxThreadsPerBlock :: DeviceProperties -> !Int
+[maxThreadsPerBlock] :: DeviceProperties -> !Int
 
 -- | Maximum number of threads per multiprocessor
-maxThreadsPerMultiProcessor :: DeviceProperties -> !Int
+[maxThreadsPerMultiProcessor] :: DeviceProperties -> !Int
 
 -- | Maximum size of each dimension of a block
-maxBlockSize :: DeviceProperties -> !(Int, Int, Int)
+[maxBlockSize] :: DeviceProperties -> !(Int, Int, Int)
 
 -- | Maximum size of each dimension of a grid
-maxGridSize :: DeviceProperties -> !(Int, Int, Int)
+[maxGridSize] :: DeviceProperties -> !(Int, Int, Int)
 
 -- | Maximum texture dimensions
-maxTextureDim1D :: DeviceProperties -> !Int
-maxTextureDim2D :: DeviceProperties -> !(Int, Int)
-maxTextureDim3D :: DeviceProperties -> !(Int, Int, Int)
+[maxTextureDim1D] :: DeviceProperties -> !Int
+[maxTextureDim2D] :: DeviceProperties -> !(Int, Int)
+[maxTextureDim3D] :: DeviceProperties -> !(Int, Int, Int)
 
 -- | Clock frequency in kilohertz
-clockRate :: DeviceProperties -> !Int
+[clockRate] :: DeviceProperties -> !Int
 
 -- | Number of multiprocessors on the device
-multiProcessorCount :: DeviceProperties -> !Int
+[multiProcessorCount] :: DeviceProperties -> !Int
 
 -- | Maximum pitch in bytes allowed by memory copies
-memPitch :: DeviceProperties -> !Int64
+[memPitch] :: DeviceProperties -> !Int64
 
 -- | Global memory bus width in bits
-memBusWidth :: DeviceProperties -> !Int
+[memBusWidth] :: DeviceProperties -> !Int
 
 -- | Peak memory clock frequency in kilohertz
-memClockRate :: DeviceProperties -> !Int
+[memClockRate] :: DeviceProperties -> !Int
 
 -- | Alignment requirement for textures
-textureAlignment :: DeviceProperties -> !Int64
-computeMode :: DeviceProperties -> !ComputeMode
+[textureAlignment] :: DeviceProperties -> !Int64
+[computeMode] :: DeviceProperties -> !ComputeMode
 
 -- | Device can concurrently copy memory and execute a kernel
-deviceOverlap :: DeviceProperties -> !Bool
+[deviceOverlap] :: DeviceProperties -> !Bool
 
 -- | Device can possibly execute multiple kernels concurrently
-concurrentKernels :: DeviceProperties -> !Bool
+[concurrentKernels] :: DeviceProperties -> !Bool
 
 -- | Device supports and has enabled error correction
-eccEnabled :: DeviceProperties -> !Bool
+[eccEnabled] :: DeviceProperties -> !Bool
 
 -- | Number of asynchronous engines
-asyncEngineCount :: DeviceProperties -> !Int
+[asyncEngineCount] :: DeviceProperties -> !Int
 
 -- | Size of the L2 cache in bytes
-cacheMemL2 :: DeviceProperties -> !Int
+[cacheMemL2] :: DeviceProperties -> !Int
 
 -- | PCI device information for the device
-pciInfo :: DeviceProperties -> !PCI
+[pciInfo] :: DeviceProperties -> !PCI
 
 -- | Whether this is a Tesla device using the TCC driver
-tccDriverEnabled :: DeviceProperties -> !Bool
+[tccDriverEnabled] :: DeviceProperties -> !Bool
 
 -- | Whether there is a runtime limit on kernels
-kernelExecTimeoutEnabled :: DeviceProperties -> !Bool
+[kernelExecTimeoutEnabled] :: DeviceProperties -> !Bool
 
 -- | As opposed to discrete
-integrated :: DeviceProperties -> !Bool
+[integrated] :: DeviceProperties -> !Bool
 
 -- | Device can use pinned memory
-canMapHostMemory :: DeviceProperties -> !Bool
+[canMapHostMemory] :: DeviceProperties -> !Bool
 
 -- | Device shares a unified address space with the host
-unifiedAddressing :: DeviceProperties -> !Bool
+[unifiedAddressing] :: DeviceProperties -> !Bool
 data DeviceResources
 DeviceResources :: !Int -> !Int -> !Int -> !Int -> !Int -> !Int -> !Int -> !Int -> !Int -> !Int -> !Int -> !Allocation -> DeviceResources
 
 -- | Warp size
-threadsPerWarp :: DeviceResources -> !Int
+[threadsPerWarp] :: DeviceResources -> !Int
 
 -- | Maximum number of in-flight threads on a multiprocessor
-threadsPerMP :: DeviceResources -> !Int
+[threadsPerMP] :: DeviceResources -> !Int
 
 -- | Maximum number of thread blocks resident on a multiprocessor
-threadBlocksPerMP :: DeviceResources -> !Int
+[threadBlocksPerMP] :: DeviceResources -> !Int
 
 -- | Maximum number of in-flight warps per multiprocessor
-warpsPerMP :: DeviceResources -> !Int
+[warpsPerMP] :: DeviceResources -> !Int
 
 -- | Number of SIMD arithmetic units per multiprocessor
-coresPerMP :: DeviceResources -> !Int
+[coresPerMP] :: DeviceResources -> !Int
 
 -- | Total amount of shared memory per multiprocessor (bytes)
-sharedMemPerMP :: DeviceResources -> !Int
+[sharedMemPerMP] :: DeviceResources -> !Int
 
 -- | Shared memory allocation unit size (bytes)
-sharedMemAllocUnit :: DeviceResources -> !Int
+[sharedMemAllocUnit] :: DeviceResources -> !Int
 
 -- | Total number of registers in a multiprocessor
-regFileSize :: DeviceResources -> !Int
+[regFileSize] :: DeviceResources -> !Int
 
 -- | Register allocation unit size
-regAllocUnit :: DeviceResources -> !Int
+[regAllocUnit] :: DeviceResources -> !Int
 
 -- | Register allocation granularity for warps
-regAllocWarp :: DeviceResources -> !Int
+[regAllocWarp] :: DeviceResources -> !Int
 
 -- | Maximum number of registers per thread
-regPerThread :: DeviceResources -> !Int
+[regPerThread] :: DeviceResources -> !Int
 
 -- | How multiprocessor resources are divided
-allocation :: DeviceResources -> !Allocation
+[allocation] :: DeviceResources -> !Allocation
 data Allocation
 Warp :: Allocation
 Block :: Allocation
@@ -415,25 +415,25 @@ data PCI
 PCI :: !Int -> !Int -> !Int -> PCI
 
 -- | PCI bus ID of the device
-busID :: PCI -> !Int
+[busID] :: PCI -> !Int
 
 -- | PCI device ID
-deviceID :: PCI -> !Int
+[deviceID] :: PCI -> !Int
 
 -- | PCI domain ID
-domainID :: PCI -> !Int
+[domainID] :: PCI -> !Int
 
 -- | Extract some additional hardware resource limitations for a given
 --   device.
 deviceResources :: DeviceProperties -> DeviceResources
-instance Eq ComputeMode
-instance Show ComputeMode
-instance Eq Compute
-instance Show PCI
-instance Show DeviceProperties
-instance Ord Compute
-instance Show Compute
-instance Enum ComputeMode
+instance GHC.Show.Show Foreign.CUDA.Analysis.Device.DeviceProperties
+instance GHC.Show.Show Foreign.CUDA.Analysis.Device.PCI
+instance GHC.Classes.Eq Foreign.CUDA.Analysis.Device.Compute
+instance GHC.Show.Show Foreign.CUDA.Analysis.Device.ComputeMode
+instance GHC.Classes.Eq Foreign.CUDA.Analysis.Device.ComputeMode
+instance GHC.Enum.Enum Foreign.CUDA.Analysis.Device.ComputeMode
+instance GHC.Show.Show Foreign.CUDA.Analysis.Device.Compute
+instance GHC.Classes.Ord Foreign.CUDA.Analysis.Device.Compute
 
 
 -- | Occupancy calculations for CUDA kernels
@@ -484,16 +484,16 @@ data Occupancy
 Occupancy :: !Int -> !Int -> !Int -> !Double -> Occupancy
 
 -- | Active threads per multiprocessor
-activeThreads :: Occupancy -> !Int
+[activeThreads] :: Occupancy -> !Int
 
 -- | Active thread blocks per multiprocessor
-activeThreadBlocks :: Occupancy -> !Int
+[activeThreadBlocks] :: Occupancy -> !Int
 
 -- | Active warps per multiprocessor
-activeWarps :: Occupancy -> !Int
+[activeWarps] :: Occupancy -> !Int
 
 -- | Occupancy of each multiprocessor (percent)
-occupancy100 :: Occupancy -> !Double
+[occupancy100] :: Occupancy -> !Double
 
 -- | Calculate occupancy data for a given GPU and kernel resource usage
 occupancy :: DeviceProperties -> Int -> Int -> Int -> Occupancy
@@ -530,9 +530,9 @@ decPow2 :: DeviceProperties -> [Int]
 -- | Decrements in the warp size of the device, over the range of supported
 --   thread block sizes.
 decWarp :: DeviceProperties -> [Int]
-instance Eq Occupancy
-instance Ord Occupancy
-instance Show Occupancy
+instance GHC.Show.Show Foreign.CUDA.Analysis.Occupancy.Occupancy
+instance GHC.Classes.Ord Foreign.CUDA.Analysis.Occupancy.Occupancy
+instance GHC.Classes.Eq Foreign.CUDA.Analysis.Occupancy.Occupancy
 
 
 -- | Device management routines
@@ -555,94 +555,96 @@ data DeviceProperties
 DeviceProperties :: !String -> !Compute -> !Int64 -> !Int64 -> !Int64 -> !Int -> !Int -> !Int -> !Int -> !(Int, Int, Int) -> !(Int, Int, Int) -> !Int -> !(Int, Int) -> !(Int, Int, Int) -> !Int -> !Int -> !Int64 -> !Int -> !Int -> !Int64 -> !ComputeMode -> !Bool -> !Bool -> !Bool -> !Int -> !Int -> !PCI -> !Bool -> !Bool -> !Bool -> !Bool -> !Bool -> DeviceProperties
 
 -- | Identifier
-deviceName :: DeviceProperties -> !String
+[deviceName] :: DeviceProperties -> !String
 
 -- | Supported compute capability
-computeCapability :: DeviceProperties -> !Compute
+[computeCapability] :: DeviceProperties -> !Compute
 
 -- | Available global memory on the device in bytes
-totalGlobalMem :: DeviceProperties -> !Int64
+[totalGlobalMem] :: DeviceProperties -> !Int64
 
 -- | Available constant memory on the device in bytes
-totalConstMem :: DeviceProperties -> !Int64
+[totalConstMem] :: DeviceProperties -> !Int64
 
 -- | Available shared memory per block in bytes
-sharedMemPerBlock :: DeviceProperties -> !Int64
+[sharedMemPerBlock] :: DeviceProperties -> !Int64
 
 -- | 32-bit registers per block
-regsPerBlock :: DeviceProperties -> !Int
+[regsPerBlock] :: DeviceProperties -> !Int
 
 -- | Warp size in threads (SIMD width)
-warpSize :: DeviceProperties -> !Int
+[warpSize] :: DeviceProperties -> !Int
 
 -- | Maximum number of threads per block
-maxThreadsPerBlock :: DeviceProperties -> !Int
+[maxThreadsPerBlock] :: DeviceProperties -> !Int
 
 -- | Maximum number of threads per multiprocessor
-maxThreadsPerMultiProcessor :: DeviceProperties -> !Int
+[maxThreadsPerMultiProcessor] :: DeviceProperties -> !Int
 
 -- | Maximum size of each dimension of a block
-maxBlockSize :: DeviceProperties -> !(Int, Int, Int)
+[maxBlockSize] :: DeviceProperties -> !(Int, Int, Int)
 
 -- | Maximum size of each dimension of a grid
-maxGridSize :: DeviceProperties -> !(Int, Int, Int)
+[maxGridSize] :: DeviceProperties -> !(Int, Int, Int)
 
 -- | Maximum texture dimensions
-maxTextureDim1D :: DeviceProperties -> !Int
-maxTextureDim2D :: DeviceProperties -> !(Int, Int)
-maxTextureDim3D :: DeviceProperties -> !(Int, Int, Int)
+[maxTextureDim1D] :: DeviceProperties -> !Int
+[maxTextureDim2D] :: DeviceProperties -> !(Int, Int)
+[maxTextureDim3D] :: DeviceProperties -> !(Int, Int, Int)
 
 -- | Clock frequency in kilohertz
-clockRate :: DeviceProperties -> !Int
+[clockRate] :: DeviceProperties -> !Int
 
 -- | Number of multiprocessors on the device
-multiProcessorCount :: DeviceProperties -> !Int
+[multiProcessorCount] :: DeviceProperties -> !Int
 
 -- | Maximum pitch in bytes allowed by memory copies
-memPitch :: DeviceProperties -> !Int64
+[memPitch] :: DeviceProperties -> !Int64
 
 -- | Global memory bus width in bits
-memBusWidth :: DeviceProperties -> !Int
+[memBusWidth] :: DeviceProperties -> !Int
 
 -- | Peak memory clock frequency in kilohertz
-memClockRate :: DeviceProperties -> !Int
+[memClockRate] :: DeviceProperties -> !Int
 
 -- | Alignment requirement for textures
-textureAlignment :: DeviceProperties -> !Int64
-computeMode :: DeviceProperties -> !ComputeMode
+[textureAlignment] :: DeviceProperties -> !Int64
+[computeMode] :: DeviceProperties -> !ComputeMode
 
 -- | Device can concurrently copy memory and execute a kernel
-deviceOverlap :: DeviceProperties -> !Bool
+[deviceOverlap] :: DeviceProperties -> !Bool
 
 -- | Device can possibly execute multiple kernels concurrently
-concurrentKernels :: DeviceProperties -> !Bool
+[concurrentKernels] :: DeviceProperties -> !Bool
 
 -- | Device supports and has enabled error correction
-eccEnabled :: DeviceProperties -> !Bool
+[eccEnabled] :: DeviceProperties -> !Bool
 
 -- | Number of asynchronous engines
-asyncEngineCount :: DeviceProperties -> !Int
+[asyncEngineCount] :: DeviceProperties -> !Int
 
 -- | Size of the L2 cache in bytes
-cacheMemL2 :: DeviceProperties -> !Int
+[cacheMemL2] :: DeviceProperties -> !Int
 
 -- | PCI device information for the device
-pciInfo :: DeviceProperties -> !PCI
+[pciInfo] :: DeviceProperties -> !PCI
 
 -- | Whether this is a Tesla device using the TCC driver
-tccDriverEnabled :: DeviceProperties -> !Bool
+[tccDriverEnabled] :: DeviceProperties -> !Bool
 
 -- | Whether there is a runtime limit on kernels
-kernelExecTimeoutEnabled :: DeviceProperties -> !Bool
+[kernelExecTimeoutEnabled] :: DeviceProperties -> !Bool
 
 -- | As opposed to discrete
-integrated :: DeviceProperties -> !Bool
+[integrated] :: DeviceProperties -> !Bool
 
 -- | Device can use pinned memory
-canMapHostMemory :: DeviceProperties -> !Bool
+[canMapHostMemory] :: DeviceProperties -> !Bool
 
 -- | Device shares a unified address space with the host
-unifiedAddressing :: DeviceProperties -> !Bool
+[unifiedAddressing] :: DeviceProperties -> !Bool
+
+-- | GPU compute capability, major and minor revision number respectively.
 data Compute
 Compute :: !Int -> !Int -> Compute
 
@@ -717,15 +719,15 @@ getLimit :: Limit -> IO Int
 
 -- | Set compute 2.0 call stack limits. Requires cuda-3.1.
 setLimit :: Limit -> Int -> IO ()
-instance Eq DeviceFlag
-instance Show DeviceFlag
-instance Bounded DeviceFlag
-instance Eq Limit
-instance Show Limit
-instance Enum Limit
-instance Enum PeerFlag
-instance Storable DeviceProperties
-instance Enum DeviceFlag
+instance GHC.Show.Show Foreign.CUDA.Runtime.Device.Limit
+instance GHC.Classes.Eq Foreign.CUDA.Runtime.Device.Limit
+instance GHC.Enum.Bounded Foreign.CUDA.Runtime.Device.DeviceFlag
+instance GHC.Show.Show Foreign.CUDA.Runtime.Device.DeviceFlag
+instance GHC.Classes.Eq Foreign.CUDA.Runtime.Device.DeviceFlag
+instance GHC.Enum.Enum Foreign.CUDA.Runtime.Device.DeviceFlag
+instance Foreign.Storable.Storable Foreign.CUDA.Analysis.Device.DeviceProperties
+instance GHC.Enum.Enum Foreign.CUDA.Runtime.Device.PeerFlag
+instance GHC.Enum.Enum Foreign.CUDA.Runtime.Device.Limit
 
 
 -- | Device management for low-level driver interface
@@ -734,101 +736,101 @@ module Foreign.CUDA.Driver.Device
 -- | A CUDA device
 newtype Device
 Device :: (CInt) -> Device
-useDevice :: Device -> (CInt)
+[useDevice] :: Device -> (CInt)
 
 -- | The properties of a compute device
 data DeviceProperties
 DeviceProperties :: !String -> !Compute -> !Int64 -> !Int64 -> !Int64 -> !Int -> !Int -> !Int -> !Int -> !(Int, Int, Int) -> !(Int, Int, Int) -> !Int -> !(Int, Int) -> !(Int, Int, Int) -> !Int -> !Int -> !Int64 -> !Int -> !Int -> !Int64 -> !ComputeMode -> !Bool -> !Bool -> !Bool -> !Int -> !Int -> !PCI -> !Bool -> !Bool -> !Bool -> !Bool -> !Bool -> DeviceProperties
 
 -- | Identifier
-deviceName :: DeviceProperties -> !String
+[deviceName] :: DeviceProperties -> !String
 
 -- | Supported compute capability
-computeCapability :: DeviceProperties -> !Compute
+[computeCapability] :: DeviceProperties -> !Compute
 
 -- | Available global memory on the device in bytes
-totalGlobalMem :: DeviceProperties -> !Int64
+[totalGlobalMem] :: DeviceProperties -> !Int64
 
 -- | Available constant memory on the device in bytes
-totalConstMem :: DeviceProperties -> !Int64
+[totalConstMem] :: DeviceProperties -> !Int64
 
 -- | Available shared memory per block in bytes
-sharedMemPerBlock :: DeviceProperties -> !Int64
+[sharedMemPerBlock] :: DeviceProperties -> !Int64
 
 -- | 32-bit registers per block
-regsPerBlock :: DeviceProperties -> !Int
+[regsPerBlock] :: DeviceProperties -> !Int
 
 -- | Warp size in threads (SIMD width)
-warpSize :: DeviceProperties -> !Int
+[warpSize] :: DeviceProperties -> !Int
 
 -- | Maximum number of threads per block
-maxThreadsPerBlock :: DeviceProperties -> !Int
+[maxThreadsPerBlock] :: DeviceProperties -> !Int
 
 -- | Maximum number of threads per multiprocessor
-maxThreadsPerMultiProcessor :: DeviceProperties -> !Int
+[maxThreadsPerMultiProcessor] :: DeviceProperties -> !Int
 
 -- | Maximum size of each dimension of a block
-maxBlockSize :: DeviceProperties -> !(Int, Int, Int)
+[maxBlockSize] :: DeviceProperties -> !(Int, Int, Int)
 
 -- | Maximum size of each dimension of a grid
-maxGridSize :: DeviceProperties -> !(Int, Int, Int)
+[maxGridSize] :: DeviceProperties -> !(Int, Int, Int)
 
 -- | Maximum texture dimensions
-maxTextureDim1D :: DeviceProperties -> !Int
-maxTextureDim2D :: DeviceProperties -> !(Int, Int)
-maxTextureDim3D :: DeviceProperties -> !(Int, Int, Int)
+[maxTextureDim1D] :: DeviceProperties -> !Int
+[maxTextureDim2D] :: DeviceProperties -> !(Int, Int)
+[maxTextureDim3D] :: DeviceProperties -> !(Int, Int, Int)
 
 -- | Clock frequency in kilohertz
-clockRate :: DeviceProperties -> !Int
+[clockRate] :: DeviceProperties -> !Int
 
 -- | Number of multiprocessors on the device
-multiProcessorCount :: DeviceProperties -> !Int
+[multiProcessorCount] :: DeviceProperties -> !Int
 
 -- | Maximum pitch in bytes allowed by memory copies
-memPitch :: DeviceProperties -> !Int64
+[memPitch] :: DeviceProperties -> !Int64
 
 -- | Global memory bus width in bits
-memBusWidth :: DeviceProperties -> !Int
+[memBusWidth] :: DeviceProperties -> !Int
 
 -- | Peak memory clock frequency in kilohertz
-memClockRate :: DeviceProperties -> !Int
+[memClockRate] :: DeviceProperties -> !Int
 
 -- | Alignment requirement for textures
-textureAlignment :: DeviceProperties -> !Int64
-computeMode :: DeviceProperties -> !ComputeMode
+[textureAlignment] :: DeviceProperties -> !Int64
+[computeMode] :: DeviceProperties -> !ComputeMode
 
 -- | Device can concurrently copy memory and execute a kernel
-deviceOverlap :: DeviceProperties -> !Bool
+[deviceOverlap] :: DeviceProperties -> !Bool
 
 -- | Device can possibly execute multiple kernels concurrently
-concurrentKernels :: DeviceProperties -> !Bool
+[concurrentKernels] :: DeviceProperties -> !Bool
 
 -- | Device supports and has enabled error correction
-eccEnabled :: DeviceProperties -> !Bool
+[eccEnabled] :: DeviceProperties -> !Bool
 
 -- | Number of asynchronous engines
-asyncEngineCount :: DeviceProperties -> !Int
+[asyncEngineCount] :: DeviceProperties -> !Int
 
 -- | Size of the L2 cache in bytes
-cacheMemL2 :: DeviceProperties -> !Int
+[cacheMemL2] :: DeviceProperties -> !Int
 
 -- | PCI device information for the device
-pciInfo :: DeviceProperties -> !PCI
+[pciInfo] :: DeviceProperties -> !PCI
 
 -- | Whether this is a Tesla device using the TCC driver
-tccDriverEnabled :: DeviceProperties -> !Bool
+[tccDriverEnabled] :: DeviceProperties -> !Bool
 
 -- | Whether there is a runtime limit on kernels
-kernelExecTimeoutEnabled :: DeviceProperties -> !Bool
+[kernelExecTimeoutEnabled] :: DeviceProperties -> !Bool
 
 -- | As opposed to discrete
-integrated :: DeviceProperties -> !Bool
+[integrated] :: DeviceProperties -> !Bool
 
 -- | Device can use pinned memory
-canMapHostMemory :: DeviceProperties -> !Bool
+[canMapHostMemory] :: DeviceProperties -> !Bool
 
 -- | Device shares a unified address space with the host
-unifiedAddressing :: DeviceProperties -> !Bool
+[unifiedAddressing] :: DeviceProperties -> !Bool
 
 -- | Device attributes
 data DeviceAttribute
@@ -881,6 +883,8 @@ UnifiedAddressing :: DeviceAttribute
 MaximumTexture1dLayeredWidth :: DeviceAttribute
 MaximumTexture1dLayeredLayers :: DeviceAttribute
 PciDomainId :: DeviceAttribute
+
+-- | GPU compute capability, major and minor revision number respectively.
 data Compute
 Compute :: !Int -> !Int -> Compute
 
@@ -937,14 +941,14 @@ props :: Device -> IO DeviceProperties
 --   
 --   <a>http://docs.nvidia.com/cuda/cuda-driver-api/group__CUDA__DEVICE.html#group__CUDA__DEVICE_1gc6a0d6551335a3780f9f3c967a0fde5d</a>
 totalMem :: Device -> IO Int64
-instance Eq Device
-instance Show Device
-instance Eq DeviceAttribute
-instance Show DeviceAttribute
-instance Show CUDevProp
-instance Enum InitFlag
-instance Storable CUDevProp
-instance Enum DeviceAttribute
+instance GHC.Show.Show Foreign.CUDA.Driver.Device.CUDevProp
+instance GHC.Show.Show Foreign.CUDA.Driver.Device.DeviceAttribute
+instance GHC.Classes.Eq Foreign.CUDA.Driver.Device.DeviceAttribute
+instance GHC.Show.Show Foreign.CUDA.Driver.Device.Device
+instance GHC.Classes.Eq Foreign.CUDA.Driver.Device.Device
+instance GHC.Enum.Enum Foreign.CUDA.Driver.Device.DeviceAttribute
+instance Foreign.Storable.Storable Foreign.CUDA.Driver.Device.CUDevProp
+instance GHC.Enum.Enum Foreign.CUDA.Driver.Device.InitFlag
 
 
 -- | Context management for the low-level driver interface
@@ -953,7 +957,7 @@ module Foreign.CUDA.Driver.Context.Base
 -- | A device context
 newtype Context
 Context :: ((Ptr ())) -> Context
-useContext :: Context -> ((Ptr ()))
+[useContext] :: Context -> ((Ptr ()))
 
 -- | Context creation flags
 data ContextFlag
@@ -1046,12 +1050,12 @@ attach :: Context -> [ContextFlag] -> IO ()
 
 -- | <i>Deprecated: as of CUDA-4.0</i>
 detach :: Context -> IO ()
-instance Eq Context
-instance Show Context
-instance Eq ContextFlag
-instance Show ContextFlag
-instance Bounded ContextFlag
-instance Enum ContextFlag
+instance GHC.Enum.Bounded Foreign.CUDA.Driver.Context.Base.ContextFlag
+instance GHC.Show.Show Foreign.CUDA.Driver.Context.Base.ContextFlag
+instance GHC.Classes.Eq Foreign.CUDA.Driver.Context.Base.ContextFlag
+instance GHC.Show.Show Foreign.CUDA.Driver.Context.Base.Context
+instance GHC.Classes.Eq Foreign.CUDA.Driver.Context.Base.Context
+instance GHC.Enum.Enum Foreign.CUDA.Driver.Context.Base.ContextFlag
 
 
 -- | Direct peer context access functions for the low-level driver
@@ -1095,7 +1099,7 @@ add :: Context -> [PeerFlag] -> IO ()
 --   
 --   <a>http://docs.nvidia.com/cuda/cuda-driver-api/group__CUDA__PEER__ACCESS.html#group__CUDA__PEER__ACCESS_1g5b4b6936ea868d4954ce4d841a3b4810</a>
 remove :: Context -> IO ()
-instance Enum PeerFlag
+instance GHC.Enum.Enum Foreign.CUDA.Driver.Context.Peer.PeerFlag
 
 
 -- | Primary context management for low-level driver interface. The primary
@@ -1164,7 +1168,7 @@ module Foreign.CUDA.Driver.Module.Base
 --   functions
 newtype Module
 Module :: ((Ptr ())) -> Module
-useModule :: Module -> ((Ptr ()))
+[useModule] :: Module -> ((Ptr ()))
 
 -- | Just-in-time compilation and linking options
 data JITOption
@@ -1207,13 +1211,13 @@ data JITResult
 JITResult :: !Float -> !ByteString -> !Module -> JITResult
 
 -- | milliseconds spent compiling PTX
-jitTime :: JITResult -> !Float
+[jitTime] :: JITResult -> !Float
 
 -- | information about PTX assembly
-jitInfoLog :: JITResult -> !ByteString
+[jitInfoLog] :: JITResult -> !ByteString
 
 -- | the compiled module
-jitModule :: JITResult -> !Module
+[jitModule] :: JITResult -> !Module
 
 -- | Online compilation fallback strategy
 data JITFallback
@@ -1267,19 +1271,19 @@ loadDataFromPtrEx :: Ptr Word8 -> [JITOption] -> IO JITResult
 --   
 --   <a>http://docs.nvidia.com/cuda/cuda-driver-api/group__CUDA__MODULE.html#group__CUDA__MODULE_1g8ea3d716524369de3763104ced4ea57b</a>
 unload :: Module -> IO ()
-instance Eq Module
-instance Show Module
-instance Show JITResult
-instance Eq JITTarget
-instance Show JITTarget
-instance Eq JITFallback
-instance Show JITFallback
-instance Show JITOption
-instance Eq JITOptionInternal
-instance Show JITOptionInternal
-instance Enum JITOptionInternal
-instance Enum JITFallback
-instance Enum JITTarget
+instance GHC.Show.Show Foreign.CUDA.Driver.Module.Base.JITOptionInternal
+instance GHC.Classes.Eq Foreign.CUDA.Driver.Module.Base.JITOptionInternal
+instance GHC.Show.Show Foreign.CUDA.Driver.Module.Base.JITOption
+instance GHC.Show.Show Foreign.CUDA.Driver.Module.Base.JITFallback
+instance GHC.Classes.Eq Foreign.CUDA.Driver.Module.Base.JITFallback
+instance GHC.Show.Show Foreign.CUDA.Driver.Module.Base.JITTarget
+instance GHC.Classes.Eq Foreign.CUDA.Driver.Module.Base.JITTarget
+instance GHC.Show.Show Foreign.CUDA.Driver.Module.Base.JITResult
+instance GHC.Show.Show Foreign.CUDA.Driver.Module.Base.Module
+instance GHC.Classes.Eq Foreign.CUDA.Driver.Module.Base.Module
+instance GHC.Enum.Enum Foreign.CUDA.Driver.Module.Base.JITTarget
+instance GHC.Enum.Enum Foreign.CUDA.Driver.Module.Base.JITFallback
+instance GHC.Enum.Enum Foreign.CUDA.Driver.Module.Base.JITOptionInternal
 
 
 -- | Module linking for low-level driver interface
@@ -1379,7 +1383,7 @@ module Foreign.CUDA.Types
 -- | A reference to data stored on the device.
 newtype DevicePtr a
 DevicePtr :: Ptr a -> DevicePtr a
-useDevicePtr :: DevicePtr a -> Ptr a
+[useDevicePtr] :: DevicePtr a -> Ptr a
 
 -- | A reference to page-locked host memory.
 --   
@@ -1395,13 +1399,13 @@ useDevicePtr :: DevicePtr a -> Ptr a
 --   <a>moveArray</a>.
 newtype HostPtr a
 HostPtr :: Ptr a -> HostPtr a
-useHostPtr :: HostPtr a -> Ptr a
+[useHostPtr] :: HostPtr a -> Ptr a
 
 -- | Events are markers that can be inserted into the CUDA execution stream
 --   and later queried.
 newtype Event
 Event :: ((Ptr ())) -> Event
-useEvent :: Event -> ((Ptr ()))
+[useEvent] :: Event -> ((Ptr ()))
 
 -- | Event creation flags
 data EventFlag
@@ -1417,7 +1421,7 @@ data WaitFlag
 --   Use <a>Event</a>s to synchronise operations between streams.
 newtype Stream
 Stream :: ((Ptr ())) -> Stream
-useStream :: Stream -> ((Ptr ()))
+[useStream] :: Stream -> ((Ptr ()))
 
 -- | Priority of an execution stream. Work submitted to a higher priority
 --   stream may preempt execution of work already executing in a lower
@@ -1431,24 +1435,24 @@ data StreamFlag
 -- | The main execution stream. No operations overlap with operations in
 --   the default stream.
 defaultStream :: Stream
-instance Eq (DevicePtr a)
-instance Ord (DevicePtr a)
-instance Eq (HostPtr a)
-instance Ord (HostPtr a)
-instance Eq Event
-instance Show Event
-instance Eq EventFlag
-instance Show EventFlag
-instance Bounded EventFlag
-instance Eq Stream
-instance Show Stream
-instance Enum StreamFlag
-instance Enum WaitFlag
-instance Enum EventFlag
-instance Storable (HostPtr a)
-instance Show (HostPtr a)
-instance Storable (DevicePtr a)
-instance Show (DevicePtr a)
+instance GHC.Show.Show Foreign.CUDA.Types.Stream
+instance GHC.Classes.Eq Foreign.CUDA.Types.Stream
+instance GHC.Enum.Bounded Foreign.CUDA.Types.EventFlag
+instance GHC.Show.Show Foreign.CUDA.Types.EventFlag
+instance GHC.Classes.Eq Foreign.CUDA.Types.EventFlag
+instance GHC.Show.Show Foreign.CUDA.Types.Event
+instance GHC.Classes.Eq Foreign.CUDA.Types.Event
+instance GHC.Classes.Ord (Foreign.CUDA.Types.HostPtr a)
+instance GHC.Classes.Eq (Foreign.CUDA.Types.HostPtr a)
+instance GHC.Classes.Ord (Foreign.CUDA.Types.DevicePtr a)
+instance GHC.Classes.Eq (Foreign.CUDA.Types.DevicePtr a)
+instance GHC.Show.Show (Foreign.CUDA.Types.DevicePtr a)
+instance Foreign.Storable.Storable (Foreign.CUDA.Types.DevicePtr a)
+instance GHC.Show.Show (Foreign.CUDA.Types.HostPtr a)
+instance Foreign.Storable.Storable (Foreign.CUDA.Types.HostPtr a)
+instance GHC.Enum.Enum Foreign.CUDA.Types.EventFlag
+instance GHC.Enum.Enum Foreign.CUDA.Types.WaitFlag
+instance GHC.Enum.Enum Foreign.CUDA.Types.StreamFlag
 
 
 -- | Event management for C-for-CUDA runtime environment
@@ -1502,7 +1506,7 @@ module Foreign.CUDA.Runtime.Stream
 --   Use <a>Event</a>s to synchronise operations between streams.
 newtype Stream
 Stream :: ((Ptr ())) -> Stream
-useStream :: Stream -> ((Ptr ()))
+[useStream] :: Stream -> ((Ptr ()))
 
 -- | Create a new asynchronous stream
 create :: IO Stream
@@ -1531,16 +1535,16 @@ module Foreign.CUDA.Runtime.Exec
 type Fun = String
 data FunAttributes
 FunAttributes :: !Int64 -> !Int64 -> !Int64 -> !Int -> !Int -> FunAttributes
-constSizeBytes :: FunAttributes -> !Int64
-localSizeBytes :: FunAttributes -> !Int64
-sharedSizeBytes :: FunAttributes -> !Int64
+[constSizeBytes] :: FunAttributes -> !Int64
+[localSizeBytes] :: FunAttributes -> !Int64
+[sharedSizeBytes] :: FunAttributes -> !Int64
 
 -- | maximum block size that can be successively launched (based on
 --   register usage)
-maxKernelThreadsPerBlock :: FunAttributes -> !Int
+[maxKernelThreadsPerBlock] :: FunAttributes -> !Int
 
 -- | number of registers required for each thread
-numRegs :: FunAttributes -> !Int
+[numRegs] :: FunAttributes -> !Int
 
 -- | Kernel function parameters. Doubles will be converted to an internal
 --   float representation on devices that do not support doubles natively.
@@ -1590,11 +1594,11 @@ launch :: Fun -> IO ()
 --   given number of bytes of shared memory. The launch may also be
 --   associated with a specific <a>Stream</a>.
 launchKernel :: Fun -> (Int, Int) -> (Int, Int, Int) -> Int64 -> Maybe Stream -> [FunParam] -> IO ()
-instance Show FunAttributes
-instance Eq CacheConfig
-instance Show CacheConfig
-instance Enum CacheConfig
-instance Storable FunAttributes
+instance GHC.Show.Show Foreign.CUDA.Runtime.Exec.CacheConfig
+instance GHC.Classes.Eq Foreign.CUDA.Runtime.Exec.CacheConfig
+instance GHC.Show.Show Foreign.CUDA.Runtime.Exec.FunAttributes
+instance Foreign.Storable.Storable Foreign.CUDA.Runtime.Exec.FunAttributes
+instance GHC.Enum.Enum Foreign.CUDA.Runtime.Exec.CacheConfig
 
 
 -- | Context configuration for the low-level driver interface
@@ -1710,12 +1714,12 @@ type StreamPriority = Int
 --   
 --   <a>http://docs.nvidia.com/cuda/cuda-driver-api/group__CUDA__CTX.html#group__CUDA__CTX_1g137920ab61a71be6ce67605b9f294091</a>
 getStreamPriorityRange :: IO (StreamPriority, StreamPriority)
-instance Eq Limit
-instance Show Limit
-instance Eq Cache
-instance Show Cache
-instance Enum Cache
-instance Enum Limit
+instance GHC.Show.Show Foreign.CUDA.Driver.Context.Config.Cache
+instance GHC.Classes.Eq Foreign.CUDA.Driver.Context.Config.Cache
+instance GHC.Show.Show Foreign.CUDA.Driver.Context.Config.Limit
+instance GHC.Classes.Eq Foreign.CUDA.Driver.Context.Config.Limit
+instance GHC.Enum.Enum Foreign.CUDA.Driver.Context.Config.Limit
+instance GHC.Enum.Enum Foreign.CUDA.Driver.Context.Config.Cache
 
 
 -- | Context management for low-level driver interface
@@ -1729,7 +1733,7 @@ module Foreign.CUDA.Driver.Event
 --   and later queried.
 newtype Event
 Event :: ((Ptr ())) -> Event
-useEvent :: Event -> ((Ptr ()))
+[useEvent] :: Event -> ((Ptr ()))
 
 -- | Event creation flags
 data EventFlag
@@ -1832,8 +1836,8 @@ export :: Event -> IO IPCEvent
 --   
 --   <a>http://docs.nvidia.com/cuda/cuda-driver-api/group__CUDA__MEM.html#group__CUDA__MEM_1gf1d525918b6c643b99ca8c8e42e36c2e</a>
 open :: IPCEvent -> IO Event
-instance Eq IPCEvent
-instance Show IPCEvent
+instance GHC.Show.Show Foreign.CUDA.Driver.IPC.Event.IPCEvent
+instance GHC.Classes.Eq Foreign.CUDA.Driver.IPC.Event.IPCEvent
 
 
 -- | Stream management for low-level driver interface
@@ -1846,7 +1850,7 @@ module Foreign.CUDA.Driver.Stream
 --   Use <a>Event</a>s to synchronise operations between streams.
 newtype Stream
 Stream :: ((Ptr ())) -> Stream
-useStream :: Stream -> ((Ptr ()))
+[useStream] :: Stream -> ((Ptr ()))
 
 -- | Possible option flags for stream initialisation. Dummy instance until
 --   the API exports actual option values.
@@ -2043,10 +2047,10 @@ setParams :: Fun -> [FunParam] -> IO ()
 
 -- | <i>Deprecated: use launchKernel instead</i>
 launch :: Fun -> (Int, Int) -> Maybe Stream -> IO ()
-instance Eq FunAttribute
-instance Show FunAttribute
-instance Storable FunParam
-instance Enum FunAttribute
+instance GHC.Show.Show Foreign.CUDA.Driver.Exec.FunAttribute
+instance GHC.Classes.Eq Foreign.CUDA.Driver.Exec.FunAttribute
+instance GHC.Enum.Enum Foreign.CUDA.Driver.Exec.FunAttribute
+instance Foreign.Storable.Storable Foreign.CUDA.Driver.Exec.FunParam
 
 
 -- | Data pointers on the host and device. These can be shared freely
@@ -2056,7 +2060,7 @@ module Foreign.CUDA.Ptr
 -- | A reference to data stored on the device.
 newtype DevicePtr a
 DevicePtr :: Ptr a -> DevicePtr a
-useDevicePtr :: DevicePtr a -> Ptr a
+[useDevicePtr] :: DevicePtr a -> Ptr a
 
 -- | Look at the contents of device memory. This takes an IO action that
 --   will be applied to that pointer, the result of which is returned. It
@@ -2108,7 +2112,7 @@ advanceDevPtr :: Storable a => DevicePtr a -> Int -> DevicePtr a
 --   <a>moveArray</a>.
 newtype HostPtr a
 HostPtr :: Ptr a -> HostPtr a
-useHostPtr :: HostPtr a -> Ptr a
+[useHostPtr] :: HostPtr a -> Ptr a
 
 -- | Apply an IO action to the memory reference living inside the host
 --   pointer object. All uses of the pointer should be inside the
@@ -2283,13 +2287,13 @@ withListArrayLen :: Storable a => [a] -> (Int -> DevicePtr a -> IO b) -> IO b
 
 -- | Initialise device memory to a given 8-bit value
 memset :: DevicePtr a -> Int64 -> Int8 -> IO ()
-instance Eq AllocFlag
-instance Show AllocFlag
-instance Bounded AllocFlag
-instance Eq CopyDirection
-instance Show CopyDirection
-instance Enum CopyDirection
-instance Enum AllocFlag
+instance GHC.Show.Show Foreign.CUDA.Runtime.Marshal.CopyDirection
+instance GHC.Classes.Eq Foreign.CUDA.Runtime.Marshal.CopyDirection
+instance GHC.Enum.Bounded Foreign.CUDA.Runtime.Marshal.AllocFlag
+instance GHC.Show.Show Foreign.CUDA.Runtime.Marshal.AllocFlag
+instance GHC.Classes.Eq Foreign.CUDA.Runtime.Marshal.AllocFlag
+instance GHC.Enum.Enum Foreign.CUDA.Runtime.Marshal.AllocFlag
+instance GHC.Enum.Enum Foreign.CUDA.Runtime.Marshal.CopyDirection
 
 
 -- | Texture references
@@ -2298,10 +2302,10 @@ data Texture
 Texture :: !Bool -> !FilterMode -> !(AddressMode, AddressMode, AddressMode) -> !FormatDesc -> Texture
 
 -- | access texture using normalised coordinates [0.0,1.0)
-normalised :: Texture -> !Bool
-filtering :: Texture -> !FilterMode
-addressing :: Texture -> !(AddressMode, AddressMode, AddressMode)
-format :: Texture -> !FormatDesc
+[normalised] :: Texture -> !Bool
+[filtering] :: Texture -> !FilterMode
+[addressing] :: Texture -> !(AddressMode, AddressMode, AddressMode)
+[format] :: Texture -> !FormatDesc
 
 -- | Texture channel format kind
 data FormatKind
@@ -2323,8 +2327,8 @@ Linear :: FilterMode
 --   component (x,y,z and w, respectively).
 data FormatDesc
 FormatDesc :: !(Int, Int, Int, Int) -> !FormatKind -> FormatDesc
-depth :: FormatDesc -> !(Int, Int, Int, Int)
-kind :: FormatDesc -> !FormatKind
+[depth] :: FormatDesc -> !(Int, Int, Int, Int)
+[kind] :: FormatDesc -> !FormatKind
 
 -- | Bind the memory area associated with the device pointer to a texture
 --   reference given by the named symbol. Any previously bound references
@@ -2336,21 +2340,21 @@ bind :: String -> Texture -> DevicePtr a -> Int64 -> IO ()
 --   by (width,height) in texel units, and the row pitch in bytes. Any
 --   previously bound references are unbound.
 bind2D :: String -> Texture -> DevicePtr a -> (Int, Int) -> Int64 -> IO ()
-instance Eq FormatKind
-instance Show FormatKind
-instance Eq AddressMode
-instance Show AddressMode
-instance Eq FilterMode
-instance Show FilterMode
-instance Eq FormatDesc
-instance Show FormatDesc
-instance Eq Texture
-instance Show Texture
-instance Storable Texture
-instance Storable FormatDesc
-instance Enum FilterMode
-instance Enum AddressMode
-instance Enum FormatKind
+instance GHC.Show.Show Foreign.CUDA.Runtime.Texture.Texture
+instance GHC.Classes.Eq Foreign.CUDA.Runtime.Texture.Texture
+instance GHC.Show.Show Foreign.CUDA.Runtime.Texture.FormatDesc
+instance GHC.Classes.Eq Foreign.CUDA.Runtime.Texture.FormatDesc
+instance GHC.Show.Show Foreign.CUDA.Runtime.Texture.FilterMode
+instance GHC.Classes.Eq Foreign.CUDA.Runtime.Texture.FilterMode
+instance GHC.Show.Show Foreign.CUDA.Runtime.Texture.AddressMode
+instance GHC.Classes.Eq Foreign.CUDA.Runtime.Texture.AddressMode
+instance GHC.Show.Show Foreign.CUDA.Runtime.Texture.FormatKind
+instance GHC.Classes.Eq Foreign.CUDA.Runtime.Texture.FormatKind
+instance GHC.Enum.Enum Foreign.CUDA.Runtime.Texture.FormatKind
+instance GHC.Enum.Enum Foreign.CUDA.Runtime.Texture.AddressMode
+instance GHC.Enum.Enum Foreign.CUDA.Runtime.Texture.FilterMode
+instance Foreign.Storable.Storable Foreign.CUDA.Runtime.Texture.FormatDesc
+instance Foreign.Storable.Storable Foreign.CUDA.Runtime.Texture.Texture
 
 
 -- | Memory management for low-level driver interface
@@ -2674,10 +2678,10 @@ getBasePtr :: DevicePtr a -> IO (DevicePtr a, Int64)
 --   
 --   <a>http://docs.nvidia.com/cuda/cuda-driver-api/group__CUDA__MEM.html#group__CUDA__MEM_1g808f555540d0143a331cc42aa98835c0</a>
 getMemInfo :: IO (Int64, Int64)
-instance Eq AllocFlag
-instance Show AllocFlag
-instance Bounded AllocFlag
-instance Enum AllocFlag
+instance GHC.Enum.Bounded Foreign.CUDA.Driver.Marshal.AllocFlag
+instance GHC.Show.Show Foreign.CUDA.Driver.Marshal.AllocFlag
+instance GHC.Classes.Eq Foreign.CUDA.Driver.Marshal.AllocFlag
+instance GHC.Enum.Enum Foreign.CUDA.Driver.Marshal.AllocFlag
 
 
 -- | IPC memory management for low-level driver interface.
@@ -2735,8 +2739,8 @@ open :: IPCDevicePtr a -> [IPCFlag] -> IO (DevicePtr a)
 --   
 --   <a>http://docs.nvidia.com/cuda/cuda-driver-api/group__CUDA__MEM.html#group__CUDA__MEM_1gd6f5d5bcf6376c6853b64635b0157b9e</a>
 close :: DevicePtr a -> IO ()
-instance Eq (IPCDevicePtr a)
-instance Show (IPCDevicePtr a)
+instance GHC.Show.Show (Foreign.CUDA.Driver.IPC.Marshal.IPCDevicePtr a)
+instance GHC.Classes.Eq (Foreign.CUDA.Driver.IPC.Marshal.IPCDevicePtr a)
 
 
 -- | Texture management for low-level driver interface
@@ -2745,7 +2749,7 @@ module Foreign.CUDA.Driver.Texture
 -- | A texture reference
 newtype Texture
 Texture :: ((Ptr ())) -> Texture
-useTexture :: Texture -> ((Ptr ()))
+[useTexture] :: Texture -> ((Ptr ()))
 
 -- | Texture data formats
 data Format
@@ -2860,21 +2864,21 @@ create :: IO Texture
 
 -- | <i>Deprecated: as of CUDA version 3.2</i>
 destroy :: Texture -> IO ()
-instance Eq Texture
-instance Show Texture
-instance Eq AddressMode
-instance Show AddressMode
-instance Eq FilterMode
-instance Show FilterMode
-instance Eq ReadMode
-instance Show ReadMode
-instance Eq Format
-instance Show Format
-instance Enum Format
-instance Enum ReadMode
-instance Enum FilterMode
-instance Enum AddressMode
-instance Storable Texture
+instance GHC.Show.Show Foreign.CUDA.Driver.Texture.Format
+instance GHC.Classes.Eq Foreign.CUDA.Driver.Texture.Format
+instance GHC.Show.Show Foreign.CUDA.Driver.Texture.ReadMode
+instance GHC.Classes.Eq Foreign.CUDA.Driver.Texture.ReadMode
+instance GHC.Show.Show Foreign.CUDA.Driver.Texture.FilterMode
+instance GHC.Classes.Eq Foreign.CUDA.Driver.Texture.FilterMode
+instance GHC.Show.Show Foreign.CUDA.Driver.Texture.AddressMode
+instance GHC.Classes.Eq Foreign.CUDA.Driver.Texture.AddressMode
+instance GHC.Show.Show Foreign.CUDA.Driver.Texture.Texture
+instance GHC.Classes.Eq Foreign.CUDA.Driver.Texture.Texture
+instance Foreign.Storable.Storable Foreign.CUDA.Driver.Texture.Texture
+instance GHC.Enum.Enum Foreign.CUDA.Driver.Texture.AddressMode
+instance GHC.Enum.Enum Foreign.CUDA.Driver.Texture.FilterMode
+instance GHC.Enum.Enum Foreign.CUDA.Driver.Texture.ReadMode
+instance GHC.Enum.Enum Foreign.CUDA.Driver.Texture.Format
 
 
 -- | Querying module attributes for low-level driver interface
