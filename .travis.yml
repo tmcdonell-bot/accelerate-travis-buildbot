@@ -75,6 +75,7 @@ before_install:
   - unset CC
   - source .travis/install-stack.sh
   - source .travis/install-llvm-trusty.sh
+  - travis_retry stack install hscolour
 
 install:
   - echo "$(stack exec ghc -- --version) [$(stack exec ghc -- --print-project-git-commit-id 2> /dev/null || echo '?')]"
