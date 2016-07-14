@@ -74,8 +74,8 @@
 <a name="line-65"></a>
 <a name="line-66"></a><span class='hs-keyword'>data</span> <span class='hs-conid'>IRArray</span> <span class='hs-varid'>a</span> <span class='hs-keyword'>where</span>
 <a name="line-67"></a>  <span class='hs-conid'>IRArray</span> <span class='hs-keyglyph'>::</span> <span class='hs-layout'>(</span><span class='hs-conid'>Shape</span> <span class='hs-varid'>sh</span><span class='hs-layout'>,</span> <span class='hs-conid'>Elt</span> <span class='hs-varid'>e</span><span class='hs-layout'>)</span>
-<a name="line-68"></a>          <span class='hs-keyglyph'>=&gt;</span> <span class='hs-layout'>{</span> <span class='hs-varid'>irArrayShape</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>IR</span> <span class='hs-varid'>sh</span>
-<a name="line-69"></a>             <span class='hs-layout'>,</span> <span class='hs-varid'>irArrayData</span>  <span class='hs-keyglyph'>::</span> <span class='hs-conid'>IR</span> <span class='hs-varid'>e</span>             <span class='hs-comment'>-- TLM: local operand name for array(s) containing elements of type 'e'</span>
+<a name="line-68"></a>          <span class='hs-keyglyph'>=&gt;</span> <span class='hs-layout'>{</span> <span class='hs-varid'>irArrayShape</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>IR</span> <span class='hs-varid'>sh</span>    <span class='hs-comment'>-- Array extent</span>
+<a name="line-69"></a>             <span class='hs-layout'>,</span> <span class='hs-varid'>irArrayData</span>  <span class='hs-keyglyph'>::</span> <span class='hs-conid'>IR</span> <span class='hs-varid'>e</span>     <span class='hs-comment'>-- Array payloads (should really be 'Ptr e')</span>
 <a name="line-70"></a>             <span class='hs-layout'>}</span>
 <a name="line-71"></a>          <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>IRArray</span> <span class='hs-layout'>(</span><span class='hs-conid'>Array</span> <span class='hs-varid'>sh</span> <span class='hs-varid'>e</span><span class='hs-layout'>)</span>
 <a name="line-72"></a>

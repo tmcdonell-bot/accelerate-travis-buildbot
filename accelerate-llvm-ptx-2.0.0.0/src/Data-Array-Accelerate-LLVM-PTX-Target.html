@@ -78,8 +78,8 @@
 <a name="line-69"></a>
 <a name="line-70"></a><a name="instance%20Target%20PTX"></a><span class='hs-keyword'>instance</span> <span class='hs-conid'>Target</span> <span class='hs-conid'>PTX</span> <span class='hs-keyword'>where</span>
 <a name="line-71"></a>  <span class='hs-varid'>targetTriple</span> <span class='hs-keyword'>_</span>     <span class='hs-keyglyph'>=</span> <span class='hs-conid'>Just</span> <span class='hs-varid'>ptxTargetTriple</span>
-<a name="line-72"></a><span class='hs-cpp'>#if ACCELERATE_USE_LIBNVVM</span>
-<a name="line-73"></a>  <span class='hs-varid'>targetDataLayout</span> <span class='hs-keyword'>_</span> <span class='hs-keyglyph'>=</span> <span class='hs-conid'>Nothing</span>            <span class='hs-comment'>-- see note: [libNVVM and target data layout]</span>
+<a name="line-72"></a><span class='hs-cpp'>#if ACCELERATE_USE_NVVM</span>
+<a name="line-73"></a>  <span class='hs-varid'>targetDataLayout</span> <span class='hs-keyword'>_</span> <span class='hs-keyglyph'>=</span> <span class='hs-conid'>Nothing</span>            <span class='hs-comment'>-- see note: [NVVM and target data layout]</span>
 <a name="line-74"></a><span class='hs-cpp'>#else</span>
 <a name="line-75"></a>  <span class='hs-varid'>targetDataLayout</span> <span class='hs-keyword'>_</span> <span class='hs-keyglyph'>=</span> <span class='hs-conid'>Just</span> <span class='hs-varid'>ptxDataLayout</span>
 <a name="line-76"></a><span class='hs-cpp'>#endif</span>

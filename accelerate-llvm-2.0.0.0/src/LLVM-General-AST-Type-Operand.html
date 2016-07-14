@@ -25,17 +25,16 @@
 <a name="line-16"></a>
 <a name="line-17"></a><span class='hs-layout'>)</span> <span class='hs-keyword'>where</span>
 <a name="line-18"></a>
-<a name="line-19"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>LLVM</span><span class='hs-varop'>.</span><span class='hs-conid'>General</span><span class='hs-varop'>.</span><span class='hs-conid'>AST</span><span class='hs-varop'>.</span><span class='hs-conid'>Type</span><span class='hs-varop'>.</span><span class='hs-conid'>Name</span>
-<a name="line-20"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>LLVM</span><span class='hs-varop'>.</span><span class='hs-conid'>General</span><span class='hs-varop'>.</span><span class='hs-conid'>AST</span><span class='hs-varop'>.</span><span class='hs-conid'>Type</span><span class='hs-varop'>.</span><span class='hs-conid'>Constant</span>
-<a name="line-21"></a>
-<a name="line-22"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>Data</span><span class='hs-varop'>.</span><span class='hs-conid'>Array</span><span class='hs-varop'>.</span><span class='hs-conid'>Accelerate</span><span class='hs-varop'>.</span><span class='hs-conid'>Type</span>
+<a name="line-19"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>LLVM</span><span class='hs-varop'>.</span><span class='hs-conid'>General</span><span class='hs-varop'>.</span><span class='hs-conid'>AST</span><span class='hs-varop'>.</span><span class='hs-conid'>Type</span><span class='hs-varop'>.</span><span class='hs-conid'>Constant</span>
+<a name="line-20"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>LLVM</span><span class='hs-varop'>.</span><span class='hs-conid'>General</span><span class='hs-varop'>.</span><span class='hs-conid'>AST</span><span class='hs-varop'>.</span><span class='hs-conid'>Type</span><span class='hs-varop'>.</span><span class='hs-conid'>Name</span>
+<a name="line-21"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>LLVM</span><span class='hs-varop'>.</span><span class='hs-conid'>General</span><span class='hs-varop'>.</span><span class='hs-conid'>AST</span><span class='hs-varop'>.</span><span class='hs-conid'>Type</span><span class='hs-varop'>.</span><span class='hs-conid'>Representation</span>
+<a name="line-22"></a>
 <a name="line-23"></a>
-<a name="line-24"></a>
-<a name="line-25"></a><span class='hs-comment'>-- | An 'Operand' is roughly anything that is an argument to an 'Instruction'</span>
-<a name="line-26"></a><span class='hs-comment'>--</span>
-<a name="line-27"></a><span class='hs-keyword'>data</span> <span class='hs-conid'>Operand</span> <span class='hs-varid'>a</span> <span class='hs-keyword'>where</span>
-<a name="line-28"></a>  <span class='hs-conid'>LocalReference</span>        <span class='hs-keyglyph'>::</span> <span class='hs-conid'>ScalarType</span> <span class='hs-varid'>a</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Name</span> <span class='hs-varid'>a</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Operand</span> <span class='hs-varid'>a</span>
-<a name="line-29"></a>  <span class='hs-conid'>ConstantOperand</span>       <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Constant</span> <span class='hs-varid'>a</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Operand</span> <span class='hs-varid'>a</span>
-<a name="line-30"></a>
+<a name="line-24"></a><span class='hs-comment'>-- | An 'Operand' is roughly anything that is an argument to an 'Instruction'</span>
+<a name="line-25"></a><span class='hs-comment'>--</span>
+<a name="line-26"></a><span class='hs-keyword'>data</span> <span class='hs-conid'>Operand</span> <span class='hs-varid'>a</span> <span class='hs-keyword'>where</span>
+<a name="line-27"></a>  <span class='hs-conid'>LocalReference</span>        <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Type</span> <span class='hs-varid'>a</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Name</span> <span class='hs-varid'>a</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Operand</span> <span class='hs-varid'>a</span>
+<a name="line-28"></a>  <span class='hs-conid'>ConstantOperand</span>       <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Constant</span> <span class='hs-varid'>a</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Operand</span> <span class='hs-varid'>a</span>
+<a name="line-29"></a>
 </pre></body>
 </html>

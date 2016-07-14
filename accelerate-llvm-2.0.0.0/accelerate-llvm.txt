@@ -10,3 +10,13 @@
 --   <a>http://hackage.haskell.org/package/accelerate</a>
 @package accelerate-llvm
 @version 2.0.0.0
+
+
+-- | Pointers exist in a particular address space
+module LLVM.General.AST.Type.AddrSpace
+data AddrSpace :: *
+AddrSpace :: Word32 -> AddrSpace
+
+-- | The default address space is number zero. The semantics of non-zero
+--   address spaces are target dependent.
+defaultAddrSpace :: AddrSpace
