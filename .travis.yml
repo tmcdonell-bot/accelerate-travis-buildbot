@@ -57,7 +57,7 @@ env:
 
 matrix:
   fast_finish: true
-  allow_failures:
+  exclude:
     - compiler: GHC-8.0.1
       env: TARGET=""
 
