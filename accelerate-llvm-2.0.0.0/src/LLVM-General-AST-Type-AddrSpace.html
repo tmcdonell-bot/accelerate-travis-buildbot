@@ -7,33 +7,34 @@
 <link type='text/css' rel='stylesheet' href='hscolour.css' />
 </head>
 <body>
-<pre><a name="line-1"></a><span class='hs-comment'>-- |</span>
-<a name="line-2"></a><span class='hs-comment'>-- Module      : LLVM.General.AST.Type.AddrSpace</span>
-<a name="line-3"></a><span class='hs-comment'>-- Copyright   : [2016] Trevor L. McDonell</span>
-<a name="line-4"></a><span class='hs-comment'>-- License     : BSD3</span>
-<a name="line-5"></a><span class='hs-comment'>--</span>
-<a name="line-6"></a><span class='hs-comment'>-- Maintainer  : Trevor L. McDonell &lt;tmcdonell@cse.unsw.edu.au&gt;</span>
-<a name="line-7"></a><span class='hs-comment'>-- Stability   : experimental</span>
-<a name="line-8"></a><span class='hs-comment'>-- Portability : non-portable (GHC extensions)</span>
-<a name="line-9"></a><span class='hs-comment'>--</span>
-<a name="line-10"></a><span class='hs-comment'>-- Pointers exist in a particular address space</span>
-<a name="line-11"></a><span class='hs-comment'>--</span>
-<a name="line-12"></a>
-<a name="line-13"></a><span class='hs-keyword'>module</span> <span class='hs-conid'>LLVM</span><span class='hs-varop'>.</span><span class='hs-conid'>General</span><span class='hs-varop'>.</span><span class='hs-conid'>AST</span><span class='hs-varop'>.</span><span class='hs-conid'>Type</span><span class='hs-varop'>.</span><span class='hs-conid'>AddrSpace</span> <span class='hs-layout'>(</span>
-<a name="line-14"></a>
-<a name="line-15"></a>  <span class='hs-conid'>AddrSpace</span><span class='hs-layout'>(</span><span class='hs-keyglyph'>..</span><span class='hs-layout'>)</span><span class='hs-layout'>,</span>
-<a name="line-16"></a>  <span class='hs-varid'>defaultAddrSpace</span><span class='hs-layout'>,</span>
-<a name="line-17"></a>
-<a name="line-18"></a><span class='hs-layout'>)</span> <span class='hs-keyword'>where</span>
-<a name="line-19"></a>
-<a name="line-20"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>LLVM</span><span class='hs-varop'>.</span><span class='hs-conid'>General</span><span class='hs-varop'>.</span><span class='hs-conid'>AST</span><span class='hs-varop'>.</span><span class='hs-conid'>AddrSpace</span>
-<a name="line-21"></a>
+<pre><a name="line-1"></a><span class='hs-comment'>{-# OPTIONS_HADDOCK hide #-}</span>
+<a name="line-2"></a><span class='hs-comment'>-- |</span>
+<a name="line-3"></a><span class='hs-comment'>-- Module      : LLVM.General.AST.Type.AddrSpace</span>
+<a name="line-4"></a><span class='hs-comment'>-- Copyright   : [2016] Trevor L. McDonell</span>
+<a name="line-5"></a><span class='hs-comment'>-- License     : BSD3</span>
+<a name="line-6"></a><span class='hs-comment'>--</span>
+<a name="line-7"></a><span class='hs-comment'>-- Maintainer  : Trevor L. McDonell &lt;tmcdonell@cse.unsw.edu.au&gt;</span>
+<a name="line-8"></a><span class='hs-comment'>-- Stability   : experimental</span>
+<a name="line-9"></a><span class='hs-comment'>-- Portability : non-portable (GHC extensions)</span>
+<a name="line-10"></a><span class='hs-comment'>--</span>
+<a name="line-11"></a><span class='hs-comment'>-- Pointers exist in a particular address space</span>
+<a name="line-12"></a><span class='hs-comment'>--</span>
+<a name="line-13"></a>
+<a name="line-14"></a><span class='hs-keyword'>module</span> <span class='hs-conid'>LLVM</span><span class='hs-varop'>.</span><span class='hs-conid'>General</span><span class='hs-varop'>.</span><span class='hs-conid'>AST</span><span class='hs-varop'>.</span><span class='hs-conid'>Type</span><span class='hs-varop'>.</span><span class='hs-conid'>AddrSpace</span> <span class='hs-layout'>(</span>
+<a name="line-15"></a>
+<a name="line-16"></a>  <span class='hs-conid'>AddrSpace</span><span class='hs-layout'>(</span><span class='hs-keyglyph'>..</span><span class='hs-layout'>)</span><span class='hs-layout'>,</span>
+<a name="line-17"></a>  <span class='hs-varid'>defaultAddrSpace</span><span class='hs-layout'>,</span>
+<a name="line-18"></a>
+<a name="line-19"></a><span class='hs-layout'>)</span> <span class='hs-keyword'>where</span>
+<a name="line-20"></a>
+<a name="line-21"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>LLVM</span><span class='hs-varop'>.</span><span class='hs-conid'>General</span><span class='hs-varop'>.</span><span class='hs-conid'>AST</span><span class='hs-varop'>.</span><span class='hs-conid'>AddrSpace</span>
 <a name="line-22"></a>
-<a name="line-23"></a><a name="defaultAddrSpace"></a><span class='hs-comment'>-- | The default address space is number zero. The semantics of non-zero address</span>
-<a name="line-24"></a><span class='hs-comment'>-- spaces are target dependent.</span>
-<a name="line-25"></a><span class='hs-comment'>--</span>
-<a name="line-26"></a><span class='hs-definition'>defaultAddrSpace</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>AddrSpace</span>
-<a name="line-27"></a><span class='hs-definition'>defaultAddrSpace</span> <span class='hs-keyglyph'>=</span> <span class='hs-conid'>AddrSpace</span> <span class='hs-num'>0</span>
-<a name="line-28"></a>
+<a name="line-23"></a>
+<a name="line-24"></a><a name="defaultAddrSpace"></a><span class='hs-comment'>-- | The default address space is number zero. The semantics of non-zero address</span>
+<a name="line-25"></a><span class='hs-comment'>-- spaces are target dependent.</span>
+<a name="line-26"></a><span class='hs-comment'>--</span>
+<a name="line-27"></a><span class='hs-definition'>defaultAddrSpace</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>AddrSpace</span>
+<a name="line-28"></a><span class='hs-definition'>defaultAddrSpace</span> <span class='hs-keyglyph'>=</span> <span class='hs-conid'>AddrSpace</span> <span class='hs-num'>0</span>
+<a name="line-29"></a>
 </pre></body>
 </html>
