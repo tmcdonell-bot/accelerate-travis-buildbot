@@ -45,6 +45,8 @@ env:
   - TARGET=accelerate-fft
   - TARGET=accelerate-io
   - TARGET=accelerate-llvm
+  - TARGET=accelerate-llvm-native
+  - TARGET=accelerate-llvm-ptx
   - TARGET=accelerate-examples
   - TARGET=colour-accelerate
   - TARGET=gloss-accelerate
