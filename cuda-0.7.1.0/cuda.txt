@@ -509,7 +509,7 @@ optimalBlockSize :: DeviceProperties -> (Int -> Int) -> (Int -> Int) -> (Int, Oc
 --   will be returned. Hence, values should be monotonically decreasing to
 --   return the smallest block size yielding maximum occupancy, and
 --   vice-versa.
-optimalBlockSizeBy :: DeviceProperties -> (DeviceProperties -> [Int]) -> (Int -> Int) -> (Int -> Int) -> (Int, Occupancy)
+optimalBlockSizeOf :: DeviceProperties -> [Int] -> (Int -> Int) -> (Int -> Int) -> (Int, Occupancy)
 
 -- | Determine the maximum number of CTAs that can be run simultaneously
 --   for a given kernel / device combination.
