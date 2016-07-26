@@ -66,6 +66,12 @@ matrix:
     - compiler: GHC-8.0.1
       env: TARGET=accelerate-llvm
 
+    - compiler: GHC-8.0.1
+      env: TARGET=accelerate-llvm-native
+
+    - compiler: GHC-8.0.1
+      env: TARGET=accelerate-llvm-ptx
+
 
 before_install:
   - export GHC=${CC:4}
