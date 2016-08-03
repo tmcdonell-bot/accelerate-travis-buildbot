@@ -6,7 +6,7 @@ resolver: nightly-2016-06-06
 packages:
 - location:
     git:    https://github.com/tmcdonell/accelerate.git
-    commit: db1679c79e3086446aa79754dbd33f4a37a7852d
+    commit: 8c3c9cee1f73dc9732f28f44452c434f41261823
 
 - location:
     git:    https://github.com/tmcdonell/accelerate-cuda.git
