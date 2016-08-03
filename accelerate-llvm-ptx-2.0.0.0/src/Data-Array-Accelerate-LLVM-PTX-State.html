@@ -93,7 +93,7 @@
 <a name="line-84"></a>
 <a name="line-85"></a><a name="simpleIO"></a><span class='hs-comment'>{-# INLINE simpleIO #-}</span>
 <a name="line-86"></a><span class='hs-definition'>simpleIO</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Executable</span>
-<a name="line-87"></a><span class='hs-definition'>simpleIO</span> <span class='hs-keyglyph'>=</span> <span class='hs-conid'>Executable</span> <span class='hs-varop'>$</span> <span class='hs-keyglyph'>\</span><span class='hs-sel'>_ppt</span> <span class='hs-varid'>range</span> <span class='hs-sel'>_after</span> <span class='hs-sel'>_init</span> <span class='hs-varid'>action</span> <span class='hs-keyglyph'>-&gt;</span>
+<a name="line-87"></a><span class='hs-definition'>simpleIO</span> <span class='hs-keyglyph'>=</span> <span class='hs-conid'>Executable</span> <span class='hs-varop'>$</span> <span class='hs-keyglyph'>\</span><span class='hs-sel'>_ppt</span> <span class='hs-varid'>range</span> <span class='hs-sel'>_after</span> <span class='hs-varid'>action</span> <span class='hs-keyglyph'>-&gt;</span>
 <a name="line-88"></a>  <span class='hs-keyword'>case</span> <span class='hs-varid'>range</span> <span class='hs-keyword'>of</span>
 <a name="line-89"></a>    <span class='hs-conid'>Empty</span>       <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>return</span> <span class='hs-conid'>()</span>
 <a name="line-90"></a>    <span class='hs-conid'>IE</span> <span class='hs-varid'>u</span> <span class='hs-varid'>v</span>      <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>action</span> <span class='hs-varid'>u</span> <span class='hs-varid'>v</span> <span class='hs-num'>0</span>

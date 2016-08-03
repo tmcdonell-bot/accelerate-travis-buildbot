@@ -31,11 +31,15 @@
 <a name="line-22"></a><span class='hs-comment'>-- is meant for operations such as multidimensional reduction, where each input</span>
 <a name="line-23"></a><span class='hs-comment'>-- index corresponds to a non-unit amount of work.</span>
 <a name="line-24"></a><span class='hs-comment'>--</span>
-<a name="line-25"></a><span class='hs-definition'>defaultLargePPT</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Int</span>
-<a name="line-26"></a><span class='hs-definition'>defaultLargePPT</span> <span class='hs-keyglyph'>=</span> <span class='hs-num'>2048</span>
-<a name="line-27"></a>
-<a name="line-28"></a><a name="defaultSmallPPT"></a><span class='hs-definition'>defaultSmallPPT</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Int</span>
-<a name="line-29"></a><span class='hs-definition'>defaultSmallPPT</span> <span class='hs-keyglyph'>=</span> <span class='hs-num'>32</span>
-<a name="line-30"></a>
+<a name="line-25"></a><span class='hs-comment'>-- These should really be dynamic values based on how long it took to execute</span>
+<a name="line-26"></a><span class='hs-comment'>-- the last chunk, increase or decrease the chunk size to ensure quick</span>
+<a name="line-27"></a><span class='hs-comment'>-- turnaround and also low scheduler overhead.</span>
+<a name="line-28"></a><span class='hs-comment'>--</span>
+<a name="line-29"></a><span class='hs-definition'>defaultLargePPT</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Int</span>
+<a name="line-30"></a><span class='hs-definition'>defaultLargePPT</span> <span class='hs-keyglyph'>=</span> <span class='hs-num'>2048</span>
+<a name="line-31"></a>
+<a name="line-32"></a><a name="defaultSmallPPT"></a><span class='hs-definition'>defaultSmallPPT</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Int</span>
+<a name="line-33"></a><span class='hs-definition'>defaultSmallPPT</span> <span class='hs-keyglyph'>=</span> <span class='hs-num'>32</span>
+<a name="line-34"></a>
 </pre></body>
 </html>

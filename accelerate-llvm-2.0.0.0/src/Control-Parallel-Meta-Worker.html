@@ -180,59 +180,60 @@
 <a name="line-171"></a>  <span class='hs-varid'>main</span>  <span class='hs-keyglyph'>&lt;-</span> <span class='hs-varid'>myThreadId</span>
 <a name="line-172"></a>
 <a name="line-173"></a>  <span class='hs-comment'>-- Send requests to the threads</span>
-<a name="line-174"></a>  <span class='hs-conid'>V</span><span class='hs-varop'>.</span><span class='hs-varid'>forM_</span> <span class='hs-varid'>gang</span> <span class='hs-varop'>$</span> <span class='hs-keyglyph'>\</span><span class='hs-conid'>Worker</span><span class='hs-layout'>{</span><span class='hs-keyglyph'>..</span><span class='hs-layout'>}</span> <span class='hs-keyglyph'>-&gt;</span>
-<a name="line-175"></a>    <span class='hs-varid'>putMVar</span> <span class='hs-varid'>requestVar</span> <span class='hs-varop'>$</span> <span class='hs-conid'>ReqDo</span> <span class='hs-layout'>(</span><span class='hs-varid'>reflectExceptionsTo</span> <span class='hs-varid'>main</span> <span class='hs-varop'>.</span> <span class='hs-varid'>restore</span> <span class='hs-varop'>.</span> <span class='hs-varid'>action</span><span class='hs-layout'>)</span>
-<a name="line-176"></a>
-<a name="line-177"></a>  <span class='hs-comment'>-- Wait for all requests to complete</span>
-<a name="line-178"></a>  <span class='hs-conid'>V</span><span class='hs-varop'>.</span><span class='hs-varid'>forM_</span> <span class='hs-varid'>gang</span> <span class='hs-varop'>$</span> <span class='hs-keyglyph'>\</span><span class='hs-conid'>Worker</span><span class='hs-layout'>{</span><span class='hs-keyglyph'>..</span><span class='hs-layout'>}</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>takeMVar</span> <span class='hs-varid'>resultVar</span>
-<a name="line-179"></a>
-<a name="line-180"></a><a name="reflectExceptionsTo"></a><span class='hs-definition'>reflectExceptionsTo</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>ThreadId</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>IO</span> <span class='hs-conid'>()</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>IO</span> <span class='hs-conid'>()</span>
-<a name="line-181"></a><span class='hs-definition'>reflectExceptionsTo</span> <span class='hs-varid'>tid</span> <span class='hs-varid'>action</span> <span class='hs-keyglyph'>=</span>
-<a name="line-182"></a>  <span class='hs-varid'>catchNonThreadKilled</span> <span class='hs-varid'>action</span> <span class='hs-layout'>(</span><span class='hs-varid'>throwTo</span> <span class='hs-varid'>tid</span><span class='hs-layout'>)</span>
-<a name="line-183"></a>
-<a name="line-184"></a><a name="catchNonThreadKilled"></a><span class='hs-definition'>catchNonThreadKilled</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>IO</span> <span class='hs-varid'>a</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-layout'>(</span><span class='hs-conid'>SomeException</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>IO</span> <span class='hs-varid'>a</span><span class='hs-layout'>)</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>IO</span> <span class='hs-varid'>a</span>
-<a name="line-185"></a><span class='hs-definition'>catchNonThreadKilled</span> <span class='hs-varid'>action</span> <span class='hs-varid'>handler</span> <span class='hs-keyglyph'>=</span>
-<a name="line-186"></a>  <span class='hs-varid'>action</span> <span class='hs-varop'>`catch`</span> <span class='hs-keyglyph'>\</span><span class='hs-varid'>e</span> <span class='hs-keyglyph'>-&gt;</span>
-<a name="line-187"></a>    <span class='hs-keyword'>case</span> <span class='hs-varid'>fromException</span> <span class='hs-varid'>e</span> <span class='hs-keyword'>of</span>
-<a name="line-188"></a>      <span class='hs-conid'>Just</span> <span class='hs-conid'>ThreadKilled</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>throwIO</span> <span class='hs-varid'>e</span>
-<a name="line-189"></a>      <span class='hs-keyword'>_</span>                 <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>handler</span> <span class='hs-varid'>e</span>
-<a name="line-190"></a>
+<a name="line-174"></a>  <span class='hs-conid'>V</span><span class='hs-varop'>.</span><span class='hs-varid'>forM_</span> <span class='hs-varid'>gang</span> <span class='hs-varop'>$</span> <span class='hs-keyglyph'>\</span><span class='hs-conid'>Worker</span><span class='hs-layout'>{</span><span class='hs-keyglyph'>..</span><span class='hs-layout'>}</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-keyword'>do</span>
+<a name="line-175"></a>    <span class='hs-varid'>writeIORef</span> <span class='hs-varid'>consecutiveFailures</span> <span class='hs-num'>0</span>
+<a name="line-176"></a>    <span class='hs-varid'>putMVar</span> <span class='hs-varid'>requestVar</span> <span class='hs-varop'>$</span> <span class='hs-conid'>ReqDo</span> <span class='hs-layout'>(</span><span class='hs-varid'>reflectExceptionsTo</span> <span class='hs-varid'>main</span> <span class='hs-varop'>.</span> <span class='hs-varid'>restore</span> <span class='hs-varop'>.</span> <span class='hs-varid'>action</span><span class='hs-layout'>)</span>
+<a name="line-177"></a>
+<a name="line-178"></a>  <span class='hs-comment'>-- Wait for all requests to complete</span>
+<a name="line-179"></a>  <span class='hs-conid'>V</span><span class='hs-varop'>.</span><span class='hs-varid'>forM_</span> <span class='hs-varid'>gang</span> <span class='hs-varop'>$</span> <span class='hs-keyglyph'>\</span><span class='hs-conid'>Worker</span><span class='hs-layout'>{</span><span class='hs-keyglyph'>..</span><span class='hs-layout'>}</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>takeMVar</span> <span class='hs-varid'>resultVar</span>
+<a name="line-180"></a>
+<a name="line-181"></a><a name="reflectExceptionsTo"></a><span class='hs-definition'>reflectExceptionsTo</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>ThreadId</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>IO</span> <span class='hs-conid'>()</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>IO</span> <span class='hs-conid'>()</span>
+<a name="line-182"></a><span class='hs-definition'>reflectExceptionsTo</span> <span class='hs-varid'>tid</span> <span class='hs-varid'>action</span> <span class='hs-keyglyph'>=</span>
+<a name="line-183"></a>  <span class='hs-varid'>catchNonThreadKilled</span> <span class='hs-varid'>action</span> <span class='hs-layout'>(</span><span class='hs-varid'>throwTo</span> <span class='hs-varid'>tid</span><span class='hs-layout'>)</span>
+<a name="line-184"></a>
+<a name="line-185"></a><a name="catchNonThreadKilled"></a><span class='hs-definition'>catchNonThreadKilled</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>IO</span> <span class='hs-varid'>a</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-layout'>(</span><span class='hs-conid'>SomeException</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>IO</span> <span class='hs-varid'>a</span><span class='hs-layout'>)</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>IO</span> <span class='hs-varid'>a</span>
+<a name="line-186"></a><span class='hs-definition'>catchNonThreadKilled</span> <span class='hs-varid'>action</span> <span class='hs-varid'>handler</span> <span class='hs-keyglyph'>=</span>
+<a name="line-187"></a>  <span class='hs-varid'>action</span> <span class='hs-varop'>`catch`</span> <span class='hs-keyglyph'>\</span><span class='hs-varid'>e</span> <span class='hs-keyglyph'>-&gt;</span>
+<a name="line-188"></a>    <span class='hs-keyword'>case</span> <span class='hs-varid'>fromException</span> <span class='hs-varid'>e</span> <span class='hs-keyword'>of</span>
+<a name="line-189"></a>      <span class='hs-conid'>Just</span> <span class='hs-conid'>ThreadKilled</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>throwIO</span> <span class='hs-varid'>e</span>
+<a name="line-190"></a>      <span class='hs-keyword'>_</span>                 <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>handler</span> <span class='hs-varid'>e</span>
 <a name="line-191"></a>
-<a name="line-192"></a><a name="finaliseWorker"></a><span class='hs-comment'>-- | The finaliser for worker threads.</span>
-<a name="line-193"></a><span class='hs-comment'>--</span>
-<a name="line-194"></a><span class='hs-comment'>-- Without this programs can complain about "Blocked indefinitely on an MVar"</span>
-<a name="line-195"></a><span class='hs-comment'>-- because worker threads are still blocked on the request MVars when the</span>
-<a name="line-196"></a><span class='hs-comment'>-- program ends. Whether the finalizer is called or not is very racey.</span>
-<a name="line-197"></a><span class='hs-comment'>--</span>
-<a name="line-198"></a><span class='hs-comment'>-- We're relying on the comment in System.Mem.Weak that says:</span>
-<a name="line-199"></a><span class='hs-comment'>--</span>
-<a name="line-200"></a><span class='hs-comment'>--     "If there are no other threads to run, the runtime system will check for</span>
-<a name="line-201"></a><span class='hs-comment'>--      runnable finalizers before declaring the system to be deadlocked."</span>
-<a name="line-202"></a><span class='hs-comment'>--</span>
-<a name="line-203"></a><span class='hs-comment'>-- If we were creating and destroying the gang cleanly we wouldn't need this,</span>
-<a name="line-204"></a><span class='hs-comment'>-- but 'theGang' is created with a top-level unsafePerformIO. Hacks beget hacks</span>
-<a name="line-205"></a><span class='hs-comment'>-- beget hacks...</span>
-<a name="line-206"></a><span class='hs-comment'>--</span>
-<a name="line-207"></a><span class='hs-definition'>finaliseWorker</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Worker</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>IO</span> <span class='hs-conid'>()</span>
-<a name="line-208"></a><span class='hs-definition'>finaliseWorker</span> <span class='hs-conid'>Worker</span><span class='hs-layout'>{</span><span class='hs-keyglyph'>..</span><span class='hs-layout'>}</span> <span class='hs-keyglyph'>=</span> <span class='hs-keyword'>do</span>
-<a name="line-209"></a>  <span class='hs-varid'>message</span> <span class='hs-layout'>(</span><span class='hs-varid'>printf</span> <span class='hs-str'>"worker %d shutting down"</span> <span class='hs-varid'>workerId</span><span class='hs-layout'>)</span>
-<a name="line-210"></a>  <span class='hs-varid'>putMVar</span> <span class='hs-varid'>requestVar</span> <span class='hs-conid'>ReqShutdown</span>
-<a name="line-211"></a>  <span class='hs-varid'>takeMVar</span> <span class='hs-varid'>resultVar</span>
-<a name="line-212"></a>
+<a name="line-192"></a>
+<a name="line-193"></a><a name="finaliseWorker"></a><span class='hs-comment'>-- | The finaliser for worker threads.</span>
+<a name="line-194"></a><span class='hs-comment'>--</span>
+<a name="line-195"></a><span class='hs-comment'>-- Without this programs can complain about "Blocked indefinitely on an MVar"</span>
+<a name="line-196"></a><span class='hs-comment'>-- because worker threads are still blocked on the request MVars when the</span>
+<a name="line-197"></a><span class='hs-comment'>-- program ends. Whether the finalizer is called or not is very racey.</span>
+<a name="line-198"></a><span class='hs-comment'>--</span>
+<a name="line-199"></a><span class='hs-comment'>-- We're relying on the comment in System.Mem.Weak that says:</span>
+<a name="line-200"></a><span class='hs-comment'>--</span>
+<a name="line-201"></a><span class='hs-comment'>--     "If there are no other threads to run, the runtime system will check for</span>
+<a name="line-202"></a><span class='hs-comment'>--      runnable finalizers before declaring the system to be deadlocked."</span>
+<a name="line-203"></a><span class='hs-comment'>--</span>
+<a name="line-204"></a><span class='hs-comment'>-- If we were creating and destroying the gang cleanly we wouldn't need this,</span>
+<a name="line-205"></a><span class='hs-comment'>-- but 'theGang' is created with a top-level unsafePerformIO. Hacks beget hacks</span>
+<a name="line-206"></a><span class='hs-comment'>-- beget hacks...</span>
+<a name="line-207"></a><span class='hs-comment'>--</span>
+<a name="line-208"></a><span class='hs-definition'>finaliseWorker</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Worker</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>IO</span> <span class='hs-conid'>()</span>
+<a name="line-209"></a><span class='hs-definition'>finaliseWorker</span> <span class='hs-conid'>Worker</span><span class='hs-layout'>{</span><span class='hs-keyglyph'>..</span><span class='hs-layout'>}</span> <span class='hs-keyglyph'>=</span> <span class='hs-keyword'>do</span>
+<a name="line-210"></a>  <span class='hs-varid'>message</span> <span class='hs-layout'>(</span><span class='hs-varid'>printf</span> <span class='hs-str'>"worker %d shutting down"</span> <span class='hs-varid'>workerId</span><span class='hs-layout'>)</span>
+<a name="line-211"></a>  <span class='hs-varid'>putMVar</span> <span class='hs-varid'>requestVar</span> <span class='hs-conid'>ReqShutdown</span>
+<a name="line-212"></a>  <span class='hs-varid'>takeMVar</span> <span class='hs-varid'>resultVar</span>
 <a name="line-213"></a>
-<a name="line-214"></a><a name="exhausted"></a><span class='hs-comment'>-- | Check whether the work queues of the gang are all empty</span>
-<a name="line-215"></a><span class='hs-comment'>--</span>
-<a name="line-216"></a><span class='hs-definition'>exhausted</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Gang</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>IO</span> <span class='hs-conid'>Bool</span>
-<a name="line-217"></a><span class='hs-definition'>exhausted</span> <span class='hs-varid'>gang</span> <span class='hs-keyglyph'>=</span>
-<a name="line-218"></a>  <span class='hs-conid'>V</span><span class='hs-varop'>.</span><span class='hs-varid'>and</span> <span class='hs-varop'>&lt;$&gt;</span> <span class='hs-conid'>V</span><span class='hs-varop'>.</span><span class='hs-varid'>mapM</span> <span class='hs-layout'>(</span><span class='hs-keyglyph'>\</span><span class='hs-conid'>Worker</span><span class='hs-layout'>{</span><span class='hs-keyglyph'>..</span><span class='hs-layout'>}</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>nullQ</span> <span class='hs-varid'>workpool</span><span class='hs-layout'>)</span> <span class='hs-varid'>gang</span>
-<a name="line-219"></a>
+<a name="line-214"></a>
+<a name="line-215"></a><a name="exhausted"></a><span class='hs-comment'>-- | Check whether the work queues of the gang are all empty</span>
+<a name="line-216"></a><span class='hs-comment'>--</span>
+<a name="line-217"></a><span class='hs-definition'>exhausted</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Gang</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>IO</span> <span class='hs-conid'>Bool</span>
+<a name="line-218"></a><span class='hs-definition'>exhausted</span> <span class='hs-varid'>gang</span> <span class='hs-keyglyph'>=</span>
+<a name="line-219"></a>  <span class='hs-conid'>V</span><span class='hs-varop'>.</span><span class='hs-varid'>and</span> <span class='hs-varop'>&lt;$&gt;</span> <span class='hs-conid'>V</span><span class='hs-varop'>.</span><span class='hs-varid'>mapM</span> <span class='hs-layout'>(</span><span class='hs-keyglyph'>\</span><span class='hs-conid'>Worker</span><span class='hs-layout'>{</span><span class='hs-keyglyph'>..</span><span class='hs-layout'>}</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>nullQ</span> <span class='hs-varid'>workpool</span><span class='hs-layout'>)</span> <span class='hs-varid'>gang</span>
 <a name="line-220"></a>
-<a name="line-221"></a><span class='hs-comment'>-- Debugging</span>
-<a name="line-222"></a><span class='hs-comment'>-- ---------</span>
-<a name="line-223"></a>
-<a name="line-224"></a><a name="message"></a><span class='hs-comment'>{-# INLINE message #-}</span>
-<a name="line-225"></a><span class='hs-definition'>message</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>String</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>IO</span> <span class='hs-conid'>()</span>
-<a name="line-226"></a><span class='hs-definition'>message</span> <span class='hs-varid'>msg</span> <span class='hs-keyglyph'>=</span> <span class='hs-conid'>Debug</span><span class='hs-varop'>.</span><span class='hs-varid'>traceIO</span> <span class='hs-conid'>Debug</span><span class='hs-varop'>.</span><span class='hs-varid'>dump_sched</span> <span class='hs-layout'>(</span><span class='hs-str'>"gang: "</span> <span class='hs-varop'>++</span> <span class='hs-varid'>msg</span><span class='hs-layout'>)</span>
-<a name="line-227"></a>
+<a name="line-221"></a>
+<a name="line-222"></a><span class='hs-comment'>-- Debugging</span>
+<a name="line-223"></a><span class='hs-comment'>-- ---------</span>
+<a name="line-224"></a>
+<a name="line-225"></a><a name="message"></a><span class='hs-comment'>{-# INLINE message #-}</span>
+<a name="line-226"></a><span class='hs-definition'>message</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>String</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>IO</span> <span class='hs-conid'>()</span>
+<a name="line-227"></a><span class='hs-definition'>message</span> <span class='hs-varid'>msg</span> <span class='hs-keyglyph'>=</span> <span class='hs-conid'>Debug</span><span class='hs-varop'>.</span><span class='hs-varid'>traceIO</span> <span class='hs-conid'>Debug</span><span class='hs-varop'>.</span><span class='hs-varid'>dump_sched</span> <span class='hs-layout'>(</span><span class='hs-str'>"gang: "</span> <span class='hs-varop'>++</span> <span class='hs-varid'>msg</span><span class='hs-layout'>)</span>
+<a name="line-228"></a>
 </pre></body>
 </html>
