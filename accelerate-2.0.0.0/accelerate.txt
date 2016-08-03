@@ -30,58 +30,54 @@
 --   off-loaded to the GPU.
 --   
 --   <ul>
---   <li><i><i>Available backends</i></i></li>
---   </ul>
---   
---   Currently, there are two backends:
---   
---   <ol>
---   <li>An interpreter that serves as a reference implementation of the
---   intended semantics of the language, which is included in this
---   package.</li>
---   <li>A CUDA backend generating code for CUDA-capable NVIDIA GPUs:
---   <a>http://hackage.haskell.org/package/accelerate-cuda</a></li>
---   </ol>
---   
---   Several experimental and/or incomplete backends also exist. If you are
---   particularly interested in any of these, especially with helping to
---   finish them, please contact us.
---   
---   <ol>
---   <li>Cilk/ICC and OpenCL:
---   <a>https://github.com/AccelerateHS/accelerate-backend-kit</a></li>
---   <li>Another OpenCL backend:
---   <a>https://github.com/HIPERFIT/accelerate-opencl</a></li>
---   <li>A backend to the Repa array library:
---   <a>https://github.com/blambo/accelerate-repa</a></li>
---   <li>An infrastructure for generating LLVM code, with backends
---   targeting multicore CPUs and NVIDIA GPUs:
---   <a>https://github.com/AccelerateHS/accelerate-llvm/</a></li>
---   </ol>
---   
---   <ul>
 --   <li><i><i>Additional components</i></i></li>
 --   </ul>
 --   
---   The following support packages are available:
+--   The following supported add-ons are available as separate packages.
+--   Install them from Hackage with <tt>cabal install &lt;package&gt;</tt>
 --   
---   <ol>
---   <li><tt>accelerate-cuda</tt>: A high-performance parallel backend
---   targeting CUDA-enabled NVIDIA GPUs. Requires the NVIDIA CUDA SDK and,
---   for full functionality, hardware with compute capability 1.1 or
---   greater. See the table on Wikipedia for supported GPUs:
+--   <ul>
+--   <li><tt>accelerate-cuda</tt>: Backend targeting CUDA-enabled NVIDIA
+--   GPUs. Requires the NVIDIA CUDA SDK and, for full functionality,
+--   hardware with compute compatibility 1.1 or greater. See the following
+--   table for supported GPUs:
 --   <a>http://en.wikipedia.org/wiki/CUDA#Supported_GPUs</a></li>
 --   <li><tt>accelerate-examples</tt>: Computational kernels and
---   applications showcasing <i>Accelerate</i>, as well as performance and
---   regression tests.</li>
---   <li><tt>accelerate-io</tt>: Fast conversion between <i>Accelerate</i>
---   arrays and other formats, including <a>vector</a> and
---   <a>repa</a>.</li>
---   <li><tt>accelerate-fft</tt>: Computation of Discrete Fourier
---   Transforms.</li>
---   </ol>
+--   applications showcasing the use of Accelerate as well as a regression
+--   test suite, supporting function and performance testing.</li>
+--   <li><tt>accelerate-io</tt>: Fast conversions between Accelerate arrays
+--   and other array formats (including vector and repa).</li>
+--   <li><tt>accelerate-fft</tt>: Discrete Fourier transforms, with
+--   optimised implementation for the CUDA backend.</li>
+--   </ul>
 --   
---   Install them from Hackage with <tt>cabal install PACKAGE</tt>
+--   The following components are experimental and/or incomplete. Please
+--   contact us if you are interested in helping to work on or test them!
+--   
+--   <ul>
+--   <li><tt>accelerate-llvm</tt>: A framework for constructing backends
+--   targeting LLVM IR, with concrete backends for multicore CPUs and
+--   NVIDIA GPUs.</li>
+--   </ul>
+--   
+--   Additionally, the following libraries can be used with Accelerate:
+--   
+--   <ul>
+--   <li><tt>colour-accelerate</tt>: Colour representations in Accelerate
+--   (RGB, sRGB, HSV, and HSL).</li>
+--   <li><tt>gloss-accelerate</tt>: Generate gloss pictures from
+--   Accelerate.</li>
+--   <li><tt>gloss-raster-accelerate</tt>: Parallel rendering of raster
+--   images and animations.</li>
+--   <li><tt>lens-accelerate</tt>: Lens operators for Accelerate
+--   types.</li>
+--   <li><tt>linear-accelerate</tt>: Linear vector spaces in
+--   Accelerate.</li>
+--   <li><tt>mwc-random-accelerate</tt>: Generate Accelerate arrays filled
+--   with high quality pseudorandom numbers.</li>
+--   <li><tt>numeric-prelude-accelerate</tt>: Lifting numeric-prelude to
+--   Accelerate.</li>
+--   </ul>
 --   
 --   <ul>
 --   <li><i><i>Examples and documentation</i></i></li>
@@ -1401,7 +1397,7 @@ floor :: (RealFrac a, Elt b, IsIntegral b) => Exp a -> Exp b
 
 -- | Efficient, machine-independent access to the components of a
 --   floating-point number
-class (RealFrac a, Floating a) => RealFloat a where floatRadix _ = fromInteger (floatRadix (undefined :: a)) floatDigits _ = constant (floatDigits (undefined :: a)) floatRange _ = let (m, n) = floatRange (undefined :: a) in (constant m, constant n) isIEEE _ = constant (isIEEE (undefined :: Float)) decodeFloat = \ format_abFZ7 kind_abFZ8 fn_abFZ9 msg_abFZa -> error (format_abFZ7 kind_abFZ8 (call fn_abFZ9 msg_abFZa)) (\ kind_abFZb msg_abFZc -> message kind_abFZb ("Data/Array/Accelerate/Classes/RealFloat.hs:100:21: " ++ msg_abFZc)) Internal "RealFloat.decodeFloat" "Not implemented yet" encodeFloat = \ format_abFZg kind_abFZh fn_abFZi msg_abFZj -> error (format_abFZg kind_abFZh (call fn_abFZi msg_abFZj)) (\ kind_abFZk msg_abFZl -> message kind_abFZk ("Data/Array/Accelerate/Classes/RealFloat.hs:101:21: " ++ msg_abFZl)) Internal "RealFloat.encodeFloat" "Not implemented yet" exponent = \ format_abFZp kind_abFZq fn_abFZr msg_abFZs -> error (format_abFZp kind_abFZq (call fn_abFZr msg_abFZs)) (\ kind_abFZt msg_abFZu -> message kind_abFZt ("Data/Array/Accelerate/Classes/RealFloat.hs:102:21: " ++ msg_abFZu)) Internal "RealFloat.exponent" "Not implemented yet" significand = \ format_abFZy kind_abFZz fn_abFZA msg_abFZB -> error (format_abFZy kind_abFZz (call fn_abFZA msg_abFZB)) (\ kind_abFZC msg_abFZD -> message kind_abFZC ("Data/Array/Accelerate/Classes/RealFloat.hs:103:21: " ++ msg_abFZD)) Internal "RealFloat.significand" "Not implemented yet" scaleFloat = \ format_abFZH kind_abFZI fn_abFZJ msg_abFZK -> error (format_abFZH kind_abFZI (call fn_abFZJ msg_abFZK)) (\ kind_abFZL msg_abFZM -> message kind_abFZL ("Data/Array/Accelerate/Classes/RealFloat.hs:104:21: " ++ msg_abFZM)) Internal "RealFloat.scaleFloat" "Not implemented yet" isInfinite = \ format_abFZQ kind_abFZR fn_abFZS msg_abFZT -> error (format_abFZQ kind_abFZR (call fn_abFZS msg_abFZT)) (\ kind_abFZU msg_abFZV -> message kind_abFZU ("Data/Array/Accelerate/Classes/RealFloat.hs:105:21: " ++ msg_abFZV)) Internal "RealFloat.isInfinite" "Not implemented yet" isDenormalized = \ format_abFZZ kind_abG00 fn_abG01 msg_abG02 -> error (format_abFZZ kind_abG00 (call fn_abG01 msg_abG02)) (\ kind_abG03 msg_abG04 -> message kind_abG03 ("Data/Array/Accelerate/Classes/RealFloat.hs:106:21: " ++ msg_abG04)) Internal "RealFloat.isDenormalized" "Not implemented yet" isNegativeZero = \ format_abG08 kind_abG09 fn_abG0a msg_abG0b -> error (format_abG08 kind_abG09 (call fn_abG0a msg_abG0b)) (\ kind_abG0c msg_abG0d -> message kind_abG0c ("Data/Array/Accelerate/Classes/RealFloat.hs:107:21: " ++ msg_abG0d)) Internal "RealFloat.isNegativeZero" "Not implemented yet"
+class (RealFrac a, Floating a) => RealFloat a where floatRadix _ = fromInteger (floatRadix (undefined :: a)) floatDigits _ = constant (floatDigits (undefined :: a)) floatRange _ = let (m, n) = floatRange (undefined :: a) in (constant m, constant n) isIEEE _ = constant (isIEEE (undefined :: Float)) decodeFloat = \ format_abGjJ kind_abGjK fn_abGjL msg_abGjM -> error (format_abGjJ kind_abGjK (call fn_abGjL msg_abGjM)) (\ kind_abGjN msg_abGjO -> message kind_abGjN ("Data/Array/Accelerate/Classes/RealFloat.hs:100:21: " ++ msg_abGjO)) Internal "RealFloat.decodeFloat" "Not implemented yet" encodeFloat = \ format_abGjS kind_abGjT fn_abGjU msg_abGjV -> error (format_abGjS kind_abGjT (call fn_abGjU msg_abGjV)) (\ kind_abGjW msg_abGjX -> message kind_abGjW ("Data/Array/Accelerate/Classes/RealFloat.hs:101:21: " ++ msg_abGjX)) Internal "RealFloat.encodeFloat" "Not implemented yet" exponent = \ format_abGk1 kind_abGk2 fn_abGk3 msg_abGk4 -> error (format_abGk1 kind_abGk2 (call fn_abGk3 msg_abGk4)) (\ kind_abGk5 msg_abGk6 -> message kind_abGk5 ("Data/Array/Accelerate/Classes/RealFloat.hs:102:21: " ++ msg_abGk6)) Internal "RealFloat.exponent" "Not implemented yet" significand = \ format_abGka kind_abGkb fn_abGkc msg_abGkd -> error (format_abGka kind_abGkb (call fn_abGkc msg_abGkd)) (\ kind_abGke msg_abGkf -> message kind_abGke ("Data/Array/Accelerate/Classes/RealFloat.hs:103:21: " ++ msg_abGkf)) Internal "RealFloat.significand" "Not implemented yet" scaleFloat = \ format_abGkj kind_abGkk fn_abGkl msg_abGkm -> error (format_abGkj kind_abGkk (call fn_abGkl msg_abGkm)) (\ kind_abGkn msg_abGko -> message kind_abGkn ("Data/Array/Accelerate/Classes/RealFloat.hs:104:21: " ++ msg_abGko)) Internal "RealFloat.scaleFloat" "Not implemented yet" isInfinite = \ format_abGks kind_abGkt fn_abGku msg_abGkv -> error (format_abGks kind_abGkt (call fn_abGku msg_abGkv)) (\ kind_abGkw msg_abGkx -> message kind_abGkw ("Data/Array/Accelerate/Classes/RealFloat.hs:105:21: " ++ msg_abGkx)) Internal "RealFloat.isInfinite" "Not implemented yet" isDenormalized = \ format_abGkB kind_abGkC fn_abGkD msg_abGkE -> error (format_abGkB kind_abGkC (call fn_abGkD msg_abGkE)) (\ kind_abGkF msg_abGkG -> message kind_abGkF ("Data/Array/Accelerate/Classes/RealFloat.hs:106:21: " ++ msg_abGkG)) Internal "RealFloat.isDenormalized" "Not implemented yet" isNegativeZero = \ format_abGkK kind_abGkL fn_abGkM msg_abGkN -> error (format_abGkK kind_abGkL (call fn_abGkM msg_abGkN)) (\ kind_abGkO msg_abGkP -> message kind_abGkO ("Data/Array/Accelerate/Classes/RealFloat.hs:107:21: " ++ msg_abGkP)) Internal "RealFloat.isNegativeZero" "Not implemented yet"
 
 -- | The radix of the representation (often 2) (constant)
 floatRadix :: RealFloat a => Exp a -> Exp Int64

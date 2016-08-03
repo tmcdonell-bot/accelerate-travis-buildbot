@@ -10,18 +10,20 @@ of floating point numbers:</p><pre>dotp :: Acc (Vector Float) -&gt; Acc (Vector 
 dotp xs ys = fold (+) 0 (zipWith (*) xs ys)</pre><p>Except for the type, this code is almost the same as the corresponding Haskell
 code on lists of floats. The types indicate that the computation may be
 online-compiled for performance - for example, using
-<code>Data.Array.Accelerate.CUDA</code> it may be on-the-fly off-loaded to the GPU.</p><dl><dt><em>Available backends</em></dt><dd></dd></dl><p>Currently, there are two backends:</p><ol><li>An interpreter that serves as a reference implementation of the intended
-semantics of the language, which is included in this package.</li><li>A CUDA backend generating code for CUDA-capable NVIDIA GPUs:
-<a href="http://hackage.haskell.org/package/accelerate-cuda">http://hackage.haskell.org/package/accelerate-cuda</a></li></ol><p>Several experimental and/or incomplete backends also exist. If you are
-particularly interested in any of these, especially with helping to finish
-them, please contact us.</p><ol><li>Cilk/ICC and OpenCL: <a href="https://github.com/AccelerateHS/accelerate-backend-kit">https://github.com/AccelerateHS/accelerate-backend-kit</a></li><li>Another OpenCL backend: <a href="https://github.com/HIPERFIT/accelerate-opencl">https://github.com/HIPERFIT/accelerate-opencl</a></li><li>A backend to the Repa array library: <a href="https://github.com/blambo/accelerate-repa">https://github.com/blambo/accelerate-repa</a></li><li>An infrastructure for generating LLVM code, with backends targeting
-multicore CPUs and NVIDIA GPUs: <a href="https://github.com/AccelerateHS/accelerate-llvm/">https://github.com/AccelerateHS/accelerate-llvm/</a></li></ol><dl><dt><em>Additional components</em></dt><dd></dd></dl><p>The following support packages are available:</p><ol><li><code>accelerate-cuda</code>: A high-performance parallel backend targeting
-CUDA-enabled NVIDIA GPUs. Requires the NVIDIA CUDA SDK and, for full
-functionality, hardware with compute capability 1.1 or greater. See the
-table on Wikipedia for supported GPUs:
+<code>Data.Array.Accelerate.CUDA</code> it may be on-the-fly off-loaded to the GPU.</p><dl><dt><em>Additional components</em></dt><dd></dd></dl><p>The following supported add-ons are available as separate packages. Install
+them from Hackage with <code>cabal install &lt;package&gt;</code></p><ul><li><code>accelerate-cuda</code>: Backend targeting CUDA-enabled NVIDIA GPUs. Requires
+the NVIDIA CUDA SDK and, for full functionality, hardware with compute
+compatibility 1.1 or greater. See the following table for supported GPUs:
 <a href="http://en.wikipedia.org/wiki/CUDA#Supported_GPUs">http://en.wikipedia.org/wiki/CUDA#Supported_GPUs</a></li><li><code>accelerate-examples</code>: Computational kernels and applications showcasing
-<em>Accelerate</em>, as well as performance and regression tests.</li><li><code>accelerate-io</code>: Fast conversion between <em>Accelerate</em> arrays and other
-formats, including <code>vector</code> and <code>repa</code>.</li><li><code>accelerate-fft</code>: Computation of Discrete Fourier Transforms.</li></ol><p>Install them from Hackage with <code>cabal install PACKAGE</code></p><dl><dt><em>Examples and documentation</em></dt><dd></dd></dl><p>Haddock documentation is included in the package, and a tutorial is available
+the use of Accelerate as well as a regression test suite, supporting
+function and performance testing.</li><li><code>accelerate-io</code>: Fast conversions between Accelerate arrays and other
+array formats (including vector and repa).</li><li><code>accelerate-fft</code>: Discrete Fourier transforms, with optimised
+implementation for the CUDA backend.</li></ul><p>The following components are experimental and/or incomplete. Please contact us if
+you are interested in helping to work on or test them!</p><ul><li><code>accelerate-llvm</code>: A framework for constructing backends targeting LLVM
+IR, with concrete backends for multicore CPUs and NVIDIA GPUs.</li></ul><p>Additionally, the following libraries can be used with Accelerate:</p><ul><li><code>colour-accelerate</code>: Colour representations in Accelerate (RGB, sRGB, HSV,
+and HSL).</li><li><code>gloss-accelerate</code>: Generate gloss pictures from Accelerate.</li><li><code>gloss-raster-accelerate</code>: Parallel rendering of raster images and
+animations.</li><li><code>lens-accelerate</code>: Lens operators for Accelerate types.</li><li><code>linear-accelerate</code>: Linear vector spaces in Accelerate.</li><li><code>mwc-random-accelerate</code>: Generate Accelerate arrays filled with high
+quality pseudorandom numbers.</li><li><code>numeric-prelude-accelerate</code>: Lifting numeric-prelude to Accelerate.</li></ul><dl><dt><em>Examples and documentation</em></dt><dd></dd></dl><p>Haddock documentation is included in the package, and a tutorial is available
 on the GitHub wiki: <a href="https://github.com/AccelerateHS/accelerate/wiki">https://github.com/AccelerateHS/accelerate/wiki</a></p><p>The <code>accelerate-examples</code> package demonstrates a range of computational
 kernels and several complete applications, including:</p><ul><li>An implementation of the Canny edge detection algorithm</li><li>An interactive Mandelbrot set generator</li><li>A particle-based simulation of stable fluid flows</li><li>An <em>n</em>-body simulation of gravitational attraction between solid particles</li><li>A cellular automata simulation</li><li>A &quot;password recovery&quot; tool, for dictionary lookup of MD5 hashes</li><li>A simple interactive ray tracer</li></ul><dl><dt><em>Mailing list and contacts</em></dt><dd></dd></dl><ul><li>Mailing list: <a href="accelerate-haskell@googlegroups.com">accelerate-haskell@googlegroups.com</a> (discussion of both
 use and development welcome).</li><li>Sign up for the mailing list here:
