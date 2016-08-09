@@ -30,306 +30,304 @@
 <a name="line-21"></a>
 <a name="line-22"></a>  <span class='hs-varid'>executeAcc</span><span class='hs-layout'>,</span> <span class='hs-varid'>executeAfun1</span><span class='hs-layout'>,</span>
 <a name="line-23"></a>
-<a name="line-24"></a>  <span class='hs-varid'>executeOp</span><span class='hs-layout'>,</span>
+<a name="line-24"></a><span class='hs-layout'>)</span> <span class='hs-keyword'>where</span>
 <a name="line-25"></a>
-<a name="line-26"></a><span class='hs-layout'>)</span> <span class='hs-keyword'>where</span>
-<a name="line-27"></a>
-<a name="line-28"></a><span class='hs-comment'>-- accelerate</span>
-<a name="line-29"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>Data</span><span class='hs-varop'>.</span><span class='hs-conid'>Array</span><span class='hs-varop'>.</span><span class='hs-conid'>Accelerate</span><span class='hs-varop'>.</span><span class='hs-conid'>Error</span>
-<a name="line-30"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>Data</span><span class='hs-varop'>.</span><span class='hs-conid'>Array</span><span class='hs-varop'>.</span><span class='hs-conid'>Accelerate</span><span class='hs-varop'>.</span><span class='hs-conid'>Lifetime</span>
-<a name="line-31"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>Data</span><span class='hs-varop'>.</span><span class='hs-conid'>Array</span><span class='hs-varop'>.</span><span class='hs-conid'>Accelerate</span><span class='hs-varop'>.</span><span class='hs-conid'>Array</span><span class='hs-varop'>.</span><span class='hs-conid'>Sugar</span>
-<a name="line-32"></a><span class='hs-keyword'>import</span> <span class='hs-keyword'>qualified</span> <span class='hs-conid'>Data</span><span class='hs-varop'>.</span><span class='hs-conid'>Array</span><span class='hs-varop'>.</span><span class='hs-conid'>Accelerate</span><span class='hs-varop'>.</span><span class='hs-conid'>Array</span><span class='hs-varop'>.</span><span class='hs-conid'>Representation</span>     <span class='hs-keyword'>as</span> <span class='hs-conid'>R</span>
-<a name="line-33"></a>
-<a name="line-34"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>Data</span><span class='hs-varop'>.</span><span class='hs-conid'>Array</span><span class='hs-varop'>.</span><span class='hs-conid'>Accelerate</span><span class='hs-varop'>.</span><span class='hs-conid'>LLVM</span><span class='hs-varop'>.</span><span class='hs-conid'>State</span>
-<a name="line-35"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>Data</span><span class='hs-varop'>.</span><span class='hs-conid'>Array</span><span class='hs-varop'>.</span><span class='hs-conid'>Accelerate</span><span class='hs-varop'>.</span><span class='hs-conid'>LLVM</span><span class='hs-varop'>.</span><span class='hs-conid'>Execute</span>
-<a name="line-36"></a>
-<a name="line-37"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>Data</span><span class='hs-varop'>.</span><span class='hs-conid'>Array</span><span class='hs-varop'>.</span><span class='hs-conid'>Accelerate</span><span class='hs-varop'>.</span><span class='hs-conid'>LLVM</span><span class='hs-varop'>.</span><span class='hs-conid'>PTX</span><span class='hs-varop'>.</span><span class='hs-conid'>Array</span><span class='hs-varop'>.</span><span class='hs-conid'>Data</span>
-<a name="line-38"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>Data</span><span class='hs-varop'>.</span><span class='hs-conid'>Array</span><span class='hs-varop'>.</span><span class='hs-conid'>Accelerate</span><span class='hs-varop'>.</span><span class='hs-conid'>LLVM</span><span class='hs-varop'>.</span><span class='hs-conid'>PTX</span><span class='hs-varop'>.</span><span class='hs-conid'>Execute</span><span class='hs-varop'>.</span><span class='hs-conid'>Async</span>
-<a name="line-39"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>Data</span><span class='hs-varop'>.</span><span class='hs-conid'>Array</span><span class='hs-varop'>.</span><span class='hs-conid'>Accelerate</span><span class='hs-varop'>.</span><span class='hs-conid'>LLVM</span><span class='hs-varop'>.</span><span class='hs-conid'>PTX</span><span class='hs-varop'>.</span><span class='hs-conid'>Execute</span><span class='hs-varop'>.</span><span class='hs-conid'>Environment</span>
-<a name="line-40"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>Data</span><span class='hs-varop'>.</span><span class='hs-conid'>Array</span><span class='hs-varop'>.</span><span class='hs-conid'>Accelerate</span><span class='hs-varop'>.</span><span class='hs-conid'>LLVM</span><span class='hs-varop'>.</span><span class='hs-conid'>PTX</span><span class='hs-varop'>.</span><span class='hs-conid'>Execute</span><span class='hs-varop'>.</span><span class='hs-conid'>Marshal</span>
-<a name="line-41"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>Data</span><span class='hs-varop'>.</span><span class='hs-conid'>Array</span><span class='hs-varop'>.</span><span class='hs-conid'>Accelerate</span><span class='hs-varop'>.</span><span class='hs-conid'>LLVM</span><span class='hs-varop'>.</span><span class='hs-conid'>PTX</span><span class='hs-varop'>.</span><span class='hs-conid'>Compile</span>
-<a name="line-42"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>Data</span><span class='hs-varop'>.</span><span class='hs-conid'>Array</span><span class='hs-varop'>.</span><span class='hs-conid'>Accelerate</span><span class='hs-varop'>.</span><span class='hs-conid'>LLVM</span><span class='hs-varop'>.</span><span class='hs-conid'>PTX</span><span class='hs-varop'>.</span><span class='hs-conid'>Target</span>
+<a name="line-26"></a><span class='hs-comment'>-- accelerate</span>
+<a name="line-27"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>Data</span><span class='hs-varop'>.</span><span class='hs-conid'>Array</span><span class='hs-varop'>.</span><span class='hs-conid'>Accelerate</span><span class='hs-varop'>.</span><span class='hs-conid'>Error</span>
+<a name="line-28"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>Data</span><span class='hs-varop'>.</span><span class='hs-conid'>Array</span><span class='hs-varop'>.</span><span class='hs-conid'>Accelerate</span><span class='hs-varop'>.</span><span class='hs-conid'>Lifetime</span>
+<a name="line-29"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>Data</span><span class='hs-varop'>.</span><span class='hs-conid'>Array</span><span class='hs-varop'>.</span><span class='hs-conid'>Accelerate</span><span class='hs-varop'>.</span><span class='hs-conid'>Array</span><span class='hs-varop'>.</span><span class='hs-conid'>Sugar</span>
+<a name="line-30"></a><span class='hs-keyword'>import</span> <span class='hs-keyword'>qualified</span> <span class='hs-conid'>Data</span><span class='hs-varop'>.</span><span class='hs-conid'>Array</span><span class='hs-varop'>.</span><span class='hs-conid'>Accelerate</span><span class='hs-varop'>.</span><span class='hs-conid'>Array</span><span class='hs-varop'>.</span><span class='hs-conid'>Representation</span>     <span class='hs-keyword'>as</span> <span class='hs-conid'>R</span>
+<a name="line-31"></a>
+<a name="line-32"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>Data</span><span class='hs-varop'>.</span><span class='hs-conid'>Array</span><span class='hs-varop'>.</span><span class='hs-conid'>Accelerate</span><span class='hs-varop'>.</span><span class='hs-conid'>LLVM</span><span class='hs-varop'>.</span><span class='hs-conid'>State</span>
+<a name="line-33"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>Data</span><span class='hs-varop'>.</span><span class='hs-conid'>Array</span><span class='hs-varop'>.</span><span class='hs-conid'>Accelerate</span><span class='hs-varop'>.</span><span class='hs-conid'>LLVM</span><span class='hs-varop'>.</span><span class='hs-conid'>Execute</span>
+<a name="line-34"></a>
+<a name="line-35"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>Data</span><span class='hs-varop'>.</span><span class='hs-conid'>Array</span><span class='hs-varop'>.</span><span class='hs-conid'>Accelerate</span><span class='hs-varop'>.</span><span class='hs-conid'>LLVM</span><span class='hs-varop'>.</span><span class='hs-conid'>PTX</span><span class='hs-varop'>.</span><span class='hs-conid'>Array</span><span class='hs-varop'>.</span><span class='hs-conid'>Data</span>
+<a name="line-36"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>Data</span><span class='hs-varop'>.</span><span class='hs-conid'>Array</span><span class='hs-varop'>.</span><span class='hs-conid'>Accelerate</span><span class='hs-varop'>.</span><span class='hs-conid'>LLVM</span><span class='hs-varop'>.</span><span class='hs-conid'>PTX</span><span class='hs-varop'>.</span><span class='hs-conid'>Execute</span><span class='hs-varop'>.</span><span class='hs-conid'>Async</span>
+<a name="line-37"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>Data</span><span class='hs-varop'>.</span><span class='hs-conid'>Array</span><span class='hs-varop'>.</span><span class='hs-conid'>Accelerate</span><span class='hs-varop'>.</span><span class='hs-conid'>LLVM</span><span class='hs-varop'>.</span><span class='hs-conid'>PTX</span><span class='hs-varop'>.</span><span class='hs-conid'>Execute</span><span class='hs-varop'>.</span><span class='hs-conid'>Environment</span>
+<a name="line-38"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>Data</span><span class='hs-varop'>.</span><span class='hs-conid'>Array</span><span class='hs-varop'>.</span><span class='hs-conid'>Accelerate</span><span class='hs-varop'>.</span><span class='hs-conid'>LLVM</span><span class='hs-varop'>.</span><span class='hs-conid'>PTX</span><span class='hs-varop'>.</span><span class='hs-conid'>Execute</span><span class='hs-varop'>.</span><span class='hs-conid'>Marshal</span>
+<a name="line-39"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>Data</span><span class='hs-varop'>.</span><span class='hs-conid'>Array</span><span class='hs-varop'>.</span><span class='hs-conid'>Accelerate</span><span class='hs-varop'>.</span><span class='hs-conid'>LLVM</span><span class='hs-varop'>.</span><span class='hs-conid'>PTX</span><span class='hs-varop'>.</span><span class='hs-conid'>Compile</span>
+<a name="line-40"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>Data</span><span class='hs-varop'>.</span><span class='hs-conid'>Array</span><span class='hs-varop'>.</span><span class='hs-conid'>Accelerate</span><span class='hs-varop'>.</span><span class='hs-conid'>LLVM</span><span class='hs-varop'>.</span><span class='hs-conid'>PTX</span><span class='hs-varop'>.</span><span class='hs-conid'>Target</span>
+<a name="line-41"></a>
+<a name="line-42"></a><span class='hs-keyword'>import</span> <span class='hs-keyword'>qualified</span> <span class='hs-conid'>Data</span><span class='hs-varop'>.</span><span class='hs-conid'>Array</span><span class='hs-varop'>.</span><span class='hs-conid'>Accelerate</span><span class='hs-varop'>.</span><span class='hs-conid'>LLVM</span><span class='hs-varop'>.</span><span class='hs-conid'>PTX</span><span class='hs-varop'>.</span><span class='hs-conid'>Debug</span>           <span class='hs-keyword'>as</span> <span class='hs-conid'>Debug</span>
 <a name="line-43"></a>
-<a name="line-44"></a><span class='hs-keyword'>import</span> <span class='hs-keyword'>qualified</span> <span class='hs-conid'>Data</span><span class='hs-varop'>.</span><span class='hs-conid'>Array</span><span class='hs-varop'>.</span><span class='hs-conid'>Accelerate</span><span class='hs-varop'>.</span><span class='hs-conid'>LLVM</span><span class='hs-varop'>.</span><span class='hs-conid'>PTX</span><span class='hs-varop'>.</span><span class='hs-conid'>Debug</span>           <span class='hs-keyword'>as</span> <span class='hs-conid'>Debug</span>
-<a name="line-45"></a>
-<a name="line-46"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>Data</span><span class='hs-varop'>.</span><span class='hs-conid'>Range</span><span class='hs-varop'>.</span><span class='hs-conid'>Range</span>                                         <span class='hs-layout'>(</span> <span class='hs-conid'>Range</span><span class='hs-layout'>(</span><span class='hs-keyglyph'>..</span><span class='hs-layout'>)</span> <span class='hs-layout'>)</span>
-<a name="line-47"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>Control</span><span class='hs-varop'>.</span><span class='hs-conid'>Parallel</span><span class='hs-varop'>.</span><span class='hs-conid'>Meta</span>                                    <span class='hs-layout'>(</span> <span class='hs-varid'>runExecutable</span><span class='hs-layout'>,</span> <span class='hs-conid'>Finalise</span> <span class='hs-layout'>)</span>
-<a name="line-48"></a>
-<a name="line-49"></a><span class='hs-comment'>-- cuda</span>
-<a name="line-50"></a><span class='hs-keyword'>import</span> <span class='hs-keyword'>qualified</span> <span class='hs-conid'>Foreign</span><span class='hs-varop'>.</span><span class='hs-conid'>CUDA</span><span class='hs-varop'>.</span><span class='hs-conid'>Driver</span>                            <span class='hs-keyword'>as</span> <span class='hs-conid'>CUDA</span>
-<a name="line-51"></a>
-<a name="line-52"></a><span class='hs-comment'>-- library</span>
-<a name="line-53"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>Control</span><span class='hs-varop'>.</span><span class='hs-conid'>Monad</span><span class='hs-varop'>.</span><span class='hs-conid'>State</span>                                      <span class='hs-layout'>(</span> <span class='hs-varid'>gets</span><span class='hs-layout'>,</span> <span class='hs-varid'>liftIO</span> <span class='hs-layout'>)</span>
-<a name="line-54"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>Data</span><span class='hs-varop'>.</span><span class='hs-conid'>Int</span>                                                 <span class='hs-layout'>(</span> <span class='hs-conid'>Int32</span> <span class='hs-layout'>)</span>
-<a name="line-55"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>Data</span><span class='hs-varop'>.</span><span class='hs-conid'>List</span>                                                <span class='hs-layout'>(</span> <span class='hs-varid'>find</span> <span class='hs-layout'>)</span>
-<a name="line-56"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>Data</span><span class='hs-varop'>.</span><span class='hs-conid'>Monoid</span>                                              <span class='hs-layout'>(</span> <span class='hs-varid'>mempty</span> <span class='hs-layout'>)</span>
-<a name="line-57"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>Text</span><span class='hs-varop'>.</span><span class='hs-conid'>Printf</span>                                              <span class='hs-layout'>(</span> <span class='hs-varid'>printf</span> <span class='hs-layout'>)</span>
-<a name="line-58"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>Prelude</span>                                                  <span class='hs-varid'>hiding</span> <span class='hs-layout'>(</span> <span class='hs-varid'>exp</span><span class='hs-layout'>,</span> <span class='hs-varid'>map</span><span class='hs-layout'>,</span> <span class='hs-varid'>scanl</span><span class='hs-layout'>,</span> <span class='hs-varid'>scanr</span> <span class='hs-layout'>)</span>
-<a name="line-59"></a><span class='hs-keyword'>import</span> <span class='hs-keyword'>qualified</span> <span class='hs-conid'>Prelude</span>                                        <span class='hs-keyword'>as</span> <span class='hs-conid'>P</span>
-<a name="line-60"></a>
-<a name="line-61"></a>
-<a name="line-62"></a><span class='hs-comment'>-- Array expression evaluation</span>
-<a name="line-63"></a><span class='hs-comment'>-- ---------------------------</span>
-<a name="line-64"></a>
-<a name="line-65"></a><a name="instance%20Execute%20PTX"></a><span class='hs-comment'>-- Computations are evaluated by traversing the AST bottom up, and for each node</span>
-<a name="line-66"></a><a name="instance%20Execute%20PTX"></a><span class='hs-comment'>-- distinguishing between three cases:</span>
-<a name="line-67"></a><a name="instance%20Execute%20PTX"></a><span class='hs-comment'>--</span>
-<a name="line-68"></a><a name="instance%20Execute%20PTX"></a><span class='hs-comment'>--  1. If it is a Use node, we return a reference to the array data. The data</span>
-<a name="line-69"></a><a name="instance%20Execute%20PTX"></a><span class='hs-comment'>--     will already have been copied to the device during compilation of the</span>
-<a name="line-70"></a><a name="instance%20Execute%20PTX"></a><span class='hs-comment'>--     kernels.</span>
-<a name="line-71"></a><a name="instance%20Execute%20PTX"></a><span class='hs-comment'>--</span>
-<a name="line-72"></a><a name="instance%20Execute%20PTX"></a><span class='hs-comment'>--  2. If it is a non-skeleton node, such as a let binding or shape conversion,</span>
-<a name="line-73"></a><a name="instance%20Execute%20PTX"></a><span class='hs-comment'>--     then execute directly by updating the environment or similar.</span>
-<a name="line-74"></a><a name="instance%20Execute%20PTX"></a><span class='hs-comment'>--</span>
-<a name="line-75"></a><a name="instance%20Execute%20PTX"></a><span class='hs-comment'>--  3. If it is a skeleton node, then we need to execute the generated LLVM</span>
-<a name="line-76"></a><a name="instance%20Execute%20PTX"></a><span class='hs-comment'>--     code.</span>
-<a name="line-77"></a><a name="instance%20Execute%20PTX"></a><span class='hs-comment'>--</span>
-<a name="line-78"></a><a name="instance%20Execute%20PTX"></a><span class='hs-keyword'>instance</span> <span class='hs-conid'>Execute</span> <span class='hs-conid'>PTX</span> <span class='hs-keyword'>where</span>
-<a name="line-79"></a>  <span class='hs-varid'>map</span>           <span class='hs-keyglyph'>=</span> <span class='hs-varid'>simpleOp</span>
-<a name="line-80"></a>  <span class='hs-varid'>generate</span>      <span class='hs-keyglyph'>=</span> <span class='hs-varid'>simpleOp</span>
-<a name="line-81"></a>  <span class='hs-varid'>transform</span>     <span class='hs-keyglyph'>=</span> <span class='hs-varid'>simpleOp</span>
-<a name="line-82"></a>  <span class='hs-varid'>backpermute</span>   <span class='hs-keyglyph'>=</span> <span class='hs-varid'>simpleOp</span>
-<a name="line-83"></a>  <span class='hs-varid'>fold</span>          <span class='hs-keyglyph'>=</span> <span class='hs-varid'>foldOp</span>
-<a name="line-84"></a>  <span class='hs-varid'>fold1</span>         <span class='hs-keyglyph'>=</span> <span class='hs-varid'>fold1Op</span>
-<a name="line-85"></a>  <span class='hs-varid'>stencil1</span>      <span class='hs-keyglyph'>=</span> <span class='hs-varid'>stencil1Op</span>
-<a name="line-86"></a>  <span class='hs-varid'>stencil2</span>      <span class='hs-keyglyph'>=</span> <span class='hs-varid'>stencil2Op</span>
-<a name="line-87"></a>
-<a name="line-88"></a>
-<a name="line-89"></a><span class='hs-comment'>-- Skeleton implementation</span>
-<a name="line-90"></a><span class='hs-comment'>-- -----------------------</span>
-<a name="line-91"></a>
-<a name="line-92"></a><a name="simpleOp"></a><span class='hs-comment'>-- Simple kernels just need to know the shape of the output array</span>
-<a name="line-93"></a><span class='hs-comment'>--</span>
-<a name="line-94"></a><span class='hs-definition'>simpleOp</span>
-<a name="line-95"></a>    <span class='hs-keyglyph'>::</span> <span class='hs-layout'>(</span><span class='hs-conid'>Shape</span> <span class='hs-varid'>sh</span><span class='hs-layout'>,</span> <span class='hs-conid'>Elt</span> <span class='hs-varid'>e</span><span class='hs-layout'>)</span>
-<a name="line-96"></a>    <span class='hs-keyglyph'>=&gt;</span> <span class='hs-conid'>ExecutableR</span> <span class='hs-conid'>PTX</span>
-<a name="line-97"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Gamma</span> <span class='hs-varid'>aenv</span>
-<a name="line-98"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Aval</span> <span class='hs-varid'>aenv</span>
-<a name="line-99"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Stream</span>
-<a name="line-100"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>sh</span>
-<a name="line-101"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>LLVM</span> <span class='hs-conid'>PTX</span> <span class='hs-layout'>(</span><span class='hs-conid'>Array</span> <span class='hs-varid'>sh</span> <span class='hs-varid'>e</span><span class='hs-layout'>)</span>
-<a name="line-102"></a><span class='hs-definition'>simpleOp</span> <span class='hs-varid'>exe</span> <span class='hs-varid'>gamma</span> <span class='hs-varid'>aenv</span> <span class='hs-varid'>stream</span> <span class='hs-varid'>sh</span> <span class='hs-keyglyph'>=</span> <span class='hs-keyword'>do</span>
-<a name="line-103"></a>  <span class='hs-keyword'>let</span> <span class='hs-varid'>kernel</span>    <span class='hs-keyglyph'>=</span> <span class='hs-keyword'>case</span> <span class='hs-varid'>ptxKernel</span> <span class='hs-varid'>exe</span> <span class='hs-keyword'>of</span>
-<a name="line-104"></a>                    <span class='hs-varid'>k</span><span class='hs-conop'>:</span><span class='hs-keyword'>_</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>k</span>
-<a name="line-105"></a>                    <span class='hs-keyword'>_</span>   <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varop'>$</span><span class='hs-varid'>internalError</span> <span class='hs-str'>"simpleOp"</span> <span class='hs-str'>"kernel not found"</span>
-<a name="line-106"></a>  <span class='hs-comment'>--</span>
-<a name="line-107"></a>  <span class='hs-varid'>out</span> <span class='hs-keyglyph'>&lt;-</span> <span class='hs-varid'>allocateRemote</span> <span class='hs-varid'>sh</span>
-<a name="line-108"></a>  <span class='hs-varid'>ptx</span> <span class='hs-keyglyph'>&lt;-</span> <span class='hs-varid'>gets</span> <span class='hs-varid'>llvmTarget</span>
-<a name="line-109"></a>  <span class='hs-varid'>liftIO</span> <span class='hs-varop'>$</span> <span class='hs-varid'>executeOp</span> <span class='hs-varid'>ptx</span> <span class='hs-varid'>kernel</span> <span class='hs-varid'>mempty</span> <span class='hs-varid'>gamma</span> <span class='hs-varid'>aenv</span> <span class='hs-varid'>stream</span> <span class='hs-layout'>(</span><span class='hs-conid'>IE</span> <span class='hs-num'>0</span> <span class='hs-layout'>(</span><span class='hs-varid'>size</span> <span class='hs-varid'>sh</span><span class='hs-layout'>)</span><span class='hs-layout'>)</span> <span class='hs-varid'>out</span>
-<a name="line-110"></a>  <span class='hs-varid'>return</span> <span class='hs-varid'>out</span>
-<a name="line-111"></a>
-<a name="line-112"></a>
-<a name="line-113"></a><a name="fold1Op"></a><span class='hs-comment'>-- There are two flavours of fold operation:</span>
-<a name="line-114"></a><span class='hs-comment'>--</span>
-<a name="line-115"></a><span class='hs-comment'>--   1. If we are collapsing to a single value, then multiple thread blocks are</span>
-<a name="line-116"></a><span class='hs-comment'>--      working together. Since thread blocks synchronise with each other via</span>
-<a name="line-117"></a><span class='hs-comment'>--      kernel launches, each block computes a partial sum and the kernel is</span>
-<a name="line-118"></a><span class='hs-comment'>--      launched recursively until the final value is reached.</span>
-<a name="line-119"></a><span class='hs-comment'>--</span>
-<a name="line-120"></a><span class='hs-comment'>--   2. If this is a multidimensional reduction, then each inner dimension is</span>
-<a name="line-121"></a><span class='hs-comment'>--      handled by a single thread block, so no global communication is</span>
-<a name="line-122"></a><span class='hs-comment'>--      necessary. Furthermore are two kernel flavours: each innermost dimension</span>
-<a name="line-123"></a><span class='hs-comment'>--      can be cooperatively reduced by (a) a thread warp; or (b) a thread</span>
-<a name="line-124"></a><span class='hs-comment'>--      block. Currently we always use the first, but require benchmarking to</span>
-<a name="line-125"></a><span class='hs-comment'>--      determine when to select each.</span>
-<a name="line-126"></a><span class='hs-comment'>--</span>
-<a name="line-127"></a><span class='hs-definition'>fold1Op</span>
-<a name="line-128"></a>    <span class='hs-keyglyph'>::</span> <span class='hs-layout'>(</span><span class='hs-conid'>Shape</span> <span class='hs-varid'>sh</span><span class='hs-layout'>,</span> <span class='hs-conid'>Elt</span> <span class='hs-varid'>e</span><span class='hs-layout'>)</span>
-<a name="line-129"></a>    <span class='hs-keyglyph'>=&gt;</span> <span class='hs-conid'>ExecutableR</span> <span class='hs-conid'>PTX</span>
-<a name="line-130"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Gamma</span> <span class='hs-varid'>aenv</span>
-<a name="line-131"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Aval</span> <span class='hs-varid'>aenv</span>
-<a name="line-132"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Stream</span>
-<a name="line-133"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-layout'>(</span><span class='hs-varid'>sh</span> <span class='hs-conop'>:.</span> <span class='hs-conid'>Int</span><span class='hs-layout'>)</span>
-<a name="line-134"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>LLVM</span> <span class='hs-conid'>PTX</span> <span class='hs-layout'>(</span><span class='hs-conid'>Array</span> <span class='hs-varid'>sh</span> <span class='hs-varid'>e</span><span class='hs-layout'>)</span>
-<a name="line-135"></a><span class='hs-definition'>fold1Op</span> <span class='hs-varid'>kernel</span> <span class='hs-varid'>gamma</span> <span class='hs-varid'>aenv</span> <span class='hs-varid'>stream</span> <span class='hs-varid'>sh</span><span class='hs-keyglyph'>@</span><span class='hs-layout'>(</span><span class='hs-varid'>sx</span> <span class='hs-conop'>:.</span> <span class='hs-varid'>sz</span><span class='hs-layout'>)</span>
-<a name="line-136"></a>  <span class='hs-keyglyph'>=</span> <span class='hs-varop'>$</span><span class='hs-varid'>boundsCheck</span> <span class='hs-str'>"fold1"</span> <span class='hs-str'>"empty array"</span> <span class='hs-layout'>(</span><span class='hs-varid'>sz</span> <span class='hs-varop'>&gt;</span> <span class='hs-num'>0</span><span class='hs-layout'>)</span>
-<a name="line-137"></a>  <span class='hs-varop'>$</span> <span class='hs-keyword'>case</span> <span class='hs-varid'>size</span> <span class='hs-varid'>sh</span> <span class='hs-keyword'>of</span>
-<a name="line-138"></a>      <span class='hs-num'>0</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>allocateRemote</span> <span class='hs-varid'>sx</span>
-<a name="line-139"></a>      <span class='hs-keyword'>_</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>foldCore</span> <span class='hs-varid'>kernel</span> <span class='hs-varid'>gamma</span> <span class='hs-varid'>aenv</span> <span class='hs-varid'>stream</span> <span class='hs-varid'>sh</span>
-<a name="line-140"></a>
-<a name="line-141"></a><a name="foldOp"></a><span class='hs-definition'>foldOp</span>
-<a name="line-142"></a>    <span class='hs-keyglyph'>::</span> <span class='hs-layout'>(</span><span class='hs-conid'>Shape</span> <span class='hs-varid'>sh</span><span class='hs-layout'>,</span> <span class='hs-conid'>Elt</span> <span class='hs-varid'>e</span><span class='hs-layout'>)</span>
-<a name="line-143"></a>    <span class='hs-keyglyph'>=&gt;</span> <span class='hs-conid'>ExecutableR</span> <span class='hs-conid'>PTX</span>
-<a name="line-144"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Gamma</span> <span class='hs-varid'>aenv</span>
-<a name="line-145"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Aval</span> <span class='hs-varid'>aenv</span>
-<a name="line-146"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Stream</span>
-<a name="line-147"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-layout'>(</span><span class='hs-varid'>sh</span> <span class='hs-conop'>:.</span> <span class='hs-conid'>Int</span><span class='hs-layout'>)</span>
-<a name="line-148"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>LLVM</span> <span class='hs-conid'>PTX</span> <span class='hs-layout'>(</span><span class='hs-conid'>Array</span> <span class='hs-varid'>sh</span> <span class='hs-varid'>e</span><span class='hs-layout'>)</span>
-<a name="line-149"></a><span class='hs-definition'>foldOp</span> <span class='hs-varid'>kernel</span> <span class='hs-varid'>gamma</span> <span class='hs-varid'>aenv</span> <span class='hs-varid'>stream</span> <span class='hs-varid'>sh</span><span class='hs-keyglyph'>@</span><span class='hs-layout'>(</span><span class='hs-varid'>sx</span> <span class='hs-conop'>:.</span> <span class='hs-keyword'>_</span><span class='hs-layout'>)</span>
-<a name="line-150"></a>  <span class='hs-keyglyph'>=</span> <span class='hs-varid'>foldCore</span> <span class='hs-varid'>kernel</span> <span class='hs-varid'>gamma</span> <span class='hs-varid'>aenv</span> <span class='hs-varid'>stream</span>
-<a name="line-151"></a>  <span class='hs-varop'>$</span> <span class='hs-keyword'>case</span> <span class='hs-varid'>size</span> <span class='hs-varid'>sh</span> <span class='hs-keyword'>of</span>
-<a name="line-152"></a>      <span class='hs-num'>0</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>listToShape</span> <span class='hs-layout'>(</span><span class='hs-conid'>P</span><span class='hs-varop'>.</span><span class='hs-varid'>map</span> <span class='hs-layout'>(</span><span class='hs-varid'>max</span> <span class='hs-num'>1</span><span class='hs-layout'>)</span> <span class='hs-layout'>(</span><span class='hs-varid'>shapeToList</span> <span class='hs-varid'>sx</span><span class='hs-layout'>)</span><span class='hs-layout'>)</span> <span class='hs-conop'>:.</span> <span class='hs-num'>0</span>
-<a name="line-153"></a>      <span class='hs-keyword'>_</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>sh</span>
-<a name="line-154"></a>
-<a name="line-155"></a><a name="foldCore"></a><span class='hs-definition'>foldCore</span>
-<a name="line-156"></a>    <span class='hs-keyglyph'>::</span> <span class='hs-layout'>(</span><span class='hs-conid'>Shape</span> <span class='hs-varid'>sh</span><span class='hs-layout'>,</span> <span class='hs-conid'>Elt</span> <span class='hs-varid'>e</span><span class='hs-layout'>)</span>
-<a name="line-157"></a>    <span class='hs-keyglyph'>=&gt;</span> <span class='hs-conid'>ExecutableR</span> <span class='hs-conid'>PTX</span>
-<a name="line-158"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Gamma</span> <span class='hs-varid'>aenv</span>
-<a name="line-159"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Aval</span> <span class='hs-varid'>aenv</span>
-<a name="line-160"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Stream</span>
-<a name="line-161"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-layout'>(</span><span class='hs-varid'>sh</span> <span class='hs-conop'>:.</span> <span class='hs-conid'>Int</span><span class='hs-layout'>)</span>
-<a name="line-162"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>LLVM</span> <span class='hs-conid'>PTX</span> <span class='hs-layout'>(</span><span class='hs-conid'>Array</span> <span class='hs-varid'>sh</span> <span class='hs-varid'>e</span><span class='hs-layout'>)</span>
-<a name="line-163"></a><span class='hs-definition'>foldCore</span> <span class='hs-varid'>kernel</span> <span class='hs-varid'>gamma</span> <span class='hs-varid'>aenv</span> <span class='hs-varid'>stream</span> <span class='hs-varid'>sh</span>
-<a name="line-164"></a>  <span class='hs-keyglyph'>|</span> <span class='hs-varid'>rank</span> <span class='hs-varid'>sh</span> <span class='hs-varop'>==</span> <span class='hs-num'>1</span>  <span class='hs-keyglyph'>=</span> <span class='hs-varid'>foldAllOp</span> <span class='hs-varid'>kernel</span> <span class='hs-varid'>gamma</span> <span class='hs-varid'>aenv</span> <span class='hs-varid'>stream</span> <span class='hs-varid'>sh</span>
-<a name="line-165"></a>  <span class='hs-keyglyph'>|</span> <span class='hs-varid'>otherwise</span>     <span class='hs-keyglyph'>=</span> <span class='hs-varid'>foldDimOp</span> <span class='hs-varid'>kernel</span> <span class='hs-varid'>gamma</span> <span class='hs-varid'>aenv</span> <span class='hs-varid'>stream</span> <span class='hs-varid'>sh</span>
-<a name="line-166"></a>
-<a name="line-167"></a><a name="foldAllOp"></a><span class='hs-comment'>-- See note: [Marshalling foldAll output arrays]</span>
-<a name="line-168"></a><span class='hs-comment'>--</span>
-<a name="line-169"></a><span class='hs-definition'>foldAllOp</span>
-<a name="line-170"></a>    <span class='hs-keyglyph'>::</span> <span class='hs-keyword'>forall</span> <span class='hs-varid'>aenv</span> <span class='hs-varid'>sh</span> <span class='hs-varid'>e</span><span class='hs-varop'>.</span> <span class='hs-layout'>(</span><span class='hs-conid'>Shape</span> <span class='hs-varid'>sh</span><span class='hs-layout'>,</span> <span class='hs-conid'>Elt</span> <span class='hs-varid'>e</span><span class='hs-layout'>)</span>
-<a name="line-171"></a>    <span class='hs-keyglyph'>=&gt;</span> <span class='hs-conid'>ExecutableR</span> <span class='hs-conid'>PTX</span>
-<a name="line-172"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Gamma</span> <span class='hs-varid'>aenv</span>
-<a name="line-173"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Aval</span> <span class='hs-varid'>aenv</span>
-<a name="line-174"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Stream</span>
-<a name="line-175"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-layout'>(</span><span class='hs-varid'>sh</span> <span class='hs-conop'>:.</span> <span class='hs-conid'>Int</span><span class='hs-layout'>)</span>
-<a name="line-176"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>LLVM</span> <span class='hs-conid'>PTX</span> <span class='hs-layout'>(</span><span class='hs-conid'>Array</span> <span class='hs-varid'>sh</span> <span class='hs-varid'>e</span><span class='hs-layout'>)</span>
-<a name="line-177"></a><span class='hs-definition'>foldAllOp</span> <span class='hs-varid'>exe</span> <span class='hs-varid'>gamma</span> <span class='hs-varid'>aenv</span> <span class='hs-varid'>stream</span> <span class='hs-varid'>sh'</span> <span class='hs-keyglyph'>=</span> <span class='hs-keyword'>do</span>
-<a name="line-178"></a>  <span class='hs-varid'>ptx</span> <span class='hs-keyglyph'>&lt;-</span> <span class='hs-varid'>gets</span> <span class='hs-varid'>llvmTarget</span>
-<a name="line-179"></a>  <span class='hs-keyword'>let</span>
-<a name="line-180"></a>      <span class='hs-layout'>(</span><span class='hs-varid'>k1</span><span class='hs-layout'>,</span><span class='hs-varid'>k2</span><span class='hs-layout'>)</span>   <span class='hs-keyglyph'>=</span> <span class='hs-keyword'>case</span> <span class='hs-varid'>ptxKernel</span> <span class='hs-varid'>exe</span> <span class='hs-keyword'>of</span>
-<a name="line-181"></a>                    <span class='hs-varid'>u</span><span class='hs-conop'>:</span><span class='hs-varid'>v</span><span class='hs-conop'>:</span><span class='hs-keyword'>_</span>       <span class='hs-keyglyph'>-&gt;</span> <span class='hs-layout'>(</span><span class='hs-varid'>u</span><span class='hs-layout'>,</span><span class='hs-varid'>v</span><span class='hs-layout'>)</span>
-<a name="line-182"></a>                    <span class='hs-keyword'>_</span>           <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varop'>$</span><span class='hs-varid'>internalError</span> <span class='hs-str'>"foldAllOp"</span> <span class='hs-str'>"kernel not found"</span>
-<a name="line-183"></a>
-<a name="line-184"></a>      <span class='hs-varid'>foldIntro</span> <span class='hs-keyglyph'>::</span> <span class='hs-layout'>(</span><span class='hs-varid'>sh</span> <span class='hs-conop'>:.</span> <span class='hs-conid'>Int</span><span class='hs-layout'>)</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>LLVM</span> <span class='hs-conid'>PTX</span> <span class='hs-layout'>(</span><span class='hs-conid'>Array</span> <span class='hs-varid'>sh</span> <span class='hs-varid'>e</span><span class='hs-layout'>)</span>
-<a name="line-185"></a>      <span class='hs-varid'>foldIntro</span> <span class='hs-layout'>(</span><span class='hs-varid'>sh</span><span class='hs-conop'>:.</span><span class='hs-varid'>sz</span><span class='hs-layout'>)</span> <span class='hs-keyglyph'>=</span> <span class='hs-keyword'>do</span>
-<a name="line-186"></a>        <span class='hs-keyword'>let</span> <span class='hs-varid'>numElements</span>       <span class='hs-keyglyph'>=</span> <span class='hs-varid'>size</span> <span class='hs-varid'>sh</span> <span class='hs-varop'>*</span> <span class='hs-varid'>sz</span>
-<a name="line-187"></a>            <span class='hs-varid'>numBlocks</span>         <span class='hs-keyglyph'>=</span> <span class='hs-layout'>(</span><span class='hs-varid'>kernelThreadBlocks</span> <span class='hs-varid'>k1</span><span class='hs-layout'>)</span> <span class='hs-varid'>numElements</span>
-<a name="line-188"></a>        <span class='hs-comment'>--</span>
-<a name="line-189"></a>        <span class='hs-varid'>out</span> <span class='hs-keyglyph'>&lt;-</span> <span class='hs-varid'>allocateRemote</span> <span class='hs-layout'>(</span><span class='hs-varid'>sh</span> <span class='hs-conop'>:.</span> <span class='hs-varid'>numBlocks</span><span class='hs-layout'>)</span>
-<a name="line-190"></a>        <span class='hs-varid'>liftIO</span> <span class='hs-varop'>$</span> <span class='hs-varid'>executeOp</span> <span class='hs-varid'>ptx</span> <span class='hs-varid'>k1</span> <span class='hs-varid'>mempty</span> <span class='hs-varid'>gamma</span> <span class='hs-varid'>aenv</span> <span class='hs-varid'>stream</span> <span class='hs-layout'>(</span><span class='hs-conid'>IE</span> <span class='hs-num'>0</span> <span class='hs-varid'>numElements</span><span class='hs-layout'>)</span> <span class='hs-varid'>out</span>
-<a name="line-191"></a>        <span class='hs-varid'>foldRec</span> <span class='hs-varid'>out</span>
-<a name="line-192"></a>
-<a name="line-193"></a>      <span class='hs-varid'>foldRec</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Array</span> <span class='hs-layout'>(</span><span class='hs-varid'>sh</span> <span class='hs-conop'>:.</span> <span class='hs-conid'>Int</span><span class='hs-layout'>)</span> <span class='hs-varid'>e</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>LLVM</span> <span class='hs-conid'>PTX</span> <span class='hs-layout'>(</span><span class='hs-conid'>Array</span> <span class='hs-varid'>sh</span> <span class='hs-varid'>e</span><span class='hs-layout'>)</span>
-<a name="line-194"></a>      <span class='hs-varid'>foldRec</span> <span class='hs-varid'>out</span><span class='hs-keyglyph'>@</span><span class='hs-layout'>(</span><span class='hs-conid'>Array</span> <span class='hs-layout'>(</span><span class='hs-varid'>sh</span><span class='hs-layout'>,</span><span class='hs-varid'>sz</span><span class='hs-layout'>)</span> <span class='hs-varid'>adata</span><span class='hs-layout'>)</span> <span class='hs-keyglyph'>=</span>
-<a name="line-195"></a>        <span class='hs-keyword'>let</span> <span class='hs-varid'>numElements</span>       <span class='hs-keyglyph'>=</span> <span class='hs-conid'>R</span><span class='hs-varop'>.</span><span class='hs-varid'>size</span> <span class='hs-varid'>sh</span> <span class='hs-varop'>*</span> <span class='hs-varid'>sz</span>
-<a name="line-196"></a>            <span class='hs-varid'>numBlocks</span>         <span class='hs-keyglyph'>=</span> <span class='hs-layout'>(</span><span class='hs-varid'>kernelThreadBlocks</span> <span class='hs-varid'>k2</span><span class='hs-layout'>)</span> <span class='hs-varid'>numElements</span>
-<a name="line-197"></a>        <span class='hs-keyword'>in</span> <span class='hs-keyword'>if</span> <span class='hs-varid'>sz</span> <span class='hs-varop'>&lt;=</span> <span class='hs-num'>1</span>
-<a name="line-198"></a>              <span class='hs-keyword'>then</span> <span class='hs-keyword'>do</span>
-<a name="line-199"></a>                <span class='hs-comment'>-- We have recursed to a single block already. Trim the</span>
-<a name="line-200"></a>                <span class='hs-comment'>-- intermediate working vector to the final scalar array.</span>
-<a name="line-201"></a>                <span class='hs-varid'>return</span> <span class='hs-varop'>$!</span> <span class='hs-conid'>Array</span> <span class='hs-varid'>sh</span> <span class='hs-varid'>adata</span>
-<a name="line-202"></a>
-<a name="line-203"></a>              <span class='hs-keyword'>else</span> <span class='hs-keyword'>do</span>
-<a name="line-204"></a>                <span class='hs-comment'>-- Keep cooperatively reducing the output array in-place.</span>
-<a name="line-205"></a>                <span class='hs-comment'>-- Note that we must continue to update the tracked size</span>
-<a name="line-206"></a>                <span class='hs-comment'>-- so the recursion knows when to stop.</span>
-<a name="line-207"></a>                <span class='hs-varid'>liftIO</span> <span class='hs-varop'>$</span> <span class='hs-varid'>executeOp</span> <span class='hs-varid'>ptx</span> <span class='hs-varid'>k2</span> <span class='hs-varid'>mempty</span> <span class='hs-varid'>gamma</span> <span class='hs-varid'>aenv</span> <span class='hs-varid'>stream</span> <span class='hs-layout'>(</span><span class='hs-conid'>IE</span> <span class='hs-num'>0</span> <span class='hs-varid'>numElements</span><span class='hs-layout'>)</span> <span class='hs-varid'>out</span>
-<a name="line-208"></a>                <span class='hs-varid'>foldRec</span> <span class='hs-varop'>$!</span> <span class='hs-conid'>Array</span> <span class='hs-layout'>(</span><span class='hs-varid'>sh</span><span class='hs-layout'>,</span><span class='hs-varid'>numBlocks</span><span class='hs-layout'>)</span> <span class='hs-varid'>adata</span>
-<a name="line-209"></a>  <span class='hs-comment'>--</span>
-<a name="line-210"></a>  <span class='hs-varid'>foldIntro</span> <span class='hs-varid'>sh'</span>
-<a name="line-211"></a>
-<a name="line-212"></a><a name="foldDimOp"></a><span class='hs-definition'>foldDimOp</span>
-<a name="line-213"></a>    <span class='hs-keyglyph'>::</span> <span class='hs-keyword'>forall</span> <span class='hs-varid'>aenv</span> <span class='hs-varid'>sh</span> <span class='hs-varid'>e</span><span class='hs-varop'>.</span> <span class='hs-layout'>(</span><span class='hs-conid'>Shape</span> <span class='hs-varid'>sh</span><span class='hs-layout'>,</span> <span class='hs-conid'>Elt</span> <span class='hs-varid'>e</span><span class='hs-layout'>)</span>
-<a name="line-214"></a>    <span class='hs-keyglyph'>=&gt;</span> <span class='hs-conid'>ExecutableR</span> <span class='hs-conid'>PTX</span>
-<a name="line-215"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Gamma</span> <span class='hs-varid'>aenv</span>
-<a name="line-216"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Aval</span> <span class='hs-varid'>aenv</span>
-<a name="line-217"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Stream</span>
-<a name="line-218"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-layout'>(</span><span class='hs-varid'>sh</span> <span class='hs-conop'>:.</span> <span class='hs-conid'>Int</span><span class='hs-layout'>)</span>
-<a name="line-219"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>LLVM</span> <span class='hs-conid'>PTX</span> <span class='hs-layout'>(</span><span class='hs-conid'>Array</span> <span class='hs-varid'>sh</span> <span class='hs-varid'>e</span><span class='hs-layout'>)</span>
-<a name="line-220"></a><span class='hs-definition'>foldDimOp</span> <span class='hs-varid'>exe</span> <span class='hs-varid'>gamma</span> <span class='hs-varid'>aenv</span> <span class='hs-varid'>stream</span> <span class='hs-layout'>(</span><span class='hs-varid'>sh</span> <span class='hs-conop'>:.</span> <span class='hs-varid'>sz</span><span class='hs-layout'>)</span> <span class='hs-keyglyph'>=</span> <span class='hs-keyword'>do</span>
-<a name="line-221"></a>  <span class='hs-keyword'>let</span>
-<a name="line-222"></a>      <span class='hs-varid'>kernel</span>
-<a name="line-223"></a>        <span class='hs-keyglyph'>|</span> <span class='hs-varid'>sz</span> <span class='hs-varop'>&gt;</span> <span class='hs-num'>0</span>    <span class='hs-keyglyph'>=</span> <span class='hs-varid'>lookupKernel</span> <span class='hs-str'>"fold"</span>     <span class='hs-varid'>exe</span>
-<a name="line-224"></a>        <span class='hs-keyglyph'>|</span> <span class='hs-varid'>otherwise</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>lookupKernel</span> <span class='hs-str'>"generate"</span> <span class='hs-varid'>exe</span>
-<a name="line-225"></a>  <span class='hs-comment'>--</span>
-<a name="line-226"></a>  <span class='hs-varid'>out</span> <span class='hs-keyglyph'>&lt;-</span> <span class='hs-varid'>allocateRemote</span> <span class='hs-varid'>sh</span>
-<a name="line-227"></a>  <span class='hs-varid'>ptx</span> <span class='hs-keyglyph'>&lt;-</span> <span class='hs-varid'>gets</span> <span class='hs-varid'>llvmTarget</span>
-<a name="line-228"></a>  <span class='hs-varid'>liftIO</span> <span class='hs-varop'>$</span> <span class='hs-varid'>executeOp</span> <span class='hs-varid'>ptx</span> <span class='hs-varid'>kernel</span> <span class='hs-varid'>mempty</span> <span class='hs-varid'>gamma</span> <span class='hs-varid'>aenv</span> <span class='hs-varid'>stream</span> <span class='hs-layout'>(</span><span class='hs-conid'>IE</span> <span class='hs-num'>0</span> <span class='hs-layout'>(</span><span class='hs-varid'>size</span> <span class='hs-varid'>sh</span><span class='hs-layout'>)</span><span class='hs-layout'>)</span> <span class='hs-varid'>out</span>
-<a name="line-229"></a>  <span class='hs-varid'>return</span> <span class='hs-varid'>out</span>
-<a name="line-230"></a>
-<a name="line-231"></a>
-<a name="line-232"></a><a name="stencil1Op"></a><span class='hs-comment'>-- Using the defaulting instances for stencil operations (for now).</span>
-<a name="line-233"></a><span class='hs-comment'>--</span>
-<a name="line-234"></a><span class='hs-definition'>stencil1Op</span>
-<a name="line-235"></a>    <span class='hs-keyglyph'>::</span> <span class='hs-layout'>(</span><span class='hs-conid'>Shape</span> <span class='hs-varid'>sh</span><span class='hs-layout'>,</span> <span class='hs-conid'>Elt</span> <span class='hs-varid'>a</span><span class='hs-layout'>,</span> <span class='hs-conid'>Elt</span> <span class='hs-varid'>b</span><span class='hs-layout'>)</span>
-<a name="line-236"></a>    <span class='hs-keyglyph'>=&gt;</span> <span class='hs-conid'>ExecutableR</span> <span class='hs-conid'>PTX</span>
-<a name="line-237"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Gamma</span> <span class='hs-varid'>aenv</span>
-<a name="line-238"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Aval</span> <span class='hs-varid'>aenv</span>
-<a name="line-239"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Stream</span>
-<a name="line-240"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Array</span> <span class='hs-varid'>sh</span> <span class='hs-varid'>a</span>
-<a name="line-241"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>LLVM</span> <span class='hs-conid'>PTX</span> <span class='hs-layout'>(</span><span class='hs-conid'>Array</span> <span class='hs-varid'>sh</span> <span class='hs-varid'>b</span><span class='hs-layout'>)</span>
-<a name="line-242"></a><span class='hs-definition'>stencil1Op</span> <span class='hs-varid'>kernel</span> <span class='hs-varid'>gamma</span> <span class='hs-varid'>aenv</span> <span class='hs-varid'>stream</span> <span class='hs-varid'>arr</span>
-<a name="line-243"></a>  <span class='hs-keyglyph'>=</span> <span class='hs-varid'>simpleOp</span> <span class='hs-varid'>kernel</span> <span class='hs-varid'>gamma</span> <span class='hs-varid'>aenv</span> <span class='hs-varid'>stream</span> <span class='hs-layout'>(</span><span class='hs-varid'>shape</span> <span class='hs-varid'>arr</span><span class='hs-layout'>)</span>
-<a name="line-244"></a>
-<a name="line-245"></a><a name="stencil2Op"></a><span class='hs-definition'>stencil2Op</span>
-<a name="line-246"></a>    <span class='hs-keyglyph'>::</span> <span class='hs-layout'>(</span><span class='hs-conid'>Shape</span> <span class='hs-varid'>sh</span><span class='hs-layout'>,</span> <span class='hs-conid'>Elt</span> <span class='hs-varid'>a</span><span class='hs-layout'>,</span> <span class='hs-conid'>Elt</span> <span class='hs-varid'>b</span><span class='hs-layout'>,</span> <span class='hs-conid'>Elt</span> <span class='hs-varid'>c</span><span class='hs-layout'>)</span>
-<a name="line-247"></a>    <span class='hs-keyglyph'>=&gt;</span> <span class='hs-conid'>ExecutableR</span> <span class='hs-conid'>PTX</span>
-<a name="line-248"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Gamma</span> <span class='hs-varid'>aenv</span>
-<a name="line-249"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Aval</span> <span class='hs-varid'>aenv</span>
-<a name="line-250"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Stream</span>
-<a name="line-251"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Array</span> <span class='hs-varid'>sh</span> <span class='hs-varid'>a</span>
-<a name="line-252"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Array</span> <span class='hs-varid'>sh</span> <span class='hs-varid'>b</span>
-<a name="line-253"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>LLVM</span> <span class='hs-conid'>PTX</span> <span class='hs-layout'>(</span><span class='hs-conid'>Array</span> <span class='hs-varid'>sh</span> <span class='hs-varid'>c</span><span class='hs-layout'>)</span>
-<a name="line-254"></a><span class='hs-definition'>stencil2Op</span> <span class='hs-varid'>kernel</span> <span class='hs-varid'>gamma</span> <span class='hs-varid'>aenv</span> <span class='hs-varid'>stream</span> <span class='hs-varid'>arr</span> <span class='hs-varid'>brr</span>
-<a name="line-255"></a>  <span class='hs-keyglyph'>=</span> <span class='hs-varid'>simpleOp</span> <span class='hs-varid'>kernel</span> <span class='hs-varid'>gamma</span> <span class='hs-varid'>aenv</span> <span class='hs-varid'>stream</span> <span class='hs-layout'>(</span><span class='hs-varid'>shape</span> <span class='hs-varid'>arr</span> <span class='hs-varop'>`intersect`</span> <span class='hs-varid'>shape</span> <span class='hs-varid'>brr</span><span class='hs-layout'>)</span>
-<a name="line-256"></a>
-<a name="line-257"></a>
-<a name="line-258"></a><span class='hs-comment'>-- Skeleton execution</span>
-<a name="line-259"></a><span class='hs-comment'>-- ------------------</span>
-<a name="line-260"></a>
-<a name="line-261"></a><a name="defaultPPT"></a><span class='hs-comment'>-- TODO: Calculate this from the device properties, say [a multiple of] the</span>
-<a name="line-262"></a><span class='hs-comment'>--       maximum number of in-flight threads that the device supports.</span>
-<a name="line-263"></a><span class='hs-comment'>--</span>
-<a name="line-264"></a><span class='hs-definition'>defaultPPT</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Int</span>
-<a name="line-265"></a><span class='hs-definition'>defaultPPT</span> <span class='hs-keyglyph'>=</span> <span class='hs-num'>32768</span>
-<a name="line-266"></a>
-<a name="line-267"></a><a name="i32"></a><span class='hs-comment'>{-# INLINE i32 #-}</span>
-<a name="line-268"></a><span class='hs-definition'>i32</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Int</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Int32</span>
-<a name="line-269"></a><span class='hs-definition'>i32</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>fromIntegral</span>
-<a name="line-270"></a>
-<a name="line-271"></a>
-<a name="line-272"></a><a name="lookupKernel"></a><span class='hs-comment'>-- | Retrieve the named kernel</span>
-<a name="line-273"></a><span class='hs-comment'>--</span>
-<a name="line-274"></a><span class='hs-definition'>lookupKernel</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>String</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>ExecutableR</span> <span class='hs-conid'>PTX</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Kernel</span>
-<a name="line-275"></a><span class='hs-definition'>lookupKernel</span> <span class='hs-varid'>name</span> <span class='hs-varid'>exe</span> <span class='hs-keyglyph'>=</span>
-<a name="line-276"></a>  <span class='hs-keyword'>case</span> <span class='hs-varid'>find</span> <span class='hs-layout'>(</span><span class='hs-keyglyph'>\</span><span class='hs-varid'>k</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>kernelName</span> <span class='hs-varid'>k</span> <span class='hs-varop'>==</span> <span class='hs-varid'>name</span><span class='hs-layout'>)</span> <span class='hs-layout'>(</span><span class='hs-varid'>ptxKernel</span> <span class='hs-varid'>exe</span><span class='hs-layout'>)</span> <span class='hs-keyword'>of</span>
-<a name="line-277"></a>    <span class='hs-conid'>Just</span> <span class='hs-varid'>k</span>  <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>k</span>
-<a name="line-278"></a>    <span class='hs-conid'>Nothing</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varop'>$</span><span class='hs-varid'>internalError</span> <span class='hs-str'>"lookupKernel"</span> <span class='hs-layout'>(</span><span class='hs-str'>"not found: "</span> <span class='hs-varop'>++</span> <span class='hs-varid'>name</span><span class='hs-layout'>)</span>
-<a name="line-279"></a>
-<a name="line-280"></a>
-<a name="line-281"></a><a name="executeOp"></a><span class='hs-comment'>-- Execute the function implementing this kernel.</span>
-<a name="line-282"></a><span class='hs-comment'>--</span>
-<a name="line-283"></a><span class='hs-definition'>executeOp</span>
-<a name="line-284"></a>    <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Marshalable</span> <span class='hs-varid'>args</span>
-<a name="line-285"></a>    <span class='hs-keyglyph'>=&gt;</span> <span class='hs-conid'>PTX</span>
-<a name="line-286"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Kernel</span>
-<a name="line-287"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Finalise</span>
-<a name="line-288"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Gamma</span> <span class='hs-varid'>aenv</span>
-<a name="line-289"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Aval</span> <span class='hs-varid'>aenv</span>
-<a name="line-290"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Stream</span>
-<a name="line-291"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Range</span>
-<a name="line-292"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>args</span>
-<a name="line-293"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>IO</span> <span class='hs-conid'>()</span>
-<a name="line-294"></a><span class='hs-definition'>executeOp</span> <span class='hs-varid'>ptx</span><span class='hs-keyglyph'>@</span><span class='hs-conid'>PTX</span><span class='hs-layout'>{</span><span class='hs-keyglyph'>..</span><span class='hs-layout'>}</span> <span class='hs-varid'>kernel</span> <span class='hs-varid'>finish</span> <span class='hs-varid'>gamma</span> <span class='hs-varid'>aenv</span> <span class='hs-varid'>stream</span> <span class='hs-varid'>r</span> <span class='hs-varid'>args</span> <span class='hs-keyglyph'>=</span>
-<a name="line-295"></a>  <span class='hs-varid'>runExecutable</span> <span class='hs-varid'>fillP</span> <span class='hs-varid'>defaultPPT</span> <span class='hs-varid'>r</span> <span class='hs-varid'>finish</span> <span class='hs-varop'>$</span> <span class='hs-keyglyph'>\</span><span class='hs-varid'>start</span> <span class='hs-varid'>end</span> <span class='hs-keyword'>_</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-keyword'>do</span>
-<a name="line-296"></a>    <span class='hs-varid'>argv</span> <span class='hs-keyglyph'>&lt;-</span> <span class='hs-varid'>marshal</span> <span class='hs-varid'>ptx</span> <span class='hs-varid'>stream</span> <span class='hs-layout'>(</span><span class='hs-varid'>i32</span> <span class='hs-varid'>start</span><span class='hs-layout'>,</span> <span class='hs-varid'>i32</span> <span class='hs-varid'>end</span><span class='hs-layout'>,</span> <span class='hs-varid'>args</span><span class='hs-layout'>,</span> <span class='hs-layout'>(</span><span class='hs-varid'>gamma</span><span class='hs-layout'>,</span><span class='hs-varid'>aenv</span><span class='hs-layout'>)</span><span class='hs-layout'>)</span>
-<a name="line-297"></a>    <span class='hs-varid'>launch</span> <span class='hs-varid'>kernel</span> <span class='hs-varid'>stream</span> <span class='hs-layout'>(</span><span class='hs-varid'>end</span><span class='hs-comment'>-</span><span class='hs-varid'>start</span><span class='hs-layout'>)</span> <span class='hs-varid'>argv</span>
-<a name="line-298"></a>
-<a name="line-299"></a>
-<a name="line-300"></a><a name="launch"></a><span class='hs-comment'>-- Execute a device function with the given thread configuration and function</span>
-<a name="line-301"></a><span class='hs-comment'>-- parameters.</span>
-<a name="line-302"></a><span class='hs-comment'>--</span>
-<a name="line-303"></a><span class='hs-definition'>launch</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Kernel</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Stream</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Int</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-keyglyph'>[</span><span class='hs-conid'>CUDA</span><span class='hs-varop'>.</span><span class='hs-conid'>FunParam</span><span class='hs-keyglyph'>]</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>IO</span> <span class='hs-conid'>()</span>
-<a name="line-304"></a><span class='hs-definition'>launch</span> <span class='hs-conid'>Kernel</span><span class='hs-layout'>{</span><span class='hs-keyglyph'>..</span><span class='hs-layout'>}</span> <span class='hs-varid'>stream</span> <span class='hs-varid'>n</span> <span class='hs-varid'>args</span> <span class='hs-keyglyph'>=</span>
-<a name="line-305"></a>  <span class='hs-varid'>withLifetime</span> <span class='hs-varid'>stream</span> <span class='hs-varop'>$</span> <span class='hs-keyglyph'>\</span><span class='hs-varid'>st</span> <span class='hs-keyglyph'>-&gt;</span>
-<a name="line-306"></a>    <span class='hs-conid'>Debug</span><span class='hs-varop'>.</span><span class='hs-varid'>monitorProcTime</span> <span class='hs-varid'>query</span> <span class='hs-varid'>msg</span> <span class='hs-layout'>(</span><span class='hs-conid'>Just</span> <span class='hs-varid'>st</span><span class='hs-layout'>)</span> <span class='hs-varop'>$</span>
-<a name="line-307"></a>      <span class='hs-conid'>CUDA</span><span class='hs-varop'>.</span><span class='hs-varid'>launchKernel</span> <span class='hs-varid'>kernelFun</span> <span class='hs-varid'>grid</span> <span class='hs-varid'>cta</span> <span class='hs-varid'>smem</span> <span class='hs-layout'>(</span><span class='hs-conid'>Just</span> <span class='hs-varid'>st</span><span class='hs-layout'>)</span> <span class='hs-varid'>args</span>
-<a name="line-308"></a>  <span class='hs-keyword'>where</span>
-<a name="line-309"></a>    <span class='hs-varid'>cta</span>         <span class='hs-keyglyph'>=</span> <span class='hs-layout'>(</span><span class='hs-varid'>kernelThreadBlockSize</span><span class='hs-layout'>,</span> <span class='hs-num'>1</span><span class='hs-layout'>,</span> <span class='hs-num'>1</span><span class='hs-layout'>)</span>
-<a name="line-310"></a>    <span class='hs-varid'>grid</span>        <span class='hs-keyglyph'>=</span> <span class='hs-layout'>(</span><span class='hs-varid'>kernelThreadBlocks</span> <span class='hs-varid'>n</span><span class='hs-layout'>,</span> <span class='hs-num'>1</span><span class='hs-layout'>,</span> <span class='hs-num'>1</span><span class='hs-layout'>)</span>
-<a name="line-311"></a>    <span class='hs-varid'>smem</span>        <span class='hs-keyglyph'>=</span> <span class='hs-varid'>kernelSharedMemBytes</span>
-<a name="line-312"></a>
-<a name="line-313"></a>    <span class='hs-comment'>-- Debugging/monitoring support</span>
-<a name="line-314"></a>    <span class='hs-varid'>query</span>       <span class='hs-keyglyph'>=</span> <span class='hs-keyword'>if</span> <span class='hs-conid'>Debug</span><span class='hs-varop'>.</span><span class='hs-varid'>monitoringIsEnabled</span>
-<a name="line-315"></a>                    <span class='hs-keyword'>then</span> <span class='hs-varid'>return</span> <span class='hs-conid'>True</span>
-<a name="line-316"></a>                    <span class='hs-keyword'>else</span> <span class='hs-conid'>Debug</span><span class='hs-varop'>.</span><span class='hs-varid'>queryFlag</span> <span class='hs-conid'>Debug</span><span class='hs-varop'>.</span><span class='hs-varid'>dump_exec</span>
-<a name="line-317"></a>
-<a name="line-318"></a>    <span class='hs-varid'>fst3</span> <span class='hs-layout'>(</span><span class='hs-varid'>x</span><span class='hs-layout'>,</span><span class='hs-keyword'>_</span><span class='hs-layout'>,</span><span class='hs-keyword'>_</span><span class='hs-layout'>)</span>         <span class='hs-keyglyph'>=</span> <span class='hs-varid'>x</span>
-<a name="line-319"></a>    <span class='hs-varid'>msg</span> <span class='hs-varid'>gpuTime</span> <span class='hs-varid'>wallTime</span> <span class='hs-keyglyph'>=</span> <span class='hs-keyword'>do</span>
-<a name="line-320"></a>      <span class='hs-conid'>Debug</span><span class='hs-varop'>.</span><span class='hs-varid'>addProcessorTime</span> <span class='hs-conid'>Debug</span><span class='hs-varop'>.</span><span class='hs-conid'>PTX</span> <span class='hs-varid'>gpuTime</span>
-<a name="line-321"></a>      <span class='hs-conid'>Debug</span><span class='hs-varop'>.</span><span class='hs-varid'>traceIO</span> <span class='hs-conid'>Debug</span><span class='hs-varop'>.</span><span class='hs-varid'>dump_exec</span> <span class='hs-varop'>$</span>
-<a name="line-322"></a>        <span class='hs-varid'>printf</span> <span class='hs-str'>"exec: %s &lt;&lt;&lt; %d, %d, %d &gt;&gt;&gt; %s"</span>
-<a name="line-323"></a>               <span class='hs-varid'>kernelName</span> <span class='hs-layout'>(</span><span class='hs-varid'>fst3</span> <span class='hs-varid'>grid</span><span class='hs-layout'>)</span> <span class='hs-layout'>(</span><span class='hs-varid'>fst3</span> <span class='hs-varid'>cta</span><span class='hs-layout'>)</span> <span class='hs-varid'>smem</span> <span class='hs-layout'>(</span><span class='hs-conid'>Debug</span><span class='hs-varop'>.</span><span class='hs-varid'>elapsed</span> <span class='hs-varid'>gpuTime</span> <span class='hs-varid'>wallTime</span><span class='hs-layout'>)</span>
-<a name="line-324"></a>
+<a name="line-44"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>Data</span><span class='hs-varop'>.</span><span class='hs-conid'>Range</span><span class='hs-varop'>.</span><span class='hs-conid'>Range</span>                                         <span class='hs-layout'>(</span> <span class='hs-conid'>Range</span><span class='hs-layout'>(</span><span class='hs-keyglyph'>..</span><span class='hs-layout'>)</span> <span class='hs-layout'>)</span>
+<a name="line-45"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>Control</span><span class='hs-varop'>.</span><span class='hs-conid'>Parallel</span><span class='hs-varop'>.</span><span class='hs-conid'>Meta</span>                                    <span class='hs-layout'>(</span> <span class='hs-varid'>runExecutable</span><span class='hs-layout'>,</span> <span class='hs-conid'>Finalise</span> <span class='hs-layout'>)</span>
+<a name="line-46"></a>
+<a name="line-47"></a><span class='hs-comment'>-- cuda</span>
+<a name="line-48"></a><span class='hs-keyword'>import</span> <span class='hs-keyword'>qualified</span> <span class='hs-conid'>Foreign</span><span class='hs-varop'>.</span><span class='hs-conid'>CUDA</span><span class='hs-varop'>.</span><span class='hs-conid'>Driver</span>                            <span class='hs-keyword'>as</span> <span class='hs-conid'>CUDA</span>
+<a name="line-49"></a>
+<a name="line-50"></a><span class='hs-comment'>-- library</span>
+<a name="line-51"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>Control</span><span class='hs-varop'>.</span><span class='hs-conid'>Monad</span><span class='hs-varop'>.</span><span class='hs-conid'>State</span>                                      <span class='hs-layout'>(</span> <span class='hs-varid'>gets</span><span class='hs-layout'>,</span> <span class='hs-varid'>liftIO</span> <span class='hs-layout'>)</span>
+<a name="line-52"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>Data</span><span class='hs-varop'>.</span><span class='hs-conid'>Int</span>                                                 <span class='hs-layout'>(</span> <span class='hs-conid'>Int32</span> <span class='hs-layout'>)</span>
+<a name="line-53"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>Data</span><span class='hs-varop'>.</span><span class='hs-conid'>List</span>                                                <span class='hs-layout'>(</span> <span class='hs-varid'>find</span> <span class='hs-layout'>)</span>
+<a name="line-54"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>Data</span><span class='hs-varop'>.</span><span class='hs-conid'>Monoid</span>                                              <span class='hs-layout'>(</span> <span class='hs-varid'>mempty</span> <span class='hs-layout'>)</span>
+<a name="line-55"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>Text</span><span class='hs-varop'>.</span><span class='hs-conid'>Printf</span>                                              <span class='hs-layout'>(</span> <span class='hs-varid'>printf</span> <span class='hs-layout'>)</span>
+<a name="line-56"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>Prelude</span>                                                  <span class='hs-varid'>hiding</span> <span class='hs-layout'>(</span> <span class='hs-varid'>exp</span><span class='hs-layout'>,</span> <span class='hs-varid'>map</span><span class='hs-layout'>,</span> <span class='hs-varid'>scanl</span><span class='hs-layout'>,</span> <span class='hs-varid'>scanr</span> <span class='hs-layout'>)</span>
+<a name="line-57"></a><span class='hs-keyword'>import</span> <span class='hs-keyword'>qualified</span> <span class='hs-conid'>Prelude</span>                                        <span class='hs-keyword'>as</span> <span class='hs-conid'>P</span>
+<a name="line-58"></a>
+<a name="line-59"></a>
+<a name="line-60"></a><span class='hs-comment'>-- Array expression evaluation</span>
+<a name="line-61"></a><span class='hs-comment'>-- ---------------------------</span>
+<a name="line-62"></a>
+<a name="line-63"></a><a name="instance%20Execute%20PTX"></a><span class='hs-comment'>-- Computations are evaluated by traversing the AST bottom up, and for each node</span>
+<a name="line-64"></a><a name="instance%20Execute%20PTX"></a><span class='hs-comment'>-- distinguishing between three cases:</span>
+<a name="line-65"></a><a name="instance%20Execute%20PTX"></a><span class='hs-comment'>--</span>
+<a name="line-66"></a><a name="instance%20Execute%20PTX"></a><span class='hs-comment'>--  1. If it is a Use node, we return a reference to the array data. The data</span>
+<a name="line-67"></a><a name="instance%20Execute%20PTX"></a><span class='hs-comment'>--     will already have been copied to the device during compilation of the</span>
+<a name="line-68"></a><a name="instance%20Execute%20PTX"></a><span class='hs-comment'>--     kernels.</span>
+<a name="line-69"></a><a name="instance%20Execute%20PTX"></a><span class='hs-comment'>--</span>
+<a name="line-70"></a><a name="instance%20Execute%20PTX"></a><span class='hs-comment'>--  2. If it is a non-skeleton node, such as a let binding or shape conversion,</span>
+<a name="line-71"></a><a name="instance%20Execute%20PTX"></a><span class='hs-comment'>--     then execute directly by updating the environment or similar.</span>
+<a name="line-72"></a><a name="instance%20Execute%20PTX"></a><span class='hs-comment'>--</span>
+<a name="line-73"></a><a name="instance%20Execute%20PTX"></a><span class='hs-comment'>--  3. If it is a skeleton node, then we need to execute the generated LLVM</span>
+<a name="line-74"></a><a name="instance%20Execute%20PTX"></a><span class='hs-comment'>--     code.</span>
+<a name="line-75"></a><a name="instance%20Execute%20PTX"></a><span class='hs-comment'>--</span>
+<a name="line-76"></a><a name="instance%20Execute%20PTX"></a><span class='hs-keyword'>instance</span> <span class='hs-conid'>Execute</span> <span class='hs-conid'>PTX</span> <span class='hs-keyword'>where</span>
+<a name="line-77"></a>  <span class='hs-varid'>map</span>           <span class='hs-keyglyph'>=</span> <span class='hs-varid'>simpleOp</span>
+<a name="line-78"></a>  <span class='hs-varid'>generate</span>      <span class='hs-keyglyph'>=</span> <span class='hs-varid'>simpleOp</span>
+<a name="line-79"></a>  <span class='hs-varid'>transform</span>     <span class='hs-keyglyph'>=</span> <span class='hs-varid'>simpleOp</span>
+<a name="line-80"></a>  <span class='hs-varid'>backpermute</span>   <span class='hs-keyglyph'>=</span> <span class='hs-varid'>simpleOp</span>
+<a name="line-81"></a>  <span class='hs-varid'>fold</span>          <span class='hs-keyglyph'>=</span> <span class='hs-varid'>foldOp</span>
+<a name="line-82"></a>  <span class='hs-varid'>fold1</span>         <span class='hs-keyglyph'>=</span> <span class='hs-varid'>fold1Op</span>
+<a name="line-83"></a>  <span class='hs-varid'>stencil1</span>      <span class='hs-keyglyph'>=</span> <span class='hs-varid'>stencil1Op</span>
+<a name="line-84"></a>  <span class='hs-varid'>stencil2</span>      <span class='hs-keyglyph'>=</span> <span class='hs-varid'>stencil2Op</span>
+<a name="line-85"></a>
+<a name="line-86"></a>
+<a name="line-87"></a><span class='hs-comment'>-- Skeleton implementation</span>
+<a name="line-88"></a><span class='hs-comment'>-- -----------------------</span>
+<a name="line-89"></a>
+<a name="line-90"></a><a name="simpleOp"></a><span class='hs-comment'>-- Simple kernels just need to know the shape of the output array</span>
+<a name="line-91"></a><span class='hs-comment'>--</span>
+<a name="line-92"></a><span class='hs-definition'>simpleOp</span>
+<a name="line-93"></a>    <span class='hs-keyglyph'>::</span> <span class='hs-layout'>(</span><span class='hs-conid'>Shape</span> <span class='hs-varid'>sh</span><span class='hs-layout'>,</span> <span class='hs-conid'>Elt</span> <span class='hs-varid'>e</span><span class='hs-layout'>)</span>
+<a name="line-94"></a>    <span class='hs-keyglyph'>=&gt;</span> <span class='hs-conid'>ExecutableR</span> <span class='hs-conid'>PTX</span>
+<a name="line-95"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Gamma</span> <span class='hs-varid'>aenv</span>
+<a name="line-96"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Aval</span> <span class='hs-varid'>aenv</span>
+<a name="line-97"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Stream</span>
+<a name="line-98"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>sh</span>
+<a name="line-99"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>LLVM</span> <span class='hs-conid'>PTX</span> <span class='hs-layout'>(</span><span class='hs-conid'>Array</span> <span class='hs-varid'>sh</span> <span class='hs-varid'>e</span><span class='hs-layout'>)</span>
+<a name="line-100"></a><span class='hs-definition'>simpleOp</span> <span class='hs-varid'>exe</span> <span class='hs-varid'>gamma</span> <span class='hs-varid'>aenv</span> <span class='hs-varid'>stream</span> <span class='hs-varid'>sh</span> <span class='hs-keyglyph'>=</span> <span class='hs-keyword'>do</span>
+<a name="line-101"></a>  <span class='hs-keyword'>let</span> <span class='hs-varid'>kernel</span>    <span class='hs-keyglyph'>=</span> <span class='hs-keyword'>case</span> <span class='hs-varid'>ptxKernel</span> <span class='hs-varid'>exe</span> <span class='hs-keyword'>of</span>
+<a name="line-102"></a>                    <span class='hs-varid'>k</span><span class='hs-conop'>:</span><span class='hs-keyword'>_</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>k</span>
+<a name="line-103"></a>                    <span class='hs-keyword'>_</span>   <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varop'>$</span><span class='hs-varid'>internalError</span> <span class='hs-str'>"simpleOp"</span> <span class='hs-str'>"kernel not found"</span>
+<a name="line-104"></a>  <span class='hs-comment'>--</span>
+<a name="line-105"></a>  <span class='hs-varid'>out</span> <span class='hs-keyglyph'>&lt;-</span> <span class='hs-varid'>allocateRemote</span> <span class='hs-varid'>sh</span>
+<a name="line-106"></a>  <span class='hs-varid'>ptx</span> <span class='hs-keyglyph'>&lt;-</span> <span class='hs-varid'>gets</span> <span class='hs-varid'>llvmTarget</span>
+<a name="line-107"></a>  <span class='hs-varid'>liftIO</span> <span class='hs-varop'>$</span> <span class='hs-varid'>executeOp</span> <span class='hs-varid'>ptx</span> <span class='hs-varid'>kernel</span> <span class='hs-varid'>mempty</span> <span class='hs-varid'>gamma</span> <span class='hs-varid'>aenv</span> <span class='hs-varid'>stream</span> <span class='hs-layout'>(</span><span class='hs-conid'>IE</span> <span class='hs-num'>0</span> <span class='hs-layout'>(</span><span class='hs-varid'>size</span> <span class='hs-varid'>sh</span><span class='hs-layout'>)</span><span class='hs-layout'>)</span> <span class='hs-varid'>out</span>
+<a name="line-108"></a>  <span class='hs-varid'>return</span> <span class='hs-varid'>out</span>
+<a name="line-109"></a>
+<a name="line-110"></a>
+<a name="line-111"></a><a name="fold1Op"></a><span class='hs-comment'>-- There are two flavours of fold operation:</span>
+<a name="line-112"></a><span class='hs-comment'>--</span>
+<a name="line-113"></a><span class='hs-comment'>--   1. If we are collapsing to a single value, then multiple thread blocks are</span>
+<a name="line-114"></a><span class='hs-comment'>--      working together. Since thread blocks synchronise with each other via</span>
+<a name="line-115"></a><span class='hs-comment'>--      kernel launches, each block computes a partial sum and the kernel is</span>
+<a name="line-116"></a><span class='hs-comment'>--      launched recursively until the final value is reached.</span>
+<a name="line-117"></a><span class='hs-comment'>--</span>
+<a name="line-118"></a><span class='hs-comment'>--   2. If this is a multidimensional reduction, then each inner dimension is</span>
+<a name="line-119"></a><span class='hs-comment'>--      handled by a single thread block, so no global communication is</span>
+<a name="line-120"></a><span class='hs-comment'>--      necessary. Furthermore are two kernel flavours: each innermost dimension</span>
+<a name="line-121"></a><span class='hs-comment'>--      can be cooperatively reduced by (a) a thread warp; or (b) a thread</span>
+<a name="line-122"></a><span class='hs-comment'>--      block. Currently we always use the first, but require benchmarking to</span>
+<a name="line-123"></a><span class='hs-comment'>--      determine when to select each.</span>
+<a name="line-124"></a><span class='hs-comment'>--</span>
+<a name="line-125"></a><span class='hs-definition'>fold1Op</span>
+<a name="line-126"></a>    <span class='hs-keyglyph'>::</span> <span class='hs-layout'>(</span><span class='hs-conid'>Shape</span> <span class='hs-varid'>sh</span><span class='hs-layout'>,</span> <span class='hs-conid'>Elt</span> <span class='hs-varid'>e</span><span class='hs-layout'>)</span>
+<a name="line-127"></a>    <span class='hs-keyglyph'>=&gt;</span> <span class='hs-conid'>ExecutableR</span> <span class='hs-conid'>PTX</span>
+<a name="line-128"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Gamma</span> <span class='hs-varid'>aenv</span>
+<a name="line-129"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Aval</span> <span class='hs-varid'>aenv</span>
+<a name="line-130"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Stream</span>
+<a name="line-131"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-layout'>(</span><span class='hs-varid'>sh</span> <span class='hs-conop'>:.</span> <span class='hs-conid'>Int</span><span class='hs-layout'>)</span>
+<a name="line-132"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>LLVM</span> <span class='hs-conid'>PTX</span> <span class='hs-layout'>(</span><span class='hs-conid'>Array</span> <span class='hs-varid'>sh</span> <span class='hs-varid'>e</span><span class='hs-layout'>)</span>
+<a name="line-133"></a><span class='hs-definition'>fold1Op</span> <span class='hs-varid'>kernel</span> <span class='hs-varid'>gamma</span> <span class='hs-varid'>aenv</span> <span class='hs-varid'>stream</span> <span class='hs-varid'>sh</span><span class='hs-keyglyph'>@</span><span class='hs-layout'>(</span><span class='hs-varid'>sx</span> <span class='hs-conop'>:.</span> <span class='hs-varid'>sz</span><span class='hs-layout'>)</span>
+<a name="line-134"></a>  <span class='hs-keyglyph'>=</span> <span class='hs-varop'>$</span><span class='hs-varid'>boundsCheck</span> <span class='hs-str'>"fold1"</span> <span class='hs-str'>"empty array"</span> <span class='hs-layout'>(</span><span class='hs-varid'>sz</span> <span class='hs-varop'>&gt;</span> <span class='hs-num'>0</span><span class='hs-layout'>)</span>
+<a name="line-135"></a>  <span class='hs-varop'>$</span> <span class='hs-keyword'>case</span> <span class='hs-varid'>size</span> <span class='hs-varid'>sh</span> <span class='hs-keyword'>of</span>
+<a name="line-136"></a>      <span class='hs-num'>0</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>allocateRemote</span> <span class='hs-varid'>sx</span>
+<a name="line-137"></a>      <span class='hs-keyword'>_</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>foldCore</span> <span class='hs-varid'>kernel</span> <span class='hs-varid'>gamma</span> <span class='hs-varid'>aenv</span> <span class='hs-varid'>stream</span> <span class='hs-varid'>sh</span>
+<a name="line-138"></a>
+<a name="line-139"></a><a name="foldOp"></a><span class='hs-definition'>foldOp</span>
+<a name="line-140"></a>    <span class='hs-keyglyph'>::</span> <span class='hs-layout'>(</span><span class='hs-conid'>Shape</span> <span class='hs-varid'>sh</span><span class='hs-layout'>,</span> <span class='hs-conid'>Elt</span> <span class='hs-varid'>e</span><span class='hs-layout'>)</span>
+<a name="line-141"></a>    <span class='hs-keyglyph'>=&gt;</span> <span class='hs-conid'>ExecutableR</span> <span class='hs-conid'>PTX</span>
+<a name="line-142"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Gamma</span> <span class='hs-varid'>aenv</span>
+<a name="line-143"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Aval</span> <span class='hs-varid'>aenv</span>
+<a name="line-144"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Stream</span>
+<a name="line-145"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-layout'>(</span><span class='hs-varid'>sh</span> <span class='hs-conop'>:.</span> <span class='hs-conid'>Int</span><span class='hs-layout'>)</span>
+<a name="line-146"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>LLVM</span> <span class='hs-conid'>PTX</span> <span class='hs-layout'>(</span><span class='hs-conid'>Array</span> <span class='hs-varid'>sh</span> <span class='hs-varid'>e</span><span class='hs-layout'>)</span>
+<a name="line-147"></a><span class='hs-definition'>foldOp</span> <span class='hs-varid'>kernel</span> <span class='hs-varid'>gamma</span> <span class='hs-varid'>aenv</span> <span class='hs-varid'>stream</span> <span class='hs-varid'>sh</span><span class='hs-keyglyph'>@</span><span class='hs-layout'>(</span><span class='hs-varid'>sx</span> <span class='hs-conop'>:.</span> <span class='hs-keyword'>_</span><span class='hs-layout'>)</span>
+<a name="line-148"></a>  <span class='hs-keyglyph'>=</span> <span class='hs-varid'>foldCore</span> <span class='hs-varid'>kernel</span> <span class='hs-varid'>gamma</span> <span class='hs-varid'>aenv</span> <span class='hs-varid'>stream</span>
+<a name="line-149"></a>  <span class='hs-varop'>$</span> <span class='hs-keyword'>case</span> <span class='hs-varid'>size</span> <span class='hs-varid'>sh</span> <span class='hs-keyword'>of</span>
+<a name="line-150"></a>      <span class='hs-num'>0</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>listToShape</span> <span class='hs-layout'>(</span><span class='hs-conid'>P</span><span class='hs-varop'>.</span><span class='hs-varid'>map</span> <span class='hs-layout'>(</span><span class='hs-varid'>max</span> <span class='hs-num'>1</span><span class='hs-layout'>)</span> <span class='hs-layout'>(</span><span class='hs-varid'>shapeToList</span> <span class='hs-varid'>sx</span><span class='hs-layout'>)</span><span class='hs-layout'>)</span> <span class='hs-conop'>:.</span> <span class='hs-num'>0</span>
+<a name="line-151"></a>      <span class='hs-keyword'>_</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>sh</span>
+<a name="line-152"></a>
+<a name="line-153"></a><a name="foldCore"></a><span class='hs-definition'>foldCore</span>
+<a name="line-154"></a>    <span class='hs-keyglyph'>::</span> <span class='hs-layout'>(</span><span class='hs-conid'>Shape</span> <span class='hs-varid'>sh</span><span class='hs-layout'>,</span> <span class='hs-conid'>Elt</span> <span class='hs-varid'>e</span><span class='hs-layout'>)</span>
+<a name="line-155"></a>    <span class='hs-keyglyph'>=&gt;</span> <span class='hs-conid'>ExecutableR</span> <span class='hs-conid'>PTX</span>
+<a name="line-156"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Gamma</span> <span class='hs-varid'>aenv</span>
+<a name="line-157"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Aval</span> <span class='hs-varid'>aenv</span>
+<a name="line-158"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Stream</span>
+<a name="line-159"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-layout'>(</span><span class='hs-varid'>sh</span> <span class='hs-conop'>:.</span> <span class='hs-conid'>Int</span><span class='hs-layout'>)</span>
+<a name="line-160"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>LLVM</span> <span class='hs-conid'>PTX</span> <span class='hs-layout'>(</span><span class='hs-conid'>Array</span> <span class='hs-varid'>sh</span> <span class='hs-varid'>e</span><span class='hs-layout'>)</span>
+<a name="line-161"></a><span class='hs-definition'>foldCore</span> <span class='hs-varid'>kernel</span> <span class='hs-varid'>gamma</span> <span class='hs-varid'>aenv</span> <span class='hs-varid'>stream</span> <span class='hs-varid'>sh</span>
+<a name="line-162"></a>  <span class='hs-keyglyph'>|</span> <span class='hs-varid'>rank</span> <span class='hs-varid'>sh</span> <span class='hs-varop'>==</span> <span class='hs-num'>1</span>  <span class='hs-keyglyph'>=</span> <span class='hs-varid'>foldAllOp</span> <span class='hs-varid'>kernel</span> <span class='hs-varid'>gamma</span> <span class='hs-varid'>aenv</span> <span class='hs-varid'>stream</span> <span class='hs-varid'>sh</span>
+<a name="line-163"></a>  <span class='hs-keyglyph'>|</span> <span class='hs-varid'>otherwise</span>     <span class='hs-keyglyph'>=</span> <span class='hs-varid'>foldDimOp</span> <span class='hs-varid'>kernel</span> <span class='hs-varid'>gamma</span> <span class='hs-varid'>aenv</span> <span class='hs-varid'>stream</span> <span class='hs-varid'>sh</span>
+<a name="line-164"></a>
+<a name="line-165"></a><a name="foldAllOp"></a><span class='hs-comment'>-- See note: [Marshalling foldAll output arrays]</span>
+<a name="line-166"></a><span class='hs-comment'>--</span>
+<a name="line-167"></a><span class='hs-definition'>foldAllOp</span>
+<a name="line-168"></a>    <span class='hs-keyglyph'>::</span> <span class='hs-keyword'>forall</span> <span class='hs-varid'>aenv</span> <span class='hs-varid'>sh</span> <span class='hs-varid'>e</span><span class='hs-varop'>.</span> <span class='hs-layout'>(</span><span class='hs-conid'>Shape</span> <span class='hs-varid'>sh</span><span class='hs-layout'>,</span> <span class='hs-conid'>Elt</span> <span class='hs-varid'>e</span><span class='hs-layout'>)</span>
+<a name="line-169"></a>    <span class='hs-keyglyph'>=&gt;</span> <span class='hs-conid'>ExecutableR</span> <span class='hs-conid'>PTX</span>
+<a name="line-170"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Gamma</span> <span class='hs-varid'>aenv</span>
+<a name="line-171"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Aval</span> <span class='hs-varid'>aenv</span>
+<a name="line-172"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Stream</span>
+<a name="line-173"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-layout'>(</span><span class='hs-varid'>sh</span> <span class='hs-conop'>:.</span> <span class='hs-conid'>Int</span><span class='hs-layout'>)</span>
+<a name="line-174"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>LLVM</span> <span class='hs-conid'>PTX</span> <span class='hs-layout'>(</span><span class='hs-conid'>Array</span> <span class='hs-varid'>sh</span> <span class='hs-varid'>e</span><span class='hs-layout'>)</span>
+<a name="line-175"></a><span class='hs-definition'>foldAllOp</span> <span class='hs-varid'>exe</span> <span class='hs-varid'>gamma</span> <span class='hs-varid'>aenv</span> <span class='hs-varid'>stream</span> <span class='hs-varid'>sh'</span> <span class='hs-keyglyph'>=</span> <span class='hs-keyword'>do</span>
+<a name="line-176"></a>  <span class='hs-varid'>ptx</span> <span class='hs-keyglyph'>&lt;-</span> <span class='hs-varid'>gets</span> <span class='hs-varid'>llvmTarget</span>
+<a name="line-177"></a>  <span class='hs-keyword'>let</span>
+<a name="line-178"></a>      <span class='hs-layout'>(</span><span class='hs-varid'>k1</span><span class='hs-layout'>,</span><span class='hs-varid'>k2</span><span class='hs-layout'>)</span>   <span class='hs-keyglyph'>=</span> <span class='hs-keyword'>case</span> <span class='hs-varid'>ptxKernel</span> <span class='hs-varid'>exe</span> <span class='hs-keyword'>of</span>
+<a name="line-179"></a>                    <span class='hs-varid'>u</span><span class='hs-conop'>:</span><span class='hs-varid'>v</span><span class='hs-conop'>:</span><span class='hs-keyword'>_</span>       <span class='hs-keyglyph'>-&gt;</span> <span class='hs-layout'>(</span><span class='hs-varid'>u</span><span class='hs-layout'>,</span><span class='hs-varid'>v</span><span class='hs-layout'>)</span>
+<a name="line-180"></a>                    <span class='hs-keyword'>_</span>           <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varop'>$</span><span class='hs-varid'>internalError</span> <span class='hs-str'>"foldAllOp"</span> <span class='hs-str'>"kernel not found"</span>
+<a name="line-181"></a>
+<a name="line-182"></a>      <span class='hs-varid'>foldIntro</span> <span class='hs-keyglyph'>::</span> <span class='hs-layout'>(</span><span class='hs-varid'>sh</span> <span class='hs-conop'>:.</span> <span class='hs-conid'>Int</span><span class='hs-layout'>)</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>LLVM</span> <span class='hs-conid'>PTX</span> <span class='hs-layout'>(</span><span class='hs-conid'>Array</span> <span class='hs-varid'>sh</span> <span class='hs-varid'>e</span><span class='hs-layout'>)</span>
+<a name="line-183"></a>      <span class='hs-varid'>foldIntro</span> <span class='hs-layout'>(</span><span class='hs-varid'>sh</span><span class='hs-conop'>:.</span><span class='hs-varid'>sz</span><span class='hs-layout'>)</span> <span class='hs-keyglyph'>=</span> <span class='hs-keyword'>do</span>
+<a name="line-184"></a>        <span class='hs-keyword'>let</span> <span class='hs-varid'>numElements</span>       <span class='hs-keyglyph'>=</span> <span class='hs-varid'>size</span> <span class='hs-varid'>sh</span> <span class='hs-varop'>*</span> <span class='hs-varid'>sz</span>
+<a name="line-185"></a>            <span class='hs-varid'>numBlocks</span>         <span class='hs-keyglyph'>=</span> <span class='hs-layout'>(</span><span class='hs-varid'>kernelThreadBlocks</span> <span class='hs-varid'>k1</span><span class='hs-layout'>)</span> <span class='hs-varid'>numElements</span>
+<a name="line-186"></a>        <span class='hs-comment'>--</span>
+<a name="line-187"></a>        <span class='hs-varid'>out</span> <span class='hs-keyglyph'>&lt;-</span> <span class='hs-varid'>allocateRemote</span> <span class='hs-layout'>(</span><span class='hs-varid'>sh</span> <span class='hs-conop'>:.</span> <span class='hs-varid'>numBlocks</span><span class='hs-layout'>)</span>
+<a name="line-188"></a>        <span class='hs-varid'>liftIO</span> <span class='hs-varop'>$</span> <span class='hs-varid'>executeOp</span> <span class='hs-varid'>ptx</span> <span class='hs-varid'>k1</span> <span class='hs-varid'>mempty</span> <span class='hs-varid'>gamma</span> <span class='hs-varid'>aenv</span> <span class='hs-varid'>stream</span> <span class='hs-layout'>(</span><span class='hs-conid'>IE</span> <span class='hs-num'>0</span> <span class='hs-varid'>numElements</span><span class='hs-layout'>)</span> <span class='hs-varid'>out</span>
+<a name="line-189"></a>        <span class='hs-varid'>foldRec</span> <span class='hs-varid'>out</span>
+<a name="line-190"></a>
+<a name="line-191"></a>      <span class='hs-varid'>foldRec</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Array</span> <span class='hs-layout'>(</span><span class='hs-varid'>sh</span> <span class='hs-conop'>:.</span> <span class='hs-conid'>Int</span><span class='hs-layout'>)</span> <span class='hs-varid'>e</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>LLVM</span> <span class='hs-conid'>PTX</span> <span class='hs-layout'>(</span><span class='hs-conid'>Array</span> <span class='hs-varid'>sh</span> <span class='hs-varid'>e</span><span class='hs-layout'>)</span>
+<a name="line-192"></a>      <span class='hs-varid'>foldRec</span> <span class='hs-varid'>out</span><span class='hs-keyglyph'>@</span><span class='hs-layout'>(</span><span class='hs-conid'>Array</span> <span class='hs-layout'>(</span><span class='hs-varid'>sh</span><span class='hs-layout'>,</span><span class='hs-varid'>sz</span><span class='hs-layout'>)</span> <span class='hs-varid'>adata</span><span class='hs-layout'>)</span> <span class='hs-keyglyph'>=</span>
+<a name="line-193"></a>        <span class='hs-keyword'>let</span> <span class='hs-varid'>numElements</span>       <span class='hs-keyglyph'>=</span> <span class='hs-conid'>R</span><span class='hs-varop'>.</span><span class='hs-varid'>size</span> <span class='hs-varid'>sh</span> <span class='hs-varop'>*</span> <span class='hs-varid'>sz</span>
+<a name="line-194"></a>            <span class='hs-varid'>numBlocks</span>         <span class='hs-keyglyph'>=</span> <span class='hs-layout'>(</span><span class='hs-varid'>kernelThreadBlocks</span> <span class='hs-varid'>k2</span><span class='hs-layout'>)</span> <span class='hs-varid'>numElements</span>
+<a name="line-195"></a>        <span class='hs-keyword'>in</span> <span class='hs-keyword'>if</span> <span class='hs-varid'>sz</span> <span class='hs-varop'>&lt;=</span> <span class='hs-num'>1</span>
+<a name="line-196"></a>              <span class='hs-keyword'>then</span> <span class='hs-keyword'>do</span>
+<a name="line-197"></a>                <span class='hs-comment'>-- We have recursed to a single block already. Trim the</span>
+<a name="line-198"></a>                <span class='hs-comment'>-- intermediate working vector to the final scalar array.</span>
+<a name="line-199"></a>                <span class='hs-varid'>return</span> <span class='hs-varop'>$!</span> <span class='hs-conid'>Array</span> <span class='hs-varid'>sh</span> <span class='hs-varid'>adata</span>
+<a name="line-200"></a>
+<a name="line-201"></a>              <span class='hs-keyword'>else</span> <span class='hs-keyword'>do</span>
+<a name="line-202"></a>                <span class='hs-comment'>-- Keep cooperatively reducing the output array in-place.</span>
+<a name="line-203"></a>                <span class='hs-comment'>-- Note that we must continue to update the tracked size</span>
+<a name="line-204"></a>                <span class='hs-comment'>-- so the recursion knows when to stop.</span>
+<a name="line-205"></a>                <span class='hs-varid'>liftIO</span> <span class='hs-varop'>$</span> <span class='hs-varid'>executeOp</span> <span class='hs-varid'>ptx</span> <span class='hs-varid'>k2</span> <span class='hs-varid'>mempty</span> <span class='hs-varid'>gamma</span> <span class='hs-varid'>aenv</span> <span class='hs-varid'>stream</span> <span class='hs-layout'>(</span><span class='hs-conid'>IE</span> <span class='hs-num'>0</span> <span class='hs-varid'>numElements</span><span class='hs-layout'>)</span> <span class='hs-varid'>out</span>
+<a name="line-206"></a>                <span class='hs-varid'>foldRec</span> <span class='hs-varop'>$!</span> <span class='hs-conid'>Array</span> <span class='hs-layout'>(</span><span class='hs-varid'>sh</span><span class='hs-layout'>,</span><span class='hs-varid'>numBlocks</span><span class='hs-layout'>)</span> <span class='hs-varid'>adata</span>
+<a name="line-207"></a>  <span class='hs-comment'>--</span>
+<a name="line-208"></a>  <span class='hs-varid'>foldIntro</span> <span class='hs-varid'>sh'</span>
+<a name="line-209"></a>
+<a name="line-210"></a><a name="foldDimOp"></a><span class='hs-definition'>foldDimOp</span>
+<a name="line-211"></a>    <span class='hs-keyglyph'>::</span> <span class='hs-keyword'>forall</span> <span class='hs-varid'>aenv</span> <span class='hs-varid'>sh</span> <span class='hs-varid'>e</span><span class='hs-varop'>.</span> <span class='hs-layout'>(</span><span class='hs-conid'>Shape</span> <span class='hs-varid'>sh</span><span class='hs-layout'>,</span> <span class='hs-conid'>Elt</span> <span class='hs-varid'>e</span><span class='hs-layout'>)</span>
+<a name="line-212"></a>    <span class='hs-keyglyph'>=&gt;</span> <span class='hs-conid'>ExecutableR</span> <span class='hs-conid'>PTX</span>
+<a name="line-213"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Gamma</span> <span class='hs-varid'>aenv</span>
+<a name="line-214"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Aval</span> <span class='hs-varid'>aenv</span>
+<a name="line-215"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Stream</span>
+<a name="line-216"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-layout'>(</span><span class='hs-varid'>sh</span> <span class='hs-conop'>:.</span> <span class='hs-conid'>Int</span><span class='hs-layout'>)</span>
+<a name="line-217"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>LLVM</span> <span class='hs-conid'>PTX</span> <span class='hs-layout'>(</span><span class='hs-conid'>Array</span> <span class='hs-varid'>sh</span> <span class='hs-varid'>e</span><span class='hs-layout'>)</span>
+<a name="line-218"></a><span class='hs-definition'>foldDimOp</span> <span class='hs-varid'>exe</span> <span class='hs-varid'>gamma</span> <span class='hs-varid'>aenv</span> <span class='hs-varid'>stream</span> <span class='hs-layout'>(</span><span class='hs-varid'>sh</span> <span class='hs-conop'>:.</span> <span class='hs-varid'>sz</span><span class='hs-layout'>)</span> <span class='hs-keyglyph'>=</span> <span class='hs-keyword'>do</span>
+<a name="line-219"></a>  <span class='hs-keyword'>let</span>
+<a name="line-220"></a>      <span class='hs-varid'>kernel</span>
+<a name="line-221"></a>        <span class='hs-keyglyph'>|</span> <span class='hs-varid'>sz</span> <span class='hs-varop'>&gt;</span> <span class='hs-num'>0</span>    <span class='hs-keyglyph'>=</span> <span class='hs-varid'>lookupKernel</span> <span class='hs-str'>"fold"</span>     <span class='hs-varid'>exe</span>
+<a name="line-222"></a>        <span class='hs-keyglyph'>|</span> <span class='hs-varid'>otherwise</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>lookupKernel</span> <span class='hs-str'>"generate"</span> <span class='hs-varid'>exe</span>
+<a name="line-223"></a>  <span class='hs-comment'>--</span>
+<a name="line-224"></a>  <span class='hs-varid'>out</span> <span class='hs-keyglyph'>&lt;-</span> <span class='hs-varid'>allocateRemote</span> <span class='hs-varid'>sh</span>
+<a name="line-225"></a>  <span class='hs-varid'>ptx</span> <span class='hs-keyglyph'>&lt;-</span> <span class='hs-varid'>gets</span> <span class='hs-varid'>llvmTarget</span>
+<a name="line-226"></a>  <span class='hs-varid'>liftIO</span> <span class='hs-varop'>$</span> <span class='hs-varid'>executeOp</span> <span class='hs-varid'>ptx</span> <span class='hs-varid'>kernel</span> <span class='hs-varid'>mempty</span> <span class='hs-varid'>gamma</span> <span class='hs-varid'>aenv</span> <span class='hs-varid'>stream</span> <span class='hs-layout'>(</span><span class='hs-conid'>IE</span> <span class='hs-num'>0</span> <span class='hs-layout'>(</span><span class='hs-varid'>size</span> <span class='hs-varid'>sh</span><span class='hs-layout'>)</span><span class='hs-layout'>)</span> <span class='hs-varid'>out</span>
+<a name="line-227"></a>  <span class='hs-varid'>return</span> <span class='hs-varid'>out</span>
+<a name="line-228"></a>
+<a name="line-229"></a>
+<a name="line-230"></a><a name="stencil1Op"></a><span class='hs-comment'>-- Using the defaulting instances for stencil operations (for now).</span>
+<a name="line-231"></a><span class='hs-comment'>--</span>
+<a name="line-232"></a><span class='hs-definition'>stencil1Op</span>
+<a name="line-233"></a>    <span class='hs-keyglyph'>::</span> <span class='hs-layout'>(</span><span class='hs-conid'>Shape</span> <span class='hs-varid'>sh</span><span class='hs-layout'>,</span> <span class='hs-conid'>Elt</span> <span class='hs-varid'>a</span><span class='hs-layout'>,</span> <span class='hs-conid'>Elt</span> <span class='hs-varid'>b</span><span class='hs-layout'>)</span>
+<a name="line-234"></a>    <span class='hs-keyglyph'>=&gt;</span> <span class='hs-conid'>ExecutableR</span> <span class='hs-conid'>PTX</span>
+<a name="line-235"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Gamma</span> <span class='hs-varid'>aenv</span>
+<a name="line-236"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Aval</span> <span class='hs-varid'>aenv</span>
+<a name="line-237"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Stream</span>
+<a name="line-238"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Array</span> <span class='hs-varid'>sh</span> <span class='hs-varid'>a</span>
+<a name="line-239"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>LLVM</span> <span class='hs-conid'>PTX</span> <span class='hs-layout'>(</span><span class='hs-conid'>Array</span> <span class='hs-varid'>sh</span> <span class='hs-varid'>b</span><span class='hs-layout'>)</span>
+<a name="line-240"></a><span class='hs-definition'>stencil1Op</span> <span class='hs-varid'>kernel</span> <span class='hs-varid'>gamma</span> <span class='hs-varid'>aenv</span> <span class='hs-varid'>stream</span> <span class='hs-varid'>arr</span>
+<a name="line-241"></a>  <span class='hs-keyglyph'>=</span> <span class='hs-varid'>simpleOp</span> <span class='hs-varid'>kernel</span> <span class='hs-varid'>gamma</span> <span class='hs-varid'>aenv</span> <span class='hs-varid'>stream</span> <span class='hs-layout'>(</span><span class='hs-varid'>shape</span> <span class='hs-varid'>arr</span><span class='hs-layout'>)</span>
+<a name="line-242"></a>
+<a name="line-243"></a><a name="stencil2Op"></a><span class='hs-definition'>stencil2Op</span>
+<a name="line-244"></a>    <span class='hs-keyglyph'>::</span> <span class='hs-layout'>(</span><span class='hs-conid'>Shape</span> <span class='hs-varid'>sh</span><span class='hs-layout'>,</span> <span class='hs-conid'>Elt</span> <span class='hs-varid'>a</span><span class='hs-layout'>,</span> <span class='hs-conid'>Elt</span> <span class='hs-varid'>b</span><span class='hs-layout'>,</span> <span class='hs-conid'>Elt</span> <span class='hs-varid'>c</span><span class='hs-layout'>)</span>
+<a name="line-245"></a>    <span class='hs-keyglyph'>=&gt;</span> <span class='hs-conid'>ExecutableR</span> <span class='hs-conid'>PTX</span>
+<a name="line-246"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Gamma</span> <span class='hs-varid'>aenv</span>
+<a name="line-247"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Aval</span> <span class='hs-varid'>aenv</span>
+<a name="line-248"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Stream</span>
+<a name="line-249"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Array</span> <span class='hs-varid'>sh</span> <span class='hs-varid'>a</span>
+<a name="line-250"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Array</span> <span class='hs-varid'>sh</span> <span class='hs-varid'>b</span>
+<a name="line-251"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>LLVM</span> <span class='hs-conid'>PTX</span> <span class='hs-layout'>(</span><span class='hs-conid'>Array</span> <span class='hs-varid'>sh</span> <span class='hs-varid'>c</span><span class='hs-layout'>)</span>
+<a name="line-252"></a><span class='hs-definition'>stencil2Op</span> <span class='hs-varid'>kernel</span> <span class='hs-varid'>gamma</span> <span class='hs-varid'>aenv</span> <span class='hs-varid'>stream</span> <span class='hs-varid'>arr</span> <span class='hs-varid'>brr</span>
+<a name="line-253"></a>  <span class='hs-keyglyph'>=</span> <span class='hs-varid'>simpleOp</span> <span class='hs-varid'>kernel</span> <span class='hs-varid'>gamma</span> <span class='hs-varid'>aenv</span> <span class='hs-varid'>stream</span> <span class='hs-layout'>(</span><span class='hs-varid'>shape</span> <span class='hs-varid'>arr</span> <span class='hs-varop'>`intersect`</span> <span class='hs-varid'>shape</span> <span class='hs-varid'>brr</span><span class='hs-layout'>)</span>
+<a name="line-254"></a>
+<a name="line-255"></a>
+<a name="line-256"></a><span class='hs-comment'>-- Skeleton execution</span>
+<a name="line-257"></a><span class='hs-comment'>-- ------------------</span>
+<a name="line-258"></a>
+<a name="line-259"></a><a name="defaultPPT"></a><span class='hs-comment'>-- TODO: Calculate this from the device properties, say [a multiple of] the</span>
+<a name="line-260"></a><span class='hs-comment'>--       maximum number of in-flight threads that the device supports.</span>
+<a name="line-261"></a><span class='hs-comment'>--</span>
+<a name="line-262"></a><span class='hs-definition'>defaultPPT</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Int</span>
+<a name="line-263"></a><span class='hs-definition'>defaultPPT</span> <span class='hs-keyglyph'>=</span> <span class='hs-num'>32768</span>
+<a name="line-264"></a>
+<a name="line-265"></a><a name="i32"></a><span class='hs-comment'>{-# INLINE i32 #-}</span>
+<a name="line-266"></a><span class='hs-definition'>i32</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Int</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Int32</span>
+<a name="line-267"></a><span class='hs-definition'>i32</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>fromIntegral</span>
+<a name="line-268"></a>
+<a name="line-269"></a>
+<a name="line-270"></a><a name="lookupKernel"></a><span class='hs-comment'>-- | Retrieve the named kernel</span>
+<a name="line-271"></a><span class='hs-comment'>--</span>
+<a name="line-272"></a><span class='hs-definition'>lookupKernel</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>String</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>ExecutableR</span> <span class='hs-conid'>PTX</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Kernel</span>
+<a name="line-273"></a><span class='hs-definition'>lookupKernel</span> <span class='hs-varid'>name</span> <span class='hs-varid'>exe</span> <span class='hs-keyglyph'>=</span>
+<a name="line-274"></a>  <span class='hs-keyword'>case</span> <span class='hs-varid'>find</span> <span class='hs-layout'>(</span><span class='hs-keyglyph'>\</span><span class='hs-varid'>k</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>kernelName</span> <span class='hs-varid'>k</span> <span class='hs-varop'>==</span> <span class='hs-varid'>name</span><span class='hs-layout'>)</span> <span class='hs-layout'>(</span><span class='hs-varid'>ptxKernel</span> <span class='hs-varid'>exe</span><span class='hs-layout'>)</span> <span class='hs-keyword'>of</span>
+<a name="line-275"></a>    <span class='hs-conid'>Just</span> <span class='hs-varid'>k</span>  <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>k</span>
+<a name="line-276"></a>    <span class='hs-conid'>Nothing</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varop'>$</span><span class='hs-varid'>internalError</span> <span class='hs-str'>"lookupKernel"</span> <span class='hs-layout'>(</span><span class='hs-str'>"not found: "</span> <span class='hs-varop'>++</span> <span class='hs-varid'>name</span><span class='hs-layout'>)</span>
+<a name="line-277"></a>
+<a name="line-278"></a>
+<a name="line-279"></a><a name="executeOp"></a><span class='hs-comment'>-- Execute the function implementing this kernel.</span>
+<a name="line-280"></a><span class='hs-comment'>--</span>
+<a name="line-281"></a><span class='hs-definition'>executeOp</span>
+<a name="line-282"></a>    <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Marshalable</span> <span class='hs-varid'>args</span>
+<a name="line-283"></a>    <span class='hs-keyglyph'>=&gt;</span> <span class='hs-conid'>PTX</span>
+<a name="line-284"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Kernel</span>
+<a name="line-285"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Finalise</span>
+<a name="line-286"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Gamma</span> <span class='hs-varid'>aenv</span>
+<a name="line-287"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Aval</span> <span class='hs-varid'>aenv</span>
+<a name="line-288"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Stream</span>
+<a name="line-289"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Range</span>
+<a name="line-290"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>args</span>
+<a name="line-291"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>IO</span> <span class='hs-conid'>()</span>
+<a name="line-292"></a><span class='hs-definition'>executeOp</span> <span class='hs-varid'>ptx</span><span class='hs-keyglyph'>@</span><span class='hs-conid'>PTX</span><span class='hs-layout'>{</span><span class='hs-keyglyph'>..</span><span class='hs-layout'>}</span> <span class='hs-varid'>kernel</span> <span class='hs-varid'>finish</span> <span class='hs-varid'>gamma</span> <span class='hs-varid'>aenv</span> <span class='hs-varid'>stream</span> <span class='hs-varid'>r</span> <span class='hs-varid'>args</span> <span class='hs-keyglyph'>=</span>
+<a name="line-293"></a>  <span class='hs-varid'>runExecutable</span> <span class='hs-varid'>fillP</span> <span class='hs-varid'>defaultPPT</span> <span class='hs-varid'>r</span> <span class='hs-varid'>finish</span> <span class='hs-varop'>$</span> <span class='hs-keyglyph'>\</span><span class='hs-varid'>start</span> <span class='hs-varid'>end</span> <span class='hs-keyword'>_</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-keyword'>do</span>
+<a name="line-294"></a>    <span class='hs-varid'>argv</span> <span class='hs-keyglyph'>&lt;-</span> <span class='hs-varid'>marshal</span> <span class='hs-varid'>ptx</span> <span class='hs-varid'>stream</span> <span class='hs-layout'>(</span><span class='hs-varid'>i32</span> <span class='hs-varid'>start</span><span class='hs-layout'>,</span> <span class='hs-varid'>i32</span> <span class='hs-varid'>end</span><span class='hs-layout'>,</span> <span class='hs-varid'>args</span><span class='hs-layout'>,</span> <span class='hs-layout'>(</span><span class='hs-varid'>gamma</span><span class='hs-layout'>,</span><span class='hs-varid'>aenv</span><span class='hs-layout'>)</span><span class='hs-layout'>)</span>
+<a name="line-295"></a>    <span class='hs-varid'>launch</span> <span class='hs-varid'>kernel</span> <span class='hs-varid'>stream</span> <span class='hs-layout'>(</span><span class='hs-varid'>end</span><span class='hs-comment'>-</span><span class='hs-varid'>start</span><span class='hs-layout'>)</span> <span class='hs-varid'>argv</span>
+<a name="line-296"></a>
+<a name="line-297"></a>
+<a name="line-298"></a><a name="launch"></a><span class='hs-comment'>-- Execute a device function with the given thread configuration and function</span>
+<a name="line-299"></a><span class='hs-comment'>-- parameters.</span>
+<a name="line-300"></a><span class='hs-comment'>--</span>
+<a name="line-301"></a><span class='hs-definition'>launch</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Kernel</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Stream</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Int</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-keyglyph'>[</span><span class='hs-conid'>CUDA</span><span class='hs-varop'>.</span><span class='hs-conid'>FunParam</span><span class='hs-keyglyph'>]</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>IO</span> <span class='hs-conid'>()</span>
+<a name="line-302"></a><span class='hs-definition'>launch</span> <span class='hs-conid'>Kernel</span><span class='hs-layout'>{</span><span class='hs-keyglyph'>..</span><span class='hs-layout'>}</span> <span class='hs-varid'>stream</span> <span class='hs-varid'>n</span> <span class='hs-varid'>args</span> <span class='hs-keyglyph'>=</span>
+<a name="line-303"></a>  <span class='hs-varid'>withLifetime</span> <span class='hs-varid'>stream</span> <span class='hs-varop'>$</span> <span class='hs-keyglyph'>\</span><span class='hs-varid'>st</span> <span class='hs-keyglyph'>-&gt;</span>
+<a name="line-304"></a>    <span class='hs-conid'>Debug</span><span class='hs-varop'>.</span><span class='hs-varid'>monitorProcTime</span> <span class='hs-varid'>query</span> <span class='hs-varid'>msg</span> <span class='hs-layout'>(</span><span class='hs-conid'>Just</span> <span class='hs-varid'>st</span><span class='hs-layout'>)</span> <span class='hs-varop'>$</span>
+<a name="line-305"></a>      <span class='hs-conid'>CUDA</span><span class='hs-varop'>.</span><span class='hs-varid'>launchKernel</span> <span class='hs-varid'>kernelFun</span> <span class='hs-varid'>grid</span> <span class='hs-varid'>cta</span> <span class='hs-varid'>smem</span> <span class='hs-layout'>(</span><span class='hs-conid'>Just</span> <span class='hs-varid'>st</span><span class='hs-layout'>)</span> <span class='hs-varid'>args</span>
+<a name="line-306"></a>  <span class='hs-keyword'>where</span>
+<a name="line-307"></a>    <span class='hs-varid'>cta</span>         <span class='hs-keyglyph'>=</span> <span class='hs-layout'>(</span><span class='hs-varid'>kernelThreadBlockSize</span><span class='hs-layout'>,</span> <span class='hs-num'>1</span><span class='hs-layout'>,</span> <span class='hs-num'>1</span><span class='hs-layout'>)</span>
+<a name="line-308"></a>    <span class='hs-varid'>grid</span>        <span class='hs-keyglyph'>=</span> <span class='hs-layout'>(</span><span class='hs-varid'>kernelThreadBlocks</span> <span class='hs-varid'>n</span><span class='hs-layout'>,</span> <span class='hs-num'>1</span><span class='hs-layout'>,</span> <span class='hs-num'>1</span><span class='hs-layout'>)</span>
+<a name="line-309"></a>    <span class='hs-varid'>smem</span>        <span class='hs-keyglyph'>=</span> <span class='hs-varid'>kernelSharedMemBytes</span>
+<a name="line-310"></a>
+<a name="line-311"></a>    <span class='hs-comment'>-- Debugging/monitoring support</span>
+<a name="line-312"></a>    <span class='hs-varid'>query</span>       <span class='hs-keyglyph'>=</span> <span class='hs-keyword'>if</span> <span class='hs-conid'>Debug</span><span class='hs-varop'>.</span><span class='hs-varid'>monitoringIsEnabled</span>
+<a name="line-313"></a>                    <span class='hs-keyword'>then</span> <span class='hs-varid'>return</span> <span class='hs-conid'>True</span>
+<a name="line-314"></a>                    <span class='hs-keyword'>else</span> <span class='hs-conid'>Debug</span><span class='hs-varop'>.</span><span class='hs-varid'>queryFlag</span> <span class='hs-conid'>Debug</span><span class='hs-varop'>.</span><span class='hs-varid'>dump_exec</span>
+<a name="line-315"></a>
+<a name="line-316"></a>    <span class='hs-varid'>fst3</span> <span class='hs-layout'>(</span><span class='hs-varid'>x</span><span class='hs-layout'>,</span><span class='hs-keyword'>_</span><span class='hs-layout'>,</span><span class='hs-keyword'>_</span><span class='hs-layout'>)</span>         <span class='hs-keyglyph'>=</span> <span class='hs-varid'>x</span>
+<a name="line-317"></a>    <span class='hs-varid'>msg</span> <span class='hs-varid'>gpuTime</span> <span class='hs-varid'>wallTime</span> <span class='hs-keyglyph'>=</span> <span class='hs-keyword'>do</span>
+<a name="line-318"></a>      <span class='hs-conid'>Debug</span><span class='hs-varop'>.</span><span class='hs-varid'>addProcessorTime</span> <span class='hs-conid'>Debug</span><span class='hs-varop'>.</span><span class='hs-conid'>PTX</span> <span class='hs-varid'>gpuTime</span>
+<a name="line-319"></a>      <span class='hs-conid'>Debug</span><span class='hs-varop'>.</span><span class='hs-varid'>traceIO</span> <span class='hs-conid'>Debug</span><span class='hs-varop'>.</span><span class='hs-varid'>dump_exec</span> <span class='hs-varop'>$</span>
+<a name="line-320"></a>        <span class='hs-varid'>printf</span> <span class='hs-str'>"exec: %s &lt;&lt;&lt; %d, %d, %d &gt;&gt;&gt; %s"</span>
+<a name="line-321"></a>               <span class='hs-varid'>kernelName</span> <span class='hs-layout'>(</span><span class='hs-varid'>fst3</span> <span class='hs-varid'>grid</span><span class='hs-layout'>)</span> <span class='hs-layout'>(</span><span class='hs-varid'>fst3</span> <span class='hs-varid'>cta</span><span class='hs-layout'>)</span> <span class='hs-varid'>smem</span> <span class='hs-layout'>(</span><span class='hs-conid'>Debug</span><span class='hs-varop'>.</span><span class='hs-varid'>elapsed</span> <span class='hs-varid'>gpuTime</span> <span class='hs-varid'>wallTime</span><span class='hs-layout'>)</span>
+<a name="line-322"></a>
 </pre></body>
 </html>
