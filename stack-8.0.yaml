@@ -14,7 +14,7 @@ packages:
 
 - location:
     git:    https://github.com/tmcdonell/accelerate-llvm.git
-    commit: c79479016df55f78f79a180ce548f276f6b5da88
+    commit: e6fe1a51d31d196f304835add65fd17c35483418
   subdirs:
     - 'accelerate-llvm'
     - 'accelerate-llvm-native'
