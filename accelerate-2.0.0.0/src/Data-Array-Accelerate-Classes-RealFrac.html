@@ -33,95 +33,119 @@
 <a name="line-24"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>Data</span><span class='hs-varop'>.</span><span class='hs-conid'>Array</span><span class='hs-varop'>.</span><span class='hs-conid'>Accelerate</span><span class='hs-varop'>.</span><span class='hs-conid'>Smart</span>
 <a name="line-25"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>Data</span><span class='hs-varop'>.</span><span class='hs-conid'>Array</span><span class='hs-varop'>.</span><span class='hs-conid'>Accelerate</span><span class='hs-varop'>.</span><span class='hs-conid'>Type</span>
 <a name="line-26"></a>
-<a name="line-27"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>Data</span><span class='hs-varop'>.</span><span class='hs-conid'>Array</span><span class='hs-varop'>.</span><span class='hs-conid'>Accelerate</span><span class='hs-varop'>.</span><span class='hs-conid'>Classes</span><span class='hs-varop'>.</span><span class='hs-conid'>Real</span>
-<a name="line-28"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>Data</span><span class='hs-varop'>.</span><span class='hs-conid'>Array</span><span class='hs-varop'>.</span><span class='hs-conid'>Accelerate</span><span class='hs-varop'>.</span><span class='hs-conid'>Classes</span><span class='hs-varop'>.</span><span class='hs-conid'>Fractional</span>
-<a name="line-29"></a>
-<a name="line-30"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>Text</span><span class='hs-varop'>.</span><span class='hs-conid'>Printf</span>
-<a name="line-31"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>Prelude</span>                                                      <span class='hs-layout'>(</span> <span class='hs-conid'>String</span><span class='hs-layout'>,</span> <span class='hs-varid'>error</span> <span class='hs-layout'>)</span>
-<a name="line-32"></a><span class='hs-keyword'>import</span> <span class='hs-keyword'>qualified</span> <span class='hs-conid'>Prelude</span>                                            <span class='hs-keyword'>as</span> <span class='hs-conid'>P</span>
+<a name="line-27"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>Data</span><span class='hs-varop'>.</span><span class='hs-conid'>Array</span><span class='hs-varop'>.</span><span class='hs-conid'>Accelerate</span><span class='hs-varop'>.</span><span class='hs-conid'>Classes</span><span class='hs-varop'>.</span><span class='hs-conid'>Eq</span>
+<a name="line-28"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>Data</span><span class='hs-varop'>.</span><span class='hs-conid'>Array</span><span class='hs-varop'>.</span><span class='hs-conid'>Accelerate</span><span class='hs-varop'>.</span><span class='hs-conid'>Classes</span><span class='hs-varop'>.</span><span class='hs-conid'>Floating</span>
+<a name="line-29"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>Data</span><span class='hs-varop'>.</span><span class='hs-conid'>Array</span><span class='hs-varop'>.</span><span class='hs-conid'>Accelerate</span><span class='hs-varop'>.</span><span class='hs-conid'>Classes</span><span class='hs-varop'>.</span><span class='hs-conid'>Fractional</span>
+<a name="line-30"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>Data</span><span class='hs-varop'>.</span><span class='hs-conid'>Array</span><span class='hs-varop'>.</span><span class='hs-conid'>Accelerate</span><span class='hs-varop'>.</span><span class='hs-conid'>Classes</span><span class='hs-varop'>.</span><span class='hs-conid'>Num</span>
+<a name="line-31"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>Data</span><span class='hs-varop'>.</span><span class='hs-conid'>Array</span><span class='hs-varop'>.</span><span class='hs-conid'>Accelerate</span><span class='hs-varop'>.</span><span class='hs-conid'>Classes</span><span class='hs-varop'>.</span><span class='hs-conid'>Real</span>
+<a name="line-32"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>Data</span><span class='hs-varop'>.</span><span class='hs-conid'>Array</span><span class='hs-varop'>.</span><span class='hs-conid'>Accelerate</span><span class='hs-varop'>.</span><span class='hs-conid'>Classes</span><span class='hs-varop'>.</span><span class='hs-conid'>ToFloating</span>
 <a name="line-33"></a>
-<a name="line-34"></a>
-<a name="line-35"></a><a name="RealFrac"></a><span class='hs-comment'>-- | Extracting components of fractions.</span>
-<a name="line-36"></a><a name="RealFrac"></a><span class='hs-comment'>--</span>
-<a name="line-37"></a><a name="RealFrac"></a><span class='hs-keyword'>class</span> <span class='hs-layout'>(</span><span class='hs-conid'>Real</span> <span class='hs-varid'>a</span><span class='hs-layout'>,</span> <span class='hs-conid'>Fractional</span> <span class='hs-varid'>a</span><span class='hs-layout'>)</span> <span class='hs-keyglyph'>=&gt;</span> <span class='hs-conid'>RealFrac</span> <span class='hs-varid'>a</span> <span class='hs-keyword'>where</span>
-<a name="line-38"></a>  <span class='hs-comment'>-- The function 'properFraction' takes a real fractional number @x@ and</span>
-<a name="line-39"></a>  <span class='hs-comment'>-- returns a pair @(n,f)@ such that @x = n+f@, and:</span>
-<a name="line-40"></a>  <span class='hs-comment'>--</span>
-<a name="line-41"></a>  <span class='hs-comment'>-- * @n@ is an integral number with the same sign as @x@; and</span>
-<a name="line-42"></a>  <span class='hs-comment'>--</span>
-<a name="line-43"></a>  <span class='hs-comment'>-- * @f@ is a fraction with the same type and sign as @x@,</span>
-<a name="line-44"></a>  <span class='hs-comment'>--   and with absolute value less than @1@.</span>
-<a name="line-45"></a>  <span class='hs-comment'>--</span>
-<a name="line-46"></a>  <span class='hs-comment'>-- The default definitions of the 'ceiling', 'floor', 'truncate'</span>
-<a name="line-47"></a>  <span class='hs-comment'>-- and 'round' functions are in terms of 'properFraction'.</span>
-<a name="line-48"></a>  <span class='hs-comment'>-- properFraction :: (Elt b, IsIntegral b) =&gt; Exp a -&gt; (Exp b, Exp a)</span>
-<a name="line-49"></a>
-<a name="line-50"></a>  <span class='hs-comment'>-- The function 'splitFraction' takes a real fractional number @x@ and</span>
-<a name="line-51"></a>  <span class='hs-comment'>-- returns a pair @(n,f)@ such that @x = n+f@, and:</span>
-<a name="line-52"></a>  <span class='hs-comment'>--</span>
-<a name="line-53"></a>  <span class='hs-comment'>-- * @n@ is an integral number with the same sign as @x@; and</span>
-<a name="line-54"></a>  <span class='hs-comment'>--</span>
-<a name="line-55"></a>  <span class='hs-comment'>-- * @f@ is a fraction with the same type as @x@ in the range [0,1). Note that</span>
-<a name="line-56"></a>  <span class='hs-comment'>-- this differs from 'Prelude.properFraction'.</span>
-<a name="line-57"></a>  <span class='hs-comment'>--</span>
-<a name="line-58"></a>  <span class='hs-comment'>-- splitFraction :: (Elt b, IsIntegral b) =&gt; Exp a -&gt; (Exp b, Exp a)</span>
-<a name="line-59"></a>
-<a name="line-60"></a>  <span class='hs-comment'>-- @fraction x@ returns @x@ with the integer part removed.</span>
-<a name="line-61"></a>  <span class='hs-comment'>-- fraction       :: Exp a -&gt; Exp a</span>
-<a name="line-62"></a>
-<a name="line-63"></a>  <span class='hs-comment'>-- properFraction is part of the standard Haskell'98 RealFrac type classes</span>
-<a name="line-64"></a>  <span class='hs-comment'>-- splitFraction / fraction are from numeric-prelude Algebra.RealRing</span>
-<a name="line-65"></a>
-<a name="line-66"></a>  <span class='hs-comment'>-- | @truncate x@ returns the integer nearest @x@ between zero and @x@</span>
-<a name="line-67"></a>  <span class='hs-varid'>truncate</span>       <span class='hs-keyglyph'>::</span> <span class='hs-layout'>(</span><span class='hs-conid'>Elt</span> <span class='hs-varid'>b</span><span class='hs-layout'>,</span> <span class='hs-conid'>IsIntegral</span> <span class='hs-varid'>b</span><span class='hs-layout'>)</span> <span class='hs-keyglyph'>=&gt;</span> <span class='hs-conid'>Exp</span> <span class='hs-varid'>a</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Exp</span> <span class='hs-varid'>b</span>
-<a name="line-68"></a>
-<a name="line-69"></a>  <span class='hs-comment'>-- | @'round' x@ returns the nearest integer to @x@; the even integer if @x@</span>
-<a name="line-70"></a>  <span class='hs-comment'>-- is equidistant between two integers</span>
-<a name="line-71"></a>  <span class='hs-varid'>round</span>          <span class='hs-keyglyph'>::</span> <span class='hs-layout'>(</span><span class='hs-conid'>Elt</span> <span class='hs-varid'>b</span><span class='hs-layout'>,</span> <span class='hs-conid'>IsIntegral</span> <span class='hs-varid'>b</span><span class='hs-layout'>)</span> <span class='hs-keyglyph'>=&gt;</span> <span class='hs-conid'>Exp</span> <span class='hs-varid'>a</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Exp</span> <span class='hs-varid'>b</span>
+<a name="line-34"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>Text</span><span class='hs-varop'>.</span><span class='hs-conid'>Printf</span>
+<a name="line-35"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>Prelude</span>                                                      <span class='hs-layout'>(</span> <span class='hs-layout'>(</span><span class='hs-varop'>$</span><span class='hs-layout'>)</span><span class='hs-layout'>,</span> <span class='hs-conid'>String</span><span class='hs-layout'>,</span> <span class='hs-varid'>error</span> <span class='hs-layout'>)</span>
+<a name="line-36"></a><span class='hs-keyword'>import</span> <span class='hs-keyword'>qualified</span> <span class='hs-conid'>Prelude</span>                                            <span class='hs-keyword'>as</span> <span class='hs-conid'>P</span>
+<a name="line-37"></a>
+<a name="line-38"></a>
+<a name="line-39"></a><a name="RealFrac"></a><span class='hs-comment'>-- | Extracting components of fractions.</span>
+<a name="line-40"></a><a name="RealFrac"></a><span class='hs-comment'>--</span>
+<a name="line-41"></a><a name="RealFrac"></a><span class='hs-keyword'>class</span> <span class='hs-layout'>(</span><span class='hs-conid'>Real</span> <span class='hs-varid'>a</span><span class='hs-layout'>,</span> <span class='hs-conid'>Fractional</span> <span class='hs-varid'>a</span><span class='hs-layout'>)</span> <span class='hs-keyglyph'>=&gt;</span> <span class='hs-conid'>RealFrac</span> <span class='hs-varid'>a</span> <span class='hs-keyword'>where</span>
+<a name="line-42"></a>  <span class='hs-comment'>-- The function 'properFraction' takes a real fractional number @x@ and</span>
+<a name="line-43"></a>  <span class='hs-comment'>-- returns a pair @(n,f)@ such that @x = n+f@, and:</span>
+<a name="line-44"></a>  <span class='hs-comment'>--</span>
+<a name="line-45"></a>  <span class='hs-comment'>-- * @n@ is an integral number with the same sign as @x@; and</span>
+<a name="line-46"></a>  <span class='hs-comment'>--</span>
+<a name="line-47"></a>  <span class='hs-comment'>-- * @f@ is a fraction with the same type and sign as @x@,</span>
+<a name="line-48"></a>  <span class='hs-comment'>--   and with absolute value less than @1@.</span>
+<a name="line-49"></a>  <span class='hs-comment'>--</span>
+<a name="line-50"></a>  <span class='hs-comment'>-- The default definitions of the 'ceiling', 'floor', 'truncate'</span>
+<a name="line-51"></a>  <span class='hs-comment'>-- and 'round' functions are in terms of 'properFraction'.</span>
+<a name="line-52"></a>  <span class='hs-varid'>properFraction</span> <span class='hs-keyglyph'>::</span> <span class='hs-layout'>(</span><span class='hs-conid'>Num</span> <span class='hs-varid'>b</span><span class='hs-layout'>,</span> <span class='hs-conid'>ToFloating</span> <span class='hs-varid'>b</span> <span class='hs-varid'>a</span><span class='hs-layout'>,</span> <span class='hs-conid'>IsIntegral</span> <span class='hs-varid'>b</span><span class='hs-layout'>)</span> <span class='hs-keyglyph'>=&gt;</span> <span class='hs-conid'>Exp</span> <span class='hs-varid'>a</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-layout'>(</span><span class='hs-conid'>Exp</span> <span class='hs-varid'>b</span><span class='hs-layout'>,</span> <span class='hs-conid'>Exp</span> <span class='hs-varid'>a</span><span class='hs-layout'>)</span>
+<a name="line-53"></a>
+<a name="line-54"></a>  <span class='hs-comment'>-- The function 'splitFraction' takes a real fractional number @x@ and</span>
+<a name="line-55"></a>  <span class='hs-comment'>-- returns a pair @(n,f)@ such that @x = n+f@, and:</span>
+<a name="line-56"></a>  <span class='hs-comment'>--</span>
+<a name="line-57"></a>  <span class='hs-comment'>-- * @n@ is an integral number with the same sign as @x@; and</span>
+<a name="line-58"></a>  <span class='hs-comment'>--</span>
+<a name="line-59"></a>  <span class='hs-comment'>-- * @f@ is a fraction with the same type as @x@ in the range [0,1). Note that</span>
+<a name="line-60"></a>  <span class='hs-comment'>-- this differs from 'Prelude.properFraction'.</span>
+<a name="line-61"></a>  <span class='hs-comment'>--</span>
+<a name="line-62"></a>  <span class='hs-comment'>-- splitFraction :: (Elt b, IsIntegral b) =&gt; Exp a -&gt; (Exp b, Exp a)</span>
+<a name="line-63"></a>
+<a name="line-64"></a>  <span class='hs-comment'>-- @fraction x@ returns @x@ with the integer part removed.</span>
+<a name="line-65"></a>  <span class='hs-comment'>-- fraction       :: Exp a -&gt; Exp a</span>
+<a name="line-66"></a>
+<a name="line-67"></a>  <span class='hs-comment'>-- properFraction is part of the standard Haskell'98 RealFrac type classes</span>
+<a name="line-68"></a>  <span class='hs-comment'>-- splitFraction / fraction are from numeric-prelude Algebra.RealRing</span>
+<a name="line-69"></a>
+<a name="line-70"></a>  <span class='hs-comment'>-- | @truncate x@ returns the integer nearest @x@ between zero and @x@</span>
+<a name="line-71"></a>  <span class='hs-varid'>truncate</span>       <span class='hs-keyglyph'>::</span> <span class='hs-layout'>(</span><span class='hs-conid'>Elt</span> <span class='hs-varid'>b</span><span class='hs-layout'>,</span> <span class='hs-conid'>IsIntegral</span> <span class='hs-varid'>b</span><span class='hs-layout'>)</span> <span class='hs-keyglyph'>=&gt;</span> <span class='hs-conid'>Exp</span> <span class='hs-varid'>a</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Exp</span> <span class='hs-varid'>b</span>
 <a name="line-72"></a>
-<a name="line-73"></a>  <span class='hs-comment'>-- | @'ceiling' x@ returns the least integer not less than @x@</span>
-<a name="line-74"></a>  <span class='hs-varid'>ceiling</span>        <span class='hs-keyglyph'>::</span> <span class='hs-layout'>(</span><span class='hs-conid'>Elt</span> <span class='hs-varid'>b</span><span class='hs-layout'>,</span> <span class='hs-conid'>IsIntegral</span> <span class='hs-varid'>b</span><span class='hs-layout'>)</span> <span class='hs-keyglyph'>=&gt;</span> <span class='hs-conid'>Exp</span> <span class='hs-varid'>a</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Exp</span> <span class='hs-varid'>b</span>
-<a name="line-75"></a>
-<a name="line-76"></a>  <span class='hs-comment'>-- | @'floor' x@ returns the greatest integer not greater than @x@</span>
-<a name="line-77"></a>  <span class='hs-varid'>floor</span>          <span class='hs-keyglyph'>::</span> <span class='hs-layout'>(</span><span class='hs-conid'>Elt</span> <span class='hs-varid'>b</span><span class='hs-layout'>,</span> <span class='hs-conid'>IsIntegral</span> <span class='hs-varid'>b</span><span class='hs-layout'>)</span> <span class='hs-keyglyph'>=&gt;</span> <span class='hs-conid'>Exp</span> <span class='hs-varid'>a</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Exp</span> <span class='hs-varid'>b</span>
-<a name="line-78"></a>
+<a name="line-73"></a>  <span class='hs-comment'>-- | @'round' x@ returns the nearest integer to @x@; the even integer if @x@</span>
+<a name="line-74"></a>  <span class='hs-comment'>-- is equidistant between two integers</span>
+<a name="line-75"></a>  <span class='hs-varid'>round</span>          <span class='hs-keyglyph'>::</span> <span class='hs-layout'>(</span><span class='hs-conid'>Elt</span> <span class='hs-varid'>b</span><span class='hs-layout'>,</span> <span class='hs-conid'>IsIntegral</span> <span class='hs-varid'>b</span><span class='hs-layout'>)</span> <span class='hs-keyglyph'>=&gt;</span> <span class='hs-conid'>Exp</span> <span class='hs-varid'>a</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Exp</span> <span class='hs-varid'>b</span>
+<a name="line-76"></a>
+<a name="line-77"></a>  <span class='hs-comment'>-- | @'ceiling' x@ returns the least integer not less than @x@</span>
+<a name="line-78"></a>  <span class='hs-varid'>ceiling</span>        <span class='hs-keyglyph'>::</span> <span class='hs-layout'>(</span><span class='hs-conid'>Elt</span> <span class='hs-varid'>b</span><span class='hs-layout'>,</span> <span class='hs-conid'>IsIntegral</span> <span class='hs-varid'>b</span><span class='hs-layout'>)</span> <span class='hs-keyglyph'>=&gt;</span> <span class='hs-conid'>Exp</span> <span class='hs-varid'>a</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Exp</span> <span class='hs-varid'>b</span>
 <a name="line-79"></a>
-<a name="line-80"></a><a name="instance%20RealFrac%20Float"></a><span class='hs-keyword'>instance</span> <span class='hs-conid'>RealFrac</span> <span class='hs-conid'>Float</span> <span class='hs-keyword'>where</span>
-<a name="line-81"></a>  <span class='hs-varid'>truncate</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>mkTruncate</span>
-<a name="line-82"></a>  <span class='hs-varid'>round</span>    <span class='hs-keyglyph'>=</span> <span class='hs-varid'>mkRound</span>
-<a name="line-83"></a>  <span class='hs-varid'>ceiling</span>  <span class='hs-keyglyph'>=</span> <span class='hs-varid'>mkCeiling</span>
-<a name="line-84"></a>  <span class='hs-varid'>floor</span>    <span class='hs-keyglyph'>=</span> <span class='hs-varid'>mkFloor</span>
-<a name="line-85"></a>
-<a name="line-86"></a><a name="instance%20RealFrac%20Double"></a><span class='hs-keyword'>instance</span> <span class='hs-conid'>RealFrac</span> <span class='hs-conid'>Double</span> <span class='hs-keyword'>where</span>
-<a name="line-87"></a>  <span class='hs-varid'>truncate</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>mkTruncate</span>
-<a name="line-88"></a>  <span class='hs-varid'>round</span>    <span class='hs-keyglyph'>=</span> <span class='hs-varid'>mkRound</span>
-<a name="line-89"></a>  <span class='hs-varid'>ceiling</span>  <span class='hs-keyglyph'>=</span> <span class='hs-varid'>mkCeiling</span>
-<a name="line-90"></a>  <span class='hs-varid'>floor</span>    <span class='hs-keyglyph'>=</span> <span class='hs-varid'>mkFloor</span>
-<a name="line-91"></a>
-<a name="line-92"></a><a name="instance%20RealFrac%20CFloat"></a><span class='hs-keyword'>instance</span> <span class='hs-conid'>RealFrac</span> <span class='hs-conid'>CFloat</span> <span class='hs-keyword'>where</span>
-<a name="line-93"></a>  <span class='hs-varid'>truncate</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>mkTruncate</span>
-<a name="line-94"></a>  <span class='hs-varid'>round</span>    <span class='hs-keyglyph'>=</span> <span class='hs-varid'>mkRound</span>
-<a name="line-95"></a>  <span class='hs-varid'>ceiling</span>  <span class='hs-keyglyph'>=</span> <span class='hs-varid'>mkCeiling</span>
-<a name="line-96"></a>  <span class='hs-varid'>floor</span>    <span class='hs-keyglyph'>=</span> <span class='hs-varid'>mkFloor</span>
+<a name="line-80"></a>  <span class='hs-comment'>-- | @'floor' x@ returns the greatest integer not greater than @x@</span>
+<a name="line-81"></a>  <span class='hs-varid'>floor</span>          <span class='hs-keyglyph'>::</span> <span class='hs-layout'>(</span><span class='hs-conid'>Elt</span> <span class='hs-varid'>b</span><span class='hs-layout'>,</span> <span class='hs-conid'>IsIntegral</span> <span class='hs-varid'>b</span><span class='hs-layout'>)</span> <span class='hs-keyglyph'>=&gt;</span> <span class='hs-conid'>Exp</span> <span class='hs-varid'>a</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Exp</span> <span class='hs-varid'>b</span>
+<a name="line-82"></a>
+<a name="line-83"></a>
+<a name="line-84"></a><a name="instance%20RealFrac%20Float"></a><span class='hs-keyword'>instance</span> <span class='hs-conid'>RealFrac</span> <span class='hs-conid'>Float</span> <span class='hs-keyword'>where</span>
+<a name="line-85"></a>  <span class='hs-varid'>properFraction</span>  <span class='hs-keyglyph'>=</span> <span class='hs-varid'>defaultProperFraction</span>
+<a name="line-86"></a>  <span class='hs-varid'>truncate</span>        <span class='hs-keyglyph'>=</span> <span class='hs-varid'>mkTruncate</span>
+<a name="line-87"></a>  <span class='hs-varid'>round</span>           <span class='hs-keyglyph'>=</span> <span class='hs-varid'>mkRound</span>
+<a name="line-88"></a>  <span class='hs-varid'>ceiling</span>         <span class='hs-keyglyph'>=</span> <span class='hs-varid'>mkCeiling</span>
+<a name="line-89"></a>  <span class='hs-varid'>floor</span>           <span class='hs-keyglyph'>=</span> <span class='hs-varid'>mkFloor</span>
+<a name="line-90"></a>
+<a name="line-91"></a><a name="instance%20RealFrac%20Double"></a><span class='hs-keyword'>instance</span> <span class='hs-conid'>RealFrac</span> <span class='hs-conid'>Double</span> <span class='hs-keyword'>where</span>
+<a name="line-92"></a>  <span class='hs-varid'>properFraction</span>  <span class='hs-keyglyph'>=</span> <span class='hs-varid'>defaultProperFraction</span>
+<a name="line-93"></a>  <span class='hs-varid'>truncate</span>        <span class='hs-keyglyph'>=</span> <span class='hs-varid'>mkTruncate</span>
+<a name="line-94"></a>  <span class='hs-varid'>round</span>           <span class='hs-keyglyph'>=</span> <span class='hs-varid'>mkRound</span>
+<a name="line-95"></a>  <span class='hs-varid'>ceiling</span>         <span class='hs-keyglyph'>=</span> <span class='hs-varid'>mkCeiling</span>
+<a name="line-96"></a>  <span class='hs-varid'>floor</span>           <span class='hs-keyglyph'>=</span> <span class='hs-varid'>mkFloor</span>
 <a name="line-97"></a>
-<a name="line-98"></a><a name="instance%20RealFrac%20CDouble"></a><span class='hs-keyword'>instance</span> <span class='hs-conid'>RealFrac</span> <span class='hs-conid'>CDouble</span> <span class='hs-keyword'>where</span>
-<a name="line-99"></a>  <span class='hs-varid'>truncate</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>mkTruncate</span>
-<a name="line-100"></a>  <span class='hs-varid'>round</span>    <span class='hs-keyglyph'>=</span> <span class='hs-varid'>mkRound</span>
-<a name="line-101"></a>  <span class='hs-varid'>ceiling</span>  <span class='hs-keyglyph'>=</span> <span class='hs-varid'>mkCeiling</span>
-<a name="line-102"></a>  <span class='hs-varid'>floor</span>    <span class='hs-keyglyph'>=</span> <span class='hs-varid'>mkFloor</span>
-<a name="line-103"></a>
+<a name="line-98"></a><a name="instance%20RealFrac%20CFloat"></a><span class='hs-keyword'>instance</span> <span class='hs-conid'>RealFrac</span> <span class='hs-conid'>CFloat</span> <span class='hs-keyword'>where</span>
+<a name="line-99"></a>  <span class='hs-varid'>properFraction</span>  <span class='hs-keyglyph'>=</span> <span class='hs-varid'>defaultProperFraction</span>
+<a name="line-100"></a>  <span class='hs-varid'>truncate</span>        <span class='hs-keyglyph'>=</span> <span class='hs-varid'>mkTruncate</span>
+<a name="line-101"></a>  <span class='hs-varid'>round</span>           <span class='hs-keyglyph'>=</span> <span class='hs-varid'>mkRound</span>
+<a name="line-102"></a>  <span class='hs-varid'>ceiling</span>         <span class='hs-keyglyph'>=</span> <span class='hs-varid'>mkCeiling</span>
+<a name="line-103"></a>  <span class='hs-varid'>floor</span>           <span class='hs-keyglyph'>=</span> <span class='hs-varid'>mkFloor</span>
 <a name="line-104"></a>
-<a name="line-105"></a><a name="instance%20P.RealFrac%20(Exp%20a)"></a><span class='hs-comment'>-- To satisfy superclass constraints</span>
-<a name="line-106"></a><a name="instance%20P.RealFrac%20(Exp%20a)"></a><span class='hs-comment'>--</span>
-<a name="line-107"></a><a name="instance%20P.RealFrac%20(Exp%20a)"></a><span class='hs-keyword'>instance</span> <span class='hs-conid'>RealFrac</span> <span class='hs-varid'>a</span> <span class='hs-keyglyph'>=&gt;</span> <span class='hs-conid'>P</span><span class='hs-varop'>.</span><span class='hs-conid'>RealFrac</span> <span class='hs-layout'>(</span><span class='hs-conid'>Exp</span> <span class='hs-varid'>a</span><span class='hs-layout'>)</span> <span class='hs-keyword'>where</span>
-<a name="line-108"></a>  <span class='hs-varid'>properFraction</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>error</span> <span class='hs-str'>"Prelude.properFraction applied to EDSL types"</span>
-<a name="line-109"></a>  <span class='hs-varid'>truncate</span>       <span class='hs-keyglyph'>=</span> <span class='hs-varid'>preludeError</span> <span class='hs-str'>"truncate"</span>
-<a name="line-110"></a>  <span class='hs-varid'>round</span>          <span class='hs-keyglyph'>=</span> <span class='hs-varid'>preludeError</span> <span class='hs-str'>"round"</span>
-<a name="line-111"></a>  <span class='hs-varid'>ceiling</span>        <span class='hs-keyglyph'>=</span> <span class='hs-varid'>preludeError</span> <span class='hs-str'>"ceiling"</span>
-<a name="line-112"></a>  <span class='hs-varid'>floor</span>          <span class='hs-keyglyph'>=</span> <span class='hs-varid'>preludeError</span> <span class='hs-str'>"floor"</span>
-<a name="line-113"></a>
-<a name="line-114"></a><a name="preludeError"></a><span class='hs-definition'>preludeError</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>String</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>a</span>
-<a name="line-115"></a><span class='hs-definition'>preludeError</span> <span class='hs-varid'>x</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>error</span> <span class='hs-layout'>(</span><span class='hs-varid'>printf</span> <span class='hs-str'>"Prelude.%s applied to EDSL types: use Data.Array.Accelerate.%s instead"</span> <span class='hs-varid'>x</span><span class='hs-layout'>)</span>
-<a name="line-116"></a>
+<a name="line-105"></a><a name="instance%20RealFrac%20CDouble"></a><span class='hs-keyword'>instance</span> <span class='hs-conid'>RealFrac</span> <span class='hs-conid'>CDouble</span> <span class='hs-keyword'>where</span>
+<a name="line-106"></a>  <span class='hs-varid'>properFraction</span>  <span class='hs-keyglyph'>=</span> <span class='hs-varid'>defaultProperFraction</span>
+<a name="line-107"></a>  <span class='hs-varid'>truncate</span>        <span class='hs-keyglyph'>=</span> <span class='hs-varid'>mkTruncate</span>
+<a name="line-108"></a>  <span class='hs-varid'>round</span>           <span class='hs-keyglyph'>=</span> <span class='hs-varid'>mkRound</span>
+<a name="line-109"></a>  <span class='hs-varid'>ceiling</span>         <span class='hs-keyglyph'>=</span> <span class='hs-varid'>mkCeiling</span>
+<a name="line-110"></a>  <span class='hs-varid'>floor</span>           <span class='hs-keyglyph'>=</span> <span class='hs-varid'>mkFloor</span>
+<a name="line-111"></a>
+<a name="line-112"></a>
+<a name="line-113"></a><a name="defaultProperFraction"></a><span class='hs-comment'>-- Must test for ±0.0 to avoid returning -0.0 in the second component of the</span>
+<a name="line-114"></a><span class='hs-comment'>-- pair. Unfortunately the branching costs a lot of performance.</span>
+<a name="line-115"></a><span class='hs-comment'>--</span>
+<a name="line-116"></a><span class='hs-definition'>defaultProperFraction</span>
+<a name="line-117"></a>    <span class='hs-keyglyph'>::</span> <span class='hs-layout'>(</span><span class='hs-conid'>ToFloating</span> <span class='hs-varid'>a</span> <span class='hs-varid'>b</span><span class='hs-layout'>,</span> <span class='hs-conid'>RealFrac</span> <span class='hs-varid'>b</span><span class='hs-layout'>,</span> <span class='hs-conid'>IsIntegral</span> <span class='hs-varid'>a</span><span class='hs-layout'>,</span> <span class='hs-conid'>Num</span> <span class='hs-varid'>a</span><span class='hs-layout'>,</span> <span class='hs-conid'>Floating</span> <span class='hs-varid'>b</span><span class='hs-layout'>)</span>
+<a name="line-118"></a>    <span class='hs-keyglyph'>=&gt;</span> <span class='hs-conid'>Exp</span> <span class='hs-varid'>b</span>
+<a name="line-119"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-layout'>(</span><span class='hs-conid'>Exp</span> <span class='hs-varid'>a</span><span class='hs-layout'>,</span> <span class='hs-conid'>Exp</span> <span class='hs-varid'>b</span><span class='hs-layout'>)</span>
+<a name="line-120"></a><span class='hs-definition'>defaultProperFraction</span> <span class='hs-varid'>x</span> <span class='hs-keyglyph'>=</span>
+<a name="line-121"></a>  <span class='hs-varid'>untup2</span> <span class='hs-varop'>$</span> <span class='hs-conid'>Exp</span>
+<a name="line-122"></a>         <span class='hs-varop'>$</span> <span class='hs-conid'>Cond</span> <span class='hs-layout'>(</span><span class='hs-varid'>x</span> <span class='hs-varop'>==*</span> <span class='hs-num'>0</span><span class='hs-layout'>)</span> <span class='hs-layout'>(</span><span class='hs-varid'>tup2</span> <span class='hs-layout'>(</span><span class='hs-num'>0</span><span class='hs-layout'>,</span> <span class='hs-num'>0</span><span class='hs-layout'>)</span><span class='hs-layout'>)</span>
+<a name="line-123"></a>                          <span class='hs-layout'>(</span><span class='hs-varid'>tup2</span> <span class='hs-layout'>(</span><span class='hs-varid'>n</span><span class='hs-layout'>,</span> <span class='hs-varid'>f</span><span class='hs-layout'>)</span><span class='hs-layout'>)</span>
+<a name="line-124"></a>  <span class='hs-keyword'>where</span>
+<a name="line-125"></a>    <span class='hs-varid'>n</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>truncate</span> <span class='hs-varid'>x</span>
+<a name="line-126"></a>    <span class='hs-varid'>f</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>x</span> <span class='hs-comment'>-</span> <span class='hs-varid'>toFloating</span> <span class='hs-varid'>n</span>
+<a name="line-127"></a>
+<a name="line-128"></a>
+<a name="line-129"></a><a name="instance%20P.RealFrac%20(Exp%20a)"></a><span class='hs-comment'>-- To satisfy superclass constraints</span>
+<a name="line-130"></a><a name="instance%20P.RealFrac%20(Exp%20a)"></a><span class='hs-comment'>--</span>
+<a name="line-131"></a><a name="instance%20P.RealFrac%20(Exp%20a)"></a><span class='hs-keyword'>instance</span> <span class='hs-conid'>RealFrac</span> <span class='hs-varid'>a</span> <span class='hs-keyglyph'>=&gt;</span> <span class='hs-conid'>P</span><span class='hs-varop'>.</span><span class='hs-conid'>RealFrac</span> <span class='hs-layout'>(</span><span class='hs-conid'>Exp</span> <span class='hs-varid'>a</span><span class='hs-layout'>)</span> <span class='hs-keyword'>where</span>
+<a name="line-132"></a>  <span class='hs-varid'>properFraction</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>preludeError</span> <span class='hs-str'>"properFraction"</span>
+<a name="line-133"></a>  <span class='hs-varid'>truncate</span>       <span class='hs-keyglyph'>=</span> <span class='hs-varid'>preludeError</span> <span class='hs-str'>"truncate"</span>
+<a name="line-134"></a>  <span class='hs-varid'>round</span>          <span class='hs-keyglyph'>=</span> <span class='hs-varid'>preludeError</span> <span class='hs-str'>"round"</span>
+<a name="line-135"></a>  <span class='hs-varid'>ceiling</span>        <span class='hs-keyglyph'>=</span> <span class='hs-varid'>preludeError</span> <span class='hs-str'>"ceiling"</span>
+<a name="line-136"></a>  <span class='hs-varid'>floor</span>          <span class='hs-keyglyph'>=</span> <span class='hs-varid'>preludeError</span> <span class='hs-str'>"floor"</span>
+<a name="line-137"></a>
+<a name="line-138"></a><a name="preludeError"></a><span class='hs-definition'>preludeError</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>String</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>a</span>
+<a name="line-139"></a><span class='hs-definition'>preludeError</span> <span class='hs-varid'>x</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>error</span> <span class='hs-layout'>(</span><span class='hs-varid'>printf</span> <span class='hs-str'>"Prelude.%s applied to EDSL types: use Data.Array.Accelerate.%s instead"</span> <span class='hs-varid'>x</span><span class='hs-layout'>)</span>
+<a name="line-140"></a>
 </pre></body>
 </html>
