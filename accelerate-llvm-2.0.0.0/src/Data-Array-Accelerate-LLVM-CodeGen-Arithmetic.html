@@ -520,110 +520,126 @@
 <a name="line-511"></a><span class='hs-definition'>binop</span> <span class='hs-varid'>f</span> <span class='hs-varid'>dict</span> <span class='hs-layout'>(</span><span class='hs-varid'>op</span> <span class='hs-varid'>dict</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>x</span><span class='hs-layout'>)</span> <span class='hs-layout'>(</span><span class='hs-varid'>op</span> <span class='hs-varid'>dict</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>y</span><span class='hs-layout'>)</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>instr</span> <span class='hs-layout'>(</span><span class='hs-varid'>f</span> <span class='hs-varid'>dict</span> <span class='hs-varid'>x</span> <span class='hs-varid'>y</span><span class='hs-layout'>)</span>
 <a name="line-512"></a>
 <a name="line-513"></a>
-<a name="line-514"></a><a name="lift"></a><span class='hs-comment'>-- | Lift a constant value into an constant in the intermediate representation.</span>
-<a name="line-515"></a><span class='hs-comment'>--</span>
-<a name="line-516"></a><span class='hs-definition'>lift</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>IsScalar</span> <span class='hs-varid'>a</span> <span class='hs-keyglyph'>=&gt;</span> <span class='hs-varid'>a</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>IR</span> <span class='hs-varid'>a</span>
-<a name="line-517"></a><span class='hs-definition'>lift</span> <span class='hs-varid'>x</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>ir</span> <span class='hs-varid'>scalarType</span> <span class='hs-layout'>(</span><span class='hs-varid'>scalar</span> <span class='hs-varid'>scalarType</span> <span class='hs-varid'>x</span><span class='hs-layout'>)</span>
-<a name="line-518"></a>
+<a name="line-514"></a><a name="fst3"></a><span class='hs-definition'>fst3</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>IR</span> <span class='hs-layout'>(</span><span class='hs-varid'>a</span><span class='hs-layout'>,</span> <span class='hs-varid'>b</span><span class='hs-layout'>,</span> <span class='hs-varid'>c</span><span class='hs-layout'>)</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>IR</span> <span class='hs-varid'>a</span>
+<a name="line-515"></a><span class='hs-definition'>fst3</span> <span class='hs-layout'>(</span><span class='hs-conid'>IR</span> <span class='hs-layout'>(</span><span class='hs-conid'>OP_Pair</span> <span class='hs-layout'>(</span><span class='hs-conid'>OP_Pair</span> <span class='hs-layout'>(</span><span class='hs-conid'>OP_Pair</span> <span class='hs-conid'>OP_Unit</span> <span class='hs-varid'>x</span><span class='hs-layout'>)</span> <span class='hs-keyword'>_</span><span class='hs-layout'>)</span> <span class='hs-keyword'>_</span><span class='hs-layout'>)</span><span class='hs-layout'>)</span> <span class='hs-keyglyph'>=</span> <span class='hs-conid'>IR</span> <span class='hs-varid'>x</span>
+<a name="line-516"></a>
+<a name="line-517"></a><a name="snd3"></a><span class='hs-definition'>snd3</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>IR</span> <span class='hs-layout'>(</span><span class='hs-varid'>a</span><span class='hs-layout'>,</span> <span class='hs-varid'>b</span><span class='hs-layout'>,</span> <span class='hs-varid'>c</span><span class='hs-layout'>)</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>IR</span> <span class='hs-varid'>b</span>
+<a name="line-518"></a><span class='hs-definition'>snd3</span> <span class='hs-layout'>(</span><span class='hs-conid'>IR</span> <span class='hs-layout'>(</span><span class='hs-conid'>OP_Pair</span> <span class='hs-layout'>(</span><span class='hs-conid'>OP_Pair</span> <span class='hs-keyword'>_</span> <span class='hs-varid'>y</span><span class='hs-layout'>)</span> <span class='hs-keyword'>_</span><span class='hs-layout'>)</span><span class='hs-layout'>)</span> <span class='hs-keyglyph'>=</span> <span class='hs-conid'>IR</span> <span class='hs-varid'>y</span>
 <a name="line-519"></a>
-<a name="line-520"></a><a name="ifThenElse"></a><span class='hs-comment'>-- | Standard if-then-else expression</span>
-<a name="line-521"></a><span class='hs-comment'>--</span>
-<a name="line-522"></a><span class='hs-definition'>ifThenElse</span>
-<a name="line-523"></a>    <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Elt</span> <span class='hs-varid'>a</span>
-<a name="line-524"></a>    <span class='hs-keyglyph'>=&gt;</span> <span class='hs-conid'>CodeGen</span> <span class='hs-layout'>(</span><span class='hs-conid'>IR</span> <span class='hs-conid'>Bool</span><span class='hs-layout'>)</span>
-<a name="line-525"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>CodeGen</span> <span class='hs-layout'>(</span><span class='hs-conid'>IR</span> <span class='hs-varid'>a</span><span class='hs-layout'>)</span>
-<a name="line-526"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>CodeGen</span> <span class='hs-layout'>(</span><span class='hs-conid'>IR</span> <span class='hs-varid'>a</span><span class='hs-layout'>)</span>
-<a name="line-527"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>CodeGen</span> <span class='hs-layout'>(</span><span class='hs-conid'>IR</span> <span class='hs-varid'>a</span><span class='hs-layout'>)</span>
-<a name="line-528"></a><span class='hs-definition'>ifThenElse</span> <span class='hs-varid'>test</span> <span class='hs-varid'>yes</span> <span class='hs-varid'>no</span> <span class='hs-keyglyph'>=</span> <span class='hs-keyword'>do</span>
-<a name="line-529"></a>  <span class='hs-varid'>ifThen</span> <span class='hs-keyglyph'>&lt;-</span> <span class='hs-varid'>newBlock</span> <span class='hs-str'>"if.then"</span>
-<a name="line-530"></a>  <span class='hs-varid'>ifElse</span> <span class='hs-keyglyph'>&lt;-</span> <span class='hs-varid'>newBlock</span> <span class='hs-str'>"if.else"</span>
-<a name="line-531"></a>  <span class='hs-varid'>ifExit</span> <span class='hs-keyglyph'>&lt;-</span> <span class='hs-varid'>newBlock</span> <span class='hs-str'>"if.exit"</span>
-<a name="line-532"></a>
-<a name="line-533"></a>  <span class='hs-keyword'>_</span>  <span class='hs-keyglyph'>&lt;-</span> <span class='hs-varid'>beginBlock</span> <span class='hs-str'>"if.entry"</span>
-<a name="line-534"></a>  <span class='hs-varid'>p</span>  <span class='hs-keyglyph'>&lt;-</span> <span class='hs-varid'>test</span>
-<a name="line-535"></a>  <span class='hs-keyword'>_</span>  <span class='hs-keyglyph'>&lt;-</span> <span class='hs-varid'>cbr</span> <span class='hs-varid'>p</span> <span class='hs-varid'>ifThen</span> <span class='hs-varid'>ifElse</span>
-<a name="line-536"></a>
-<a name="line-537"></a>  <span class='hs-varid'>setBlock</span> <span class='hs-varid'>ifThen</span>
-<a name="line-538"></a>  <span class='hs-varid'>tv</span> <span class='hs-keyglyph'>&lt;-</span> <span class='hs-varid'>yes</span>
-<a name="line-539"></a>  <span class='hs-varid'>tb</span> <span class='hs-keyglyph'>&lt;-</span> <span class='hs-varid'>br</span> <span class='hs-varid'>ifExit</span>
-<a name="line-540"></a>
-<a name="line-541"></a>  <span class='hs-varid'>setBlock</span> <span class='hs-varid'>ifElse</span>
-<a name="line-542"></a>  <span class='hs-varid'>fv</span> <span class='hs-keyglyph'>&lt;-</span> <span class='hs-varid'>no</span>
-<a name="line-543"></a>  <span class='hs-varid'>fb</span> <span class='hs-keyglyph'>&lt;-</span> <span class='hs-varid'>br</span> <span class='hs-varid'>ifExit</span>
-<a name="line-544"></a>
-<a name="line-545"></a>  <span class='hs-varid'>setBlock</span> <span class='hs-varid'>ifExit</span>
-<a name="line-546"></a>  <span class='hs-varid'>phi</span> <span class='hs-keyglyph'>[</span><span class='hs-layout'>(</span><span class='hs-varid'>tv</span><span class='hs-layout'>,</span> <span class='hs-varid'>tb</span><span class='hs-layout'>)</span><span class='hs-layout'>,</span> <span class='hs-layout'>(</span><span class='hs-varid'>fv</span><span class='hs-layout'>,</span> <span class='hs-varid'>fb</span><span class='hs-layout'>)</span><span class='hs-keyglyph'>]</span>
-<a name="line-547"></a>
+<a name="line-520"></a><a name="thd3"></a><span class='hs-definition'>thd3</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>IR</span> <span class='hs-layout'>(</span><span class='hs-varid'>a</span><span class='hs-layout'>,</span> <span class='hs-varid'>b</span><span class='hs-layout'>,</span> <span class='hs-varid'>c</span><span class='hs-layout'>)</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>IR</span> <span class='hs-varid'>c</span>
+<a name="line-521"></a><span class='hs-definition'>thd3</span> <span class='hs-layout'>(</span><span class='hs-conid'>IR</span> <span class='hs-layout'>(</span><span class='hs-conid'>OP_Pair</span> <span class='hs-keyword'>_</span> <span class='hs-varid'>z</span><span class='hs-layout'>)</span><span class='hs-layout'>)</span> <span class='hs-keyglyph'>=</span> <span class='hs-conid'>IR</span> <span class='hs-varid'>z</span>
+<a name="line-522"></a>
+<a name="line-523"></a><a name="trip"></a><span class='hs-definition'>trip</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>IR</span> <span class='hs-varid'>a</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>IR</span> <span class='hs-varid'>b</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>IR</span> <span class='hs-varid'>c</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>IR</span> <span class='hs-layout'>(</span><span class='hs-varid'>a</span><span class='hs-layout'>,</span> <span class='hs-varid'>b</span><span class='hs-layout'>,</span> <span class='hs-varid'>c</span><span class='hs-layout'>)</span>
+<a name="line-524"></a><span class='hs-definition'>trip</span> <span class='hs-layout'>(</span><span class='hs-conid'>IR</span> <span class='hs-varid'>x</span><span class='hs-layout'>)</span> <span class='hs-layout'>(</span><span class='hs-conid'>IR</span> <span class='hs-varid'>y</span><span class='hs-layout'>)</span> <span class='hs-layout'>(</span><span class='hs-conid'>IR</span> <span class='hs-varid'>z</span><span class='hs-layout'>)</span> <span class='hs-keyglyph'>=</span> <span class='hs-conid'>IR</span> <span class='hs-varop'>$</span> <span class='hs-conid'>OP_Pair</span> <span class='hs-layout'>(</span><span class='hs-conid'>OP_Pair</span> <span class='hs-layout'>(</span><span class='hs-conid'>OP_Pair</span> <span class='hs-conid'>OP_Unit</span> <span class='hs-varid'>x</span><span class='hs-layout'>)</span> <span class='hs-varid'>y</span><span class='hs-layout'>)</span> <span class='hs-varid'>z</span>
+<a name="line-525"></a>
+<a name="line-526"></a><a name="untrip"></a><span class='hs-definition'>untrip</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>IR</span> <span class='hs-layout'>(</span><span class='hs-varid'>a</span><span class='hs-layout'>,</span> <span class='hs-varid'>b</span><span class='hs-layout'>,</span> <span class='hs-varid'>c</span><span class='hs-layout'>)</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-layout'>(</span><span class='hs-conid'>IR</span> <span class='hs-varid'>a</span><span class='hs-layout'>,</span> <span class='hs-conid'>IR</span> <span class='hs-varid'>b</span><span class='hs-layout'>,</span> <span class='hs-conid'>IR</span> <span class='hs-varid'>c</span><span class='hs-layout'>)</span>
+<a name="line-527"></a><span class='hs-definition'>untrip</span> <span class='hs-varid'>t</span> <span class='hs-keyglyph'>=</span> <span class='hs-layout'>(</span><span class='hs-varid'>fst3</span> <span class='hs-varid'>t</span><span class='hs-layout'>,</span> <span class='hs-varid'>snd3</span> <span class='hs-varid'>t</span><span class='hs-layout'>,</span> <span class='hs-varid'>thd3</span> <span class='hs-varid'>t</span><span class='hs-layout'>)</span>
+<a name="line-528"></a>
+<a name="line-529"></a>
+<a name="line-530"></a><a name="lift"></a><span class='hs-comment'>-- | Lift a constant value into an constant in the intermediate representation.</span>
+<a name="line-531"></a><span class='hs-comment'>--</span>
+<a name="line-532"></a><span class='hs-definition'>lift</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>IsScalar</span> <span class='hs-varid'>a</span> <span class='hs-keyglyph'>=&gt;</span> <span class='hs-varid'>a</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>IR</span> <span class='hs-varid'>a</span>
+<a name="line-533"></a><span class='hs-definition'>lift</span> <span class='hs-varid'>x</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>ir</span> <span class='hs-varid'>scalarType</span> <span class='hs-layout'>(</span><span class='hs-varid'>scalar</span> <span class='hs-varid'>scalarType</span> <span class='hs-varid'>x</span><span class='hs-layout'>)</span>
+<a name="line-534"></a>
+<a name="line-535"></a>
+<a name="line-536"></a><a name="ifThenElse"></a><span class='hs-comment'>-- | Standard if-then-else expression</span>
+<a name="line-537"></a><span class='hs-comment'>--</span>
+<a name="line-538"></a><span class='hs-definition'>ifThenElse</span>
+<a name="line-539"></a>    <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Elt</span> <span class='hs-varid'>a</span>
+<a name="line-540"></a>    <span class='hs-keyglyph'>=&gt;</span> <span class='hs-conid'>CodeGen</span> <span class='hs-layout'>(</span><span class='hs-conid'>IR</span> <span class='hs-conid'>Bool</span><span class='hs-layout'>)</span>
+<a name="line-541"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>CodeGen</span> <span class='hs-layout'>(</span><span class='hs-conid'>IR</span> <span class='hs-varid'>a</span><span class='hs-layout'>)</span>
+<a name="line-542"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>CodeGen</span> <span class='hs-layout'>(</span><span class='hs-conid'>IR</span> <span class='hs-varid'>a</span><span class='hs-layout'>)</span>
+<a name="line-543"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>CodeGen</span> <span class='hs-layout'>(</span><span class='hs-conid'>IR</span> <span class='hs-varid'>a</span><span class='hs-layout'>)</span>
+<a name="line-544"></a><span class='hs-definition'>ifThenElse</span> <span class='hs-varid'>test</span> <span class='hs-varid'>yes</span> <span class='hs-varid'>no</span> <span class='hs-keyglyph'>=</span> <span class='hs-keyword'>do</span>
+<a name="line-545"></a>  <span class='hs-varid'>ifThen</span> <span class='hs-keyglyph'>&lt;-</span> <span class='hs-varid'>newBlock</span> <span class='hs-str'>"if.then"</span>
+<a name="line-546"></a>  <span class='hs-varid'>ifElse</span> <span class='hs-keyglyph'>&lt;-</span> <span class='hs-varid'>newBlock</span> <span class='hs-str'>"if.else"</span>
+<a name="line-547"></a>  <span class='hs-varid'>ifExit</span> <span class='hs-keyglyph'>&lt;-</span> <span class='hs-varid'>newBlock</span> <span class='hs-str'>"if.exit"</span>
 <a name="line-548"></a>
-<a name="line-549"></a><a name="when"></a><span class='hs-comment'>-- Execute the body only if the first argument evaluates to True</span>
-<a name="line-550"></a><span class='hs-comment'>--</span>
-<a name="line-551"></a><span class='hs-definition'>when</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>CodeGen</span> <span class='hs-layout'>(</span><span class='hs-conid'>IR</span> <span class='hs-conid'>Bool</span><span class='hs-layout'>)</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>CodeGen</span> <span class='hs-conid'>()</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>CodeGen</span> <span class='hs-conid'>()</span>
-<a name="line-552"></a><span class='hs-definition'>when</span> <span class='hs-varid'>test</span> <span class='hs-varid'>doit</span> <span class='hs-keyglyph'>=</span> <span class='hs-keyword'>do</span>
-<a name="line-553"></a>  <span class='hs-varid'>body</span> <span class='hs-keyglyph'>&lt;-</span> <span class='hs-varid'>newBlock</span> <span class='hs-str'>"when.body"</span>
-<a name="line-554"></a>  <span class='hs-varid'>exit</span> <span class='hs-keyglyph'>&lt;-</span> <span class='hs-varid'>newBlock</span> <span class='hs-str'>"when.exit"</span>
-<a name="line-555"></a>
-<a name="line-556"></a>  <span class='hs-varid'>p</span> <span class='hs-keyglyph'>&lt;-</span> <span class='hs-varid'>test</span>
-<a name="line-557"></a>  <span class='hs-keyword'>_</span> <span class='hs-keyglyph'>&lt;-</span> <span class='hs-varid'>cbr</span> <span class='hs-varid'>p</span> <span class='hs-varid'>body</span> <span class='hs-varid'>exit</span>
-<a name="line-558"></a>
-<a name="line-559"></a>  <span class='hs-varid'>setBlock</span> <span class='hs-varid'>body</span>
-<a name="line-560"></a>  <span class='hs-varid'>doit</span>
-<a name="line-561"></a>  <span class='hs-keyword'>_</span> <span class='hs-keyglyph'>&lt;-</span> <span class='hs-varid'>br</span> <span class='hs-varid'>exit</span>
-<a name="line-562"></a>
-<a name="line-563"></a>  <span class='hs-varid'>setBlock</span> <span class='hs-varid'>exit</span>
+<a name="line-549"></a>  <span class='hs-keyword'>_</span>  <span class='hs-keyglyph'>&lt;-</span> <span class='hs-varid'>beginBlock</span> <span class='hs-str'>"if.entry"</span>
+<a name="line-550"></a>  <span class='hs-varid'>p</span>  <span class='hs-keyglyph'>&lt;-</span> <span class='hs-varid'>test</span>
+<a name="line-551"></a>  <span class='hs-keyword'>_</span>  <span class='hs-keyglyph'>&lt;-</span> <span class='hs-varid'>cbr</span> <span class='hs-varid'>p</span> <span class='hs-varid'>ifThen</span> <span class='hs-varid'>ifElse</span>
+<a name="line-552"></a>
+<a name="line-553"></a>  <span class='hs-varid'>setBlock</span> <span class='hs-varid'>ifThen</span>
+<a name="line-554"></a>  <span class='hs-varid'>tv</span> <span class='hs-keyglyph'>&lt;-</span> <span class='hs-varid'>yes</span>
+<a name="line-555"></a>  <span class='hs-varid'>tb</span> <span class='hs-keyglyph'>&lt;-</span> <span class='hs-varid'>br</span> <span class='hs-varid'>ifExit</span>
+<a name="line-556"></a>
+<a name="line-557"></a>  <span class='hs-varid'>setBlock</span> <span class='hs-varid'>ifElse</span>
+<a name="line-558"></a>  <span class='hs-varid'>fv</span> <span class='hs-keyglyph'>&lt;-</span> <span class='hs-varid'>no</span>
+<a name="line-559"></a>  <span class='hs-varid'>fb</span> <span class='hs-keyglyph'>&lt;-</span> <span class='hs-varid'>br</span> <span class='hs-varid'>ifExit</span>
+<a name="line-560"></a>
+<a name="line-561"></a>  <span class='hs-varid'>setBlock</span> <span class='hs-varid'>ifExit</span>
+<a name="line-562"></a>  <span class='hs-varid'>phi</span> <span class='hs-keyglyph'>[</span><span class='hs-layout'>(</span><span class='hs-varid'>tv</span><span class='hs-layout'>,</span> <span class='hs-varid'>tb</span><span class='hs-layout'>)</span><span class='hs-layout'>,</span> <span class='hs-layout'>(</span><span class='hs-varid'>fv</span><span class='hs-layout'>,</span> <span class='hs-varid'>fb</span><span class='hs-layout'>)</span><span class='hs-keyglyph'>]</span>
+<a name="line-563"></a>
 <a name="line-564"></a>
-<a name="line-565"></a>
-<a name="line-566"></a><a name="unless"></a><span class='hs-comment'>-- Execute the body only if the first argument evaluates to False</span>
-<a name="line-567"></a><span class='hs-comment'>--</span>
-<a name="line-568"></a><span class='hs-definition'>unless</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>CodeGen</span> <span class='hs-layout'>(</span><span class='hs-conid'>IR</span> <span class='hs-conid'>Bool</span><span class='hs-layout'>)</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>CodeGen</span> <span class='hs-conid'>()</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>CodeGen</span> <span class='hs-conid'>()</span>
-<a name="line-569"></a><span class='hs-definition'>unless</span> <span class='hs-varid'>test</span> <span class='hs-varid'>doit</span> <span class='hs-keyglyph'>=</span> <span class='hs-keyword'>do</span>
-<a name="line-570"></a>  <span class='hs-varid'>body</span> <span class='hs-keyglyph'>&lt;-</span> <span class='hs-varid'>newBlock</span> <span class='hs-str'>"unless.body"</span>
-<a name="line-571"></a>  <span class='hs-varid'>exit</span> <span class='hs-keyglyph'>&lt;-</span> <span class='hs-varid'>newBlock</span> <span class='hs-str'>"unless.exit"</span>
-<a name="line-572"></a>
-<a name="line-573"></a>  <span class='hs-varid'>p</span> <span class='hs-keyglyph'>&lt;-</span> <span class='hs-varid'>test</span>
-<a name="line-574"></a>  <span class='hs-keyword'>_</span> <span class='hs-keyglyph'>&lt;-</span> <span class='hs-varid'>cbr</span> <span class='hs-varid'>p</span> <span class='hs-varid'>exit</span> <span class='hs-varid'>body</span>
-<a name="line-575"></a>
-<a name="line-576"></a>  <span class='hs-varid'>setBlock</span> <span class='hs-varid'>body</span>
-<a name="line-577"></a>  <span class='hs-varid'>doit</span>
-<a name="line-578"></a>  <span class='hs-keyword'>_</span> <span class='hs-keyglyph'>&lt;-</span> <span class='hs-varid'>br</span> <span class='hs-varid'>exit</span>
-<a name="line-579"></a>
-<a name="line-580"></a>  <span class='hs-varid'>setBlock</span> <span class='hs-varid'>exit</span>
+<a name="line-565"></a><a name="when"></a><span class='hs-comment'>-- Execute the body only if the first argument evaluates to True</span>
+<a name="line-566"></a><span class='hs-comment'>--</span>
+<a name="line-567"></a><span class='hs-definition'>when</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>CodeGen</span> <span class='hs-layout'>(</span><span class='hs-conid'>IR</span> <span class='hs-conid'>Bool</span><span class='hs-layout'>)</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>CodeGen</span> <span class='hs-conid'>()</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>CodeGen</span> <span class='hs-conid'>()</span>
+<a name="line-568"></a><span class='hs-definition'>when</span> <span class='hs-varid'>test</span> <span class='hs-varid'>doit</span> <span class='hs-keyglyph'>=</span> <span class='hs-keyword'>do</span>
+<a name="line-569"></a>  <span class='hs-varid'>body</span> <span class='hs-keyglyph'>&lt;-</span> <span class='hs-varid'>newBlock</span> <span class='hs-str'>"when.body"</span>
+<a name="line-570"></a>  <span class='hs-varid'>exit</span> <span class='hs-keyglyph'>&lt;-</span> <span class='hs-varid'>newBlock</span> <span class='hs-str'>"when.exit"</span>
+<a name="line-571"></a>
+<a name="line-572"></a>  <span class='hs-varid'>p</span> <span class='hs-keyglyph'>&lt;-</span> <span class='hs-varid'>test</span>
+<a name="line-573"></a>  <span class='hs-keyword'>_</span> <span class='hs-keyglyph'>&lt;-</span> <span class='hs-varid'>cbr</span> <span class='hs-varid'>p</span> <span class='hs-varid'>body</span> <span class='hs-varid'>exit</span>
+<a name="line-574"></a>
+<a name="line-575"></a>  <span class='hs-varid'>setBlock</span> <span class='hs-varid'>body</span>
+<a name="line-576"></a>  <span class='hs-varid'>doit</span>
+<a name="line-577"></a>  <span class='hs-keyword'>_</span> <span class='hs-keyglyph'>&lt;-</span> <span class='hs-varid'>br</span> <span class='hs-varid'>exit</span>
+<a name="line-578"></a>
+<a name="line-579"></a>  <span class='hs-varid'>setBlock</span> <span class='hs-varid'>exit</span>
+<a name="line-580"></a>
 <a name="line-581"></a>
-<a name="line-582"></a>
-<a name="line-583"></a><a name="mathf"></a><span class='hs-comment'>-- Call a function from the standard C math library. This is a wrapper around</span>
-<a name="line-584"></a><span class='hs-comment'>-- the 'call' function from CodeGen.Base since:</span>
-<a name="line-585"></a><span class='hs-comment'>--</span>
-<a name="line-586"></a><span class='hs-comment'>--   (1) The parameter and return types are all the same; and</span>
-<a name="line-587"></a><span class='hs-comment'>--   (2) We check if there is an intrinsic implementation of this function</span>
-<a name="line-588"></a><span class='hs-comment'>--</span>
-<a name="line-589"></a><span class='hs-comment'>-- TLM: We should really be able to construct functions of any arity.</span>
-<a name="line-590"></a><span class='hs-comment'>--</span>
-<a name="line-591"></a><span class='hs-definition'>mathf</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>String</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>FloatingType</span> <span class='hs-varid'>t</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>IR</span> <span class='hs-varid'>t</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>CodeGen</span> <span class='hs-layout'>(</span><span class='hs-conid'>IR</span> <span class='hs-varid'>t</span><span class='hs-layout'>)</span>
-<a name="line-592"></a><span class='hs-definition'>mathf</span> <span class='hs-varid'>n</span> <span class='hs-varid'>f</span> <span class='hs-layout'>(</span><span class='hs-varid'>op</span> <span class='hs-varid'>f</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>x</span><span class='hs-layout'>)</span> <span class='hs-keyglyph'>=</span> <span class='hs-keyword'>do</span>
-<a name="line-593"></a>  <span class='hs-keyword'>let</span> <span class='hs-varid'>s</span> <span class='hs-keyglyph'>=</span> <span class='hs-conid'>ScalarPrimType</span> <span class='hs-layout'>(</span><span class='hs-conid'>NumScalarType</span> <span class='hs-layout'>(</span><span class='hs-conid'>FloatingNumType</span> <span class='hs-varid'>f</span><span class='hs-layout'>)</span><span class='hs-layout'>)</span>
-<a name="line-594"></a>      <span class='hs-varid'>t</span> <span class='hs-keyglyph'>=</span> <span class='hs-conid'>PrimType</span> <span class='hs-varid'>s</span>
-<a name="line-595"></a>  <span class='hs-comment'>--</span>
-<a name="line-596"></a>  <span class='hs-varid'>name</span> <span class='hs-keyglyph'>&lt;-</span> <span class='hs-varid'>lm</span> <span class='hs-varid'>f</span> <span class='hs-varid'>n</span>
-<a name="line-597"></a>  <span class='hs-varid'>r</span>    <span class='hs-keyglyph'>&lt;-</span> <span class='hs-varid'>call</span> <span class='hs-layout'>(</span><span class='hs-conid'>Lam</span> <span class='hs-varid'>s</span> <span class='hs-varid'>x</span> <span class='hs-layout'>(</span><span class='hs-conid'>Body</span> <span class='hs-varid'>t</span> <span class='hs-varid'>name</span><span class='hs-layout'>)</span><span class='hs-layout'>)</span> <span class='hs-keyglyph'>[</span><span class='hs-conid'>NoUnwind</span><span class='hs-layout'>,</span> <span class='hs-conid'>ReadOnly</span><span class='hs-keyglyph'>]</span>
-<a name="line-598"></a>  <span class='hs-varid'>return</span> <span class='hs-varid'>r</span>
-<a name="line-599"></a>
-<a name="line-600"></a>
-<a name="line-601"></a><a name="mathf2"></a><span class='hs-definition'>mathf2</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>String</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>FloatingType</span> <span class='hs-varid'>t</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>IR</span> <span class='hs-varid'>t</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>IR</span> <span class='hs-varid'>t</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>CodeGen</span> <span class='hs-layout'>(</span><span class='hs-conid'>IR</span> <span class='hs-varid'>t</span><span class='hs-layout'>)</span>
-<a name="line-602"></a><span class='hs-definition'>mathf2</span> <span class='hs-varid'>n</span> <span class='hs-varid'>f</span> <span class='hs-layout'>(</span><span class='hs-varid'>op</span> <span class='hs-varid'>f</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>x</span><span class='hs-layout'>)</span> <span class='hs-layout'>(</span><span class='hs-varid'>op</span> <span class='hs-varid'>f</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>y</span><span class='hs-layout'>)</span> <span class='hs-keyglyph'>=</span> <span class='hs-keyword'>do</span>
-<a name="line-603"></a>  <span class='hs-keyword'>let</span> <span class='hs-varid'>s</span> <span class='hs-keyglyph'>=</span> <span class='hs-conid'>ScalarPrimType</span> <span class='hs-layout'>(</span><span class='hs-conid'>NumScalarType</span> <span class='hs-layout'>(</span><span class='hs-conid'>FloatingNumType</span> <span class='hs-varid'>f</span><span class='hs-layout'>)</span><span class='hs-layout'>)</span>
-<a name="line-604"></a>      <span class='hs-varid'>t</span> <span class='hs-keyglyph'>=</span> <span class='hs-conid'>PrimType</span> <span class='hs-varid'>s</span>
-<a name="line-605"></a>  <span class='hs-comment'>--</span>
-<a name="line-606"></a>  <span class='hs-varid'>name</span> <span class='hs-keyglyph'>&lt;-</span> <span class='hs-varid'>lm</span> <span class='hs-varid'>f</span> <span class='hs-varid'>n</span>
-<a name="line-607"></a>  <span class='hs-varid'>r</span>    <span class='hs-keyglyph'>&lt;-</span> <span class='hs-varid'>call</span> <span class='hs-layout'>(</span><span class='hs-conid'>Lam</span> <span class='hs-varid'>s</span> <span class='hs-varid'>x</span> <span class='hs-layout'>(</span><span class='hs-conid'>Lam</span> <span class='hs-varid'>s</span> <span class='hs-varid'>y</span> <span class='hs-layout'>(</span><span class='hs-conid'>Body</span> <span class='hs-varid'>t</span> <span class='hs-varid'>name</span><span class='hs-layout'>)</span><span class='hs-layout'>)</span><span class='hs-layout'>)</span> <span class='hs-keyglyph'>[</span><span class='hs-conid'>NoUnwind</span><span class='hs-layout'>,</span> <span class='hs-conid'>ReadOnly</span><span class='hs-keyglyph'>]</span>
-<a name="line-608"></a>  <span class='hs-varid'>return</span> <span class='hs-varid'>r</span>
-<a name="line-609"></a>
-<a name="line-610"></a><a name="lm"></a><span class='hs-definition'>lm</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>FloatingType</span> <span class='hs-varid'>t</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>String</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>CodeGen</span> <span class='hs-conid'>Label</span>
-<a name="line-611"></a><span class='hs-definition'>lm</span> <span class='hs-varid'>t</span> <span class='hs-varid'>n</span>
-<a name="line-612"></a>  <span class='hs-keyglyph'>=</span> <span class='hs-varid'>intrinsic</span>
-<a name="line-613"></a>  <span class='hs-varop'>$</span> <span class='hs-keyword'>case</span> <span class='hs-varid'>t</span> <span class='hs-keyword'>of</span>
-<a name="line-614"></a>      <span class='hs-conid'>TypeFloat</span><span class='hs-layout'>{</span><span class='hs-layout'>}</span>   <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>n</span><span class='hs-varop'>++</span><span class='hs-str'>"f"</span>
-<a name="line-615"></a>      <span class='hs-conid'>TypeCFloat</span><span class='hs-layout'>{</span><span class='hs-layout'>}</span>  <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>n</span><span class='hs-varop'>++</span><span class='hs-str'>"f"</span>
-<a name="line-616"></a>      <span class='hs-conid'>TypeDouble</span><span class='hs-layout'>{</span><span class='hs-layout'>}</span>  <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>n</span>
-<a name="line-617"></a>      <span class='hs-conid'>TypeCDouble</span><span class='hs-layout'>{</span><span class='hs-layout'>}</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>n</span>
-<a name="line-618"></a>
+<a name="line-582"></a><a name="unless"></a><span class='hs-comment'>-- Execute the body only if the first argument evaluates to False</span>
+<a name="line-583"></a><span class='hs-comment'>--</span>
+<a name="line-584"></a><span class='hs-definition'>unless</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>CodeGen</span> <span class='hs-layout'>(</span><span class='hs-conid'>IR</span> <span class='hs-conid'>Bool</span><span class='hs-layout'>)</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>CodeGen</span> <span class='hs-conid'>()</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>CodeGen</span> <span class='hs-conid'>()</span>
+<a name="line-585"></a><span class='hs-definition'>unless</span> <span class='hs-varid'>test</span> <span class='hs-varid'>doit</span> <span class='hs-keyglyph'>=</span> <span class='hs-keyword'>do</span>
+<a name="line-586"></a>  <span class='hs-varid'>body</span> <span class='hs-keyglyph'>&lt;-</span> <span class='hs-varid'>newBlock</span> <span class='hs-str'>"unless.body"</span>
+<a name="line-587"></a>  <span class='hs-varid'>exit</span> <span class='hs-keyglyph'>&lt;-</span> <span class='hs-varid'>newBlock</span> <span class='hs-str'>"unless.exit"</span>
+<a name="line-588"></a>
+<a name="line-589"></a>  <span class='hs-varid'>p</span> <span class='hs-keyglyph'>&lt;-</span> <span class='hs-varid'>test</span>
+<a name="line-590"></a>  <span class='hs-keyword'>_</span> <span class='hs-keyglyph'>&lt;-</span> <span class='hs-varid'>cbr</span> <span class='hs-varid'>p</span> <span class='hs-varid'>exit</span> <span class='hs-varid'>body</span>
+<a name="line-591"></a>
+<a name="line-592"></a>  <span class='hs-varid'>setBlock</span> <span class='hs-varid'>body</span>
+<a name="line-593"></a>  <span class='hs-varid'>doit</span>
+<a name="line-594"></a>  <span class='hs-keyword'>_</span> <span class='hs-keyglyph'>&lt;-</span> <span class='hs-varid'>br</span> <span class='hs-varid'>exit</span>
+<a name="line-595"></a>
+<a name="line-596"></a>  <span class='hs-varid'>setBlock</span> <span class='hs-varid'>exit</span>
+<a name="line-597"></a>
+<a name="line-598"></a>
+<a name="line-599"></a><a name="mathf"></a><span class='hs-comment'>-- Call a function from the standard C math library. This is a wrapper around</span>
+<a name="line-600"></a><span class='hs-comment'>-- the 'call' function from CodeGen.Base since:</span>
+<a name="line-601"></a><span class='hs-comment'>--</span>
+<a name="line-602"></a><span class='hs-comment'>--   (1) The parameter and return types are all the same; and</span>
+<a name="line-603"></a><span class='hs-comment'>--   (2) We check if there is an intrinsic implementation of this function</span>
+<a name="line-604"></a><span class='hs-comment'>--</span>
+<a name="line-605"></a><span class='hs-comment'>-- TLM: We should really be able to construct functions of any arity.</span>
+<a name="line-606"></a><span class='hs-comment'>--</span>
+<a name="line-607"></a><span class='hs-definition'>mathf</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>String</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>FloatingType</span> <span class='hs-varid'>t</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>IR</span> <span class='hs-varid'>t</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>CodeGen</span> <span class='hs-layout'>(</span><span class='hs-conid'>IR</span> <span class='hs-varid'>t</span><span class='hs-layout'>)</span>
+<a name="line-608"></a><span class='hs-definition'>mathf</span> <span class='hs-varid'>n</span> <span class='hs-varid'>f</span> <span class='hs-layout'>(</span><span class='hs-varid'>op</span> <span class='hs-varid'>f</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>x</span><span class='hs-layout'>)</span> <span class='hs-keyglyph'>=</span> <span class='hs-keyword'>do</span>
+<a name="line-609"></a>  <span class='hs-keyword'>let</span> <span class='hs-varid'>s</span> <span class='hs-keyglyph'>=</span> <span class='hs-conid'>ScalarPrimType</span> <span class='hs-layout'>(</span><span class='hs-conid'>NumScalarType</span> <span class='hs-layout'>(</span><span class='hs-conid'>FloatingNumType</span> <span class='hs-varid'>f</span><span class='hs-layout'>)</span><span class='hs-layout'>)</span>
+<a name="line-610"></a>      <span class='hs-varid'>t</span> <span class='hs-keyglyph'>=</span> <span class='hs-conid'>PrimType</span> <span class='hs-varid'>s</span>
+<a name="line-611"></a>  <span class='hs-comment'>--</span>
+<a name="line-612"></a>  <span class='hs-varid'>name</span> <span class='hs-keyglyph'>&lt;-</span> <span class='hs-varid'>lm</span> <span class='hs-varid'>f</span> <span class='hs-varid'>n</span>
+<a name="line-613"></a>  <span class='hs-varid'>r</span>    <span class='hs-keyglyph'>&lt;-</span> <span class='hs-varid'>call</span> <span class='hs-layout'>(</span><span class='hs-conid'>Lam</span> <span class='hs-varid'>s</span> <span class='hs-varid'>x</span> <span class='hs-layout'>(</span><span class='hs-conid'>Body</span> <span class='hs-varid'>t</span> <span class='hs-varid'>name</span><span class='hs-layout'>)</span><span class='hs-layout'>)</span> <span class='hs-keyglyph'>[</span><span class='hs-conid'>NoUnwind</span><span class='hs-layout'>,</span> <span class='hs-conid'>ReadOnly</span><span class='hs-keyglyph'>]</span>
+<a name="line-614"></a>  <span class='hs-varid'>return</span> <span class='hs-varid'>r</span>
+<a name="line-615"></a>
+<a name="line-616"></a>
+<a name="line-617"></a><a name="mathf2"></a><span class='hs-definition'>mathf2</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>String</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>FloatingType</span> <span class='hs-varid'>t</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>IR</span> <span class='hs-varid'>t</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>IR</span> <span class='hs-varid'>t</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>CodeGen</span> <span class='hs-layout'>(</span><span class='hs-conid'>IR</span> <span class='hs-varid'>t</span><span class='hs-layout'>)</span>
+<a name="line-618"></a><span class='hs-definition'>mathf2</span> <span class='hs-varid'>n</span> <span class='hs-varid'>f</span> <span class='hs-layout'>(</span><span class='hs-varid'>op</span> <span class='hs-varid'>f</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>x</span><span class='hs-layout'>)</span> <span class='hs-layout'>(</span><span class='hs-varid'>op</span> <span class='hs-varid'>f</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>y</span><span class='hs-layout'>)</span> <span class='hs-keyglyph'>=</span> <span class='hs-keyword'>do</span>
+<a name="line-619"></a>  <span class='hs-keyword'>let</span> <span class='hs-varid'>s</span> <span class='hs-keyglyph'>=</span> <span class='hs-conid'>ScalarPrimType</span> <span class='hs-layout'>(</span><span class='hs-conid'>NumScalarType</span> <span class='hs-layout'>(</span><span class='hs-conid'>FloatingNumType</span> <span class='hs-varid'>f</span><span class='hs-layout'>)</span><span class='hs-layout'>)</span>
+<a name="line-620"></a>      <span class='hs-varid'>t</span> <span class='hs-keyglyph'>=</span> <span class='hs-conid'>PrimType</span> <span class='hs-varid'>s</span>
+<a name="line-621"></a>  <span class='hs-comment'>--</span>
+<a name="line-622"></a>  <span class='hs-varid'>name</span> <span class='hs-keyglyph'>&lt;-</span> <span class='hs-varid'>lm</span> <span class='hs-varid'>f</span> <span class='hs-varid'>n</span>
+<a name="line-623"></a>  <span class='hs-varid'>r</span>    <span class='hs-keyglyph'>&lt;-</span> <span class='hs-varid'>call</span> <span class='hs-layout'>(</span><span class='hs-conid'>Lam</span> <span class='hs-varid'>s</span> <span class='hs-varid'>x</span> <span class='hs-layout'>(</span><span class='hs-conid'>Lam</span> <span class='hs-varid'>s</span> <span class='hs-varid'>y</span> <span class='hs-layout'>(</span><span class='hs-conid'>Body</span> <span class='hs-varid'>t</span> <span class='hs-varid'>name</span><span class='hs-layout'>)</span><span class='hs-layout'>)</span><span class='hs-layout'>)</span> <span class='hs-keyglyph'>[</span><span class='hs-conid'>NoUnwind</span><span class='hs-layout'>,</span> <span class='hs-conid'>ReadOnly</span><span class='hs-keyglyph'>]</span>
+<a name="line-624"></a>  <span class='hs-varid'>return</span> <span class='hs-varid'>r</span>
+<a name="line-625"></a>
+<a name="line-626"></a><a name="lm"></a><span class='hs-definition'>lm</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>FloatingType</span> <span class='hs-varid'>t</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>String</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>CodeGen</span> <span class='hs-conid'>Label</span>
+<a name="line-627"></a><span class='hs-definition'>lm</span> <span class='hs-varid'>t</span> <span class='hs-varid'>n</span>
+<a name="line-628"></a>  <span class='hs-keyglyph'>=</span> <span class='hs-varid'>intrinsic</span>
+<a name="line-629"></a>  <span class='hs-varop'>$</span> <span class='hs-keyword'>case</span> <span class='hs-varid'>t</span> <span class='hs-keyword'>of</span>
+<a name="line-630"></a>      <span class='hs-conid'>TypeFloat</span><span class='hs-layout'>{</span><span class='hs-layout'>}</span>   <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>n</span><span class='hs-varop'>++</span><span class='hs-str'>"f"</span>
+<a name="line-631"></a>      <span class='hs-conid'>TypeCFloat</span><span class='hs-layout'>{</span><span class='hs-layout'>}</span>  <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>n</span><span class='hs-varop'>++</span><span class='hs-str'>"f"</span>
+<a name="line-632"></a>      <span class='hs-conid'>TypeDouble</span><span class='hs-layout'>{</span><span class='hs-layout'>}</span>  <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>n</span>
+<a name="line-633"></a>      <span class='hs-conid'>TypeCDouble</span><span class='hs-layout'>{</span><span class='hs-layout'>}</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>n</span>
+<a name="line-634"></a>
 </pre></body>
 </html>
