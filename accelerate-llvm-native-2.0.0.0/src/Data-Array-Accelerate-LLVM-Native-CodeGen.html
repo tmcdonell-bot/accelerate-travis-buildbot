@@ -33,26 +33,27 @@
 <a name="line-24"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>Data</span><span class='hs-varop'>.</span><span class='hs-conid'>Array</span><span class='hs-varop'>.</span><span class='hs-conid'>Accelerate</span><span class='hs-varop'>.</span><span class='hs-conid'>LLVM</span><span class='hs-varop'>.</span><span class='hs-conid'>Native</span><span class='hs-varop'>.</span><span class='hs-conid'>CodeGen</span><span class='hs-varop'>.</span><span class='hs-conid'>FoldSeg</span>
 <a name="line-25"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>Data</span><span class='hs-varop'>.</span><span class='hs-conid'>Array</span><span class='hs-varop'>.</span><span class='hs-conid'>Accelerate</span><span class='hs-varop'>.</span><span class='hs-conid'>LLVM</span><span class='hs-varop'>.</span><span class='hs-conid'>Native</span><span class='hs-varop'>.</span><span class='hs-conid'>CodeGen</span><span class='hs-varop'>.</span><span class='hs-conid'>Generate</span>
 <a name="line-26"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>Data</span><span class='hs-varop'>.</span><span class='hs-conid'>Array</span><span class='hs-varop'>.</span><span class='hs-conid'>Accelerate</span><span class='hs-varop'>.</span><span class='hs-conid'>LLVM</span><span class='hs-varop'>.</span><span class='hs-conid'>Native</span><span class='hs-varop'>.</span><span class='hs-conid'>CodeGen</span><span class='hs-varop'>.</span><span class='hs-conid'>Map</span>
-<a name="line-27"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>Data</span><span class='hs-varop'>.</span><span class='hs-conid'>Array</span><span class='hs-varop'>.</span><span class='hs-conid'>Accelerate</span><span class='hs-varop'>.</span><span class='hs-conid'>LLVM</span><span class='hs-varop'>.</span><span class='hs-conid'>Native</span><span class='hs-varop'>.</span><span class='hs-conid'>CodeGen</span><span class='hs-varop'>.</span><span class='hs-conid'>Scan</span>
-<a name="line-28"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>Data</span><span class='hs-varop'>.</span><span class='hs-conid'>Array</span><span class='hs-varop'>.</span><span class='hs-conid'>Accelerate</span><span class='hs-varop'>.</span><span class='hs-conid'>LLVM</span><span class='hs-varop'>.</span><span class='hs-conid'>Native</span><span class='hs-varop'>.</span><span class='hs-conid'>Target</span>
-<a name="line-29"></a>
+<a name="line-27"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>Data</span><span class='hs-varop'>.</span><span class='hs-conid'>Array</span><span class='hs-varop'>.</span><span class='hs-conid'>Accelerate</span><span class='hs-varop'>.</span><span class='hs-conid'>LLVM</span><span class='hs-varop'>.</span><span class='hs-conid'>Native</span><span class='hs-varop'>.</span><span class='hs-conid'>CodeGen</span><span class='hs-varop'>.</span><span class='hs-conid'>Permute</span>
+<a name="line-28"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>Data</span><span class='hs-varop'>.</span><span class='hs-conid'>Array</span><span class='hs-varop'>.</span><span class='hs-conid'>Accelerate</span><span class='hs-varop'>.</span><span class='hs-conid'>LLVM</span><span class='hs-varop'>.</span><span class='hs-conid'>Native</span><span class='hs-varop'>.</span><span class='hs-conid'>CodeGen</span><span class='hs-varop'>.</span><span class='hs-conid'>Scan</span>
+<a name="line-29"></a><span class='hs-keyword'>import</span> <span class='hs-conid'>Data</span><span class='hs-varop'>.</span><span class='hs-conid'>Array</span><span class='hs-varop'>.</span><span class='hs-conid'>Accelerate</span><span class='hs-varop'>.</span><span class='hs-conid'>LLVM</span><span class='hs-varop'>.</span><span class='hs-conid'>Native</span><span class='hs-varop'>.</span><span class='hs-conid'>Target</span>
 <a name="line-30"></a>
-<a name="line-31"></a><a name="instance%20Skeleton%20Native"></a><span class='hs-keyword'>instance</span> <span class='hs-conid'>Skeleton</span> <span class='hs-conid'>Native</span> <span class='hs-keyword'>where</span>
-<a name="line-32"></a>  <span class='hs-varid'>map</span> <span class='hs-keyword'>_</span>         <span class='hs-keyglyph'>=</span> <span class='hs-varid'>mkMap</span>
-<a name="line-33"></a>  <span class='hs-varid'>generate</span> <span class='hs-keyword'>_</span>    <span class='hs-keyglyph'>=</span> <span class='hs-varid'>mkGenerate</span>
-<a name="line-34"></a>  <span class='hs-varid'>fold</span> <span class='hs-keyword'>_</span>        <span class='hs-keyglyph'>=</span> <span class='hs-varid'>mkFold</span>
-<a name="line-35"></a>  <span class='hs-varid'>fold1</span> <span class='hs-keyword'>_</span>       <span class='hs-keyglyph'>=</span> <span class='hs-varid'>mkFold1</span>
-<a name="line-36"></a>  <span class='hs-varid'>foldSeg</span> <span class='hs-keyword'>_</span>     <span class='hs-keyglyph'>=</span> <span class='hs-varid'>mkFoldSeg</span>
-<a name="line-37"></a>  <span class='hs-varid'>fold1Seg</span> <span class='hs-keyword'>_</span>    <span class='hs-keyglyph'>=</span> <span class='hs-varid'>mkFold1Seg</span>
-<a name="line-38"></a>  <span class='hs-varid'>scanl</span> <span class='hs-keyword'>_</span>       <span class='hs-keyglyph'>=</span> <span class='hs-varid'>mkScanl</span>
-<a name="line-39"></a>  <span class='hs-varid'>scanl1</span> <span class='hs-keyword'>_</span>      <span class='hs-keyglyph'>=</span> <span class='hs-varid'>mkScanl1</span>
-<a name="line-40"></a>  <span class='hs-varid'>scanl'</span> <span class='hs-keyword'>_</span>      <span class='hs-keyglyph'>=</span> <span class='hs-varid'>mkScanl'</span>
-<a name="line-41"></a>  <span class='hs-varid'>scanr</span> <span class='hs-keyword'>_</span>       <span class='hs-keyglyph'>=</span> <span class='hs-varid'>mkScanr</span>
-<a name="line-42"></a>  <span class='hs-varid'>scanr1</span> <span class='hs-keyword'>_</span>      <span class='hs-keyglyph'>=</span> <span class='hs-varid'>mkScanr1</span>
-<a name="line-43"></a>  <span class='hs-varid'>scanr'</span> <span class='hs-keyword'>_</span>      <span class='hs-keyglyph'>=</span> <span class='hs-varid'>mkScanr'</span>
-<a name="line-44"></a><span class='hs-comment'>--  permute _     = mkPermute</span>
-<a name="line-45"></a>
-<a name="line-46"></a><a name="instance%20Expression%20Native"></a><span class='hs-keyword'>instance</span> <span class='hs-conid'>Expression</span> <span class='hs-conid'>Native</span>
-<a name="line-47"></a>
+<a name="line-31"></a>
+<a name="line-32"></a><a name="instance%20Skeleton%20Native"></a><span class='hs-keyword'>instance</span> <span class='hs-conid'>Skeleton</span> <span class='hs-conid'>Native</span> <span class='hs-keyword'>where</span>
+<a name="line-33"></a>  <span class='hs-varid'>map</span> <span class='hs-keyword'>_</span>         <span class='hs-keyglyph'>=</span> <span class='hs-varid'>mkMap</span>
+<a name="line-34"></a>  <span class='hs-varid'>generate</span> <span class='hs-keyword'>_</span>    <span class='hs-keyglyph'>=</span> <span class='hs-varid'>mkGenerate</span>
+<a name="line-35"></a>  <span class='hs-varid'>fold</span> <span class='hs-keyword'>_</span>        <span class='hs-keyglyph'>=</span> <span class='hs-varid'>mkFold</span>
+<a name="line-36"></a>  <span class='hs-varid'>fold1</span> <span class='hs-keyword'>_</span>       <span class='hs-keyglyph'>=</span> <span class='hs-varid'>mkFold1</span>
+<a name="line-37"></a>  <span class='hs-varid'>foldSeg</span> <span class='hs-keyword'>_</span>     <span class='hs-keyglyph'>=</span> <span class='hs-varid'>mkFoldSeg</span>
+<a name="line-38"></a>  <span class='hs-varid'>fold1Seg</span> <span class='hs-keyword'>_</span>    <span class='hs-keyglyph'>=</span> <span class='hs-varid'>mkFold1Seg</span>
+<a name="line-39"></a>  <span class='hs-varid'>scanl</span> <span class='hs-keyword'>_</span>       <span class='hs-keyglyph'>=</span> <span class='hs-varid'>mkScanl</span>
+<a name="line-40"></a>  <span class='hs-varid'>scanl1</span> <span class='hs-keyword'>_</span>      <span class='hs-keyglyph'>=</span> <span class='hs-varid'>mkScanl1</span>
+<a name="line-41"></a>  <span class='hs-varid'>scanl'</span> <span class='hs-keyword'>_</span>      <span class='hs-keyglyph'>=</span> <span class='hs-varid'>mkScanl'</span>
+<a name="line-42"></a>  <span class='hs-varid'>scanr</span> <span class='hs-keyword'>_</span>       <span class='hs-keyglyph'>=</span> <span class='hs-varid'>mkScanr</span>
+<a name="line-43"></a>  <span class='hs-varid'>scanr1</span> <span class='hs-keyword'>_</span>      <span class='hs-keyglyph'>=</span> <span class='hs-varid'>mkScanr1</span>
+<a name="line-44"></a>  <span class='hs-varid'>scanr'</span> <span class='hs-keyword'>_</span>      <span class='hs-keyglyph'>=</span> <span class='hs-varid'>mkScanr'</span>
+<a name="line-45"></a>  <span class='hs-varid'>permute</span> <span class='hs-keyword'>_</span>     <span class='hs-keyglyph'>=</span> <span class='hs-varid'>mkPermute</span>
+<a name="line-46"></a>
+<a name="line-47"></a><a name="instance%20Expression%20Native"></a><span class='hs-keyword'>instance</span> <span class='hs-conid'>Expression</span> <span class='hs-conid'>Native</span>
+<a name="line-48"></a>
 </pre></body>
 </html>
