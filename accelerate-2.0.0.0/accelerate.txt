@@ -1078,6 +1078,17 @@ postscanr :: Elt a => (Exp a -> Exp a -> Exp a) -> Exp a -> Acc (Vector a) -> Ac
 scanlSeg :: (Elt a, Elt i, Integral i, Bits i, FromIntegral i Int, FromIntegral Int i) => (Exp a -> Exp a -> Exp a) -> Exp a -> Acc (Vector a) -> Acc (Segments i) -> Acc (Vector a)
 
 -- | Segmented version of <a>scanl1</a>.
+--   
+--   As with <a>scanl1</a>, the total number of elements considered, in
+--   this case given by the <a>sum</a> of segment descriptor, must not be
+--   zero. The input vector must contain at least this many elements.
+--   
+--   Zero length segments are allowed, and the behaviour is as if those
+--   entries were not present in the segment descriptor; that is:
+--   
+--   <pre>
+--   scanl1Seg f xs [n,0,0] == scanl1Seg f xs [n]   where n /= 0
+--   </pre>
 scanl1Seg :: (Elt a, Elt i, Integral i, Bits i, FromIntegral i Int, FromIntegral Int i) => (Exp a -> Exp a -> Exp a) -> Acc (Vector a) -> Acc (Segments i) -> Acc (Vector a)
 
 -- | Segmented version of <a>scanl'</a>
