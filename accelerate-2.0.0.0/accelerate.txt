@@ -654,7 +654,7 @@ enumFromStepN :: (Shape sh, Elt e, Num e, FromIntegral Int e) => Exp sh -> Exp e
 --   second.
 --   
 --   See also: <a>ifThenElse</a>.
-(?|) :: (Arrays a) => Exp Bool -> (Acc a, Acc a) -> Acc a
+(?|) :: Arrays a => Exp Bool -> (Acc a, Acc a) -> Acc a
 
 -- | An array-level if-then-else construct.
 acond :: Arrays a => Exp Bool -> Acc a -> Acc a -> Acc a
@@ -1186,7 +1186,7 @@ foldSeq :: Elt a => (Exp a -> Exp a -> Exp a) -> Exp a -> Seq [Scalar a] -> Seq 
 foldSeqFlatten :: (Arrays a, Shape jx, Elt b) => (Acc a -> Acc (Vector jx) -> Acc (Vector b) -> Acc a) -> Acc a -> Seq [Array jx b] -> Seq a
 
 -- | Reduce a sequence by appending all the shapes and all the elements in
---   two seperate vectors.
+--   two separate vectors.
 fromSeq :: (Shape ix, Elt a) => Seq [Array ix a] -> Seq (Vector ix, Vector a)
 fromSeqElems :: (Shape ix, Elt a) => Seq [Array ix a] -> Seq (Vector a)
 fromSeqShapes :: (Shape ix, Elt a) => Seq [Array ix a] -> Seq (Vector ix)
