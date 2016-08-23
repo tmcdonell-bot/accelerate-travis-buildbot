@@ -30,7 +30,7 @@ packages:
 
 - location:
     git:    https://github.com/tmcdonell/accelerate-examples.git
-    commit: 8d808b93494c24cfc499678c4ab0c127419c816b
+    commit: 75877e4236b7ef67b7397c2ce089aae8652001d8
 
 - location:
     git:    https://github.com/tmcdonell/colour-accelerate.git
