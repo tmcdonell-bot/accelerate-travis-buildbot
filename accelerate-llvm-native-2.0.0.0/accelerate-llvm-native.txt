@@ -25,8 +25,14 @@ class (Typeable * a, Typeable * (ArrRepr a)) => Arrays a
 
 -- | Compile and run a complete embedded array program.
 --   
---   Note that it is recommended that you use <a>run1</a> whenever
---   possible.
+--   NOTE:
+--   
+--   <ol>
+--   <li>It is recommended that you use <a>run1</a> whenever possible.</li>
+--   <li>It is *not* safe to call <a>run</a> concurrently from different
+--   threads. Instead, use <a>createTarget</a> and <a>runWith</a> so that
+--   each thread executes using its own thread gang.</li>
+--   </ol>
 run :: Arrays a => Acc a -> a
 
 -- | As <a>run</a>, but execute using the specified target (thread gang).
@@ -120,6 +126,9 @@ type Strategy = Gang -> Executable
 -- | Create a Native execution target by spawning a worker thread on each
 --   of the given capabilities, using the given strategy to load balance
 --   the workers.
+--   
+--   Note that it is *not* safe to use the same target concurrently from
+--   different threads; instead, create separate targets for each thread.
 createTarget :: [Int] -> Strategy -> IO Native
 
 -- | Execute a computation where threads use work stealing (based on lazy
