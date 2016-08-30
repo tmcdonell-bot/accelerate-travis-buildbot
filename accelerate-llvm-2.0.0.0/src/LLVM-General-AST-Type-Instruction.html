@@ -256,7 +256,7 @@
 <a name="line-247"></a>  <span class='hs-comment'>-- &lt;<a href="http://llvm.org/docs/LangRef.html#uitofp-to-instruction">http://llvm.org/docs/LangRef.html#uitofp-to-instruction</a>&gt;</span>
 <a name="line-248"></a>  <span class='hs-comment'>-- &lt;<a href="http://llvm.org/docs/LangRef.html#sitofp-to-instruction">http://llvm.org/docs/LangRef.html#sitofp-to-instruction</a>&gt;</span>
 <a name="line-249"></a>  <span class='hs-comment'>--</span>
-<a name="line-250"></a>  <span class='hs-conid'>IntToFP</span>       <span class='hs-keyglyph'>::</span> <span class='hs-conid'>IntegralType</span> <span class='hs-varid'>a</span>
+<a name="line-250"></a>  <span class='hs-conid'>IntToFP</span>       <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Either</span> <span class='hs-layout'>(</span><span class='hs-conid'>IntegralType</span> <span class='hs-varid'>a</span><span class='hs-layout'>)</span> <span class='hs-layout'>(</span><span class='hs-conid'>NonNumType</span> <span class='hs-varid'>a</span><span class='hs-layout'>)</span>
 <a name="line-251"></a>                <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>FloatingType</span> <span class='hs-varid'>b</span>
 <a name="line-252"></a>                <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Operand</span> <span class='hs-varid'>a</span>
 <a name="line-253"></a>                <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Instruction</span> <span class='hs-varid'>b</span>
