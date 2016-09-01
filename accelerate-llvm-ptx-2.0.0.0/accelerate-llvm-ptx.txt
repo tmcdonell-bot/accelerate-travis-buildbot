@@ -12,6 +12,58 @@
 @version 2.0.0.0
 
 
+module Data.Array.Accelerate.LLVM.PTX.Foreign
+data ForeignAcc f
+ForeignAcc :: String -> (Stream -> a -> LLVM PTX b) -> ForeignAcc (a -> b)
+data ForeignExp f
+ForeignExp :: String -> IRFun1 PTX () (x -> y) -> ForeignExp (x -> y)
+
+-- | The LLVM monad, for executing array computations. This consists of a
+--   stack for the LLVM execution context as well as the per-execution
+--   target specific state <tt>target</tt>.
+data LLVM target a :: * -> * -> *
+
+-- | The PTX execution target for NVIDIA GPUs.
+--   
+--   The execution target carries state specific for the current execution
+--   context. The data here --- device memory and execution streams --- are
+--   implicitly tied to this CUDA execution context.
+--   
+--   Don't store anything here that is independent of the context, for
+--   example state related to [persistent] kernel caching should _not_ go
+--   here.
+data PTX
+
+-- | Lift a computation from the <a>IO</a> monad.
+liftIO :: MonadIO m => forall a. IO a -> m a
+
+-- | Lookup the device memory associated with a given host array and do
+--   something with it.
+withDevicePtr :: (ArrayElt e, ArrayPtrs e ~ Ptr a, Typeable e, Typeable a, Storable a) => ArrayData e -> (DevicePtr a -> LLVM PTX (Maybe Event, r)) -> LLVM PTX r
+
+-- | Copy an array from the remote device to the host. Although the
+--   Accelerate program is hyper-strict and will evaluate the computation
+--   as soon as any part of it is demanded, the individual array payloads
+--   are copied back to the host _only_ as they are demanded by the Haskell
+--   program. This has several consequences:
+--   
+--   <ol>
+--   <li>If the device has multiple memcpy engines, only one will be used.
+--   The transfers are however associated with a non-default stream.</li>
+--   <li>Using <a>seq</a> to force an Array to head-normal form will
+--   initiate the computation, but not transfer the results back to the
+--   host. Requesting an array element or using <tt>deepseq</tt> to force
+--   to normal form is required to actually transfer the data.</li>
+--   </ol>
+copyToHostLazy :: Arrays arrs => arrs -> LLVM PTX arrs
+type Async a = AsyncR PTX a
+type Stream = Lifetime Stream
+type Event = Lifetime Event
+instance Data.Array.Accelerate.LLVM.Foreign.Foreign Data.Array.Accelerate.LLVM.PTX.Target.PTX
+instance Data.Array.Accelerate.Array.Sugar.Foreign Data.Array.Accelerate.LLVM.PTX.Foreign.ForeignAcc
+instance Data.Array.Accelerate.Array.Sugar.Foreign Data.Array.Accelerate.LLVM.PTX.Foreign.ForeignExp
+
+
 -- | This module implements a backend for the <i>Accelerate</i> language
 --   targeting NVPTX for execution on NVIDIA GPUs. Expressions are on-line
 --   translated into LLVM code, which is just-in-time executed in parallel

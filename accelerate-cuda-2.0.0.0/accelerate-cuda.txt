@@ -391,21 +391,21 @@ type ShapeBuffer = Ptr CInt
 type DevicePtrBuffer = Ptr WordPtr
 
 -- | CUDA foreign Acc functions are just CIO functions.
-data CUDAForeignAcc as bs
-CUDAForeignAcc :: String -> (Stream -> as -> CIO bs) -> CUDAForeignAcc as bs
+data CUDAForeignAcc f
+CUDAForeignAcc :: String -> (Stream -> as -> CIO bs) -> CUDAForeignAcc (as -> bs)
 
 -- | Gives the executable form of a foreign function if it can be executed
 --   by the CUDA backend.
-canExecuteAcc :: (Foreign f, Typeable as, Typeable bs) => f as bs -> Maybe (Stream -> as -> CIO bs)
+canExecuteAcc :: (Foreign asm, Typeable as, Typeable bs) => asm (as -> bs) -> Maybe (Stream -> as -> CIO bs)
 
 -- | CUDA foreign Exp functions consist of a list of C header files
 --   necessary to call the function and the name of the function to call.
-data CUDAForeignExp x y
-CUDAForeignExp :: [String] -> String -> CUDAForeignExp x y
+data CUDAForeignExp f
+CUDAForeignExp :: [String] -> String -> CUDAForeignExp (x -> y)
 
 -- | Gives the foreign function name as a string if it is a foreign Exp
 --   function for the CUDA backend.
-canExecuteExp :: (Foreign f, Typeable y, Typeable x) => f x y -> Maybe ([String], String)
+canExecuteExp :: (Foreign asm, Typeable y, Typeable x) => asm (x -> y) -> Maybe ([String], String)
 
 -- | Get the raw CUDA device pointers associated with an array and call the
 --   given continuation.

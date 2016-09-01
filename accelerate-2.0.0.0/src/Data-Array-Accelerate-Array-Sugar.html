@@ -572,11 +572,11 @@
 <a name="line-563"></a><a name="Foreign"></a><span class='hs-comment'>-- By default it has no instances. If a backend wishes to have an FFI it must</span>
 <a name="line-564"></a><a name="Foreign"></a><span class='hs-comment'>-- provide an instance.</span>
 <a name="line-565"></a><a name="Foreign"></a><span class='hs-comment'>--</span>
-<a name="line-566"></a><a name="Foreign"></a><span class='hs-keyword'>class</span> <span class='hs-conid'>Typeable</span> <span class='hs-varid'>f</span> <span class='hs-keyglyph'>=&gt;</span> <span class='hs-conid'>Foreign</span> <span class='hs-layout'>(</span><span class='hs-varid'>f</span> <span class='hs-keyglyph'>::</span> <span class='hs-varop'>*</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varop'>*</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varop'>*</span><span class='hs-layout'>)</span> <span class='hs-keyword'>where</span>
+<a name="line-566"></a><a name="Foreign"></a><span class='hs-keyword'>class</span> <span class='hs-conid'>Typeable</span> <span class='hs-varid'>asm</span> <span class='hs-keyglyph'>=&gt;</span> <span class='hs-conid'>Foreign</span> <span class='hs-varid'>asm</span> <span class='hs-keyword'>where</span>
 <a name="line-567"></a>
 <a name="line-568"></a>  <span class='hs-comment'>-- Backends should be able to produce a string representation of the foreign</span>
 <a name="line-569"></a>  <span class='hs-comment'>-- function for pretty printing, typically the name of the function.</span>
-<a name="line-570"></a>  <span class='hs-varid'>strForeign</span> <span class='hs-keyglyph'>::</span> <span class='hs-varid'>f</span> <span class='hs-varid'>args</span> <span class='hs-varid'>results</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>String</span>
+<a name="line-570"></a>  <span class='hs-varid'>strForeign</span> <span class='hs-keyglyph'>::</span> <span class='hs-varid'>asm</span> <span class='hs-varid'>args</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>String</span>
 <a name="line-571"></a>
 <a name="line-572"></a>
 <a name="line-573"></a><span class='hs-comment'>-- Surface arrays</span>

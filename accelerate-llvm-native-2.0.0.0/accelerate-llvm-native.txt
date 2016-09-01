@@ -12,6 +12,30 @@
 @version 2.0.0.0
 
 
+module Data.Array.Accelerate.LLVM.Native.Foreign
+data ForeignAcc f
+ForeignAcc :: String -> (a -> LLVM Native b) -> ForeignAcc (a -> b)
+data ForeignExp f
+ForeignExp :: String -> IRFun1 Native () (x -> y) -> ForeignExp (x -> y)
+
+-- | The LLVM monad, for executing array computations. This consists of a
+--   stack for the LLVM execution context as well as the per-execution
+--   target specific state <tt>target</tt>.
+data LLVM target a :: * -> * -> *
+
+-- | Native machine code JIT execution target
+data Native
+
+-- | Lift a computation from the <a>IO</a> monad.
+liftIO :: MonadIO m => forall a. IO a -> m a
+
+-- | Copy an array into a newly allocated array. This uses <a>memcpy</a>.
+cloneArray :: (Shape sh, Elt e) => Array sh e -> LLVM Native (Array sh e)
+instance Data.Array.Accelerate.LLVM.Foreign.Foreign Data.Array.Accelerate.LLVM.Native.Target.Native
+instance Data.Array.Accelerate.Array.Sugar.Foreign Data.Array.Accelerate.LLVM.Native.Foreign.ForeignAcc
+instance Data.Array.Accelerate.Array.Sugar.Foreign Data.Array.Accelerate.LLVM.Native.Foreign.ForeignExp
+
+
 -- | This module implements a backend for the <i>Accelerate</i> language
 --   targeting multicore CPUs. Expressions are on-line translated into LLVM
 --   code, which is just-in-time executed in parallel over the available

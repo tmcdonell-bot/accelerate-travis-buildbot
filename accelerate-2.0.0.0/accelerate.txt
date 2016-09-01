@@ -1243,35 +1243,31 @@ type Stencil5x3x5 a = (Stencil5x3 a, Stencil5x3 a, Stencil5x3 a, Stencil5x3 a, S
 type Stencil3x5x5 a = (Stencil3x5 a, Stencil3x5 a, Stencil3x5 a, Stencil3x5 a, Stencil3x5 a)
 type Stencil5x5x5 a = (Stencil5x5 a, Stencil5x5 a, Stencil5x5 a, Stencil5x5 a, Stencil5x5 a)
 
--- | Call a foreign function. The form the function takes is dependent on
---   the backend being used. The arguments are passed as either a single
---   array or as a tuple of arrays. In addition a pure Accelerate version
---   of the function needs to be provided to support backends other than
---   the one being targeted.
-foreignAcc :: (Arrays acc, Arrays res, Foreign ff) => ff acc res -> (Acc acc -> Acc res) -> Acc acc -> Acc res
+-- | Call a foreign array function.
+--   
+--   The form the first argument takes is dependent on the backend being
+--   targeted. Note that the foreign function only has access to the input
+--   array(s) passed in as its argument.
+--   
+--   In case the operation is being executed on a backend which does not
+--   support this foreign implementation, the fallback implementation is
+--   used instead, which itself could be a foreign implementation for a
+--   (presumably) different backend, or an implementation of pure
+--   Accelerate. In this way, multiple foreign implementations can be
+--   supplied, and will be tested for suitability against the target
+--   backend in sequence.
+foreignAcc :: (Arrays as, Arrays bs, Foreign asm) => asm (as -> bs) -> (Acc as -> Acc bs) -> Acc as -> Acc bs
 
--- | Call a foreign function with foreign implementations for two different
---   backends.
-foreignAcc2 :: (Arrays acc, Arrays res, Foreign ff1, Foreign ff2) => ff1 acc res -> ff2 acc res -> (Acc acc -> Acc res) -> Acc acc -> Acc res
-
--- | Call a foreign function with foreign implementations for three
---   different backends.
-foreignAcc3 :: (Arrays acc, Arrays res, Foreign ff1, Foreign ff2, Foreign ff3) => ff1 acc res -> ff2 acc res -> ff3 acc res -> (Acc acc -> Acc res) -> Acc acc -> Acc res
-
--- | Call a foreign expression function. The form the function takes is
---   dependent on the backend being used. The arguments are passed as
---   either a single scalar element or as a tuple of elements. In addition
---   a pure Accelerate version of the function needs to be provided to
---   support backends other than the one being targeted.
-foreignExp :: (Elt e, Elt res, Foreign ff) => ff e res -> (Exp e -> Exp res) -> Exp e -> Exp res
-
--- | Call a foreign function with foreign implementations for two different
---   backends.
-foreignExp2 :: (Elt e, Elt res, Foreign ff1, Foreign ff2) => ff1 e res -> ff2 e res -> (Exp e -> Exp res) -> Exp e -> Exp res
-
--- | Call a foreign function with foreign implementations for three
---   different backends.
-foreignExp3 :: (Elt e, Elt res, Foreign ff1, Foreign ff2, Foreign ff3) => ff1 e res -> ff2 e res -> ff3 e res -> (Exp e -> Exp res) -> Exp e -> Exp res
+-- | Call a foreign scalar expression.
+--   
+--   The form of the first argument is dependent on the backend being
+--   targeted. Note that the foreign function only has access to the input
+--   element(s) passed in as its first argument.
+--   
+--   As with <a>foreignAcc</a>, the fallback implementation itself may be a
+--   (sequence of) foreign implementation(s) for a different backend(s), or
+--   implemented purely in Accelerate.
+foreignExp :: (Elt x, Elt y, Foreign asm) => asm (x -> y) -> (Exp x -> Exp y) -> Exp x -> Exp y
 
 -- | Scalar expressions for plain array computations.
 data Exp t
@@ -1409,7 +1405,7 @@ floor :: (RealFrac a, Elt b, IsIntegral b) => Exp a -> Exp b
 
 -- | Efficient, machine-independent access to the components of a
 --   floating-point number
-class (RealFrac a, Floating a) => RealFloat a where floatRadix _ = fromInteger (floatRadix (undefined :: a)) floatDigits _ = constant (floatDigits (undefined :: a)) floatRange _ = let (m, n) = floatRange (undefined :: a) in (constant m, constant n) isIEEE _ = constant (isIEEE (undefined :: Float)) decodeFloat = \ format_abP3M kind_abP3N fn_abP3O msg_abP3P -> error (format_abP3M kind_abP3N (call fn_abP3O msg_abP3P)) (\ kind_abP3Q msg_abP3R -> message kind_abP3Q ("Data/Array/Accelerate/Classes/RealFloat.hs:100:21: " ++ msg_abP3R)) Internal "RealFloat.decodeFloat" "Not implemented yet" encodeFloat = \ format_abP3V kind_abP3W fn_abP3X msg_abP3Y -> error (format_abP3V kind_abP3W (call fn_abP3X msg_abP3Y)) (\ kind_abP3Z msg_abP40 -> message kind_abP3Z ("Data/Array/Accelerate/Classes/RealFloat.hs:101:21: " ++ msg_abP40)) Internal "RealFloat.encodeFloat" "Not implemented yet" exponent = \ format_abP44 kind_abP45 fn_abP46 msg_abP47 -> error (format_abP44 kind_abP45 (call fn_abP46 msg_abP47)) (\ kind_abP48 msg_abP49 -> message kind_abP48 ("Data/Array/Accelerate/Classes/RealFloat.hs:102:21: " ++ msg_abP49)) Internal "RealFloat.exponent" "Not implemented yet" significand = \ format_abP4d kind_abP4e fn_abP4f msg_abP4g -> error (format_abP4d kind_abP4e (call fn_abP4f msg_abP4g)) (\ kind_abP4h msg_abP4i -> message kind_abP4h ("Data/Array/Accelerate/Classes/RealFloat.hs:103:21: " ++ msg_abP4i)) Internal "RealFloat.significand" "Not implemented yet" scaleFloat = \ format_abP4m kind_abP4n fn_abP4o msg_abP4p -> error (format_abP4m kind_abP4n (call fn_abP4o msg_abP4p)) (\ kind_abP4q msg_abP4r -> message kind_abP4q ("Data/Array/Accelerate/Classes/RealFloat.hs:104:21: " ++ msg_abP4r)) Internal "RealFloat.scaleFloat" "Not implemented yet" isInfinite = \ format_abP4v kind_abP4w fn_abP4x msg_abP4y -> error (format_abP4v kind_abP4w (call fn_abP4x msg_abP4y)) (\ kind_abP4z msg_abP4A -> message kind_abP4z ("Data/Array/Accelerate/Classes/RealFloat.hs:105:21: " ++ msg_abP4A)) Internal "RealFloat.isInfinite" "Not implemented yet" isDenormalized = \ format_abP4E kind_abP4F fn_abP4G msg_abP4H -> error (format_abP4E kind_abP4F (call fn_abP4G msg_abP4H)) (\ kind_abP4I msg_abP4J -> message kind_abP4I ("Data/Array/Accelerate/Classes/RealFloat.hs:106:21: " ++ msg_abP4J)) Internal "RealFloat.isDenormalized" "Not implemented yet" isNegativeZero = \ format_abP4N kind_abP4O fn_abP4P msg_abP4Q -> error (format_abP4N kind_abP4O (call fn_abP4P msg_abP4Q)) (\ kind_abP4R msg_abP4S -> message kind_abP4R ("Data/Array/Accelerate/Classes/RealFloat.hs:107:21: " ++ msg_abP4S)) Internal "RealFloat.isNegativeZero" "Not implemented yet"
+class (RealFrac a, Floating a) => RealFloat a where floatRadix _ = fromInteger (floatRadix (undefined :: a)) floatDigits _ = constant (floatDigits (undefined :: a)) floatRange _ = let (m, n) = floatRange (undefined :: a) in (constant m, constant n) isIEEE _ = constant (isIEEE (undefined :: Float)) decodeFloat = \ format_abPnx kind_abPny fn_abPnz msg_abPnA -> error (format_abPnx kind_abPny (call fn_abPnz msg_abPnA)) (\ kind_abPnB msg_abPnC -> message kind_abPnB ("Data/Array/Accelerate/Classes/RealFloat.hs:100:21: " ++ msg_abPnC)) Internal "RealFloat.decodeFloat" "Not implemented yet" encodeFloat = \ format_abPnG kind_abPnH fn_abPnI msg_abPnJ -> error (format_abPnG kind_abPnH (call fn_abPnI msg_abPnJ)) (\ kind_abPnK msg_abPnL -> message kind_abPnK ("Data/Array/Accelerate/Classes/RealFloat.hs:101:21: " ++ msg_abPnL)) Internal "RealFloat.encodeFloat" "Not implemented yet" exponent = \ format_abPnP kind_abPnQ fn_abPnR msg_abPnS -> error (format_abPnP kind_abPnQ (call fn_abPnR msg_abPnS)) (\ kind_abPnT msg_abPnU -> message kind_abPnT ("Data/Array/Accelerate/Classes/RealFloat.hs:102:21: " ++ msg_abPnU)) Internal "RealFloat.exponent" "Not implemented yet" significand = \ format_abPnY kind_abPnZ fn_abPo0 msg_abPo1 -> error (format_abPnY kind_abPnZ (call fn_abPo0 msg_abPo1)) (\ kind_abPo2 msg_abPo3 -> message kind_abPo2 ("Data/Array/Accelerate/Classes/RealFloat.hs:103:21: " ++ msg_abPo3)) Internal "RealFloat.significand" "Not implemented yet" scaleFloat = \ format_abPo7 kind_abPo8 fn_abPo9 msg_abPoa -> error (format_abPo7 kind_abPo8 (call fn_abPo9 msg_abPoa)) (\ kind_abPob msg_abPoc -> message kind_abPob ("Data/Array/Accelerate/Classes/RealFloat.hs:104:21: " ++ msg_abPoc)) Internal "RealFloat.scaleFloat" "Not implemented yet" isInfinite = \ format_abPog kind_abPoh fn_abPoi msg_abPoj -> error (format_abPog kind_abPoh (call fn_abPoi msg_abPoj)) (\ kind_abPok msg_abPol -> message kind_abPok ("Data/Array/Accelerate/Classes/RealFloat.hs:105:21: " ++ msg_abPol)) Internal "RealFloat.isInfinite" "Not implemented yet" isDenormalized = \ format_abPop kind_abPoq fn_abPor msg_abPos -> error (format_abPop kind_abPoq (call fn_abPor msg_abPos)) (\ kind_abPot msg_abPou -> message kind_abPot ("Data/Array/Accelerate/Classes/RealFloat.hs:106:21: " ++ msg_abPou)) Internal "RealFloat.isDenormalized" "Not implemented yet" isNegativeZero = \ format_abPoy kind_abPoz fn_abPoA msg_abPoB -> error (format_abPoy kind_abPoz (call fn_abPoA msg_abPoB)) (\ kind_abPoC msg_abPoD -> message kind_abPoC ("Data/Array/Accelerate/Classes/RealFloat.hs:107:21: " ++ msg_abPoD)) Internal "RealFloat.isNegativeZero" "Not implemented yet"
 
 -- | The radix of the representation (often 2) (constant)
 floatRadix :: RealFloat a => Exp a -> Exp Int64
