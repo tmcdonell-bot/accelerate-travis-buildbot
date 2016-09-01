@@ -28,6 +28,7 @@ addons:
       - nvidia-cuda-toolkit
       - g++-4.8
       - libgmp-dev
+      - libfftw3-dev
       - freeglut3-dev
       - cabal-install-1.24
       - happy-1.19.5
