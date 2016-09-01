@@ -98,7 +98,7 @@ install:
   - travis_retry stack build --fast --only-dependencies --no-terminal --no-haddock-deps ${TARGET}
 
 script:
-  - stack build --fast --no-terminal --haddock --no-haddock-deps ${TARGET}
+  - travis_retry stack build --fast --no-terminal --haddock --no-haddock-deps ${TARGET}
 
 after_success:
   - |
