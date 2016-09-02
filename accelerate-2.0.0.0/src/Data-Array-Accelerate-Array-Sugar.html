@@ -1225,46 +1225,43 @@
 <a name="line-1216"></a>          <span class='hs-varid'>width</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>maximum</span> <span class='hs-varop'>.</span> <span class='hs-varid'>map</span> <span class='hs-varid'>length</span>
 <a name="line-1217"></a>          <span class='hs-varid'>pad</span> <span class='hs-varid'>w</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>map</span> <span class='hs-layout'>(</span><span class='hs-keyglyph'>\</span><span class='hs-varid'>x</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>replicate</span> <span class='hs-layout'>(</span><span class='hs-varid'>w</span> <span class='hs-comment'>-</span> <span class='hs-varid'>length</span> <span class='hs-varid'>x</span> <span class='hs-varop'>+</span> <span class='hs-varid'>extra</span><span class='hs-layout'>)</span> <span class='hs-chr'>' '</span> <span class='hs-varop'>++</span> <span class='hs-varid'>x</span><span class='hs-layout'>)</span>
 <a name="line-1218"></a>
-<a name="line-1219"></a><a name="instance"></a><span class='hs-comment'>-- This is a bit unfortunate, but we need to use an INCOHERENT instance because</span>
-<a name="line-1220"></a><a name="instance"></a><span class='hs-comment'>-- GHC can't determine that with the above specialisations, a DIM3+ instance</span>
-<a name="line-1221"></a><a name="instance"></a><span class='hs-comment'>-- covers all remaining possibilities, and lacking a general instance is</span>
-<a name="line-1222"></a><a name="instance"></a><span class='hs-comment'>-- problematic for operations which want a 'Show (Array sh e)' constraint.</span>
-<a name="line-1223"></a><a name="instance"></a><span class='hs-comment'>-- Furthermore, those clients are likely to pick this instance, rather than the</span>
-<a name="line-1224"></a><a name="instance"></a><span class='hs-comment'>-- more specific ones above.</span>
-<a name="line-1225"></a><a name="instance"></a><span class='hs-comment'>--</span>
-<a name="line-1226"></a><a name="instance"></a><span class='hs-keyword'>instance</span> <span class='hs-comment'>{-# INCOHERENT #-}</span> <span class='hs-conid'>Show</span> <span class='hs-layout'>(</span><span class='hs-conid'>Array</span> <span class='hs-varid'>sh</span> <span class='hs-varid'>e</span><span class='hs-layout'>)</span> <span class='hs-keyword'>where</span>
-<a name="line-1227"></a>  <span class='hs-varid'>show</span> <span class='hs-varid'>arr</span><span class='hs-keyglyph'>@</span><span class='hs-conid'>Array</span><span class='hs-layout'>{</span><span class='hs-layout'>}</span>
-<a name="line-1228"></a>    <span class='hs-keyglyph'>=</span> <span class='hs-str'>"Array ("</span> <span class='hs-varop'>++</span> <span class='hs-varid'>showShape</span> <span class='hs-layout'>(</span><span class='hs-varid'>shape</span> <span class='hs-varid'>arr</span><span class='hs-layout'>)</span> <span class='hs-varop'>++</span> <span class='hs-str'>") "</span> <span class='hs-varop'>++</span> <span class='hs-varid'>show</span> <span class='hs-layout'>(</span><span class='hs-varid'>toList</span> <span class='hs-varid'>arr</span><span class='hs-layout'>)</span>
-<a name="line-1229"></a>
-<a name="line-1230"></a>
-<a name="line-1231"></a><a name="showShape"></a><span class='hs-comment'>-- | Nicely format a shape as a string</span>
-<a name="line-1232"></a><span class='hs-comment'>--</span>
-<a name="line-1233"></a><span class='hs-definition'>showShape</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Shape</span> <span class='hs-varid'>sh</span> <span class='hs-keyglyph'>=&gt;</span> <span class='hs-varid'>sh</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>String</span>
-<a name="line-1234"></a><span class='hs-definition'>showShape</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>foldr</span> <span class='hs-layout'>(</span><span class='hs-keyglyph'>\</span><span class='hs-varid'>sh</span> <span class='hs-varid'>str</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>str</span> <span class='hs-varop'>++</span> <span class='hs-str'>" :. "</span> <span class='hs-varop'>++</span> <span class='hs-varid'>show</span> <span class='hs-varid'>sh</span><span class='hs-layout'>)</span> <span class='hs-str'>"Z"</span> <span class='hs-varop'>.</span> <span class='hs-varid'>shapeToList</span>
-<a name="line-1235"></a>
-<a name="line-1236"></a><a name="sliceShape"></a><span class='hs-comment'>-- | Project the shape of a slice from the full shape.</span>
-<a name="line-1237"></a><span class='hs-comment'>--</span>
-<a name="line-1238"></a><span class='hs-definition'>sliceShape</span> <span class='hs-keyglyph'>::</span> <span class='hs-keyword'>forall</span> <span class='hs-varid'>slix</span> <span class='hs-varid'>co</span> <span class='hs-varid'>sl</span> <span class='hs-varid'>dim</span><span class='hs-varop'>.</span> <span class='hs-layout'>(</span><span class='hs-conid'>Shape</span> <span class='hs-varid'>sl</span><span class='hs-layout'>,</span> <span class='hs-conid'>Shape</span> <span class='hs-varid'>dim</span><span class='hs-layout'>)</span>
-<a name="line-1239"></a>           <span class='hs-keyglyph'>=&gt;</span> <span class='hs-conid'>Repr</span><span class='hs-varop'>.</span><span class='hs-conid'>SliceIndex</span> <span class='hs-varid'>slix</span> <span class='hs-layout'>(</span><span class='hs-conid'>EltRepr</span> <span class='hs-varid'>sl</span><span class='hs-layout'>)</span> <span class='hs-varid'>co</span> <span class='hs-layout'>(</span><span class='hs-conid'>EltRepr</span> <span class='hs-varid'>dim</span><span class='hs-layout'>)</span>
-<a name="line-1240"></a>           <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>dim</span>
-<a name="line-1241"></a>           <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>sl</span>
-<a name="line-1242"></a><span class='hs-definition'>sliceShape</span> <span class='hs-varid'>slix</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>toElt</span> <span class='hs-varop'>.</span> <span class='hs-conid'>Repr</span><span class='hs-varop'>.</span><span class='hs-varid'>sliceShape</span> <span class='hs-varid'>slix</span> <span class='hs-varop'>.</span> <span class='hs-varid'>fromElt</span>
-<a name="line-1243"></a>
-<a name="line-1244"></a><a name="enumSlices"></a><span class='hs-comment'>-- | Enumerate all slices within a given bound. The innermost dimension</span>
-<a name="line-1245"></a><span class='hs-comment'>-- changes most rapidly.</span>
-<a name="line-1246"></a><span class='hs-comment'>--</span>
-<a name="line-1247"></a><span class='hs-comment'>-- Example:</span>
-<a name="line-1248"></a><span class='hs-comment'>--</span>
-<a name="line-1249"></a><span class='hs-comment'>-- &gt; let slix = sliceIndex (undefined :: Z :. Int :. Int :. All)</span>
-<a name="line-1250"></a><span class='hs-comment'>-- &gt;     sh   = Z :. 2 :. 3 :. 1 :: DIM3</span>
-<a name="line-1251"></a><span class='hs-comment'>-- &gt; in</span>
-<a name="line-1252"></a><span class='hs-comment'>-- &gt; enumSlices slix sh :: [ Z :. Int :. Int :. All ]</span>
-<a name="line-1253"></a><span class='hs-comment'>--</span>
-<a name="line-1254"></a><span class='hs-definition'>enumSlices</span> <span class='hs-keyglyph'>::</span> <span class='hs-keyword'>forall</span> <span class='hs-varid'>slix</span> <span class='hs-varid'>co</span> <span class='hs-varid'>sl</span> <span class='hs-varid'>dim</span><span class='hs-varop'>.</span> <span class='hs-layout'>(</span><span class='hs-conid'>Elt</span> <span class='hs-varid'>slix</span><span class='hs-layout'>,</span> <span class='hs-conid'>Elt</span> <span class='hs-varid'>dim</span><span class='hs-layout'>)</span>
-<a name="line-1255"></a>           <span class='hs-keyglyph'>=&gt;</span> <span class='hs-conid'>Repr</span><span class='hs-varop'>.</span><span class='hs-conid'>SliceIndex</span> <span class='hs-layout'>(</span><span class='hs-conid'>EltRepr</span> <span class='hs-varid'>slix</span><span class='hs-layout'>)</span> <span class='hs-varid'>sl</span> <span class='hs-varid'>co</span> <span class='hs-layout'>(</span><span class='hs-conid'>EltRepr</span> <span class='hs-varid'>dim</span><span class='hs-layout'>)</span>
-<a name="line-1256"></a>           <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>dim</span>    <span class='hs-comment'>-- Bounds</span>
-<a name="line-1257"></a>           <span class='hs-keyglyph'>-&gt;</span> <span class='hs-keyglyph'>[</span><span class='hs-varid'>slix</span><span class='hs-keyglyph'>]</span> <span class='hs-comment'>-- All slices within bounds.</span>
-<a name="line-1258"></a><span class='hs-definition'>enumSlices</span> <span class='hs-varid'>slix</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>map</span> <span class='hs-varid'>toElt</span> <span class='hs-varop'>.</span> <span class='hs-conid'>Repr</span><span class='hs-varop'>.</span><span class='hs-varid'>enumSlices</span> <span class='hs-varid'>slix</span> <span class='hs-varop'>.</span> <span class='hs-varid'>fromElt</span>
-<a name="line-1259"></a>
+<a name="line-1219"></a><a name="instance"></a><span class='hs-comment'>-- Use an OVERLAPPABLE instance because GHC can't determine that with the above</span>
+<a name="line-1220"></a><a name="instance"></a><span class='hs-comment'>-- specialisations, a DIM3+ instance covers all possibilities. This is</span>
+<a name="line-1221"></a><a name="instance"></a><span class='hs-comment'>-- problematic for operations which want a 'Show (Array sh e)' constraint.</span>
+<a name="line-1222"></a><a name="instance"></a><span class='hs-comment'>--</span>
+<a name="line-1223"></a><a name="instance"></a><span class='hs-keyword'>instance</span> <span class='hs-comment'>{-# OVERLAPPABLE #-}</span> <span class='hs-conid'>Show</span> <span class='hs-layout'>(</span><span class='hs-conid'>Array</span> <span class='hs-varid'>sh</span> <span class='hs-varid'>e</span><span class='hs-layout'>)</span> <span class='hs-keyword'>where</span>
+<a name="line-1224"></a>  <span class='hs-varid'>show</span> <span class='hs-varid'>arr</span><span class='hs-keyglyph'>@</span><span class='hs-conid'>Array</span><span class='hs-layout'>{</span><span class='hs-layout'>}</span>
+<a name="line-1225"></a>    <span class='hs-keyglyph'>=</span> <span class='hs-str'>"Array ("</span> <span class='hs-varop'>++</span> <span class='hs-varid'>showShape</span> <span class='hs-layout'>(</span><span class='hs-varid'>shape</span> <span class='hs-varid'>arr</span><span class='hs-layout'>)</span> <span class='hs-varop'>++</span> <span class='hs-str'>") "</span> <span class='hs-varop'>++</span> <span class='hs-varid'>show</span> <span class='hs-layout'>(</span><span class='hs-varid'>toList</span> <span class='hs-varid'>arr</span><span class='hs-layout'>)</span>
+<a name="line-1226"></a>
+<a name="line-1227"></a>
+<a name="line-1228"></a><a name="showShape"></a><span class='hs-comment'>-- | Nicely format a shape as a string</span>
+<a name="line-1229"></a><span class='hs-comment'>--</span>
+<a name="line-1230"></a><span class='hs-definition'>showShape</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Shape</span> <span class='hs-varid'>sh</span> <span class='hs-keyglyph'>=&gt;</span> <span class='hs-varid'>sh</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>String</span>
+<a name="line-1231"></a><span class='hs-definition'>showShape</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>foldr</span> <span class='hs-layout'>(</span><span class='hs-keyglyph'>\</span><span class='hs-varid'>sh</span> <span class='hs-varid'>str</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>str</span> <span class='hs-varop'>++</span> <span class='hs-str'>" :. "</span> <span class='hs-varop'>++</span> <span class='hs-varid'>show</span> <span class='hs-varid'>sh</span><span class='hs-layout'>)</span> <span class='hs-str'>"Z"</span> <span class='hs-varop'>.</span> <span class='hs-varid'>shapeToList</span>
+<a name="line-1232"></a>
+<a name="line-1233"></a><a name="sliceShape"></a><span class='hs-comment'>-- | Project the shape of a slice from the full shape.</span>
+<a name="line-1234"></a><span class='hs-comment'>--</span>
+<a name="line-1235"></a><span class='hs-definition'>sliceShape</span> <span class='hs-keyglyph'>::</span> <span class='hs-keyword'>forall</span> <span class='hs-varid'>slix</span> <span class='hs-varid'>co</span> <span class='hs-varid'>sl</span> <span class='hs-varid'>dim</span><span class='hs-varop'>.</span> <span class='hs-layout'>(</span><span class='hs-conid'>Shape</span> <span class='hs-varid'>sl</span><span class='hs-layout'>,</span> <span class='hs-conid'>Shape</span> <span class='hs-varid'>dim</span><span class='hs-layout'>)</span>
+<a name="line-1236"></a>           <span class='hs-keyglyph'>=&gt;</span> <span class='hs-conid'>Repr</span><span class='hs-varop'>.</span><span class='hs-conid'>SliceIndex</span> <span class='hs-varid'>slix</span> <span class='hs-layout'>(</span><span class='hs-conid'>EltRepr</span> <span class='hs-varid'>sl</span><span class='hs-layout'>)</span> <span class='hs-varid'>co</span> <span class='hs-layout'>(</span><span class='hs-conid'>EltRepr</span> <span class='hs-varid'>dim</span><span class='hs-layout'>)</span>
+<a name="line-1237"></a>           <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>dim</span>
+<a name="line-1238"></a>           <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>sl</span>
+<a name="line-1239"></a><span class='hs-definition'>sliceShape</span> <span class='hs-varid'>slix</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>toElt</span> <span class='hs-varop'>.</span> <span class='hs-conid'>Repr</span><span class='hs-varop'>.</span><span class='hs-varid'>sliceShape</span> <span class='hs-varid'>slix</span> <span class='hs-varop'>.</span> <span class='hs-varid'>fromElt</span>
+<a name="line-1240"></a>
+<a name="line-1241"></a><a name="enumSlices"></a><span class='hs-comment'>-- | Enumerate all slices within a given bound. The innermost dimension</span>
+<a name="line-1242"></a><span class='hs-comment'>-- changes most rapidly.</span>
+<a name="line-1243"></a><span class='hs-comment'>--</span>
+<a name="line-1244"></a><span class='hs-comment'>-- Example:</span>
+<a name="line-1245"></a><span class='hs-comment'>--</span>
+<a name="line-1246"></a><span class='hs-comment'>-- &gt; let slix = sliceIndex (undefined :: Z :. Int :. Int :. All)</span>
+<a name="line-1247"></a><span class='hs-comment'>-- &gt;     sh   = Z :. 2 :. 3 :. 1 :: DIM3</span>
+<a name="line-1248"></a><span class='hs-comment'>-- &gt; in</span>
+<a name="line-1249"></a><span class='hs-comment'>-- &gt; enumSlices slix sh :: [ Z :. Int :. Int :. All ]</span>
+<a name="line-1250"></a><span class='hs-comment'>--</span>
+<a name="line-1251"></a><span class='hs-definition'>enumSlices</span> <span class='hs-keyglyph'>::</span> <span class='hs-keyword'>forall</span> <span class='hs-varid'>slix</span> <span class='hs-varid'>co</span> <span class='hs-varid'>sl</span> <span class='hs-varid'>dim</span><span class='hs-varop'>.</span> <span class='hs-layout'>(</span><span class='hs-conid'>Elt</span> <span class='hs-varid'>slix</span><span class='hs-layout'>,</span> <span class='hs-conid'>Elt</span> <span class='hs-varid'>dim</span><span class='hs-layout'>)</span>
+<a name="line-1252"></a>           <span class='hs-keyglyph'>=&gt;</span> <span class='hs-conid'>Repr</span><span class='hs-varop'>.</span><span class='hs-conid'>SliceIndex</span> <span class='hs-layout'>(</span><span class='hs-conid'>EltRepr</span> <span class='hs-varid'>slix</span><span class='hs-layout'>)</span> <span class='hs-varid'>sl</span> <span class='hs-varid'>co</span> <span class='hs-layout'>(</span><span class='hs-conid'>EltRepr</span> <span class='hs-varid'>dim</span><span class='hs-layout'>)</span>
+<a name="line-1253"></a>           <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>dim</span>    <span class='hs-comment'>-- Bounds</span>
+<a name="line-1254"></a>           <span class='hs-keyglyph'>-&gt;</span> <span class='hs-keyglyph'>[</span><span class='hs-varid'>slix</span><span class='hs-keyglyph'>]</span> <span class='hs-comment'>-- All slices within bounds.</span>
+<a name="line-1255"></a><span class='hs-definition'>enumSlices</span> <span class='hs-varid'>slix</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>map</span> <span class='hs-varid'>toElt</span> <span class='hs-varop'>.</span> <span class='hs-conid'>Repr</span><span class='hs-varop'>.</span><span class='hs-varid'>enumSlices</span> <span class='hs-varid'>slix</span> <span class='hs-varop'>.</span> <span class='hs-varid'>fromElt</span>
+<a name="line-1256"></a>
 </pre></body>
 </html>
