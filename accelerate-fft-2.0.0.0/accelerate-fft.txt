@@ -94,12 +94,12 @@ dftGS :: (Shape sh, Slice sh, RealFloat e) => Exp (sh :. Int) -> Acc (Array (sh 
 --   The base (default) implementation uses a naïve divide-and-conquer
 --   algorithm whose absolute performance is appalling. It also requires
 --   that you know on the Haskell side the size of the data being
---   transformed.
+--   transformed, and that this is a power-of-two in each dimension.
 --   
 --   For performance, compile against the foreign library bindings (using
 --   any number of '-fcuda', '-fllvm-gpu', and '-fllvm-cpu' for the
 --   accelerate-cuda, accelerate-llvm-ptx, and accelerate-llvm-native
---   backends respectively).
+--   backends respectively), which have none of the above restrictions.
 module Data.Array.Accelerate.Math.FFT
 data Mode
 
@@ -112,10 +112,43 @@ Reverse :: Mode
 -- | Inverse DFT, normalised
 Inverse :: Mode
 type FFTElt e = (Num e, RealFloat e, FromIntegral Int e, IsFloating e)
+
+-- | Discrete Fourier Transform of a vector.
+--   
+--   The default implementation requires the array dimension to be a power
+--   of two (else error).
 fft1D :: FFTElt e => Mode -> Array DIM1 (Complex e) -> Acc (Array DIM1 (Complex e))
+
+-- | Discrete Fourier Transform of a vector.
+--   
+--   The default implementation requires the array dimension to be a power
+--   of two. The FFI-backed implementations ignore the Haskell-side size
+--   parameter (second argument).
 fft1D' :: FFTElt e => Mode -> DIM1 -> Acc (Array DIM1 (Complex e)) -> Acc (Array DIM1 (Complex e))
+
+-- | Discrete Fourier Transform of a matrix.
+--   
+--   The default implementation requires the array dimensions to be powers
+--   of two (else error).
 fft2D :: FFTElt e => Mode -> Array DIM2 (Complex e) -> Acc (Array DIM2 (Complex e))
+
+-- | Discrete Fourier Transform of a matrix.
+--   
+--   The default implementation requires the array dimensions to be powers
+--   of two. The FFI-backed implementations ignore the Haskell-side size
+--   parameter (second argument).
 fft2D' :: FFTElt e => Mode -> DIM2 -> Acc (Array DIM2 (Complex e)) -> Acc (Array DIM2 (Complex e))
+
+-- | Discrete Fourier Transform of a 3D array.
+--   
+--   The default implementation requires the array dimensions to be powers
+--   of two (else error).
 fft3D :: FFTElt e => Mode -> Array DIM3 (Complex e) -> Acc (Array DIM3 (Complex e))
+
+-- | Discrete Fourier Transform of a 3D array.
+--   
+--   The default implementation requires the array dimensions to be powers
+--   of two. The FFI-backed implementations ignore the Haskell-side size
+--   parameter (second argument).
 fft3D' :: FFTElt e => Mode -> DIM3 -> Acc (Array DIM3 (Complex e)) -> Acc (Array DIM3 (Complex e))
 fft :: (Slice sh, Shape sh, RealFloat e, FromIntegral Int e) => e -> sh -> Int -> Acc (Array (sh :. Int) (Complex e)) -> Acc (Array (sh :. Int) (Complex e))
