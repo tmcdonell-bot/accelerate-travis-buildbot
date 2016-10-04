@@ -235,7 +235,7 @@
 <a name="line-226"></a>  <span class='hs-varid'>setProgArgv</span> <span class='hs-layout'>(</span><span class='hs-varid'>prog</span> <span class='hs-conop'>:</span> <span class='hs-varid'>before</span> <span class='hs-varop'>++</span> <span class='hs-varid'>after</span><span class='hs-layout'>)</span>
 <a name="line-227"></a><span class='hs-cpp'>#else</span>
 <a name="line-228"></a>  <span class='hs-conid'>M</span><span class='hs-varop'>.</span><span class='hs-varid'>unless</span> <span class='hs-layout'>(</span><span class='hs-varid'>null</span> <span class='hs-varid'>flags</span><span class='hs-layout'>)</span>
-<a name="line-229"></a>    <span class='hs-varop'>$</span> <span class='hs-varid'>error</span> <span class='hs-str'>"Data.Array.Accelerate: Debugging options are disabled. Install with -fdebug to enable them."</span>
+<a name="line-229"></a>    <span class='hs-varop'>$</span> <span class='hs-varid'>error</span> <span class='hs-str'>"Data.Array.Accelerate: Debugging options are disabled. Reinstall package 'accelerate' with '-fdebug' to enable them."</span>
 <a name="line-230"></a><span class='hs-cpp'>#endif</span>
 <a name="line-231"></a>  <span class='hs-varid'>return</span> <span class='hs-varid'>flags</span>
 <a name="line-232"></a>
