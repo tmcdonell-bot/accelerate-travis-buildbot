@@ -239,7 +239,7 @@
 <a name="line-230"></a><a name="stencil1Op"></a><span class='hs-comment'>-- Using the defaulting instances for stencil operations (for now).</span>
 <a name="line-231"></a><span class='hs-comment'>--</span>
 <a name="line-232"></a><span class='hs-definition'>stencil1Op</span>
-<a name="line-233"></a>    <span class='hs-keyglyph'>::</span> <span class='hs-layout'>(</span><span class='hs-conid'>Shape</span> <span class='hs-varid'>sh</span><span class='hs-layout'>,</span> <span class='hs-conid'>Elt</span> <span class='hs-varid'>a</span><span class='hs-layout'>,</span> <span class='hs-conid'>Elt</span> <span class='hs-varid'>b</span><span class='hs-layout'>)</span>
+<a name="line-233"></a>    <span class='hs-keyglyph'>::</span> <span class='hs-layout'>(</span><span class='hs-conid'>Shape</span> <span class='hs-varid'>sh</span><span class='hs-layout'>,</span> <span class='hs-conid'>Elt</span> <span class='hs-varid'>b</span><span class='hs-layout'>)</span>
 <a name="line-234"></a>    <span class='hs-keyglyph'>=&gt;</span> <span class='hs-conid'>ExecutableR</span> <span class='hs-conid'>PTX</span>
 <a name="line-235"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Gamma</span> <span class='hs-varid'>aenv</span>
 <a name="line-236"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Aval</span> <span class='hs-varid'>aenv</span>
@@ -250,7 +250,7 @@
 <a name="line-241"></a>  <span class='hs-keyglyph'>=</span> <span class='hs-varid'>simpleOp</span> <span class='hs-varid'>kernel</span> <span class='hs-varid'>gamma</span> <span class='hs-varid'>aenv</span> <span class='hs-varid'>stream</span> <span class='hs-layout'>(</span><span class='hs-varid'>shape</span> <span class='hs-varid'>arr</span><span class='hs-layout'>)</span>
 <a name="line-242"></a>
 <a name="line-243"></a><a name="stencil2Op"></a><span class='hs-definition'>stencil2Op</span>
-<a name="line-244"></a>    <span class='hs-keyglyph'>::</span> <span class='hs-layout'>(</span><span class='hs-conid'>Shape</span> <span class='hs-varid'>sh</span><span class='hs-layout'>,</span> <span class='hs-conid'>Elt</span> <span class='hs-varid'>a</span><span class='hs-layout'>,</span> <span class='hs-conid'>Elt</span> <span class='hs-varid'>b</span><span class='hs-layout'>,</span> <span class='hs-conid'>Elt</span> <span class='hs-varid'>c</span><span class='hs-layout'>)</span>
+<a name="line-244"></a>    <span class='hs-keyglyph'>::</span> <span class='hs-layout'>(</span><span class='hs-conid'>Shape</span> <span class='hs-varid'>sh</span><span class='hs-layout'>,</span> <span class='hs-conid'>Elt</span> <span class='hs-varid'>c</span><span class='hs-layout'>)</span>
 <a name="line-245"></a>    <span class='hs-keyglyph'>=&gt;</span> <span class='hs-conid'>ExecutableR</span> <span class='hs-conid'>PTX</span>
 <a name="line-246"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Gamma</span> <span class='hs-varid'>aenv</span>
 <a name="line-247"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Aval</span> <span class='hs-varid'>aenv</span>
