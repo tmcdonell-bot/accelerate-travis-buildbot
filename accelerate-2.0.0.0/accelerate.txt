@@ -285,31 +285,31 @@ real :: Elt a => Exp (Complex a) -> Exp a
 imag :: Elt a => Exp (Complex a) -> Exp a
 
 -- | Form a complex number from polar components of magnitude and phase.
-mkPolar :: (Elt a, RealFloat a) => Exp a -> Exp a -> Exp (Complex a)
+mkPolar :: Floating a => Exp a -> Exp a -> Exp (Complex a)
 
 -- | <tt><a>cis</a> t</tt> is a complex value with magnitude <tt>1</tt> and
 --   phase <tt>t</tt> (modulo <tt>2*<a>pi</a></tt>).
-cis :: (Elt a, RealFloat a) => Exp a -> Exp (Complex a)
+cis :: Floating a => Exp a -> Exp (Complex a)
 
 -- | The function <a>polar</a> takes a complex number and returns a
 --   (magnitude, phase) pair in canonical form: the magnitude is
 --   non-negative, and the phase in the range <tt>(-<a>pi</a>,
 --   <a>pi</a>]</tt>; if the magnitude is zero, then so is the phase.
-polar :: (Elt a, RealFloat a) => Exp (Complex a) -> Exp (a, a)
+polar :: RealFloat a => Exp (Complex a) -> Exp (a, a)
 
 -- | The non-negative magnitude of a complex number
-magnitude :: (Elt a, RealFloat a) => Exp (Complex a) -> Exp a
+magnitude :: RealFloat a => Exp (Complex a) -> Exp a
 
 -- | The phase of a complex number, in the range <tt>(-<a>pi</a>,
 --   <a>pi</a>]</tt>. If the magnitude is zero, then so is the phase.
-phase :: (Elt a, RealFloat a) => Exp (Complex a) -> Exp a
+phase :: RealFloat a => Exp (Complex a) -> Exp a
 
 -- | Return the complex conjugate of a complex number, defined as
 --   
 --   <pre>
 --   conjugate(Z) = X - iY
 --   </pre>
-conjugate :: (Elt a, Num a) => Exp (Complex a) -> Exp (Complex a)
+conjugate :: Num a => Exp (Complex a) -> Exp (Complex a)
 instance Data.Array.Accelerate.Array.Sugar.Elt a => Data.Array.Accelerate.Array.Sugar.Elt (Data.Complex.Complex a)
 instance cst a => Data.Array.Accelerate.Product.IsProduct cst (Data.Complex.Complex a)
 instance (Data.Array.Accelerate.Lift.Lift Data.Array.Accelerate.Smart.Exp a, Data.Array.Accelerate.Array.Sugar.Elt (Data.Array.Accelerate.Lift.Plain a)) => Data.Array.Accelerate.Lift.Lift Data.Array.Accelerate.Smart.Exp (Data.Complex.Complex a)
@@ -639,11 +639,11 @@ fill :: (Shape sh, Elt e) => Exp sh -> Exp e -> Acc (Array sh e)
 
 -- | Create an array of the given shape containing the values x, x+1, etc
 --   (in row-major order).
-enumFromN :: (Shape sh, Elt e, Num e, FromIntegral Int e) => Exp sh -> Exp e -> Acc (Array sh e)
+enumFromN :: (Shape sh, Num e, FromIntegral Int e) => Exp sh -> Exp e -> Acc (Array sh e)
 
 -- | Create an array of the given shape containing the values <tt>x</tt>,
 --   <tt>x+y</tt>, <tt>x+y+y</tt> etc. (in row-major order).
-enumFromStepN :: (Shape sh, Elt e, Num e, FromIntegral Int e) => Exp sh -> Exp e -> Exp e -> Acc (Array sh e)
+enumFromStepN :: (Shape sh, Num e, FromIntegral Int e) => Exp sh -> Exp e -> Exp e -> Acc (Array sh e)
 
 -- | Concatenate outermost component of two arrays. The extent of the lower
 --   dimensional component is the intersection of the two arrays.
@@ -994,16 +994,16 @@ and :: Shape sh => Acc (Array sh Bool) -> Acc (Scalar Bool)
 or :: Shape sh => Acc (Array sh Bool) -> Acc (Scalar Bool)
 
 -- | Compute the sum of elements
-sum :: (Shape sh, Elt e, Num e) => Acc (Array sh e) -> Acc (Scalar e)
+sum :: (Shape sh, Num e) => Acc (Array sh e) -> Acc (Scalar e)
 
 -- | Compute the product of the elements
-product :: (Shape sh, Elt e, Num e) => Acc (Array sh e) -> Acc (Scalar e)
+product :: (Shape sh, Num e) => Acc (Array sh e) -> Acc (Scalar e)
 
 -- | Yield the minimum element of an array. The array must not be empty.
-minimum :: (Shape sh, Elt e, Ord e) => Acc (Array sh e) -> Acc (Scalar e)
+minimum :: (Shape sh, Ord e) => Acc (Array sh e) -> Acc (Scalar e)
 
 -- | Yield the maximum element of an array. The array must not be empty.
-maximum :: (Shape sh, Elt e, Ord e) => Acc (Array sh e) -> Acc (Scalar e)
+maximum :: (Shape sh, Ord e) => Acc (Array sh e) -> Acc (Scalar e)
 
 -- | Data.List style left-to-right scan, but with the additional
 --   restriction that the first argument needs to be an <i>associative</i>
@@ -1075,7 +1075,7 @@ prescanr :: Elt a => (Exp a -> Exp a -> Exp a) -> Exp a -> Acc (Vector a) -> Acc
 postscanr :: Elt a => (Exp a -> Exp a -> Exp a) -> Exp a -> Acc (Vector a) -> Acc (Vector a)
 
 -- | Segmented version of <a>scanl</a>
-scanlSeg :: (Elt a, Elt i, Integral i, Bits i, FromIntegral i Int, FromIntegral Int i) => (Exp a -> Exp a -> Exp a) -> Exp a -> Acc (Vector a) -> Acc (Segments i) -> Acc (Vector a)
+scanlSeg :: (Elt a, Integral i, Bits i, FromIntegral i Int, FromIntegral Int i) => (Exp a -> Exp a -> Exp a) -> Exp a -> Acc (Vector a) -> Acc (Segments i) -> Acc (Vector a)
 
 -- | Segmented version of <a>scanl1</a>.
 --   
@@ -1089,35 +1089,35 @@ scanlSeg :: (Elt a, Elt i, Integral i, Bits i, FromIntegral i Int, FromIntegral 
 --   <pre>
 --   scanl1Seg f xs [n,0,0] == scanl1Seg f xs [n]   where n /= 0
 --   </pre>
-scanl1Seg :: (Elt a, Elt i, Integral i, Bits i, FromIntegral i Int, FromIntegral Int i) => (Exp a -> Exp a -> Exp a) -> Acc (Vector a) -> Acc (Segments i) -> Acc (Vector a)
+scanl1Seg :: (Elt a, Integral i, Bits i, FromIntegral i Int) => (Exp a -> Exp a -> Exp a) -> Acc (Vector a) -> Acc (Segments i) -> Acc (Vector a)
 
 -- | Segmented version of <a>scanl'</a>
 --   
 --   The first element of the resulting tuple is a vector of scanned
 --   values. The second element is a vector of segment scan totals and has
 --   the same size as the segment vector.
-scanl'Seg :: (Elt a, Elt i, Integral i, Bits i, FromIntegral i Int, FromIntegral Int i) => (Exp a -> Exp a -> Exp a) -> Exp a -> Acc (Vector a) -> Acc (Segments i) -> Acc (Vector a, Vector a)
+scanl'Seg :: (Elt a, Integral i, Bits i, FromIntegral i Int, FromIntegral Int i) => (Exp a -> Exp a -> Exp a) -> Exp a -> Acc (Vector a) -> Acc (Segments i) -> Acc (Vector a, Vector a)
 
 -- | Segmented version of <a>prescanl</a>.
-prescanlSeg :: (Elt a, Elt i, Integral i, Bits i, FromIntegral i Int, FromIntegral Int i) => (Exp a -> Exp a -> Exp a) -> Exp a -> Acc (Vector a) -> Acc (Segments i) -> Acc (Vector a)
+prescanlSeg :: (Elt a, Integral i, Bits i, FromIntegral i Int, FromIntegral Int i) => (Exp a -> Exp a -> Exp a) -> Exp a -> Acc (Vector a) -> Acc (Segments i) -> Acc (Vector a)
 
 -- | Segmented version of <a>postscanl</a>.
-postscanlSeg :: (Elt a, Elt i, Integral i, Bits i, FromIntegral i Int, FromIntegral Int i) => (Exp a -> Exp a -> Exp a) -> Exp a -> Acc (Vector a) -> Acc (Segments i) -> Acc (Vector a)
+postscanlSeg :: (Elt a, Integral i, Bits i, FromIntegral i Int) => (Exp a -> Exp a -> Exp a) -> Exp a -> Acc (Vector a) -> Acc (Segments i) -> Acc (Vector a)
 
 -- | Segmented version of <a>scanr</a>.
-scanrSeg :: (Elt a, Elt i, Integral i, Bits i, FromIntegral i Int, FromIntegral Int i) => (Exp a -> Exp a -> Exp a) -> Exp a -> Acc (Vector a) -> Acc (Segments i) -> Acc (Vector a)
+scanrSeg :: (Elt a, Integral i, Bits i, FromIntegral i Int, FromIntegral Int i) => (Exp a -> Exp a -> Exp a) -> Exp a -> Acc (Vector a) -> Acc (Segments i) -> Acc (Vector a)
 
 -- | Segmented version of <a>scanr1</a>.
-scanr1Seg :: (Elt a, Elt i, Integral i, Bits i, FromIntegral i Int, FromIntegral Int i) => (Exp a -> Exp a -> Exp a) -> Acc (Vector a) -> Acc (Segments i) -> Acc (Vector a)
+scanr1Seg :: (Elt a, Integral i, Bits i, FromIntegral i Int) => (Exp a -> Exp a -> Exp a) -> Acc (Vector a) -> Acc (Segments i) -> Acc (Vector a)
 
 -- | Segmented version of <a>scanr'</a>.
-scanr'Seg :: (Elt a, Elt i, Integral i, Bits i, FromIntegral i Int, FromIntegral Int i) => (Exp a -> Exp a -> Exp a) -> Exp a -> Acc (Vector a) -> Acc (Segments i) -> Acc (Vector a, Vector a)
+scanr'Seg :: (Elt a, Integral i, Bits i, FromIntegral i Int, FromIntegral Int i) => (Exp a -> Exp a -> Exp a) -> Exp a -> Acc (Vector a) -> Acc (Segments i) -> Acc (Vector a, Vector a)
 
 -- | Segmented version of <a>prescanr</a>.
-prescanrSeg :: (Elt a, Elt i, Integral i, Bits i, FromIntegral i Int, FromIntegral Int i) => (Exp a -> Exp a -> Exp a) -> Exp a -> Acc (Vector a) -> Acc (Segments i) -> Acc (Vector a)
+prescanrSeg :: (Elt a, Integral i, Bits i, FromIntegral i Int, FromIntegral Int i) => (Exp a -> Exp a -> Exp a) -> Exp a -> Acc (Vector a) -> Acc (Segments i) -> Acc (Vector a)
 
 -- | Segmented version of <a>postscanr</a>.
-postscanrSeg :: (Elt a, Elt i, Integral i, Bits i, FromIntegral i Int, FromIntegral Int i) => (Exp a -> Exp a -> Exp a) -> Exp a -> Acc (Vector a) -> Acc (Segments i) -> Acc (Vector a)
+postscanrSeg :: (Elt a, Integral i, Bits i, FromIntegral i Int) => (Exp a -> Exp a -> Exp a) -> Exp a -> Acc (Vector a) -> Acc (Segments i) -> Acc (Vector a)
 
 -- | Map a stencil over an array. In contrast to <a>map</a>, the domain of
 --   a stencil function is an entire <i>neighbourhood</i> of each array
@@ -1130,11 +1130,11 @@ postscanrSeg :: (Elt a, Elt i, Integral i, Bits i, FromIntegral i Int, FromInteg
 --   For those array positions where the neighbourhood extends past the
 --   boundaries of the source array, a boundary condition determines the
 --   contents of the out-of-bounds neighbourhood positions.
-stencil :: (Shape ix, Elt a, Elt b, Stencil ix a stencil) => (stencil -> Exp b) -> Boundary a -> Acc (Array ix a) -> Acc (Array ix b)
+stencil :: (Stencil sh a stencil, Elt b) => (stencil -> Exp b) -> Boundary a -> Acc (Array sh a) -> Acc (Array sh b)
 
 -- | Map a binary stencil of an array. The extent of the resulting array is
 --   the intersection of the extents of the two source arrays.
-stencil2 :: (Shape ix, Elt a, Elt b, Elt c, Stencil ix a stencil1, Stencil ix b stencil2) => (stencil1 -> stencil2 -> Exp c) -> Boundary a -> Acc (Array ix a) -> Boundary b -> Acc (Array ix b) -> Acc (Array ix c)
+stencil2 :: (Stencil sh a stencil1, Stencil sh b stencil2, Elt c) => (stencil1 -> stencil2 -> Exp c) -> Boundary a -> Acc (Array sh a) -> Boundary b -> Acc (Array sh b) -> Acc (Array sh c)
 collect :: Arrays arrs => Seq arrs -> Acc arrs
 streamIn :: Arrays a => [a] -> Seq [a]
 
@@ -1405,7 +1405,7 @@ floor :: (RealFrac a, Elt b, IsIntegral b) => Exp a -> Exp b
 
 -- | Efficient, machine-independent access to the components of a
 --   floating-point number
-class (RealFrac a, Floating a) => RealFloat a where floatRadix _ = fromInteger (floatRadix (undefined :: a)) floatDigits _ = constant (floatDigits (undefined :: a)) floatRange _ = let (m, n) = floatRange (undefined :: a) in (constant m, constant n) isIEEE _ = constant (isIEEE (undefined :: Float)) decodeFloat = \ format_abQLs kind_abQLt fn_abQLu msg_abQLv -> error (format_abQLs kind_abQLt (call fn_abQLu msg_abQLv)) (\ kind_abQLw msg_abQLx -> message kind_abQLw ("Data/Array/Accelerate/Classes/RealFloat.hs:100:21: " ++ msg_abQLx)) Internal "RealFloat.decodeFloat" "Not implemented yet" encodeFloat = \ format_abQLB kind_abQLC fn_abQLD msg_abQLE -> error (format_abQLB kind_abQLC (call fn_abQLD msg_abQLE)) (\ kind_abQLF msg_abQLG -> message kind_abQLF ("Data/Array/Accelerate/Classes/RealFloat.hs:101:21: " ++ msg_abQLG)) Internal "RealFloat.encodeFloat" "Not implemented yet" exponent = \ format_abQLK kind_abQLL fn_abQLM msg_abQLN -> error (format_abQLK kind_abQLL (call fn_abQLM msg_abQLN)) (\ kind_abQLO msg_abQLP -> message kind_abQLO ("Data/Array/Accelerate/Classes/RealFloat.hs:102:21: " ++ msg_abQLP)) Internal "RealFloat.exponent" "Not implemented yet" significand = \ format_abQLT kind_abQLU fn_abQLV msg_abQLW -> error (format_abQLT kind_abQLU (call fn_abQLV msg_abQLW)) (\ kind_abQLX msg_abQLY -> message kind_abQLX ("Data/Array/Accelerate/Classes/RealFloat.hs:103:21: " ++ msg_abQLY)) Internal "RealFloat.significand" "Not implemented yet" scaleFloat = \ format_abQM2 kind_abQM3 fn_abQM4 msg_abQM5 -> error (format_abQM2 kind_abQM3 (call fn_abQM4 msg_abQM5)) (\ kind_abQM6 msg_abQM7 -> message kind_abQM6 ("Data/Array/Accelerate/Classes/RealFloat.hs:104:21: " ++ msg_abQM7)) Internal "RealFloat.scaleFloat" "Not implemented yet" isInfinite = \ format_abQMb kind_abQMc fn_abQMd msg_abQMe -> error (format_abQMb kind_abQMc (call fn_abQMd msg_abQMe)) (\ kind_abQMf msg_abQMg -> message kind_abQMf ("Data/Array/Accelerate/Classes/RealFloat.hs:105:21: " ++ msg_abQMg)) Internal "RealFloat.isInfinite" "Not implemented yet" isDenormalized = \ format_abQMk kind_abQMl fn_abQMm msg_abQMn -> error (format_abQMk kind_abQMl (call fn_abQMm msg_abQMn)) (\ kind_abQMo msg_abQMp -> message kind_abQMo ("Data/Array/Accelerate/Classes/RealFloat.hs:106:21: " ++ msg_abQMp)) Internal "RealFloat.isDenormalized" "Not implemented yet" isNegativeZero = \ format_abQMt kind_abQMu fn_abQMv msg_abQMw -> error (format_abQMt kind_abQMu (call fn_abQMv msg_abQMw)) (\ kind_abQMx msg_abQMy -> message kind_abQMx ("Data/Array/Accelerate/Classes/RealFloat.hs:107:21: " ++ msg_abQMy)) Internal "RealFloat.isNegativeZero" "Not implemented yet"
+class (RealFrac a, Floating a) => RealFloat a where floatRadix _ = fromInteger (floatRadix (undefined :: a)) floatDigits _ = constant (floatDigits (undefined :: a)) floatRange _ = let (m, n) = floatRange (undefined :: a) in (constant m, constant n) isIEEE _ = constant (isIEEE (undefined :: Float)) decodeFloat = \ format_abNdA kind_abNdB fn_abNdC msg_abNdD -> error (format_abNdA kind_abNdB (call fn_abNdC msg_abNdD)) (\ kind_abNdE msg_abNdF -> message kind_abNdE ("Data/Array/Accelerate/Classes/RealFloat.hs:100:21: " ++ msg_abNdF)) Internal "RealFloat.decodeFloat" "Not implemented yet" encodeFloat = \ format_abNdJ kind_abNdK fn_abNdL msg_abNdM -> error (format_abNdJ kind_abNdK (call fn_abNdL msg_abNdM)) (\ kind_abNdN msg_abNdO -> message kind_abNdN ("Data/Array/Accelerate/Classes/RealFloat.hs:101:21: " ++ msg_abNdO)) Internal "RealFloat.encodeFloat" "Not implemented yet" exponent = \ format_abNdS kind_abNdT fn_abNdU msg_abNdV -> error (format_abNdS kind_abNdT (call fn_abNdU msg_abNdV)) (\ kind_abNdW msg_abNdX -> message kind_abNdW ("Data/Array/Accelerate/Classes/RealFloat.hs:102:21: " ++ msg_abNdX)) Internal "RealFloat.exponent" "Not implemented yet" significand = \ format_abNe1 kind_abNe2 fn_abNe3 msg_abNe4 -> error (format_abNe1 kind_abNe2 (call fn_abNe3 msg_abNe4)) (\ kind_abNe5 msg_abNe6 -> message kind_abNe5 ("Data/Array/Accelerate/Classes/RealFloat.hs:103:21: " ++ msg_abNe6)) Internal "RealFloat.significand" "Not implemented yet" scaleFloat = \ format_abNea kind_abNeb fn_abNec msg_abNed -> error (format_abNea kind_abNeb (call fn_abNec msg_abNed)) (\ kind_abNee msg_abNef -> message kind_abNee ("Data/Array/Accelerate/Classes/RealFloat.hs:104:21: " ++ msg_abNef)) Internal "RealFloat.scaleFloat" "Not implemented yet" isInfinite = \ format_abNej kind_abNek fn_abNel msg_abNem -> error (format_abNej kind_abNek (call fn_abNel msg_abNem)) (\ kind_abNen msg_abNeo -> message kind_abNen ("Data/Array/Accelerate/Classes/RealFloat.hs:105:21: " ++ msg_abNeo)) Internal "RealFloat.isInfinite" "Not implemented yet" isDenormalized = \ format_abNes kind_abNet fn_abNeu msg_abNev -> error (format_abNes kind_abNet (call fn_abNeu msg_abNev)) (\ kind_abNew msg_abNex -> message kind_abNew ("Data/Array/Accelerate/Classes/RealFloat.hs:106:21: " ++ msg_abNex)) Internal "RealFloat.isDenormalized" "Not implemented yet" isNegativeZero = \ format_abNeB kind_abNeC fn_abNeD msg_abNeE -> error (format_abNeB kind_abNeC (call fn_abNeD msg_abNeE)) (\ kind_abNeF msg_abNeG -> message kind_abNeF ("Data/Array/Accelerate/Classes/RealFloat.hs:107:21: " ++ msg_abNeG)) Internal "RealFloat.isNegativeZero" "Not implemented yet"
 
 -- | The radix of the representation (often 2) (constant)
 floatRadix :: RealFloat a => Exp a -> Exp Int64
@@ -1815,7 +1815,7 @@ toList :: Array sh e -> [e]
 fromIArray :: (IxShapeRepr (EltRepr ix) ~ EltRepr sh, IArray a e, Ix ix, Shape sh, Elt ix, Elt e) => a ix e -> Array sh e
 
 -- | Convert an accelerated array to an <a>IArray</a>.
-toIArray :: (IxShapeRepr (EltRepr ix) ~ EltRepr sh, IArray a e, Ix ix, Shape sh, Elt ix, Elt e) => Array sh e -> a ix e
+toIArray :: (IxShapeRepr (EltRepr ix) ~ EltRepr sh, IArray a e, Ix ix, Shape sh, Elt ix) => Array sh e -> a ix e
 
 -- | Function composition.
 (.) :: (b -> c) -> (a -> b) -> a -> c

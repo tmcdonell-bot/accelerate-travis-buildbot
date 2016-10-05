@@ -738,82 +738,81 @@
 <a name="line-729"></a><span class='hs-comment'>--</span>
 <a name="line-730"></a><span class='hs-comment'>{-# INLINE runArrayData #-}</span>
 <a name="line-731"></a><span class='hs-definition'>runArrayData</span>
-<a name="line-732"></a>    <span class='hs-keyglyph'>::</span> <span class='hs-conid'>ArrayElt</span> <span class='hs-varid'>e</span>
-<a name="line-733"></a>    <span class='hs-keyglyph'>=&gt;</span> <span class='hs-conid'>IO</span> <span class='hs-layout'>(</span><span class='hs-conid'>MutableArrayData</span> <span class='hs-varid'>e</span><span class='hs-layout'>,</span> <span class='hs-varid'>e</span><span class='hs-layout'>)</span>
-<a name="line-734"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-layout'>(</span><span class='hs-conid'>ArrayData</span> <span class='hs-varid'>e</span><span class='hs-layout'>,</span> <span class='hs-varid'>e</span><span class='hs-layout'>)</span>
-<a name="line-735"></a><span class='hs-definition'>runArrayData</span> <span class='hs-varid'>st</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>unsafePerformIO</span> <span class='hs-varop'>$</span> <span class='hs-keyword'>do</span>
-<a name="line-736"></a>  <span class='hs-layout'>(</span><span class='hs-varid'>mad</span><span class='hs-layout'>,</span> <span class='hs-varid'>r</span><span class='hs-layout'>)</span> <span class='hs-keyglyph'>&lt;-</span> <span class='hs-varid'>st</span>
-<a name="line-737"></a>  <span class='hs-varid'>return</span> <span class='hs-layout'>(</span><span class='hs-varid'>mad</span><span class='hs-layout'>,</span> <span class='hs-varid'>r</span><span class='hs-layout'>)</span>
-<a name="line-738"></a>
-<a name="line-739"></a><a name="unsafeIndexArray"></a><span class='hs-comment'>-- Returns the element of an immutable array at the specified index. This does</span>
-<a name="line-740"></a><span class='hs-comment'>-- no bounds checking.</span>
-<a name="line-741"></a><span class='hs-comment'>--</span>
-<a name="line-742"></a><span class='hs-comment'>{-# INLINE unsafeIndexArray #-}</span>
-<a name="line-743"></a><span class='hs-definition'>unsafeIndexArray</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Storable</span> <span class='hs-varid'>e</span> <span class='hs-keyglyph'>=&gt;</span> <span class='hs-conid'>UniqueArray</span> <span class='hs-varid'>e</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Int</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>e</span>
-<a name="line-744"></a><span class='hs-definition'>unsafeIndexArray</span> <span class='hs-varid'>ua</span> <span class='hs-varid'>i</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>unsafePerformIO</span> <span class='hs-varop'>$!</span> <span class='hs-varid'>unsafeReadArray</span> <span class='hs-varid'>ua</span> <span class='hs-varid'>i</span>
-<a name="line-745"></a>
-<a name="line-746"></a><a name="unsafeReadArray"></a><span class='hs-comment'>-- Read an element from a mutable array at the given index. This does no bounds</span>
-<a name="line-747"></a><span class='hs-comment'>-- checking.</span>
-<a name="line-748"></a><span class='hs-comment'>--</span>
-<a name="line-749"></a><span class='hs-comment'>{-# INLINE unsafeReadArray #-}</span>
-<a name="line-750"></a><span class='hs-definition'>unsafeReadArray</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Storable</span> <span class='hs-varid'>e</span> <span class='hs-keyglyph'>=&gt;</span> <span class='hs-conid'>UniqueArray</span> <span class='hs-varid'>e</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Int</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>IO</span> <span class='hs-varid'>e</span>
-<a name="line-751"></a><span class='hs-definition'>unsafeReadArray</span> <span class='hs-varid'>ua</span> <span class='hs-varid'>i</span> <span class='hs-keyglyph'>=</span>
-<a name="line-752"></a>  <span class='hs-varid'>withUniqueArrayPtr</span> <span class='hs-varid'>ua</span> <span class='hs-varop'>$</span> <span class='hs-keyglyph'>\</span><span class='hs-varid'>ptr</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>peekElemOff</span> <span class='hs-varid'>ptr</span> <span class='hs-varid'>i</span>
-<a name="line-753"></a>
-<a name="line-754"></a><a name="unsafeWriteArray"></a><span class='hs-comment'>-- Write an element into a mutable array at the given index. This does no bounds</span>
-<a name="line-755"></a><span class='hs-comment'>-- checking.</span>
-<a name="line-756"></a><span class='hs-comment'>--</span>
-<a name="line-757"></a><span class='hs-comment'>{-# INLINE unsafeWriteArray #-}</span>
-<a name="line-758"></a><span class='hs-definition'>unsafeWriteArray</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Storable</span> <span class='hs-varid'>e</span> <span class='hs-keyglyph'>=&gt;</span> <span class='hs-conid'>UniqueArray</span> <span class='hs-varid'>e</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Int</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>e</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>IO</span> <span class='hs-conid'>()</span>
-<a name="line-759"></a><span class='hs-definition'>unsafeWriteArray</span> <span class='hs-varid'>ua</span> <span class='hs-varid'>i</span> <span class='hs-varid'>e</span> <span class='hs-keyglyph'>=</span>
-<a name="line-760"></a>  <span class='hs-varid'>withUniqueArrayPtr</span> <span class='hs-varid'>ua</span> <span class='hs-varop'>$</span> <span class='hs-keyglyph'>\</span><span class='hs-varid'>ptr</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>pokeElemOff</span> <span class='hs-varid'>ptr</span> <span class='hs-varid'>i</span> <span class='hs-varid'>e</span>
-<a name="line-761"></a>
-<a name="line-762"></a><a name="newArrayData'"></a><span class='hs-comment'>-- Allocate a new array with enough storage to hold the given number of</span>
-<a name="line-763"></a><span class='hs-comment'>-- elements.</span>
-<a name="line-764"></a><span class='hs-comment'>--</span>
-<a name="line-765"></a><span class='hs-comment'>-- The array is uninitialised and, in particular, allocated lazily. The latter</span>
-<a name="line-766"></a><span class='hs-comment'>-- is important because it means that for backends that have discrete memory</span>
-<a name="line-767"></a><span class='hs-comment'>-- spaces (e.g. GPUs), we will not increase host memory pressure simply to track</span>
-<a name="line-768"></a><span class='hs-comment'>-- intermediate arrays that contain meaningful data only on the device.</span>
-<a name="line-769"></a><span class='hs-comment'>--</span>
-<a name="line-770"></a><span class='hs-comment'>{-# INLINE newArrayData' #-}</span>
-<a name="line-771"></a><span class='hs-definition'>newArrayData'</span> <span class='hs-keyglyph'>::</span> <span class='hs-keyword'>forall</span> <span class='hs-varid'>e</span><span class='hs-varop'>.</span> <span class='hs-conid'>Storable</span> <span class='hs-varid'>e</span> <span class='hs-keyglyph'>=&gt;</span> <span class='hs-conid'>Int</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>IO</span> <span class='hs-layout'>(</span><span class='hs-conid'>UniqueArray</span> <span class='hs-varid'>e</span><span class='hs-layout'>)</span>
-<a name="line-772"></a><span class='hs-definition'>newArrayData'</span> <span class='hs-varid'>size</span>
-<a name="line-773"></a>  <span class='hs-keyglyph'>=</span> <span class='hs-varop'>$</span><span class='hs-varid'>internalCheck</span> <span class='hs-str'>"newArrayData"</span> <span class='hs-str'>"size must be &gt;= 0"</span> <span class='hs-layout'>(</span><span class='hs-varid'>size</span> <span class='hs-varop'>&gt;=</span> <span class='hs-num'>0</span><span class='hs-layout'>)</span>
-<a name="line-774"></a>  <span class='hs-varop'>$</span> <span class='hs-varid'>newUniqueArray</span> <span class='hs-varop'>&lt;=&lt;</span> <span class='hs-varid'>unsafeInterleaveIO</span> <span class='hs-varop'>$</span> <span class='hs-keyword'>do</span>
-<a name="line-775"></a>      <span class='hs-varid'>new</span> <span class='hs-keyglyph'>&lt;-</span> <span class='hs-varid'>readIORef</span> <span class='hs-sel'>__mallocForeignPtrBytes</span>
-<a name="line-776"></a>      <span class='hs-varid'>ptr</span> <span class='hs-keyglyph'>&lt;-</span> <span class='hs-varid'>new</span> <span class='hs-layout'>(</span><span class='hs-varid'>size</span> <span class='hs-varop'>*</span> <span class='hs-varid'>sizeOf</span> <span class='hs-layout'>(</span><span class='hs-varid'>undefined</span> <span class='hs-keyglyph'>::</span> <span class='hs-varid'>e</span><span class='hs-layout'>)</span><span class='hs-layout'>)</span>
-<a name="line-777"></a>      <span class='hs-varid'>traceIO</span> <span class='hs-varid'>dump_gc</span> <span class='hs-varop'>$</span> <span class='hs-varid'>printf</span> <span class='hs-str'>"gc: allocated new host array (size=%d, ptr=%s)"</span> <span class='hs-varid'>size</span> <span class='hs-layout'>(</span><span class='hs-varid'>show</span> <span class='hs-varid'>ptr</span><span class='hs-layout'>)</span>
-<a name="line-778"></a>      <span class='hs-varid'>return</span> <span class='hs-layout'>(</span><span class='hs-varid'>castForeignPtr</span> <span class='hs-varid'>ptr</span><span class='hs-layout'>)</span>
-<a name="line-779"></a>
-<a name="line-780"></a><a name="registerForeignPtrAllocator"></a><span class='hs-comment'>-- | Register the given function as the callback to use to allocate new array</span>
-<a name="line-781"></a><span class='hs-comment'>-- data on the host containing the specified number of bytes. The returned array</span>
-<a name="line-782"></a><span class='hs-comment'>-- must be pinned (with respect to Haskell's GC), so that it can be passed to</span>
-<a name="line-783"></a><span class='hs-comment'>-- foreign code.</span>
-<a name="line-784"></a><span class='hs-comment'>--</span>
-<a name="line-785"></a><span class='hs-definition'>registerForeignPtrAllocator</span>
-<a name="line-786"></a>    <span class='hs-keyglyph'>::</span> <span class='hs-layout'>(</span><span class='hs-conid'>Int</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>IO</span> <span class='hs-layout'>(</span><span class='hs-conid'>ForeignPtr</span> <span class='hs-conid'>Word8</span><span class='hs-layout'>)</span><span class='hs-layout'>)</span>
-<a name="line-787"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>IO</span> <span class='hs-conid'>()</span>
-<a name="line-788"></a><span class='hs-definition'>registerForeignPtrAllocator</span> <span class='hs-varid'>new</span> <span class='hs-keyglyph'>=</span> <span class='hs-keyword'>do</span>
-<a name="line-789"></a>  <span class='hs-varid'>traceIO</span> <span class='hs-varid'>dump_gc</span> <span class='hs-str'>"registering new array allocator"</span>
-<a name="line-790"></a>  <span class='hs-varid'>atomicWriteIORef</span> <span class='hs-sel'>__mallocForeignPtrBytes</span> <span class='hs-varid'>new</span>
-<a name="line-791"></a>
-<a name="line-792"></a><span class='hs-comment'>{-# NOINLINE __mallocForeignPtrBytes #-}</span>
-<a name="line-793"></a><span class='hs-sel'>__mallocForeignPtrBytes</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>IORef</span> <span class='hs-layout'>(</span><span class='hs-conid'>Int</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>IO</span> <span class='hs-layout'>(</span><span class='hs-conid'>ForeignPtr</span> <span class='hs-conid'>Word8</span><span class='hs-layout'>)</span><span class='hs-layout'>)</span>
-<a name="line-794"></a><span class='hs-sel'>__mallocForeignPtrBytes</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>unsafePerformIO</span> <span class='hs-varop'>$!</span> <span class='hs-varid'>newIORef</span> <span class='hs-varid'>mallocPlainForeignPtrBytesAligned</span>
-<a name="line-795"></a>
-<a name="line-796"></a><a name="mallocPlainForeignPtrBytesAligned"></a><span class='hs-comment'>-- | Allocate the given number of bytes with 16-byte alignment. This is</span>
-<a name="line-797"></a><span class='hs-comment'>-- essential for SIMD instructions.</span>
-<a name="line-798"></a><span class='hs-comment'>--</span>
-<a name="line-799"></a><span class='hs-comment'>-- Additionally, we return a plain ForeignPtr, which unlike a regular ForeignPtr</span>
-<a name="line-800"></a><span class='hs-comment'>-- created with 'mallocForeignPtr' carries no finalisers. It is an error to try</span>
-<a name="line-801"></a><span class='hs-comment'>-- to add a finaliser to the plain ForeignPtr. For our purposes this is fine,</span>
-<a name="line-802"></a><span class='hs-comment'>-- since in Accelerate finalisers are handled using Lifetime</span>
-<a name="line-803"></a><span class='hs-comment'>--</span>
-<a name="line-804"></a><span class='hs-definition'>mallocPlainForeignPtrBytesAligned</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Int</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>IO</span> <span class='hs-layout'>(</span><span class='hs-conid'>ForeignPtr</span> <span class='hs-varid'>a</span><span class='hs-layout'>)</span>
-<a name="line-805"></a><span class='hs-definition'>mallocPlainForeignPtrBytesAligned</span> <span class='hs-layout'>(</span><span class='hs-conid'>I</span><span class='hs-cpp'>#</span> <span class='hs-varid'>size</span><span class='hs-layout'>)</span> <span class='hs-keyglyph'>=</span> <span class='hs-conid'>IO</span> <span class='hs-varop'>$</span> <span class='hs-keyglyph'>\</span><span class='hs-varid'>s</span> <span class='hs-keyglyph'>-&gt;</span>
-<a name="line-806"></a>  <span class='hs-keyword'>case</span> <span class='hs-varid'>newAlignedPinnedByteArray</span><span class='hs-cpp'>#</span> <span class='hs-varid'>size</span> <span class='hs-num'>16</span><span class='hs-cpp'>#</span> <span class='hs-varid'>s</span> <span class='hs-keyword'>of</span>
-<a name="line-807"></a>    <span class='hs-layout'>(</span><span class='hs-cpp'>#</span> <span class='hs-varid'>s'</span><span class='hs-layout'>,</span> <span class='hs-varid'>mbarr</span><span class='hs-cpp'>#</span> <span class='hs-cpp'>#</span><span class='hs-layout'>)</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-layout'>(</span><span class='hs-cpp'>#</span> <span class='hs-varid'>s'</span><span class='hs-layout'>,</span> <span class='hs-conid'>ForeignPtr</span> <span class='hs-layout'>(</span><span class='hs-varid'>byteArrayContents</span><span class='hs-cpp'>#</span> <span class='hs-layout'>(</span><span class='hs-varid'>unsafeCoerce</span><span class='hs-cpp'>#</span> <span class='hs-varid'>mbarr</span><span class='hs-cpp'>#</span><span class='hs-layout'>)</span><span class='hs-layout'>)</span> <span class='hs-layout'>(</span><span class='hs-conid'>PlainPtr</span> <span class='hs-varid'>mbarr</span><span class='hs-cpp'>#</span><span class='hs-layout'>)</span> <span class='hs-cpp'>#</span><span class='hs-layout'>)</span>
-<a name="line-808"></a>
+<a name="line-732"></a>    <span class='hs-keyglyph'>::</span> <span class='hs-conid'>IO</span> <span class='hs-layout'>(</span><span class='hs-conid'>MutableArrayData</span> <span class='hs-varid'>e</span><span class='hs-layout'>,</span> <span class='hs-varid'>e</span><span class='hs-layout'>)</span>
+<a name="line-733"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-layout'>(</span><span class='hs-conid'>ArrayData</span> <span class='hs-varid'>e</span><span class='hs-layout'>,</span> <span class='hs-varid'>e</span><span class='hs-layout'>)</span>
+<a name="line-734"></a><span class='hs-definition'>runArrayData</span> <span class='hs-varid'>st</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>unsafePerformIO</span> <span class='hs-varop'>$</span> <span class='hs-keyword'>do</span>
+<a name="line-735"></a>  <span class='hs-layout'>(</span><span class='hs-varid'>mad</span><span class='hs-layout'>,</span> <span class='hs-varid'>r</span><span class='hs-layout'>)</span> <span class='hs-keyglyph'>&lt;-</span> <span class='hs-varid'>st</span>
+<a name="line-736"></a>  <span class='hs-varid'>return</span> <span class='hs-layout'>(</span><span class='hs-varid'>mad</span><span class='hs-layout'>,</span> <span class='hs-varid'>r</span><span class='hs-layout'>)</span>
+<a name="line-737"></a>
+<a name="line-738"></a><a name="unsafeIndexArray"></a><span class='hs-comment'>-- Returns the element of an immutable array at the specified index. This does</span>
+<a name="line-739"></a><span class='hs-comment'>-- no bounds checking.</span>
+<a name="line-740"></a><span class='hs-comment'>--</span>
+<a name="line-741"></a><span class='hs-comment'>{-# INLINE unsafeIndexArray #-}</span>
+<a name="line-742"></a><span class='hs-definition'>unsafeIndexArray</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Storable</span> <span class='hs-varid'>e</span> <span class='hs-keyglyph'>=&gt;</span> <span class='hs-conid'>UniqueArray</span> <span class='hs-varid'>e</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Int</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>e</span>
+<a name="line-743"></a><span class='hs-definition'>unsafeIndexArray</span> <span class='hs-varid'>ua</span> <span class='hs-varid'>i</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>unsafePerformIO</span> <span class='hs-varop'>$!</span> <span class='hs-varid'>unsafeReadArray</span> <span class='hs-varid'>ua</span> <span class='hs-varid'>i</span>
+<a name="line-744"></a>
+<a name="line-745"></a><a name="unsafeReadArray"></a><span class='hs-comment'>-- Read an element from a mutable array at the given index. This does no bounds</span>
+<a name="line-746"></a><span class='hs-comment'>-- checking.</span>
+<a name="line-747"></a><span class='hs-comment'>--</span>
+<a name="line-748"></a><span class='hs-comment'>{-# INLINE unsafeReadArray #-}</span>
+<a name="line-749"></a><span class='hs-definition'>unsafeReadArray</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Storable</span> <span class='hs-varid'>e</span> <span class='hs-keyglyph'>=&gt;</span> <span class='hs-conid'>UniqueArray</span> <span class='hs-varid'>e</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Int</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>IO</span> <span class='hs-varid'>e</span>
+<a name="line-750"></a><span class='hs-definition'>unsafeReadArray</span> <span class='hs-varid'>ua</span> <span class='hs-varid'>i</span> <span class='hs-keyglyph'>=</span>
+<a name="line-751"></a>  <span class='hs-varid'>withUniqueArrayPtr</span> <span class='hs-varid'>ua</span> <span class='hs-varop'>$</span> <span class='hs-keyglyph'>\</span><span class='hs-varid'>ptr</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>peekElemOff</span> <span class='hs-varid'>ptr</span> <span class='hs-varid'>i</span>
+<a name="line-752"></a>
+<a name="line-753"></a><a name="unsafeWriteArray"></a><span class='hs-comment'>-- Write an element into a mutable array at the given index. This does no bounds</span>
+<a name="line-754"></a><span class='hs-comment'>-- checking.</span>
+<a name="line-755"></a><span class='hs-comment'>--</span>
+<a name="line-756"></a><span class='hs-comment'>{-# INLINE unsafeWriteArray #-}</span>
+<a name="line-757"></a><span class='hs-definition'>unsafeWriteArray</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Storable</span> <span class='hs-varid'>e</span> <span class='hs-keyglyph'>=&gt;</span> <span class='hs-conid'>UniqueArray</span> <span class='hs-varid'>e</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Int</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>e</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>IO</span> <span class='hs-conid'>()</span>
+<a name="line-758"></a><span class='hs-definition'>unsafeWriteArray</span> <span class='hs-varid'>ua</span> <span class='hs-varid'>i</span> <span class='hs-varid'>e</span> <span class='hs-keyglyph'>=</span>
+<a name="line-759"></a>  <span class='hs-varid'>withUniqueArrayPtr</span> <span class='hs-varid'>ua</span> <span class='hs-varop'>$</span> <span class='hs-keyglyph'>\</span><span class='hs-varid'>ptr</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>pokeElemOff</span> <span class='hs-varid'>ptr</span> <span class='hs-varid'>i</span> <span class='hs-varid'>e</span>
+<a name="line-760"></a>
+<a name="line-761"></a><a name="newArrayData'"></a><span class='hs-comment'>-- Allocate a new array with enough storage to hold the given number of</span>
+<a name="line-762"></a><span class='hs-comment'>-- elements.</span>
+<a name="line-763"></a><span class='hs-comment'>--</span>
+<a name="line-764"></a><span class='hs-comment'>-- The array is uninitialised and, in particular, allocated lazily. The latter</span>
+<a name="line-765"></a><span class='hs-comment'>-- is important because it means that for backends that have discrete memory</span>
+<a name="line-766"></a><span class='hs-comment'>-- spaces (e.g. GPUs), we will not increase host memory pressure simply to track</span>
+<a name="line-767"></a><span class='hs-comment'>-- intermediate arrays that contain meaningful data only on the device.</span>
+<a name="line-768"></a><span class='hs-comment'>--</span>
+<a name="line-769"></a><span class='hs-comment'>{-# INLINE newArrayData' #-}</span>
+<a name="line-770"></a><span class='hs-definition'>newArrayData'</span> <span class='hs-keyglyph'>::</span> <span class='hs-keyword'>forall</span> <span class='hs-varid'>e</span><span class='hs-varop'>.</span> <span class='hs-conid'>Storable</span> <span class='hs-varid'>e</span> <span class='hs-keyglyph'>=&gt;</span> <span class='hs-conid'>Int</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>IO</span> <span class='hs-layout'>(</span><span class='hs-conid'>UniqueArray</span> <span class='hs-varid'>e</span><span class='hs-layout'>)</span>
+<a name="line-771"></a><span class='hs-definition'>newArrayData'</span> <span class='hs-varid'>size</span>
+<a name="line-772"></a>  <span class='hs-keyglyph'>=</span> <span class='hs-varop'>$</span><span class='hs-varid'>internalCheck</span> <span class='hs-str'>"newArrayData"</span> <span class='hs-str'>"size must be &gt;= 0"</span> <span class='hs-layout'>(</span><span class='hs-varid'>size</span> <span class='hs-varop'>&gt;=</span> <span class='hs-num'>0</span><span class='hs-layout'>)</span>
+<a name="line-773"></a>  <span class='hs-varop'>$</span> <span class='hs-varid'>newUniqueArray</span> <span class='hs-varop'>&lt;=&lt;</span> <span class='hs-varid'>unsafeInterleaveIO</span> <span class='hs-varop'>$</span> <span class='hs-keyword'>do</span>
+<a name="line-774"></a>      <span class='hs-varid'>new</span> <span class='hs-keyglyph'>&lt;-</span> <span class='hs-varid'>readIORef</span> <span class='hs-sel'>__mallocForeignPtrBytes</span>
+<a name="line-775"></a>      <span class='hs-varid'>ptr</span> <span class='hs-keyglyph'>&lt;-</span> <span class='hs-varid'>new</span> <span class='hs-layout'>(</span><span class='hs-varid'>size</span> <span class='hs-varop'>*</span> <span class='hs-varid'>sizeOf</span> <span class='hs-layout'>(</span><span class='hs-varid'>undefined</span> <span class='hs-keyglyph'>::</span> <span class='hs-varid'>e</span><span class='hs-layout'>)</span><span class='hs-layout'>)</span>
+<a name="line-776"></a>      <span class='hs-varid'>traceIO</span> <span class='hs-varid'>dump_gc</span> <span class='hs-varop'>$</span> <span class='hs-varid'>printf</span> <span class='hs-str'>"gc: allocated new host array (size=%d, ptr=%s)"</span> <span class='hs-varid'>size</span> <span class='hs-layout'>(</span><span class='hs-varid'>show</span> <span class='hs-varid'>ptr</span><span class='hs-layout'>)</span>
+<a name="line-777"></a>      <span class='hs-varid'>return</span> <span class='hs-layout'>(</span><span class='hs-varid'>castForeignPtr</span> <span class='hs-varid'>ptr</span><span class='hs-layout'>)</span>
+<a name="line-778"></a>
+<a name="line-779"></a><a name="registerForeignPtrAllocator"></a><span class='hs-comment'>-- | Register the given function as the callback to use to allocate new array</span>
+<a name="line-780"></a><span class='hs-comment'>-- data on the host containing the specified number of bytes. The returned array</span>
+<a name="line-781"></a><span class='hs-comment'>-- must be pinned (with respect to Haskell's GC), so that it can be passed to</span>
+<a name="line-782"></a><span class='hs-comment'>-- foreign code.</span>
+<a name="line-783"></a><span class='hs-comment'>--</span>
+<a name="line-784"></a><span class='hs-definition'>registerForeignPtrAllocator</span>
+<a name="line-785"></a>    <span class='hs-keyglyph'>::</span> <span class='hs-layout'>(</span><span class='hs-conid'>Int</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>IO</span> <span class='hs-layout'>(</span><span class='hs-conid'>ForeignPtr</span> <span class='hs-conid'>Word8</span><span class='hs-layout'>)</span><span class='hs-layout'>)</span>
+<a name="line-786"></a>    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>IO</span> <span class='hs-conid'>()</span>
+<a name="line-787"></a><span class='hs-definition'>registerForeignPtrAllocator</span> <span class='hs-varid'>new</span> <span class='hs-keyglyph'>=</span> <span class='hs-keyword'>do</span>
+<a name="line-788"></a>  <span class='hs-varid'>traceIO</span> <span class='hs-varid'>dump_gc</span> <span class='hs-str'>"registering new array allocator"</span>
+<a name="line-789"></a>  <span class='hs-varid'>atomicWriteIORef</span> <span class='hs-sel'>__mallocForeignPtrBytes</span> <span class='hs-varid'>new</span>
+<a name="line-790"></a>
+<a name="line-791"></a><span class='hs-comment'>{-# NOINLINE __mallocForeignPtrBytes #-}</span>
+<a name="line-792"></a><span class='hs-sel'>__mallocForeignPtrBytes</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>IORef</span> <span class='hs-layout'>(</span><span class='hs-conid'>Int</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>IO</span> <span class='hs-layout'>(</span><span class='hs-conid'>ForeignPtr</span> <span class='hs-conid'>Word8</span><span class='hs-layout'>)</span><span class='hs-layout'>)</span>
+<a name="line-793"></a><span class='hs-sel'>__mallocForeignPtrBytes</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>unsafePerformIO</span> <span class='hs-varop'>$!</span> <span class='hs-varid'>newIORef</span> <span class='hs-varid'>mallocPlainForeignPtrBytesAligned</span>
+<a name="line-794"></a>
+<a name="line-795"></a><a name="mallocPlainForeignPtrBytesAligned"></a><span class='hs-comment'>-- | Allocate the given number of bytes with 16-byte alignment. This is</span>
+<a name="line-796"></a><span class='hs-comment'>-- essential for SIMD instructions.</span>
+<a name="line-797"></a><span class='hs-comment'>--</span>
+<a name="line-798"></a><span class='hs-comment'>-- Additionally, we return a plain ForeignPtr, which unlike a regular ForeignPtr</span>
+<a name="line-799"></a><span class='hs-comment'>-- created with 'mallocForeignPtr' carries no finalisers. It is an error to try</span>
+<a name="line-800"></a><span class='hs-comment'>-- to add a finaliser to the plain ForeignPtr. For our purposes this is fine,</span>
+<a name="line-801"></a><span class='hs-comment'>-- since in Accelerate finalisers are handled using Lifetime</span>
+<a name="line-802"></a><span class='hs-comment'>--</span>
+<a name="line-803"></a><span class='hs-definition'>mallocPlainForeignPtrBytesAligned</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Int</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>IO</span> <span class='hs-layout'>(</span><span class='hs-conid'>ForeignPtr</span> <span class='hs-varid'>a</span><span class='hs-layout'>)</span>
+<a name="line-804"></a><span class='hs-definition'>mallocPlainForeignPtrBytesAligned</span> <span class='hs-layout'>(</span><span class='hs-conid'>I</span><span class='hs-cpp'>#</span> <span class='hs-varid'>size</span><span class='hs-layout'>)</span> <span class='hs-keyglyph'>=</span> <span class='hs-conid'>IO</span> <span class='hs-varop'>$</span> <span class='hs-keyglyph'>\</span><span class='hs-varid'>s</span> <span class='hs-keyglyph'>-&gt;</span>
+<a name="line-805"></a>  <span class='hs-keyword'>case</span> <span class='hs-varid'>newAlignedPinnedByteArray</span><span class='hs-cpp'>#</span> <span class='hs-varid'>size</span> <span class='hs-num'>16</span><span class='hs-cpp'>#</span> <span class='hs-varid'>s</span> <span class='hs-keyword'>of</span>
+<a name="line-806"></a>    <span class='hs-layout'>(</span><span class='hs-cpp'>#</span> <span class='hs-varid'>s'</span><span class='hs-layout'>,</span> <span class='hs-varid'>mbarr</span><span class='hs-cpp'>#</span> <span class='hs-cpp'>#</span><span class='hs-layout'>)</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-layout'>(</span><span class='hs-cpp'>#</span> <span class='hs-varid'>s'</span><span class='hs-layout'>,</span> <span class='hs-conid'>ForeignPtr</span> <span class='hs-layout'>(</span><span class='hs-varid'>byteArrayContents</span><span class='hs-cpp'>#</span> <span class='hs-layout'>(</span><span class='hs-varid'>unsafeCoerce</span><span class='hs-cpp'>#</span> <span class='hs-varid'>mbarr</span><span class='hs-cpp'>#</span><span class='hs-layout'>)</span><span class='hs-layout'>)</span> <span class='hs-layout'>(</span><span class='hs-conid'>PlainPtr</span> <span class='hs-varid'>mbarr</span><span class='hs-cpp'>#</span><span class='hs-layout'>)</span> <span class='hs-cpp'>#</span><span class='hs-layout'>)</span>
+<a name="line-807"></a>
 </pre></body>
 </html>
