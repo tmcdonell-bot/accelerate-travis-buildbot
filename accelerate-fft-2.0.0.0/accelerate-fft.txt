@@ -82,10 +82,10 @@ idft :: (Shape sh, Slice sh, RealFloat e, FromIntegral Int e) => Acc (Array (sh 
 --   extent, and don't want to recompute the roots for each one.
 --   
 --   The extent of the input and roots must match.
-dftG :: (Shape sh, Slice sh, RealFloat e) => Acc (Array (sh :. Int) (Complex e)) -> Acc (Array (sh :. Int) (Complex e)) -> Acc (Array (sh :. Int) (Complex e))
+dftG :: forall sh e. (Shape sh, Slice sh, RealFloat e) => Acc (Array (sh :. Int) (Complex e)) -> Acc (Array (sh :. Int) (Complex e)) -> Acc (Array (sh :. Int) (Complex e))
 
 -- | Compute a single value of the DFT.
-dftGS :: (Shape sh, Slice sh, RealFloat e) => Exp (sh :. Int) -> Acc (Array (sh :. Int) (Complex e)) -> Acc (Array (sh :. Int) (Complex e)) -> Acc (Scalar (Complex e))
+dftGS :: forall sh e. (Shape sh, Slice sh, RealFloat e) => Exp (sh :. Int) -> Acc (Array (sh :. Int) (Complex e)) -> Acc (Array (sh :. Int) (Complex e)) -> Acc (Scalar (Complex e))
 
 
 -- | Computation of a Discrete Fourier Transform using the Cooley-Tuckey
@@ -124,7 +124,7 @@ fft1D :: FFTElt e => Mode -> Array DIM1 (Complex e) -> Acc (Array DIM1 (Complex 
 --   The default implementation requires the array dimension to be a power
 --   of two. The FFI-backed implementations ignore the Haskell-side size
 --   parameter (second argument).
-fft1D' :: FFTElt e => Mode -> DIM1 -> Acc (Array DIM1 (Complex e)) -> Acc (Array DIM1 (Complex e))
+fft1D' :: forall e. FFTElt e => Mode -> DIM1 -> Acc (Array DIM1 (Complex e)) -> Acc (Array DIM1 (Complex e))
 
 -- | Discrete Fourier Transform of a matrix.
 --   
@@ -137,7 +137,7 @@ fft2D :: FFTElt e => Mode -> Array DIM2 (Complex e) -> Acc (Array DIM2 (Complex 
 --   The default implementation requires the array dimensions to be powers
 --   of two. The FFI-backed implementations ignore the Haskell-side size
 --   parameter (second argument).
-fft2D' :: FFTElt e => Mode -> DIM2 -> Acc (Array DIM2 (Complex e)) -> Acc (Array DIM2 (Complex e))
+fft2D' :: forall e. FFTElt e => Mode -> DIM2 -> Acc (Array DIM2 (Complex e)) -> Acc (Array DIM2 (Complex e))
 
 -- | Discrete Fourier Transform of a 3D array.
 --   
@@ -150,5 +150,5 @@ fft3D :: FFTElt e => Mode -> Array DIM3 (Complex e) -> Acc (Array DIM3 (Complex 
 --   The default implementation requires the array dimensions to be powers
 --   of two. The FFI-backed implementations ignore the Haskell-side size
 --   parameter (second argument).
-fft3D' :: FFTElt e => Mode -> DIM3 -> Acc (Array DIM3 (Complex e)) -> Acc (Array DIM3 (Complex e))
-fft :: (Slice sh, Shape sh, RealFloat e, FromIntegral Int e) => e -> sh -> Int -> Acc (Array (sh :. Int) (Complex e)) -> Acc (Array (sh :. Int) (Complex e))
+fft3D' :: forall e. FFTElt e => Mode -> DIM3 -> Acc (Array DIM3 (Complex e)) -> Acc (Array DIM3 (Complex e))
+fft :: forall sh e. (Slice sh, Shape sh, RealFloat e, FromIntegral Int e) => e -> sh -> Int -> Acc (Array (sh :. Int) (Complex e)) -> Acc (Array (sh :. Int) (Complex e))

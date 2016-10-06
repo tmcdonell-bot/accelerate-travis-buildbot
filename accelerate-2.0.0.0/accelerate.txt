@@ -272,11 +272,14 @@ module Data.Array.Accelerate.Data.Complex
 --   with the magnitude of <tt>z</tt>, but oriented in the positive real
 --   direction, whereas <tt><a>signum</a> z</tt> has the phase of
 --   <tt>z</tt>, but unit magnitude.
+--   
+--   The <a>Foldable</a> and <a>Traversable</a> instances traverse the real
+--   part first.
 data Complex a :: * -> *
 
 -- | forms a complex number from its real and imaginary rectangular
 --   components.
-(:+) :: SrictNotUnpackeda -> SrictNotUnpackeda -> Complex a
+(:+) :: ~a -> ~a -> Complex a
 
 -- | Return the real part of a complex number
 real :: Elt a => Exp (Complex a) -> Exp a
@@ -285,11 +288,11 @@ real :: Elt a => Exp (Complex a) -> Exp a
 imag :: Elt a => Exp (Complex a) -> Exp a
 
 -- | Form a complex number from polar components of magnitude and phase.
-mkPolar :: Floating a => Exp a -> Exp a -> Exp (Complex a)
+mkPolar :: forall a. Floating a => Exp a -> Exp a -> Exp (Complex a)
 
 -- | <tt><a>cis</a> t</tt> is a complex value with magnitude <tt>1</tt> and
 --   phase <tt>t</tt> (modulo <tt>2*<a>pi</a></tt>).
-cis :: Floating a => Exp a -> Exp (Complex a)
+cis :: forall a. Floating a => Exp a -> Exp (Complex a)
 
 -- | The function <a>polar</a> takes a complex number and returns a
 --   (magnitude, phase) pair in canonical form: the magnitude is
@@ -488,12 +491,18 @@ Divide :: Divide sh
 
 -- | Slices, aka generalised indices, as <i>n</i>-tuples and mappings of
 --   slice indices to slices, co-slices, and slice dimensions
-class (Elt sl, Shape (SliceShape sl), Shape (CoSliceShape sl), Shape (FullShape sl)) => Slice sl where type family SliceShape sl :: * type family CoSliceShape sl :: * type family FullShape sl :: *
+class (Elt sl, Shape (SliceShape sl), Shape (CoSliceShape sl), Shape (FullShape sl)) => Slice sl where type SliceShape sl :: * type CoSliceShape sl :: * type FullShape sl :: * where {
+    type family SliceShape sl :: *;
+    type family CoSliceShape sl :: *;
+    type family FullShape sl :: *;
+}
 sliceIndex :: Slice sl => sl -> SliceIndex (EltRepr sl) (EltRepr (SliceShape sl)) (EltRepr (CoSliceShape sl)) (EltRepr (FullShape sl))
 
 -- | Generalised array division, like above but use for splitting an array
 --   into many subarrays, as opposed to extracting a single subarray.
-class (Slice (DivisionSlice sl)) => Division sl where type family DivisionSlice sl :: *
+class (Slice (DivisionSlice sl)) => Division sl where type DivisionSlice sl :: * where {
+    type family DivisionSlice sl :: *;
+}
 slicesIndex :: (Division sl, slix ~ DivisionSlice sl) => sl -> SliceIndex (EltRepr slix) (EltRepr (SliceShape slix)) (EltRepr (CoSliceShape slix)) (EltRepr (FullShape slix))
 type DIM0 = Z
 type DIM1 = DIM0 :. Int
@@ -508,9 +517,11 @@ type DIM9 = DIM8 :. Int
 
 -- | Expression form that extracts a scalar from an array
 (!) :: (Shape ix, Elt e) => Acc (Array ix e) -> Exp ix -> Exp e
+infixl 9 !
 
 -- | Expression form that extracts a scalar from an array at a linear index
 (!!) :: (Shape ix, Elt e) => Acc (Array ix e) -> Exp Int -> Exp e
+infixl 9 !!
 
 -- | Extraction of the element in a singleton array
 the :: Elt e => Acc (Scalar e) -> Exp e
@@ -549,19 +560,19 @@ slice :: (Slice slix, Elt e) => Acc (Array (FullShape slix) e) -> Exp slix -> Ac
 
 -- | Yield all but the elements in the last index of the outermost
 --   dimension.
-init :: (Slice sh, Shape sh, Elt e) => Acc (Array (sh :. Int) e) -> Acc (Array (sh :. Int) e)
+init :: forall sh e. (Slice sh, Shape sh, Elt e) => Acc (Array (sh :. Int) e) -> Acc (Array (sh :. Int) e)
 
 -- | Yield all but the first element of the input vector. The vector must
 --   not be empty.
-tail :: (Slice sh, Shape sh, Elt e) => Acc (Array (sh :. Int) e) -> Acc (Array (sh :. Int) e)
+tail :: forall sh e. (Slice sh, Shape sh, Elt e) => Acc (Array (sh :. Int) e) -> Acc (Array (sh :. Int) e)
 
 -- | Yield the first <tt>n</tt> elements in the outermost dimension of the
 --   array (plus all lower dimensional elements).
-take :: (Slice sh, Shape sh, Elt e) => Exp Int -> Acc (Array (sh :. Int) e) -> Acc (Array (sh :. Int) e)
+take :: forall sh e. (Slice sh, Shape sh, Elt e) => Exp Int -> Acc (Array (sh :. Int) e) -> Acc (Array (sh :. Int) e)
 
 -- | Yield all but the first <tt>n</tt> elements along the outermost
 --   dimension of the array (plus all lower dimensional elements).
-drop :: (Slice sh, Shape sh, Elt e) => Exp Int -> Acc (Array (sh :. Int) e) -> Acc (Array (sh :. Int) e)
+drop :: forall sh e. (Slice sh, Shape sh, Elt e) => Exp Int -> Acc (Array (sh :. Int) e) -> Acc (Array (sh :. Int) e)
 
 -- | Yield a slit (slice) of the outermost indices of an array.
 --   Denotationally, we have:
@@ -569,7 +580,7 @@ drop :: (Slice sh, Shape sh, Elt e) => Exp Int -> Acc (Array (sh :. Int) e) -> A
 --   <pre>
 --   slit i n = take n . drop i
 --   </pre>
-slit :: (Slice sh, Shape sh, Elt e) => Exp Int -> Exp Int -> Acc (Array (sh :. Int) e) -> Acc (Array (sh :. Int) e)
+slit :: forall sh e. (Slice sh, Shape sh, Elt e) => Exp Int -> Exp Int -> Acc (Array (sh :. Int) e) -> Acc (Array (sh :. Int) e)
 
 -- | Array inlet: makes an array available for processing using the
 --   Accelerate language.
@@ -647,7 +658,8 @@ enumFromStepN :: (Shape sh, Num e, FromIntegral Int e) => Exp sh -> Exp e -> Exp
 
 -- | Concatenate outermost component of two arrays. The extent of the lower
 --   dimensional component is the intersection of the two arrays.
-(++) :: (Slice sh, Shape sh, Elt e) => Acc (Array (sh :. Int) e) -> Acc (Array (sh :. Int) e) -> Acc (Array (sh :. Int) e)
+(++) :: forall sh e. (Slice sh, Shape sh, Elt e) => Acc (Array (sh :. Int) e) -> Acc (Array (sh :. Int) e) -> Acc (Array (sh :. Int) e)
+infixr 5 ++
 
 -- | Infix version of <a>acond</a>. If the predicate evaluates to
 --   <a>True</a>, the first component of the tuple is returned, else the
@@ -655,6 +667,7 @@ enumFromStepN :: (Shape sh, Num e, FromIntegral Int e) => Exp sh -> Exp e -> Exp
 --   
 --   See also: <a>ifThenElse</a>.
 (?|) :: Arrays a => Exp Bool -> (Acc a, Acc a) -> Acc a
+infix 0 ?|
 
 -- | An array-level if-then-else construct.
 acond :: Arrays a => Exp Bool -> Acc a -> Acc a -> Acc a
@@ -666,7 +679,9 @@ awhile :: Arrays a => (Acc a -> Acc (Scalar Bool)) -> (Acc a -> Acc a) -> Acc a 
 
 -- | For use with <tt>-XRebindableSyntax</tt>, this class provides
 --   <a>ifThenElse</a> lifted to both scalar and array types.
-class IfThenElse t where type family EltT t a :: Constraint
+class IfThenElse t where type EltT t a :: Constraint where {
+    type family EltT t a :: Constraint;
+}
 ifThenElse :: (IfThenElse t, EltT t a) => Exp Bool -> t a -> t a -> t a
 
 -- | Pipelining of two array computations.
@@ -677,6 +692,7 @@ ifThenElse :: (IfThenElse t, EltT t a) => Exp Bool -> t a -> t a -> t a
 --   (acc1 &gt;-&gt; acc2) arrs = let tmp = acc1 arrs in acc2 tmp
 --   </pre>
 (>->) :: (Arrays a, Arrays b, Arrays c) => (Acc a -> Acc b) -> (Acc b -> Acc c) -> (Acc a -> Acc c)
+infixl 1 >->
 
 -- | Force an array expression to be evaluated, preventing it from fusing
 --   with other operations.
@@ -1096,7 +1112,7 @@ scanl1Seg :: (Elt a, Integral i, Bits i, FromIntegral i Int) => (Exp a -> Exp a 
 --   The first element of the resulting tuple is a vector of scanned
 --   values. The second element is a vector of segment scan totals and has
 --   the same size as the segment vector.
-scanl'Seg :: (Elt a, Integral i, Bits i, FromIntegral i Int, FromIntegral Int i) => (Exp a -> Exp a -> Exp a) -> Exp a -> Acc (Vector a) -> Acc (Segments i) -> Acc (Vector a, Vector a)
+scanl'Seg :: forall a i. (Elt a, Integral i, Bits i, FromIntegral i Int, FromIntegral Int i) => (Exp a -> Exp a -> Exp a) -> Exp a -> Acc (Vector a) -> Acc (Segments i) -> Acc (Vector a, Vector a)
 
 -- | Segmented version of <a>prescanl</a>.
 prescanlSeg :: (Elt a, Integral i, Bits i, FromIntegral i Int, FromIntegral Int i) => (Exp a -> Exp a -> Exp a) -> Exp a -> Acc (Vector a) -> Acc (Segments i) -> Acc (Vector a)
@@ -1111,7 +1127,7 @@ scanrSeg :: (Elt a, Integral i, Bits i, FromIntegral i Int, FromIntegral Int i) 
 scanr1Seg :: (Elt a, Integral i, Bits i, FromIntegral i Int) => (Exp a -> Exp a -> Exp a) -> Acc (Vector a) -> Acc (Segments i) -> Acc (Vector a)
 
 -- | Segmented version of <a>scanr'</a>.
-scanr'Seg :: (Elt a, Integral i, Bits i, FromIntegral i Int, FromIntegral Int i) => (Exp a -> Exp a -> Exp a) -> Exp a -> Acc (Vector a) -> Acc (Segments i) -> Acc (Vector a, Vector a)
+scanr'Seg :: forall a i. (Elt a, Integral i, Bits i, FromIntegral i Int, FromIntegral Int i) => (Exp a -> Exp a -> Exp a) -> Exp a -> Acc (Vector a) -> Acc (Segments i) -> Acc (Vector a, Vector a)
 
 -- | Segmented version of <a>prescanr</a>.
 prescanrSeg :: (Elt a, Integral i, Bits i, FromIntegral i Int, FromIntegral Int i) => (Exp a -> Exp a -> Exp a) -> Exp a -> Acc (Vector a) -> Acc (Segments i) -> Acc (Vector a)
@@ -1318,6 +1334,12 @@ abs :: Num a => a -> a
 --   <tt>0</tt> (zero) or <tt>1</tt> (positive).
 signum :: Num a => a -> a
 
+-- | Conversion from an <a>Integer</a>. An integer literal represents the
+--   application of the function <a>fromInteger</a> to the appropriate
+--   value of type <a>Integer</a>, so such literals have type
+--   <tt>(<a>Num</a> a) =&gt; a</tt>.
+fromInteger :: Num a => Integer -> a
+
 -- | Integral numbers, supporting integral division
 type Integral a = (Enum a, Real a, Integral (Exp a))
 
@@ -1405,17 +1427,27 @@ floor :: (RealFrac a, Elt b, IsIntegral b) => Exp a -> Exp b
 
 -- | Efficient, machine-independent access to the components of a
 --   floating-point number
-class (RealFrac a, Floating a) => RealFloat a where floatRadix _ = fromInteger (floatRadix (undefined :: a)) floatDigits _ = constant (floatDigits (undefined :: a)) floatRange _ = let (m, n) = floatRange (undefined :: a) in (constant m, constant n) isIEEE _ = constant (isIEEE (undefined :: Float)) decodeFloat = \ format_abNnU kind_abNnV fn_abNnW msg_abNnX -> error (format_abNnU kind_abNnV (call fn_abNnW msg_abNnX)) (\ kind_abNnY msg_abNnZ -> message kind_abNnY ("Data/Array/Accelerate/Classes/RealFloat.hs:100:21: " ++ msg_abNnZ)) Internal "RealFloat.decodeFloat" "Not implemented yet" encodeFloat = \ format_abNo3 kind_abNo4 fn_abNo5 msg_abNo6 -> error (format_abNo3 kind_abNo4 (call fn_abNo5 msg_abNo6)) (\ kind_abNo7 msg_abNo8 -> message kind_abNo7 ("Data/Array/Accelerate/Classes/RealFloat.hs:101:21: " ++ msg_abNo8)) Internal "RealFloat.encodeFloat" "Not implemented yet" exponent = \ format_abNoc kind_abNod fn_abNoe msg_abNof -> error (format_abNoc kind_abNod (call fn_abNoe msg_abNof)) (\ kind_abNog msg_abNoh -> message kind_abNog ("Data/Array/Accelerate/Classes/RealFloat.hs:102:21: " ++ msg_abNoh)) Internal "RealFloat.exponent" "Not implemented yet" significand = \ format_abNol kind_abNom fn_abNon msg_abNoo -> error (format_abNol kind_abNom (call fn_abNon msg_abNoo)) (\ kind_abNop msg_abNoq -> message kind_abNop ("Data/Array/Accelerate/Classes/RealFloat.hs:103:21: " ++ msg_abNoq)) Internal "RealFloat.significand" "Not implemented yet" scaleFloat = \ format_abNou kind_abNov fn_abNow msg_abNox -> error (format_abNou kind_abNov (call fn_abNow msg_abNox)) (\ kind_abNoy msg_abNoz -> message kind_abNoy ("Data/Array/Accelerate/Classes/RealFloat.hs:104:21: " ++ msg_abNoz)) Internal "RealFloat.scaleFloat" "Not implemented yet" isInfinite = \ format_abNoD kind_abNoE fn_abNoF msg_abNoG -> error (format_abNoD kind_abNoE (call fn_abNoF msg_abNoG)) (\ kind_abNoH msg_abNoI -> message kind_abNoH ("Data/Array/Accelerate/Classes/RealFloat.hs:105:21: " ++ msg_abNoI)) Internal "RealFloat.isInfinite" "Not implemented yet" isDenormalized = \ format_abNoM kind_abNoN fn_abNoO msg_abNoP -> error (format_abNoM kind_abNoN (call fn_abNoO msg_abNoP)) (\ kind_abNoQ msg_abNoR -> message kind_abNoQ ("Data/Array/Accelerate/Classes/RealFloat.hs:106:21: " ++ msg_abNoR)) Internal "RealFloat.isDenormalized" "Not implemented yet" isNegativeZero = \ format_abNoV kind_abNoW fn_abNoX msg_abNoY -> error (format_abNoV kind_abNoW (call fn_abNoX msg_abNoY)) (\ kind_abNoZ msg_abNp0 -> message kind_abNoZ ("Data/Array/Accelerate/Classes/RealFloat.hs:107:21: " ++ msg_abNp0)) Internal "RealFloat.isNegativeZero" "Not implemented yet"
+class (RealFrac a, Floating a) => RealFloat a where floatRadix _ = fromInteger (floatRadix (undefined :: a)) floatDigits _ = constant (floatDigits (undefined :: a)) floatRange _ = let (m, n) = floatRange (undefined :: a) in (constant m, constant n) isIEEE _ = constant (isIEEE (undefined :: Float)) decodeFloat = ((\ format_acYm2 kind_acYm3 fn_acYm4 msg_acYm5 -> error (format_acYm2 kind_acYm3 (call fn_acYm4 msg_acYm5))) (\ kind_acYm6 msg_acYm7 -> message kind_acYm6 ("Data/Array/Accelerate/Classes/RealFloat.hs:100:21: " ++ msg_acYm7)) Internal) "RealFloat.decodeFloat" "Not implemented yet" encodeFloat = ((\ format_acYmb kind_acYmc fn_acYmd msg_acYme -> error (format_acYmb kind_acYmc (call fn_acYmd msg_acYme))) (\ kind_acYmf msg_acYmg -> message kind_acYmf ("Data/Array/Accelerate/Classes/RealFloat.hs:101:21: " ++ msg_acYmg)) Internal) "RealFloat.encodeFloat" "Not implemented yet" exponent = ((\ format_acYmk kind_acYml fn_acYmm msg_acYmn -> error (format_acYmk kind_acYml (call fn_acYmm msg_acYmn))) (\ kind_acYmo msg_acYmp -> message kind_acYmo ("Data/Array/Accelerate/Classes/RealFloat.hs:102:21: " ++ msg_acYmp)) Internal) "RealFloat.exponent" "Not implemented yet" significand = ((\ format_acYmt kind_acYmu fn_acYmv msg_acYmw -> error (format_acYmt kind_acYmu (call fn_acYmv msg_acYmw))) (\ kind_acYmx msg_acYmy -> message kind_acYmx ("Data/Array/Accelerate/Classes/RealFloat.hs:103:21: " ++ msg_acYmy)) Internal) "RealFloat.significand" "Not implemented yet" scaleFloat = ((\ format_acYmC kind_acYmD fn_acYmE msg_acYmF -> error (format_acYmC kind_acYmD (call fn_acYmE msg_acYmF))) (\ kind_acYmG msg_acYmH -> message kind_acYmG ("Data/Array/Accelerate/Classes/RealFloat.hs:104:21: " ++ msg_acYmH)) Internal) "RealFloat.scaleFloat" "Not implemented yet" isInfinite = ((\ format_acYmL kind_acYmM fn_acYmN msg_acYmO -> error (format_acYmL kind_acYmM (call fn_acYmN msg_acYmO))) (\ kind_acYmP msg_acYmQ -> message kind_acYmP ("Data/Array/Accelerate/Classes/RealFloat.hs:105:21: " ++ msg_acYmQ)) Internal) "RealFloat.isInfinite" "Not implemented yet" isDenormalized = ((\ format_acYmU kind_acYmV fn_acYmW msg_acYmX -> error (format_acYmU kind_acYmV (call fn_acYmW msg_acYmX))) (\ kind_acYmY msg_acYmZ -> message kind_acYmY ("Data/Array/Accelerate/Classes/RealFloat.hs:106:21: " ++ msg_acYmZ)) Internal) "RealFloat.isDenormalized" "Not implemented yet" isNegativeZero = ((\ format_acYn3 kind_acYn4 fn_acYn5 msg_acYn6 -> error (format_acYn3 kind_acYn4 (call fn_acYn5 msg_acYn6))) (\ kind_acYn7 msg_acYn8 -> message kind_acYn7 ("Data/Array/Accelerate/Classes/RealFloat.hs:107:21: " ++ msg_acYn8)) Internal) "RealFloat.isNegativeZero" "Not implemented yet"
 
 -- | The radix of the representation (often 2) (constant)
 floatRadix :: RealFloat a => Exp a -> Exp Int64
+
+-- | The radix of the representation (often 2) (constant)
+floatRadix :: (RealFloat a, RealFloat a) => Exp a -> Exp Int64
 
 -- | The number of digits of <a>floatRadix</a> in the significand
 --   (constant)
 floatDigits :: RealFloat a => Exp a -> Exp Int
 
+-- | The number of digits of <a>floatRadix</a> in the significand
+--   (constant)
+floatDigits :: (RealFloat a, RealFloat a) => Exp a -> Exp Int
+
 -- | The lowest and highest values the exponent may assume (constant)
 floatRange :: RealFloat a => Exp a -> (Exp Int, Exp Int)
+
+-- | The lowest and highest values the exponent may assume (constant)
+floatRange :: (RealFloat a, RealFloat a) => Exp a -> (Exp Int, Exp Int)
 
 -- | Return the significand and an appropriately scaled exponent. if
 --   <tt>(m,n) = <a>decodeFloat</a> x</tt> then <tt>x = m*b^^n</tt>, where
@@ -1452,6 +1484,9 @@ isNegativeZero :: RealFloat a => Exp a -> Exp Bool
 
 -- | <a>True</a> if the argument is an IEEE floating point number
 isIEEE :: RealFloat a => Exp a -> Exp Bool
+
+-- | <a>True</a> if the argument is an IEEE floating point number
+isIEEE :: (RealFloat a, RealFloat a) => Exp a -> Exp Bool
 
 -- | A version of arctangent taking two real floating-point arguments. For
 --   real floating <tt>x</tt> and <tt>y</tt>, <tt><a>atan2</a> y x</tt>
@@ -1596,7 +1631,9 @@ data CSChar :: *
 data CUChar :: *
 
 -- | The class of types <tt>e</tt> which can be lifted into <tt>c</tt>.
-class Lift c e where type family Plain e
+class Lift c e where type Plain e where {
+    type family Plain e;
+}
 
 -- | Lift the given value into a surface type <tt>c</tt> --- either
 --   <a>Exp</a> for scalar expressions or <a>Acc</a> for array
@@ -1645,16 +1682,16 @@ ilift3 :: (Exp Int -> Exp Int -> Exp Int -> Exp Int) -> Exp DIM1 -> Exp DIM1 -> 
 constant :: Elt t => t -> Exp t
 
 -- | Extract the first component of a scalar pair.
-fst :: (Elt a, Elt b) => Exp (a, b) -> Exp a
+fst :: forall a b. (Elt a, Elt b) => Exp (a, b) -> Exp a
 
 -- | Extract the first component of an array pair.
-afst :: (Arrays a, Arrays b) => Acc (a, b) -> Acc a
+afst :: forall a b. (Arrays a, Arrays b) => Acc (a, b) -> Acc a
 
 -- | Extract the second component of a scalar pair.
-snd :: (Elt a, Elt b) => Exp (a, b) -> Exp b
+snd :: forall a b. (Elt a, Elt b) => Exp (a, b) -> Exp b
 
 -- | Extract the second component of an array pair
-asnd :: (Arrays a, Arrays b) => Acc (a, b) -> Acc b
+asnd :: forall a b. (Arrays a, Arrays b) => Acc (a, b) -> Acc b
 
 -- | Converts an uncurried function to a curried function.
 curry :: Lift f (f a, f b) => (f (Plain (f a), Plain (f b)) -> f c) -> f a -> f b -> f c
@@ -1668,6 +1705,7 @@ uncurry :: Unlift f (f a, f b) => (f a -> f b -> f c) -> f (Plain (f a), Plain (
 --   
 --   See also: <a>ifThenElse</a>.
 (?) :: Elt t => Exp Bool -> (Exp t, Exp t) -> Exp t
+infix 0 ?
 
 -- | A case-like control structure
 caseof :: (Elt a, Elt b) => Exp a -> [(Exp a -> Exp Bool, Exp b)] -> Exp b -> Exp b
@@ -1680,22 +1718,24 @@ cond :: Elt t => Exp Bool -> Exp t -> Exp t -> Exp t
 while :: Elt e => (Exp e -> Exp Bool) -> (Exp e -> Exp e) -> Exp e -> Exp e
 
 -- | Repeatedly apply a function a fixed number of times
-iterate :: Elt a => Exp Int -> (Exp a -> Exp a) -> Exp a -> Exp a
+iterate :: forall a. Elt a => Exp Int -> (Exp a -> Exp a) -> Exp a -> Exp a
 
 -- | Reduce along an innermost slice of an array <i>sequentially</i>, by
 --   applying a binary operator to a starting value and the array from left
 --   to right.
-sfoldl :: (Shape sh, Slice sh, Elt a, Elt b) => (Exp a -> Exp b -> Exp a) -> Exp a -> Exp sh -> Acc (Array (sh :. Int) b) -> Exp a
+sfoldl :: forall sh a b. (Shape sh, Slice sh, Elt a, Elt b) => (Exp a -> Exp b -> Exp a) -> Exp a -> Exp sh -> Acc (Array (sh :. Int) b) -> Exp a
 
 -- | Conjunction: True if both arguments are true. This is a short-circuit
 --   operator, so the second argument will be evaluate only if the first is
 --   true.
 (&&*) :: Exp Bool -> Exp Bool -> Exp Bool
+infixr 3 &&*
 
 -- | Disjunction: True if either argument is true. This is a short-circuit
 --   operator, so the second argument will be evaluated only if the first
 --   is false.
 (||*) :: Exp Bool -> Exp Bool -> Exp Bool
+infixr 2 ||*
 
 -- | Logical negation
 not :: Exp Bool -> Exp Bool
@@ -1744,13 +1784,13 @@ unindex1 :: Elt i => Exp (Z :. i) -> Exp i
 index2 :: (Elt i, Slice (Z :. i)) => Exp i -> Exp i -> Exp ((Z :. i) :. i)
 
 -- | Destructs a rank-2 index to an Exp tuple of two Int`s.
-unindex2 :: (Elt i, Slice (Z :. i)) => Exp ((Z :. i) :. i) -> Exp (i, i)
+unindex2 :: forall i. (Elt i, Slice (Z :. i)) => Exp ((Z :. i) :. i) -> Exp (i, i)
 
 -- | Create a rank-3 index from three Exp Int`s
 index3 :: (Elt i, Slice (Z :. i), Slice ((Z :. i) :. i)) => Exp i -> Exp i -> Exp i -> Exp (((Z :. i) :. i) :. i)
 
 -- | Destruct a rank-3 index into an Exp tuple of Int`s
-unindex3 :: (Elt i, Slice (Z :. i), Slice ((Z :. i) :. i)) => Exp (((Z :. i) :. i) :. i) -> Exp (i, i, i)
+unindex3 :: forall i. (Elt i, Slice (Z :. i), Slice ((Z :. i) :. i)) => Exp (((Z :. i) :. i) :. i) -> Exp (i, i, i)
 
 -- | Get the outermost dimension of a shape
 indexHead :: (Slice sh, Elt a) => Exp (sh :. a) -> Exp a
@@ -1803,7 +1843,7 @@ fromFunction :: (Shape sh, Elt e) => sh -> (sh -> e) -> Array sh e
 fromList :: (Shape sh, Elt e) => sh -> [e] -> Array sh e
 
 -- | Convert an accelerated array to a list in row-major order.
-toList :: Array sh e -> [e]
+toList :: forall sh e. Array sh e -> [e]
 
 -- | Convert an <a>IArray</a> to an accelerated array.
 --   
@@ -1819,6 +1859,7 @@ toIArray :: (IxShapeRepr (EltRepr ix) ~ EltRepr sh, IArray a e, Ix ix, Shape sh,
 
 -- | Function composition.
 (.) :: (b -> c) -> (a -> b) -> a -> c
+infixr 9 .
 
 -- | Application operator. This operator is redundant, since ordinary
 --   application <tt>(f x)</tt> means the same as <tt>(f <a>$</a> x)</tt>.
@@ -1832,11 +1873,12 @@ toIArray :: (IxShapeRepr (EltRepr ix) ~ EltRepr sh, IArray a e, Ix ix, Shape sh,
 --   It is also useful in higher-order situations, such as <tt><a>map</a>
 --   (<a>$</a> 0) xs</tt>, or <tt><a>zipWith</a> (<a>$</a>) fs xs</tt>.
 ($) :: (a -> b) -> a -> b
+infixr 0 $
 
 -- | <a>error</a> stops execution and displays an error message.
-error :: [Char] -> a
+error :: HasCallStack => [Char] -> a
 
 -- | A special case of <a>error</a>. It is expected that compilers will
 --   recognize this and insert error messages which are more appropriate to
 --   the context in which <a>undefined</a> appears.
-undefined :: a
+undefined :: HasCallStack => a

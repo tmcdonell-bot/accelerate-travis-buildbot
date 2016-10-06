@@ -285,7 +285,7 @@ streamOut :: Arrays a => Seq [a] -> [a]
 
 -- | As <a>stream</a>, but execute in the specified context.
 streamWith :: (Arrays a, Arrays b) => Context -> (Acc a -> Acc b) -> [a] -> [b]
-streamOutWith :: Arrays a => Context -> Seq [a] -> [a]
+streamOutWith :: forall a. Arrays a => Context -> Seq [a] -> [a]
 data Async a :: * -> *
 
 -- | Block the calling thread until the computation completes, then return
@@ -330,7 +330,7 @@ create :: Device -> [ContextFlag] -> IO Context
 --   than single attachment.
 destroy :: Context -> IO ()
 unsafeFree :: Arrays arrs => arrs -> IO ()
-unsafeFreeWith :: Arrays arrs => Context -> arrs -> IO ()
+unsafeFreeWith :: forall arrs. Arrays arrs => Context -> arrs -> IO ()
 performGC :: IO ()
 performGCWith :: Context -> IO ()
 
@@ -376,7 +376,7 @@ exportAfun :: Name -> String -> Q [Dec]
 
 -- | Given a handle and an Accelerate function, generate an exportable
 --   version.
-buildExported :: (Arrays a, Arrays b) => AccHandle -> (Acc a -> Acc b) -> IO (StablePtr Afun)
+buildExported :: forall a b. (Arrays a, Arrays b) => AccHandle -> (Acc a -> Acc b) -> IO (StablePtr Afun)
 
 -- | The input required from foreign code.
 type InputArray = (ShapeBuffer, DevicePtrBuffer)
@@ -392,20 +392,20 @@ type DevicePtrBuffer = Ptr WordPtr
 
 -- | CUDA foreign Acc functions are just CIO functions.
 data CUDAForeignAcc f
-CUDAForeignAcc :: String -> (Stream -> as -> CIO bs) -> CUDAForeignAcc (as -> bs)
+[CUDAForeignAcc] :: String -> (Stream -> as -> CIO bs) -> CUDAForeignAcc (as -> bs)
 
 -- | Gives the executable form of a foreign function if it can be executed
 --   by the CUDA backend.
-canExecuteAcc :: (Foreign asm, Typeable as, Typeable bs) => asm (as -> bs) -> Maybe (Stream -> as -> CIO bs)
+canExecuteAcc :: forall asm as bs. (Foreign asm, Typeable as, Typeable bs) => asm (as -> bs) -> Maybe (Stream -> as -> CIO bs)
 
 -- | CUDA foreign Exp functions consist of a list of C header files
 --   necessary to call the function and the name of the function to call.
 data CUDAForeignExp f
-CUDAForeignExp :: [String] -> String -> CUDAForeignExp (x -> y)
+[CUDAForeignExp] :: IsScalar y => [String] -> String -> CUDAForeignExp (x -> y)
 
 -- | Gives the foreign function name as a string if it is a foreign Exp
 --   function for the CUDA backend.
-canExecuteExp :: (Foreign asm, Typeable y, Typeable x) => asm (x -> y) -> Maybe ([String], String)
+canExecuteExp :: forall asm x y. (Foreign asm, Typeable y, Typeable x) => asm (x -> y) -> Maybe ([String], String)
 
 -- | Get the raw CUDA device pointers associated with an array and call the
 --   given continuation.

@@ -1549,10 +1549,10 @@ FunAttributes :: !Int64 -> !Int64 -> !Int64 -> !Int -> !Int -> FunAttributes
 -- | Kernel function parameters. Doubles will be converted to an internal
 --   float representation on devices that do not support doubles natively.
 data FunParam
-IArg :: !Int -> FunParam
-FArg :: !Float -> FunParam
-DArg :: !Double -> FunParam
-VArg :: !a -> FunParam
+[IArg] :: !Int -> FunParam
+[FArg] :: !Float -> FunParam
+[DArg] :: !Double -> FunParam
+[VArg] :: Storable a => !a -> FunParam
 
 -- | Cache configuration preference
 data CacheConfig
@@ -1919,9 +1919,9 @@ module Foreign.CUDA.Driver.Exec
 newtype Fun
 Fun :: ((Ptr ())) -> Fun
 data FunParam
-IArg :: !Int32 -> FunParam
-FArg :: !Float -> FunParam
-VArg :: !a -> FunParam
+[IArg] :: !Int32 -> FunParam
+[FArg] :: !Float -> FunParam
+[VArg] :: Storable a => !a -> FunParam
 
 -- | Function attributes
 data FunAttribute

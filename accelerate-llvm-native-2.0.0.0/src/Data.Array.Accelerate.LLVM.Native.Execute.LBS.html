@@ -1,0 +1,35 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-comment">-- |</span><span>
+</span><a name="line-2"></a><span class="hs-comment">-- Module      : Data.Array.Accelerate.LLVM.Native.Execute.LBS</span><span>
+</span><a name="line-3"></a><span class="hs-comment">-- Copyright   : [2014..2015] Trevor L. McDonell</span><span>
+</span><a name="line-4"></a><span class="hs-comment">--               [2014..2014] Vinod Grover (NVIDIA Corporation)</span><span>
+</span><a name="line-5"></a><span class="hs-comment">-- License     : BSD3</span><span>
+</span><a name="line-6"></a><span class="hs-comment">--</span><span>
+</span><a name="line-7"></a><span class="hs-comment">-- Maintainer  : Trevor L. McDonell &lt;tmcdonell@cse.unsw.edu.au&gt;</span><span>
+</span><a name="line-8"></a><span class="hs-comment">-- Stability   : experimental</span><span>
+</span><a name="line-9"></a><span class="hs-comment">-- Portability : non-portable (GHC extensions)</span><span>
+</span><a name="line-10"></a><span class="hs-comment">--</span><span>
+</span><a name="line-11"></a><span>
+</span><a name="line-12"></a><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">Data</span><span class="hs-operator">.</span><span class="hs-identifier">Array</span><span class="hs-operator">.</span><span class="hs-identifier">Accelerate</span><span class="hs-operator">.</span><span class="hs-identifier">LLVM</span><span class="hs-operator">.</span><span class="hs-identifier">Native</span><span class="hs-operator">.</span><span class="hs-identifier">Execute</span><span class="hs-operator">.</span><span class="hs-identifier">LBS</span><span>
+</span><a name="line-13"></a><span>  </span><span class="hs-keyword">where</span><span>
+</span><a name="line-14"></a><span>
+</span><a name="line-15"></a><span class="hs-comment">-- Some default values for the profitable parallelism threshold (PPT). These are</span><span>
+</span><a name="line-16"></a><span class="hs-comment">-- chosen as to reduce the frequency of deque checks. Since a deque check also</span><span>
+</span><a name="line-17"></a><span class="hs-comment">-- requires returning from the foreign LLVM function back to the scheduler code,</span><span>
+</span><a name="line-18"></a><span class="hs-comment">-- it is important to combine fine-grained iterations via the PPT.</span><span>
+</span><a name="line-19"></a><span class="hs-comment">--</span><span>
+</span><a name="line-20"></a><span class="hs-comment">-- The large PPT is meant for operations such as @map@ and @generate@, where the</span><span>
+</span><a name="line-21"></a><span class="hs-comment">-- input length equates the total number of elements to process. The small PPT</span><span>
+</span><a name="line-22"></a><span class="hs-comment">-- is meant for operations such as multidimensional reduction, where each input</span><span>
+</span><a name="line-23"></a><span class="hs-comment">-- index corresponds to a non-unit amount of work.</span><span>
+</span><a name="line-24"></a><span class="hs-comment">--</span><span>
+</span><a name="line-25"></a><span class="hs-comment">-- These should really be dynamic values based on how long it took to execute</span><span>
+</span><a name="line-26"></a><span class="hs-comment">-- the last chunk, increase or decrease the chunk size to ensure quick</span><span>
+</span><a name="line-27"></a><span class="hs-comment">-- turnaround and also low scheduler overhead.</span><span>
+</span><a name="line-28"></a><span class="hs-comment">--</span><span>
+</span><a name="line-29"></a><span class="hs-identifier">defaultLargePPT</span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-identifier hs-type">Int</span><span>
+</span><a name="line-30"></a><a name="defaultLargePPT"><a href="Data.Array.Accelerate.LLVM.Native.Execute.LBS.html#defaultLargePPT"><span class="hs-identifier">defaultLargePPT</span></a></a><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-number">2048</span><span>
+</span><a name="line-31"></a><span>
+</span><a name="line-32"></a><span class="hs-identifier">defaultSmallPPT</span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-identifier hs-type">Int</span><span>
+</span><a name="line-33"></a><a name="defaultSmallPPT"><a href="Data.Array.Accelerate.LLVM.Native.Execute.LBS.html#defaultSmallPPT"><span class="hs-identifier">defaultSmallPPT</span></a></a><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-number">32</span><span>
+</span><a name="line-34"></a><span>
+</span><a name="line-35"></a></pre></body></html>

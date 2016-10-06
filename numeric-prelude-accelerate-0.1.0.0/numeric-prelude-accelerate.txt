@@ -112,7 +112,7 @@ module Data.Array.Accelerate.Algebra.IntegralDomain
 
 -- | Allows division by zero. If the denominator is zero, the numerator is
 --   returned as the remainder.
-divModZero :: (C (Exp a), C (Exp a), Elt a) => Exp a -> Exp a -> Exp (a, a)
+divModZero :: forall a. (C (Exp a), C (Exp a), Elt a) => Exp a -> Exp a -> Exp (a, a)
 
 -- | Test if the first argument evenly divides the second
 divides :: (C (Exp a), C (Exp a), Elt a) => Exp a -> Exp a -> Exp Bool
@@ -180,9 +180,9 @@ instance Algebra.Units.C (Data.Array.Accelerate.Smart.Exp GHC.Int.Int64)
 
 module Data.Array.Accelerate.Algebra.PrincipalIdealDomain
 class (C a, C a) => C a
-extendedGCD :: C a => a -> a -> (a, (a, a))
-gcd :: C a => a -> a -> a
-lcm :: C a => a -> a -> a
+extendedGCD :: a -> a -> (a, (a, a))
+gcd :: a -> a -> a
+lcm :: a -> a -> a
 
 -- | Two integers <tt>a</tt> and <tt>b</tt> are coprime (aka: relatively
 --   prime, mutually prime) if the only positive integer that divides them
@@ -191,7 +191,7 @@ coprime :: (C (Exp a), C (Exp a)) => Exp a -> Exp a -> Exp Bool
 
 -- | An efficient method for computing the greatest common divisor of two
 --   numbers.
-euclid :: (C (Exp a), C (Exp a), Elt a) => (Exp a -> Exp a -> Exp a) -> Exp a -> Exp a -> Exp a
+euclid :: forall a. (C (Exp a), C (Exp a), Elt a) => (Exp a -> Exp a -> Exp a) -> Exp a -> Exp a -> Exp a
 
 -- | Implementation of the extended Euclid algorithm which computes,
 --   besides the greatest common divisor of integers <tt>a</tt> and
@@ -204,7 +204,7 @@ euclid :: (C (Exp a), C (Exp a), Elt a) => (Exp a -> Exp a -> Exp a) -> Exp a ->
 --   
 --   
 --   <a>https://en.wikipedia.org/wiki/Extended_Euclidean_algorithm#Pseudocode</a>
-extendedEuclid :: (C (Exp a), C (Exp a), C (Exp a), C (Exp a), Elt a) => (Exp a -> Exp a -> Exp a) -> Exp a -> Exp a -> Exp (a, (a, a))
+extendedEuclid :: forall a. (C (Exp a), C (Exp a), C (Exp a), C (Exp a), Elt a) => (Exp a -> Exp a -> Exp a) -> Exp a -> Exp a -> Exp (a, (a, a))
 instance Algebra.PrincipalIdealDomain.C (Data.Array.Accelerate.Smart.Exp GHC.Types.Int)
 instance Algebra.PrincipalIdealDomain.C (Data.Array.Accelerate.Smart.Exp GHC.Int.Int8)
 instance Algebra.PrincipalIdealDomain.C (Data.Array.Accelerate.Smart.Exp GHC.Int.Int16)
@@ -283,21 +283,22 @@ imag :: Elt a => Exp (T a) -> Exp a
 
 -- | Construct a complex number from the real and imaginary parts
 (+:) :: Elt a => Exp a -> Exp a -> Exp (T a)
+infix 6 +:
 
 -- | Construct a complex number with negated imaginary part
-(-:) :: (Elt a, C (Exp a)) => Exp a -> Exp a -> Exp (T a)
+(-:) :: forall a. (Elt a, C (Exp a)) => Exp a -> Exp a -> Exp (T a)
 
 -- | Scale a complex number by a real number.
-scale :: (C (Exp a), Elt a) => Exp a -> Exp (T a) -> Exp (T a)
+scale :: forall a. (C (Exp a), Elt a) => Exp a -> Exp (T a) -> Exp (T a)
 
 -- | Exponential of a complex number with minimal type class constraints.
-exp :: (C (Exp a), Elt a) => Exp (T a) -> Exp (T a)
+exp :: forall a. (C (Exp a), Elt a) => Exp (T a) -> Exp (T a)
 
 -- | Turn the point one quarter to the left
-quarterLeft :: (C (Exp a), Elt a) => Exp (T a) -> Exp (T a)
+quarterLeft :: forall a. (C (Exp a), Elt a) => Exp (T a) -> Exp (T a)
 
 -- | Turn the point one quarter to the right.
-quarterRight :: (C (Exp a), Elt a) => Exp (T a) -> Exp (T a)
+quarterRight :: forall a. (C (Exp a), Elt a) => Exp (T a) -> Exp (T a)
 
 -- | The function <a>toPolar</a> takes a complex number and returns a
 --   (magnitude, phase) pair in canonical form: the magnitude is
@@ -310,7 +311,7 @@ fromPolar :: (C (Exp a), Elt a) => Exp a -> Exp a -> Exp (T a)
 
 -- | <tt><a>cis</a> t</tt> is a complex value with magnitude <tt>1</tt> and
 --   phase <tt>t</tt> (modulo <tt>2*<a>pi</a></tt>).
-cis :: (C (Exp a), Elt a) => Exp a -> Exp (T a)
+cis :: forall a. (C (Exp a), Elt a) => Exp a -> Exp (T a)
 
 -- | Scale a complex number to magnitude 1.
 --   
@@ -334,14 +335,14 @@ signum :: (C (Exp a), C (Exp a), Elt a) => Exp (T a) -> Exp (T a)
 magnitude :: (C (Exp a), Elt a) => Exp (T a) -> Exp a
 
 -- | Like NormedEuc.normSqr with lifted class constraints
-magnitudeSqr :: (C (Exp a), Elt a) => Exp (T a) -> Exp a
+magnitudeSqr :: forall a. (C (Exp a), Elt a) => Exp (T a) -> Exp a
 
 -- | The phase of a complex number, in the range <tt>(-<a>pi</a>,
 --   <a>pi</a>]</tt>. If the magnitude is zero, then so is the phase.
 phase :: (C (Exp a), C (Exp a), Elt a) => Exp (T a) -> Exp a
 
 -- | The conjugate of a complex number.
-conjugate :: (C (Exp a), Elt a) => Exp (T a) -> Exp (T a)
+conjugate :: forall a. (C (Exp a), Elt a) => Exp (T a) -> Exp (T a)
 instance (Algebra.Additive.C (Data.Array.Accelerate.Smart.Exp a), Data.Array.Accelerate.Array.Sugar.Elt a) => Algebra.Additive.C (Data.Array.Accelerate.Smart.Exp (Number.Complex.T a))
 instance (Algebra.Ring.C (Data.Array.Accelerate.Smart.Exp a), Data.Array.Accelerate.Array.Sugar.Elt a) => Algebra.Ring.C (Data.Array.Accelerate.Smart.Exp (Number.Complex.T a))
 instance (Algebra.Field.C (Data.Array.Accelerate.Smart.Exp a), Data.Array.Accelerate.Array.Sugar.Elt a) => Algebra.Field.C (Data.Array.Accelerate.Smart.Exp (Number.Complex.T a))

@@ -14,9 +14,9 @@
 
 module Data.Array.Accelerate.LLVM.PTX.Foreign
 data ForeignAcc f
-ForeignAcc :: String -> (Stream -> a -> LLVM PTX b) -> ForeignAcc (a -> b)
+[ForeignAcc] :: String -> (Stream -> a -> LLVM PTX b) -> ForeignAcc (a -> b)
 data ForeignExp f
-ForeignExp :: String -> IRFun1 PTX () (x -> y) -> ForeignExp (x -> y)
+[ForeignExp] :: String -> IRFun1 PTX () (x -> y) -> ForeignExp (x -> y)
 
 -- | The LLVM monad, for executing array computations. This consists of a
 --   stack for the LLVM execution context as well as the per-execution
