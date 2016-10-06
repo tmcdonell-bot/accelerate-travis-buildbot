@@ -89,7 +89,7 @@ script:
 
 after_success:
   - |
-      if [ ${GHC%.*} == 7.10 ] && [ -z ${TARGET} ]; then
+      if [ ${GHC%.*} == 8.0 ] && [ -z ${TARGET} ]; then
         source .travis/update-docs.sh
       fi
 
