@@ -1,7 +1,7 @@
 # For more information, see: https://github.com/commercialhaskell/stack/blob/release/doc/yaml_configuration.md
 # vim: nospell filetype=yaml
 
-resolver: nightly-2016-06-06
+resolver: lts-7.2
 
 packages:
 - location:
@@ -72,21 +72,20 @@ packages:
     git:    https://github.com/{REPO_cufft}.git
     commit: {SHA_cufft}
 
+- location:
+    git:    https://github.com/bscarlet/llvm-general.git
+    commit: 529f9bf117b5ffd1ccf7ebeb679a97b3b1c67938
+  extra-dep: true
+  subdirs:
+    - 'llvm-general'
+    - 'llvm-general-pure'
+
 extra-deps:
-- 'binary-0.8.4.0'
-- 'bmp-1.2.6.1'
 - 'chaselev-deque-0.5.0.5'
-- 'gloss-1.10.2.2'
-- 'gloss-rendering-1.10.2.1'
 - 'libffi-0.1'
-- 'llvm-general-3.5.1.2'
-- 'llvm-general-pure-3.5.1.0'
 - 'non-negative-0.1.1'
 - 'normaldistribution-1.1.0.3'
 - 'numeric-prelude-0.4.2'
-- 'repa-3.4.1.1'
-- 'repa-io-3.4.1.1'
-- 'storable-record-0.0.3.1'
 - 'unique-0'
 
 # Override default flag values for local packages and extra-deps
@@ -95,10 +94,10 @@ flags:
     shared-llvm: true
   accelerate-examples:
     cuda:       true
-    llvm-cpu:   false
-    llvm-gpu:   false
+    llvm-cpu:   true
+    llvm-gpu:   true
     gui:        true
-    ekg:        false
+    ekg:        true
     codespeed:  false
     nofib:      true
     smvm:       true
