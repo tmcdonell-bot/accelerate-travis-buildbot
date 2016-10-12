@@ -6,7 +6,7 @@ resolver: lts-2.22
 packages:
 - location:
     git:    https://github.com/tmcdonell/accelerate.git
-    commit: 6df72f2c0c39afeb9a9f510868440d81521a06ab
+    commit: 82a8f98966eb69bcace1d5704f3ae2d24eae8923
 
 - location:
     git:    https://github.com/tmcdonell/accelerate-cuda.git
