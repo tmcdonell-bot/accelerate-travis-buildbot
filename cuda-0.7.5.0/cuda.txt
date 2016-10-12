@@ -2948,8 +2948,8 @@ module Foreign.CUDA.Driver.Module
 --   The following is a short tutorial on using the Driver API. The steps
 --   can be copied into a file, or run directly in <tt>ghci</tt>, in which
 --   case <tt>ghci</tt> should be launched with the option
---   `-fno-ghci-sandbox`. This is because CUDA maintains CPU-local state,
---   so operations should always be run from a bound thread.
+--   <tt>-fno-ghci-sandbox</tt>. This is because CUDA maintains CPU-local
+--   state, so operations should always be run from a bound thread.
 --   
 --   <ul>
 --   <li><i><i>Using the Driver API</i></i></li>
@@ -3050,16 +3050,16 @@ module Foreign.CUDA.Driver.Module
 --   }
 --   </pre>
 --   
---   Here, the <tt>__global__</tt> keyword marks the function as a kernel
---   that should be computed on the GPU in data parallel. When we execute
---   this function on the GPU, (at least) <i>N</i> threads will execute
---   <i>N</i> individual instances of the kernel function <tt>vecAdd</tt>.
---   Each thread will operate on a single element of each input array to
---   create a single value in the result. See the CUDA programming guide
---   for more details.
+--   Here, the <tt><b>global</b></tt> keyword marks the function as a
+--   kernel that should be computed on the GPU in data parallel. When we
+--   execute this function on the GPU, (at least) <i>N</i> threads will
+--   execute <i>N</i> individual instances of the kernel function
+--   <tt>vecAdd</tt>. Each thread will operate on a single element of each
+--   input array to create a single value in the result. See the CUDA
+--   programming guide for more details.
 --   
---   We can save this to a file `vector_add.cu`, and compile it using
---   <tt>nvcc</tt> into a form that we can then load onto the GPU and
+--   We can save this to a file <tt>vector_add.cu</tt>, and compile it
+--   using <tt>nvcc</tt> into a form that we can then load onto the GPU and
 --   execute:
 --   
 --   <pre>

@@ -12,10 +12,10 @@
 </span><a name="line-12"></a><span class="hs-comment">-- API provides more control over how CUDA is used. Furthermore, since it</span><span>
 </span><a name="line-13"></a><span class="hs-comment">-- does not require compiling and linking the program with 'nvcc', the</span><span>
 </span><a name="line-14"></a><span class="hs-comment">-- Driver API provides better inter-language compatibility.</span><span>
-</span><a name="line-15"></a><span>  </span><span class="hs-comment">--</span><span>
+</span><a name="line-15"></a><span class="hs-comment">--</span><span>
 </span><a name="line-16"></a><span class="hs-comment">-- The following is a short tutorial on using the Driver API. The steps can</span><span>
-</span><a name="line-17"></a><span class="hs-comment">-- be copied into a file, or run directly in `ghci`, in which case `ghci`</span><span>
-</span><a name="line-18"></a><span class="hs-comment">-- should be launched with the option `-fno-ghci-sandbox`. This is because</span><span>
+</span><a name="line-17"></a><span class="hs-comment">-- be copied into a file, or run directly in @ghci@, in which case @ghci@</span><span>
+</span><a name="line-18"></a><span class="hs-comment">-- should be launched with the option @-fno-ghci-sandbox@. This is because</span><span>
 </span><a name="line-19"></a><span class="hs-comment">-- CUDA maintains CPU-local state, so operations should always be run from</span><span>
 </span><a name="line-20"></a><span class="hs-comment">-- a bound thread.</span><span>
 </span><a name="line-21"></a><span class="hs-comment">--</span><span>
@@ -100,14 +100,14 @@
 </span><a name="line-100"></a><span class="hs-comment">-- &gt;     }</span><span>
 </span><a name="line-101"></a><span class="hs-comment">-- &gt; }</span><span>
 </span><a name="line-102"></a><span class="hs-comment">--</span><span>
-</span><a name="line-103"></a><span class="hs-comment">-- Here, the `__global__` keyword marks the function as a kernel that</span><span>
+</span><a name="line-103"></a><span class="hs-comment">-- Here, the @__global__@ keyword marks the function as a kernel that</span><span>
 </span><a name="line-104"></a><span class="hs-comment">-- should be computed on the GPU in data parallel. When we execute this</span><span>
 </span><a name="line-105"></a><span class="hs-comment">-- function on the GPU, (at least) /N/ threads will execute /N/ individual</span><span>
-</span><a name="line-106"></a><span class="hs-comment">-- instances of the kernel function `vecAdd`. Each thread will operate on</span><span>
+</span><a name="line-106"></a><span class="hs-comment">-- instances of the kernel function @vecAdd@. Each thread will operate on</span><span>
 </span><a name="line-107"></a><span class="hs-comment">-- a single element of each input array to create a single value in the</span><span>
 </span><a name="line-108"></a><span class="hs-comment">-- result. See the CUDA programming guide for more details.</span><span>
 </span><a name="line-109"></a><span class="hs-comment">--</span><span>
-</span><a name="line-110"></a><span class="hs-comment">-- We can save this to a file `vector_add.cu`, and compile it using `nvcc`</span><span>
+</span><a name="line-110"></a><span class="hs-comment">-- We can save this to a file @vector_add.cu@, and compile it using @nvcc@</span><span>
 </span><a name="line-111"></a><span class="hs-comment">-- into a form that we can then load onto the GPU and execute:</span><span>
 </span><a name="line-112"></a><span class="hs-comment">--</span><span>
 </span><a name="line-113"></a><span class="hs-comment">-- &gt; $ nvcc --ptx vector_add.cu</span><span>
@@ -173,7 +173,7 @@
 </span><a name="line-173"></a><span class="hs-comment">-- the GPU which all execute the same function, and each thread has</span><span>
 </span><a name="line-174"></a><span class="hs-comment">-- a unique identifier in the grid/block hierarchy which can be used to</span><span>
 </span><a name="line-175"></a><span class="hs-comment">-- identify exactly which element this thread should process (the</span><span>
-</span><a name="line-176"></a><span class="hs-comment">-- `blockIdx` and `threadIdx` parameters that we saw earlier,</span><span>
+</span><a name="line-176"></a><span class="hs-comment">-- @blockIdx@ and @threadIdx@ parameters that we saw earlier,</span><span>
 </span><a name="line-177"></a><span class="hs-comment">-- respectively).</span><span>
 </span><a name="line-178"></a><span class="hs-comment">--</span><span>
 </span><a name="line-179"></a><span class="hs-comment">-- To execute our function, we will use a grid of 4 blocks, each containing</span><span>
