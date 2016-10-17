@@ -1,49 +1,36 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-pragma">{-# LANGUAGE CPP               #-}</span><span>
-</span><a name="line-2"></a><span class="hs-pragma">{-# LANGUAGE OverloadedStrings #-}</span><span>
-</span><a name="line-3"></a><span class="hs-comment">-- |</span><span>
-</span><a name="line-4"></a><span class="hs-comment">-- Module:      : Data.Array.Accelerate.Examples.Internal.Monitoring</span><span>
-</span><a name="line-5"></a><span class="hs-comment">-- Copyright    : [2014] Trevor L. McDonell</span><span>
-</span><a name="line-6"></a><span class="hs-comment">-- License      : BSD3</span><span>
-</span><a name="line-7"></a><span class="hs-comment">--</span><span>
-</span><a name="line-8"></a><span class="hs-comment">-- Maintainer   : Trevor L. McDonell &lt;tmcdonell@cse.unsw.edu.au&gt;</span><span>
-</span><a name="line-9"></a><span class="hs-comment">-- Stability    : experimental</span><span>
-</span><a name="line-10"></a><span class="hs-comment">-- Portability  : non-portable (GHC extensions)</span><span>
-</span><a name="line-11"></a><span class="hs-comment">--</span><span>
-</span><a name="line-12"></a><span>
-</span><a name="line-13"></a><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">Data</span><span class="hs-operator">.</span><span class="hs-identifier">Array</span><span class="hs-operator">.</span><span class="hs-identifier">Accelerate</span><span class="hs-operator">.</span><span class="hs-identifier">Examples</span><span class="hs-operator">.</span><span class="hs-identifier">Internal</span><span class="hs-operator">.</span><span class="hs-identifier">Monitoring</span><span> </span><span class="hs-special">(</span><span>
-</span><a name="line-14"></a><span>
-</span><a name="line-15"></a><span>  </span><span class="hs-comment">-- * Resource monitoring</span><span>
-</span><a name="line-16"></a><span>  </span><a href="Data.Array.Accelerate.Examples.Internal.Monitoring.html#beginMonitoring"><span class="hs-identifier hs-var">beginMonitoring</span></a><span class="hs-special">,</span><span>
-</span><a name="line-17"></a><span>
-</span><a name="line-18"></a><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
-</span><a name="line-19"></a><span>
-</span><a name="line-20"></a><span class="hs-cpp">#ifdef ACCELERATE_ENABLE_EKG</span><span>
-</span><a name="line-21"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">Control</span><span class="hs-operator">.</span><span class="hs-identifier">Concurrent</span><span>
-</span><a name="line-22"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">Control</span><span class="hs-operator">.</span><span class="hs-identifier">Concurrent</span><span class="hs-operator">.</span><span class="hs-identifier">Async</span><span>
-</span><a name="line-23"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">Control</span><span class="hs-operator">.</span><span class="hs-identifier">Exception</span><span>
-</span><a name="line-24"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">System</span><span class="hs-operator">.</span><span class="hs-identifier">Remote</span><span class="hs-operator">.</span><span class="hs-identifier">Monitoring</span><span>
-</span><a name="line-25"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">System</span><span class="hs-operator">.</span><span class="hs-identifier">Metrics</span><span>
-</span><a name="line-26"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">Text</span><span class="hs-operator">.</span><span class="hs-identifier">Printf</span><span>
-</span><a name="line-27"></a><span>
-</span><a name="line-28"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">Data</span><span class="hs-operator">.</span><span class="hs-identifier">Array</span><span class="hs-operator">.</span><span class="hs-identifier">Accelerate</span><span class="hs-operator">.</span><span class="hs-identifier">Debug</span><span>
-</span><a name="line-29"></a><span class="hs-cpp">#endif</span><span>
-</span><a name="line-30"></a><span>
-</span><a name="line-31"></a><span>
-</span><a name="line-32"></a><span class="hs-comment">-- | Launch a monitoring server that will collect statistics on the running</span><span>
-</span><a name="line-33"></a><span class="hs-comment">-- application. This should be called as soon as the application starts. The</span><span>
-</span><a name="line-34"></a><span class="hs-comment">-- program will need to be run with the RTS option -T.</span><span>
-</span><a name="line-35"></a><span class="hs-comment">--</span><span>
-</span><a name="line-36"></a><span class="hs-identifier">beginMonitoring</span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-identifier hs-type">IO</span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span>
-</span><a name="line-37"></a><span class="hs-cpp">#ifdef ACCELERATE_ENABLE_EKG</span><span>
-</span><a name="line-38"></a><a name="beginMonitoring"><a href="Data.Array.Accelerate.Examples.Internal.Monitoring.html#beginMonitoring"><span class="hs-identifier">beginMonitoring</span></a></a><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
-</span><a name="line-39"></a><span>  </span><a name="local-1627622288"><a href="#local-1627622288"><span class="hs-identifier">store</span></a></a><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="hs-identifier hs-var">initAccMetrics</span><span>
-</span><a name="line-40"></a><span>  </span><span class="hs-identifier hs-var">registerGcMetrics</span><span> </span><a href="#local-1627622288"><span class="hs-identifier hs-var">store</span></a><span>
-</span><a name="line-41"></a><span>  </span><a name="local-1627622324"><a href="#local-1627622324"><span class="hs-identifier">r</span></a></a><span>     </span><span class="hs-glyph">&lt;-</span><span> </span><span class="hs-identifier hs-var">withAsync</span><span> </span><span class="hs-special">(</span><span class="hs-identifier hs-var">forkServerWith</span><span> </span><a href="#local-1627622288"><span class="hs-identifier hs-var">store</span></a><span> </span><span class="hs-string">&quot;localhost&quot;</span><span> </span><span class="hs-number">8000</span><span> </span><span class="hs-operator hs-var">&gt;&gt;</span><span> </span><span class="hs-identifier hs-var">threadDelay</span><span> </span><span class="hs-number">10000</span><span class="hs-special">)</span><span> </span><span class="hs-identifier hs-var">waitCatch</span><span>
-</span><a name="line-42"></a><span>  </span><span class="hs-keyword">case</span><span> </span><a href="#local-1627622324"><span class="hs-identifier hs-var">r</span></a><span> </span><span class="hs-keyword">of</span><span>
-</span><a name="line-43"></a><span>    </span><span class="hs-identifier hs-var">Right</span><span> </span><span class="hs-identifier">_</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier hs-var">printf</span><span> </span><span class="hs-string">&quot;EKG monitor started at: http://localhost:8000\n&quot;</span><span>
-</span><a name="line-44"></a><span>    </span><span class="hs-identifier hs-var">Left</span><span> </span><span class="hs-identifier">_</span><span>  </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier hs-var">printf</span><span> </span><span class="hs-string">&quot;Failed to start EKG monitor\n&quot;</span><span>
-</span><a name="line-45"></a><span class="hs-cpp">#else</span><span>
-</span><a name="line-46"></a><span class="hs-identifier">beginMonitoring</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">return</span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span>
-</span><a name="line-47"></a><span class="hs-cpp">#endif</span><span>
-</span><a name="line-48"></a><span>
-</span><a name="line-49"></a></pre></body></html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-pragma">{-# LANGUAGE CPP #-}</span><span>
+</span><a name="line-2"></a><span class="hs-comment">-- |</span><span>
+</span><a name="line-3"></a><span class="hs-comment">-- Module:      : Data.Array.Accelerate.Examples.Internal.Monitoring</span><span>
+</span><a name="line-4"></a><span class="hs-comment">-- Copyright    : [2014] Trevor L. McDonell</span><span>
+</span><a name="line-5"></a><span class="hs-comment">-- License      : BSD3</span><span>
+</span><a name="line-6"></a><span class="hs-comment">--</span><span>
+</span><a name="line-7"></a><span class="hs-comment">-- Maintainer   : Trevor L. McDonell &lt;tmcdonell@cse.unsw.edu.au&gt;</span><span>
+</span><a name="line-8"></a><span class="hs-comment">-- Stability    : experimental</span><span>
+</span><a name="line-9"></a><span class="hs-comment">-- Portability  : non-portable (GHC extensions)</span><span>
+</span><a name="line-10"></a><span class="hs-comment">--</span><span>
+</span><a name="line-11"></a><span>
+</span><a name="line-12"></a><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">Data</span><span class="hs-operator">.</span><span class="hs-identifier">Array</span><span class="hs-operator">.</span><span class="hs-identifier">Accelerate</span><span class="hs-operator">.</span><span class="hs-identifier">Examples</span><span class="hs-operator">.</span><span class="hs-identifier">Internal</span><span class="hs-operator">.</span><span class="hs-identifier">Monitoring</span><span> </span><span class="hs-special">(</span><span>
+</span><a name="line-13"></a><span>
+</span><a name="line-14"></a><span>  </span><span class="hs-comment">-- * Resource monitoring</span><span>
+</span><a name="line-15"></a><span>  </span><a href="Data.Array.Accelerate.Examples.Internal.Monitoring.html#beginMonitoring"><span class="hs-identifier hs-var">beginMonitoring</span></a><span class="hs-special">,</span><span>
+</span><a name="line-16"></a><span>
+</span><a name="line-17"></a><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><a name="line-18"></a><span>
+</span><a name="line-19"></a><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="hs-identifier">Data</span><span class="hs-operator">.</span><span class="hs-identifier">Array</span><span class="hs-operator">.</span><span class="hs-identifier">Accelerate</span><span class="hs-operator">.</span><span class="hs-identifier">Debug</span><span>                        </span><span class="hs-keyword">as</span><span> </span><span class="hs-identifier">Debug</span><span>
+</span><a name="line-20"></a><span>
+</span><a name="line-21"></a><span>
+</span><a name="line-22"></a><span class="hs-comment">-- | Launch a monitoring server that will collect statistics on the running</span><span>
+</span><a name="line-23"></a><span class="hs-comment">-- application. This should be called as soon as the application starts. The</span><span>
+</span><a name="line-24"></a><span class="hs-comment">-- program will need to be run with the RTS option -T.</span><span>
+</span><a name="line-25"></a><span class="hs-comment">--</span><span>
+</span><a name="line-26"></a><span class="hs-identifier">beginMonitoring</span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-identifier hs-type">IO</span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span>
+</span><a name="line-27"></a><a name="beginMonitoring"><a href="Data.Array.Accelerate.Examples.Internal.Monitoring.html#beginMonitoring"><span class="hs-identifier">beginMonitoring</span></a></a><span> </span><span class="hs-glyph">=</span><span>
+</span><a name="line-28"></a><span class="hs-cpp">#ifdef ACCELERATE_ENABLE_EKG</span><span>
+</span><a name="line-29"></a><span>  </span><span class="hs-keyword">if</span><span> </span><span class="hs-identifier hs-var">Debug</span><span class="hs-operator hs-var">.</span><span class="hs-identifier hs-var">monitoringIsEnabled</span><span>
+</span><a name="line-30"></a><span>    </span><span class="hs-keyword">then</span><span> </span><span class="hs-identifier hs-var">Debug</span><span class="hs-operator hs-var">.</span><span class="hs-identifier hs-var">beginMonitoring</span><span>
+</span><a name="line-31"></a><span>    </span><span class="hs-keyword">else</span><span> </span><span class="hs-identifier hs-var">putStrLn</span><span> </span><span class="hs-string">&quot;Monitoring is not enabled. Recompile package 'accelerate' with flag '-fekg'&quot;</span><span>
+</span><a name="line-32"></a><span class="hs-cpp">#else</span><span>
+</span><a name="line-33"></a><span>  </span><span class="hs-identifier">return</span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span>
+</span><a name="line-34"></a><span class="hs-cpp">#endif</span><span>
+</span><a name="line-35"></a><span>
+</span><a name="line-36"></a></pre></body></html>
