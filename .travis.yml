@@ -65,7 +65,7 @@ before_install:
   - export GHC=${CC:4}
   - |
       case ${GHC%.*} in
-        7.8)  export LLVM="3.4.2" ;;
+        7.8)  export LLVM="3.5.2" ;;
         7.10) export LLVM="3.5.2" ;;
         8.0)  export LLVM="3.8.1" ;;
       esac
