@@ -56,6 +56,9 @@ withDevicePtr :: (ArrayElt e, ArrayPtrs e ~ Ptr a, Typeable e, Typeable a, Stora
 --   to normal form is required to actually transfer the data.</li>
 --   </ol>
 copyToHostLazy :: Arrays arrs => arrs -> LLVM PTX arrs
+
+-- | Clone an array into a newly allocated array on the device.
+cloneArrayAsync :: (Shape sh, Elt e) => Stream -> Array sh e -> LLVM PTX (Array sh e)
 type Async a = AsyncR PTX a
 type Stream = Lifetime Stream
 type Event = Lifetime Event
