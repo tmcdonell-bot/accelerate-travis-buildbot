@@ -2,7 +2,7 @@
 </span><a name="line-2"></a><span class="hs-comment">-- Edit the ORIGNAL .chs file instead!</span><span>
 </span><a name="line-3"></a><span>
 </span><a name="line-4"></a><span>
-</span><a name="line-5"></a><span class="hs-pragma">{-# LINE 1 &quot;./Foreign/CUDA/Driver/Module/Base.chs&quot; #-}</span><span>
+</span><a name="line-5"></a><span class="hs-pragma">{-# LINE 1 &quot;src/Foreign/CUDA/Driver/Module/Base.chs&quot; #-}</span><span>
 </span><a name="line-6"></a><span class="hs-pragma">{-# LANGUAGE BangPatterns             #-}</span><span>
 </span><a name="line-7"></a><span class="hs-pragma">{-# LANGUAGE CPP                      #-}</span><span>
 </span><a name="line-8"></a><span class="hs-pragma">{-# LANGUAGE EmptyDataDecls           #-}</span><span>
@@ -43,7 +43,7 @@
 </span><a name="line-43"></a><span>
 </span><a name="line-44"></a><span>
 </span><a name="line-45"></a><span>
-</span><a name="line-46"></a><span class="hs-pragma">{-# LINE 36 &quot;./Foreign/CUDA/Driver/Module/Base.chs&quot; #-}</span><span>
+</span><a name="line-46"></a><span class="hs-pragma">{-# LINE 36 &quot;src/Foreign/CUDA/Driver/Module/Base.chs&quot; #-}</span><span>
 </span><a name="line-47"></a><span>
 </span><a name="line-48"></a><span>
 </span><a name="line-49"></a><span class="hs-comment">-- Friends</span><span>
@@ -148,7 +148,7 @@
 </span><a name="line-148"></a><span>  </span><span class="hs-identifier">toEnum</span><span> </span><span class="hs-number">5</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">Compute21</span><span>
 </span><a name="line-149"></a><span>  </span><span class="hs-identifier">toEnum</span><span> </span><span class="hs-identifier">unmatched</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">error</span><span> </span><span class="hs-special">(</span><span class="hs-string">&quot;JITTarget.toEnum: Cannot match &quot;</span><span> </span><span class="hs-operator">++</span><span> </span><span class="hs-identifier">show</span><span> </span><span class="hs-identifier">unmatched</span><span class="hs-special">)</span><span>
 </span><a name="line-150"></a><span>
-</span><a name="line-151"></a><span class="hs-pragma">{-# LINE 95 &quot;./Foreign/CUDA/Driver/Module/Base.chs&quot; #-}</span><span>
+</span><a name="line-151"></a><span class="hs-pragma">{-# LINE 95 &quot;src/Foreign/CUDA/Driver/Module/Base.chs&quot; #-}</span><span>
 </span><a name="line-152"></a><span>
 </span><a name="line-153"></a><span>
 </span><a name="line-154"></a><span class="hs-comment">-- |</span><span>
@@ -166,11 +166,11 @@
 </span><a name="line-166"></a><span>
 </span><a name="line-167"></a><span>  </span><a name="cuModuleLoadData"><a href="Foreign.CUDA.Driver.Module.Base.html#cuModuleLoadData"><span class="hs-identifier">enumFromTo</span></a></a><span> </span><a href="Foreign.CUDA.Driver.Module.Base.html#JIT_FALLBACK_STRATEGY"><span class="hs-identifier hs-var">from</span></a><span> </span><a href="Foreign.CUDA.Driver.Module.Base.html#JIT_FALLBACK_STRATEGY"><span class="hs-identifier hs-var">to</span></a><span> </span><span class="hs-glyph">=</span><span> </span><a href="Foreign.CUDA.Driver.Module.Base.html#JIT_FALLBACK_STRATEGY"><span class="hs-identifier hs-var">go</span></a><span> </span><a href="Foreign.CUDA.Driver.Module.Base.html#JIT_FALLBACK_STRATEGY"><span class="hs-identifier hs-var">from</span></a><span>
 </span><a name="line-168"></a><span>    </span><span class="hs-keyword">where</span><span>
-</span><a name="line-169"></a><span>      </span><span class="hs-identifier">end</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">fromEnum</span><span> </span><a href="#local-1627662287"><span class="hs-identifier hs-var">to</span></a><span>
-</span><a name="line-170"></a><span>      </span><a href="Foreign.CUDA.Driver.Module.Base.html#cuModuleLoadData%27_"><span class="hs-identifier hs-var">go</span></a><span> </span><a href="Foreign.CUDA.Driver.Module.Base.html#cuModuleLoadData%27_"><span class="hs-identifier hs-var">v</span></a><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">case</span><span> </span><a href="Foreign.CUDA.Driver.Module.Base.html#JIT_THREADS_PER_BLOCK"><span class="hs-identifier hs-var">compare</span></a><span> </span><span class="hs-special">(</span><span class="hs-identifier">fromEnum</span><span> </span><a name="local-1627662290"><a href="#local-1627662290"><span class="hs-identifier">v</span></a></a><span class="hs-special">)</span><span> </span><span class="hs-identifier">end</span><span> </span><span class="hs-keyword">of</span><span>
-</span><a name="line-171"></a><span>                 </span><a href="Foreign.CUDA.Internal.C2HS.html#cToEnum"><span class="hs-identifier hs-var">LT</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><a href="#local-1627662290"><span class="hs-identifier hs-var">v</span></a><span> </span><span class="hs-glyph">:</span><span> </span><span class="hs-identifier">go</span><span> </span><span class="hs-special">(</span><span class="hs-identifier">succ</span><span> </span><span class="hs-identifier">v</span><span class="hs-special">)</span><span>
+</span><a name="line-169"></a><span>      </span><span class="hs-identifier">end</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">fromEnum</span><span> </span><a href="#local-1627662894"><span class="hs-identifier hs-var">to</span></a><span>
+</span><a name="line-170"></a><span>      </span><a href="Foreign.CUDA.Driver.Module.Base.html#cuModuleLoadData%27_"><span class="hs-identifier hs-var">go</span></a><span> </span><a href="Foreign.CUDA.Driver.Module.Base.html#cuModuleLoadData%27_"><span class="hs-identifier hs-var">v</span></a><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">case</span><span> </span><a href="Foreign.CUDA.Driver.Module.Base.html#JIT_THREADS_PER_BLOCK"><span class="hs-identifier hs-var">compare</span></a><span> </span><span class="hs-special">(</span><span class="hs-identifier">fromEnum</span><span> </span><a name="local-1627662897"><a href="#local-1627662897"><span class="hs-identifier">v</span></a></a><span class="hs-special">)</span><span> </span><span class="hs-identifier">end</span><span> </span><span class="hs-keyword">of</span><span>
+</span><a name="line-171"></a><span>                 </span><a href="Foreign.CUDA.Internal.C2HS.html#cToEnum"><span class="hs-identifier hs-var">LT</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><a href="#local-1627662897"><span class="hs-identifier hs-var">v</span></a><span> </span><span class="hs-glyph">:</span><span> </span><span class="hs-identifier">go</span><span> </span><span class="hs-special">(</span><span class="hs-identifier">succ</span><span> </span><span class="hs-identifier">v</span><span class="hs-special">)</span><span>
 </span><a name="line-172"></a><span>                 </span><a href="Foreign.CUDA.Driver.Module.Base.html#JIT_INFO_LOG_BUFFER"><span class="hs-identifier hs-var">EQ</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><a href="Foreign.CUDA.Driver.Module.Base.html#JIT_INFO_LOG_BUFFER"><span class="hs-identifier hs-var">v</span></a><span class="hs-special">]</span><span>
-</span><a name="line-173"></a><span>                 </span><a href="#local-1627662292"><span class="hs-identifier hs-var">GT</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="hs-special">]</span><span>
+</span><a name="line-173"></a><span>                 </span><a href="#local-1627662899"><span class="hs-identifier hs-var">GT</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="hs-special">]</span><span>
 </span><a name="line-174"></a><span>
 </span><a name="line-175"></a><span>  </span><span class="hs-identifier">enumFrom</span><span> </span><span class="hs-identifier">from</span><span> </span><span class="hs-glyph">=</span><span> </span><a href="Foreign.CUDA.Driver.Module.Base.html#JIT_ERROR_LOG_BUFFER_SIZE_BYTES"><span class="hs-identifier hs-var">enumFromTo</span></a><span> </span><a href="Foreign.CUDA.Driver.Module.Base.html#JIT_ERROR_LOG_BUFFER_SIZE_BYTES"><span class="hs-identifier hs-var">from</span></a><span> </span><span class="hs-identifier">PreferBinary</span><span>
 </span><a name="line-176"></a><span>
@@ -181,7 +181,7 @@
 </span><a name="line-181"></a><span>  </span><span class="hs-identifier">toEnum</span><span> </span><span class="hs-number">1</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">PreferBinary</span><span>
 </span><a name="line-182"></a><span>  </span><span class="hs-identifier">toEnum</span><span> </span><span class="hs-identifier">unmatched</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">error</span><span> </span><span class="hs-special">(</span><span class="hs-string">&quot;JITFallback.toEnum: Cannot match &quot;</span><span> </span><span class="hs-operator">++</span><span> </span><span class="hs-identifier">show</span><span> </span><span class="hs-identifier">unmatched</span><span class="hs-special">)</span><span>
 </span><a name="line-183"></a><span>
-</span><a name="line-184"></a><span class="hs-pragma">{-# LINE 103 &quot;./Foreign/CUDA/Driver/Module/Base.chs&quot; #-}</span><span>
+</span><a name="line-184"></a><span class="hs-pragma">{-# LINE 103 &quot;src/Foreign/CUDA/Driver/Module/Base.chs&quot; #-}</span><span>
 </span><a name="line-185"></a><span>
 </span><a name="line-186"></a><span>
 </span><a name="line-187"></a><span class="hs-comment">-- |</span><span>
@@ -261,7 +261,7 @@
 </span><a name="line-261"></a><span>  </span><span class="hs-identifier">toEnum</span><span> </span><span class="hs-number">10</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">JIT_FALLBACK_STRATEGY</span><span>
 </span><a name="line-262"></a><span>  </span><span class="hs-identifier">toEnum</span><span> </span><span class="hs-identifier">unmatched</span><span> </span><span class="hs-glyph">=</span><span> </span><a href="Foreign.CUDA.Driver.Module.Base.html#JITOption"><span class="hs-identifier hs-type">error</span></a><span> </span><span class="hs-special">(</span><span class="hs-string">&quot;JITOptionInternal.toEnum: Cannot match &quot;</span><span> </span><span class="hs-operator">++</span><span> </span><span class="hs-identifier">show</span><span> </span><span class="hs-identifier">unmatched</span><span class="hs-special">)</span><span>
 </span><a name="line-263"></a><span>
-</span><a name="line-264"></a><span class="hs-pragma">{-# LINE 119 &quot;./Foreign/CUDA/Driver/Module/Base.chs&quot; #-}</span><span>
+</span><a name="line-264"></a><span class="hs-pragma">{-# LINE 119 &quot;src/Foreign/CUDA/Driver/Module/Base.chs&quot; #-}</span><span>
 </span><a name="line-265"></a><span>
 </span><a name="line-266"></a><span>
 </span><a name="line-267"></a><span>
@@ -286,10 +286,10 @@
 </span><a name="line-286"></a><span>  </span><span class="hs-identifier">withCString</span><span> </span><span class="hs-identifier">a2</span><span> </span><span class="hs-operator">$</span><span> </span><span class="hs-glyph">\</span><span class="hs-identifier">a2'</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span>
 </span><a name="line-287"></a><span>  </span><span class="hs-identifier">cuModuleLoad'_</span><span> </span><span class="hs-identifier">a1'</span><span> </span><span class="hs-identifier">a2'</span><span> </span><span class="hs-operator">&gt;&gt;=</span><span> </span><span class="hs-glyph">\</span><span class="hs-identifier">res</span><span> </span><span class="hs-glyph">-&gt;</span><span>
 </span><a name="line-288"></a><span>  </span><span class="hs-keyword">let</span><span> </span><span class="hs-special">{</span><span class="hs-identifier">res'</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">cToEnum</span><span> </span><span class="hs-identifier">res</span><span class="hs-special">}</span><span> </span><span class="hs-keyword">in</span><span>
-</span><a name="line-289"></a><span>  </span><a name="c_strnlen"><a href="Foreign.CUDA.Driver.Module.Base.html#c_strnlen"><span class="hs-identifier">peekMod</span></a></a><span>  </span><span class="hs-identifier">a1'</span><a name="local-1627662363"><a href="#local-1627662363"><span class="hs-operator">&gt;&gt;=</span></a></a><span> </span><span class="hs-glyph">\</span><span class="hs-identifier">a1''</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span>
+</span><a name="line-289"></a><span>  </span><a name="c_strnlen"><a href="Foreign.CUDA.Driver.Module.Base.html#c_strnlen"><span class="hs-identifier">peekMod</span></a></a><span>  </span><span class="hs-identifier">a1'</span><a name="local-1627662970"><a href="#local-1627662970"><span class="hs-operator">&gt;&gt;=</span></a></a><span> </span><span class="hs-glyph">\</span><span class="hs-identifier">a1''</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span>
 </span><a name="line-290"></a><span>  </span><span class="hs-identifier">return</span><span> </span><span class="hs-special">(</span><span class="hs-identifier">res'</span><span class="hs-special">,</span><span> </span><span class="hs-identifier">a1''</span><span class="hs-special">)</span><span>
 </span><a name="line-291"></a><span>
-</span><a name="line-292"></a><span class="hs-pragma">{-# LINE 139 &quot;./Foreign/CUDA/Driver/Module/Base.chs&quot; #-}</span><span>
+</span><a name="line-292"></a><span class="hs-pragma">{-# LINE 139 &quot;src/Foreign/CUDA/Driver/Module/Base.chs&quot; #-}</span><span>
 </span><a name="line-293"></a><span>
 </span><a name="line-294"></a><span>
 </span><a name="line-295"></a><span>
@@ -326,7 +326,7 @@
 </span><a name="line-326"></a><span>  </span><span class="hs-identifier">peekMod</span><span>  </span><span class="hs-identifier">a1'</span><span class="hs-operator">&gt;&gt;=</span><span> </span><span class="hs-glyph">\</span><span class="hs-identifier">a1''</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span>
 </span><a name="line-327"></a><span>  </span><span class="hs-identifier">return</span><span> </span><span class="hs-special">(</span><span class="hs-identifier">res'</span><span class="hs-special">,</span><span> </span><span class="hs-identifier">a1''</span><span class="hs-special">)</span><span>
 </span><a name="line-328"></a><span>
-</span><a name="line-329"></a><span class="hs-pragma">{-# LINE 168 &quot;./Foreign/CUDA/Driver/Module/Base.chs&quot; #-}</span><span>
+</span><a name="line-329"></a><span class="hs-pragma">{-# LINE 168 &quot;src/Foreign/CUDA/Driver/Module/Base.chs&quot; #-}</span><span>
 </span><a name="line-330"></a><span>
 </span><a name="line-331"></a><span>
 </span><a name="line-332"></a><span>
@@ -401,7 +401,7 @@
 </span><a name="line-401"></a><span>  </span><span class="hs-identifier">peekMod</span><span>  </span><span class="hs-identifier">a1'</span><span class="hs-operator">&gt;&gt;=</span><span> </span><span class="hs-glyph">\</span><span class="hs-identifier">a1''</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span>
 </span><a name="line-402"></a><span>  </span><span class="hs-identifier">return</span><span> </span><span class="hs-special">(</span><span class="hs-identifier">res'</span><span class="hs-special">,</span><span> </span><span class="hs-identifier">a1''</span><span class="hs-special">)</span><span>
 </span><a name="line-403"></a><span>
-</span><a name="line-404"></a><span class="hs-pragma">{-# LINE 235 &quot;./Foreign/CUDA/Driver/Module/Base.chs&quot; #-}</span><span>
+</span><a name="line-404"></a><span class="hs-pragma">{-# LINE 235 &quot;src/Foreign/CUDA/Driver/Module/Base.chs&quot; #-}</span><span>
 </span><a name="line-405"></a><span>
 </span><a name="line-406"></a><span>
 </span><a name="line-407"></a><span>
@@ -422,7 +422,7 @@
 </span><a name="line-422"></a><span>  </span><span class="hs-keyword">let</span><span> </span><span class="hs-special">{</span><span class="hs-identifier">res'</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">cToEnum</span><span> </span><span class="hs-identifier">res</span><span class="hs-special">}</span><span> </span><span class="hs-keyword">in</span><span>
 </span><a name="line-423"></a><span>  </span><span class="hs-identifier">return</span><span> </span><span class="hs-special">(</span><span class="hs-identifier">res'</span><span class="hs-special">)</span><span>
 </span><a name="line-424"></a><span>
-</span><a name="line-425"></a><span class="hs-pragma">{-# LINE 249 &quot;./Foreign/CUDA/Driver/Module/Base.chs&quot; #-}</span><span>
+</span><a name="line-425"></a><span class="hs-pragma">{-# LINE 249 &quot;src/Foreign/CUDA/Driver/Module/Base.chs&quot; #-}</span><span>
 </span><a name="line-426"></a><span>
 </span><a name="line-427"></a><span>
 </span><a name="line-428"></a><span>

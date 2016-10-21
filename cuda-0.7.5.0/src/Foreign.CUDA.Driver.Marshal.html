@@ -2,7 +2,7 @@
 </span><a name="line-2"></a><span class="hs-comment">-- Edit the ORIGNAL .chs file instead!</span><span>
 </span><a name="line-3"></a><span>
 </span><a name="line-4"></a><span>
-</span><a name="line-5"></a><span class="hs-pragma">{-# LINE 1 &quot;./Foreign/CUDA/Driver/Marshal.chs&quot; #-}</span><span>
+</span><a name="line-5"></a><span class="hs-pragma">{-# LINE 1 &quot;src/Foreign/CUDA/Driver/Marshal.chs&quot; #-}</span><span>
 </span><a name="line-6"></a><span class="hs-pragma">{-# LANGUAGE BangPatterns             #-}</span><span>
 </span><a name="line-7"></a><span class="hs-pragma">{-# LANGUAGE CPP                      #-}</span><span>
 </span><a name="line-8"></a><span class="hs-pragma">{-# LANGUAGE EmptyDataDecls           #-}</span><span>
@@ -58,7 +58,7 @@
 </span><a name="line-58"></a><span>
 </span><a name="line-59"></a><span>
 </span><a name="line-60"></a><span>
-</span><a name="line-61"></a><span class="hs-pragma">{-# LINE 51 &quot;./Foreign/CUDA/Driver/Marshal.chs&quot; #-}</span><span>
+</span><a name="line-61"></a><span class="hs-pragma">{-# LINE 51 &quot;src/Foreign/CUDA/Driver/Marshal.chs&quot; #-}</span><span>
 </span><a name="line-62"></a><span>
 </span><a name="line-63"></a><span>
 </span><a name="line-64"></a><span class="hs-comment">-- Friends</span><span>
@@ -122,7 +122,7 @@
 </span><a name="line-122"></a><span>  </span><span class="hs-identifier">toEnum</span><span> </span><span class="hs-number">4</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">WriteCombined</span><span>
 </span><a name="line-123"></a><span>  </span><span class="hs-identifier">toEnum</span><span> </span><span class="hs-identifier">unmatched</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">error</span><span> </span><span class="hs-special">(</span><span class="hs-string">&quot;AllocFlag.toEnum: Cannot match &quot;</span><span> </span><span class="hs-operator">++</span><span> </span><span class="hs-identifier hs-type">show</span><span> </span><span class="hs-identifier">unmatched</span><span class="hs-special">)</span><span>
 </span><a name="line-124"></a><span>
-</span><a name="line-125"></a><span class="hs-pragma">{-# LINE 92 &quot;./Foreign/CUDA/Driver/Marshal.chs&quot; #-}</span><span>
+</span><a name="line-125"></a><span class="hs-pragma">{-# LINE 92 &quot;src/Foreign/CUDA/Driver/Marshal.chs&quot; #-}</span><span>
 </span><a name="line-126"></a><span>
 </span><a name="line-127"></a><span>
 </span><a name="line-128"></a><span class="hs-comment">-- |</span><span>
@@ -170,7 +170,7 @@
 </span><a name="line-170"></a><span>  </span><span class="hs-identifier">peekHP</span><span>  </span><span class="hs-identifier">a1'</span><span class="hs-operator">&gt;&gt;=</span><span> </span><span class="hs-glyph">\</span><span class="hs-identifier">a1''</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span>
 </span><a name="line-171"></a><span>  </span><span class="hs-identifier">return</span><span> </span><span class="hs-special">(</span><span class="hs-identifier">res'</span><span class="hs-special">,</span><span> </span><span class="hs-identifier">a1''</span><span class="hs-special">)</span><span>
 </span><a name="line-172"></a><span>
-</span><a name="line-173"></a><span class="hs-pragma">{-# LINE 132 &quot;./Foreign/CUDA/Driver/Marshal.chs&quot; #-}</span><span>
+</span><a name="line-173"></a><span class="hs-pragma">{-# LINE 132 &quot;src/Foreign/CUDA/Driver/Marshal.chs&quot; #-}</span><span>
 </span><a name="line-174"></a><span>
 </span><a name="line-175"></a><span>  </span><span class="hs-keyword">where</span><span>
 </span><a name="line-176"></a><span>    </span><span class="hs-identifier">alloca'</span><span> </span><span class="hs-glyph">!</span><span class="hs-identifier">f</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">F</span><span class="hs-operator">.</span><span class="hs-identifier">alloca</span><span> </span><span class="hs-operator">$</span><span> </span><span class="hs-glyph">\</span><span> </span><span class="hs-glyph">!</span><span class="hs-identifier">p</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier">poke</span><span> </span><span class="hs-identifier">p</span><span> </span><span class="hs-identifier">nullPtr</span><span> </span><span class="hs-operator">&gt;&gt;</span><span> </span><span class="hs-identifier">f</span><span> </span><span class="hs-special">(</span><span class="hs-identifier">castPtr</span><span> </span><span class="hs-identifier">p</span><span class="hs-special">)</span><span>
@@ -199,7 +199,7 @@
 </span><a name="line-199"></a><span>  </span><span class="hs-keyword">let</span><span> </span><span class="hs-special">{</span><span class="hs-identifier">res'</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">cToEnum</span><span> </span><span class="hs-identifier">res</span><span class="hs-special">}</span><span> </span><span class="hs-keyword">in</span><span>
 </span><a name="line-200"></a><span>  </span><span class="hs-identifier">return</span><span> </span><span class="hs-special">(</span><span class="hs-identifier">res'</span><span class="hs-special">)</span><span>
 </span><a name="line-201"></a><span>
-</span><a name="line-202"></a><span class="hs-pragma">{-# LINE 154 &quot;./Foreign/CUDA/Driver/Marshal.chs&quot; #-}</span><span>
+</span><a name="line-202"></a><span class="hs-pragma">{-# LINE 154 &quot;src/Foreign/CUDA/Driver/Marshal.chs&quot; #-}</span><span>
 </span><a name="line-203"></a><span>
 </span><a name="line-204"></a><span>  </span><span class="hs-keyword">where</span><span>
 </span><a name="line-205"></a><span>    </span><span class="hs-identifier">useHP</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">castPtr</span><span> </span><span class="hs-operator">.</span><span> </span><span class="hs-identifier">useHostPtr</span><span>
@@ -243,7 +243,7 @@
 </span><a name="line-243"></a><span>  </span><span class="hs-keyword">let</span><span> </span><span class="hs-special">{</span><a href="Foreign.CUDA.Driver.Marshal.html#cuMemAlloc%27_"><span class="hs-identifier hs-var">res'</span></a><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">cToEnum</span><span> </span><span class="hs-identifier hs-var">res</span><span class="hs-special">}</span><span> </span><span class="hs-keyword">in</span><span>
 </span><a name="line-244"></a><span>  </span><span class="hs-identifier">return</span><span> </span><span class="hs-special">(</span><span class="hs-identifier">res'</span><span class="hs-special">)</span><span>
 </span><a name="line-245"></a><span>
-</span><a name="line-246"></a><span class="hs-pragma">{-# LINE 195 &quot;./Foreign/CUDA/Driver/Marshal.chs&quot; #-}</span><span>
+</span><a name="line-246"></a><span class="hs-pragma">{-# LINE 195 &quot;src/Foreign/CUDA/Driver/Marshal.chs&quot; #-}</span><span>
 </span><a name="line-247"></a><span>
 </span><a name="line-248"></a><span>
 </span><a name="line-249"></a><span>
@@ -268,7 +268,7 @@
 </span><a name="line-268"></a><span>  </span><span class="hs-keyword">let</span><span> </span><span class="hs-special">{</span><span class="hs-identifier">res'</span><span> </span><span class="hs-glyph">=</span><span> </span><a href="Foreign.CUDA.Driver.Error.html#nothingIfOk"><span class="hs-identifier hs-var">cToEnum</span></a><span> </span><span class="hs-identifier">res</span><span class="hs-special">}</span><span> </span><span class="hs-keyword">in</span><span>
 </span><a name="line-269"></a><span>  </span><span class="hs-identifier">return</span><span> </span><span class="hs-special">(</span><span class="hs-identifier">res'</span><span class="hs-special">)</span><span>
 </span><a name="line-270"></a><span>
-</span><a name="line-271"></a><span class="hs-pragma">{-# LINE 217 &quot;./Foreign/CUDA/Driver/Marshal.chs&quot; #-}</span><span>
+</span><a name="line-271"></a><span class="hs-pragma">{-# LINE 217 &quot;src/Foreign/CUDA/Driver/Marshal.chs&quot; #-}</span><span>
 </span><a name="line-272"></a><span>
 </span><a name="line-273"></a><span>
 </span><a name="line-274"></a><span>
@@ -300,7 +300,7 @@
 </span><a name="line-300"></a><span>  </span><span class="hs-identifier">peekDeviceHandle</span><span>  </span><span class="hs-identifier">a1'</span><span class="hs-operator">&gt;&gt;=</span><span> </span><span class="hs-glyph">\</span><span class="hs-identifier">a1''</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span>
 </span><a name="line-301"></a><span>  </span><span class="hs-identifier">return</span><span> </span><span class="hs-special">(</span><span class="hs-identifier">res'</span><span class="hs-special">,</span><span> </span><span class="hs-identifier">a1''</span><span class="hs-special">)</span><span>
 </span><a name="line-302"></a><span>
-</span><a name="line-303"></a><span class="hs-pragma">{-# LINE 241 &quot;./Foreign/CUDA/Driver/Marshal.chs&quot; #-}</span><span>
+</span><a name="line-303"></a><span class="hs-pragma">{-# LINE 241 &quot;src/Foreign/CUDA/Driver/Marshal.chs&quot; #-}</span><span>
 </span><a name="line-304"></a><span>
 </span><a name="line-305"></a><span>  </span><span class="hs-keyword">where</span><span>
 </span><a name="line-306"></a><span>    </span><span class="hs-identifier">alloca'</span><span> </span><span class="hs-glyph">!</span><span class="hs-identifier">f</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">F</span><span class="hs-operator">.</span><span class="hs-identifier">alloca</span><span> </span><span class="hs-operator">$</span><span> </span><span class="hs-glyph">\</span><span> </span><span class="hs-glyph">!</span><span class="hs-identifier">p</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier">poke</span><span> </span><span class="hs-identifier">p</span><span> </span><span class="hs-identifier">nullPtr</span><span> </span><span class="hs-operator">&gt;&gt;</span><span> </span><span class="hs-identifier">f</span><span> </span><span class="hs-special">(</span><span class="hs-identifier">castPtr</span><span> </span><span class="hs-identifier">p</span><span class="hs-special">)</span><span>
@@ -333,12 +333,12 @@
 </span><a name="line-333"></a><span class="hs-pragma">{-# INLINE cuMemFree #-}</span><span>
 </span><a name="line-334"></a><span class="hs-identifier">cuMemFree</span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><span class="hs-identifier">DevicePtr</span><span> </span><span class="hs-identifier">a</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier">IO</span><span> </span><span class="hs-special">(</span><span class="hs-special">(</span><span class="hs-identifier">Status</span><span class="hs-special">)</span><span class="hs-special">)</span><span>
 </span><a name="line-335"></a><span class="hs-identifier">cuMemFree</span><span> </span><span class="hs-identifier">a1</span><span> </span><span class="hs-glyph">=</span><span>
-</span><a name="line-336"></a><span>  </span><span class="hs-keyword">let</span><span> </span><span class="hs-special">{</span><a name="local-1627929423"><a href="#local-1627929423"><span class="hs-identifier">a1'</span></a></a><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">useDeviceHandle</span><span> </span><span class="hs-identifier">a1</span><span class="hs-special">}</span><span> </span><span class="hs-keyword">in</span><span> </span><span>
+</span><a name="line-336"></a><span>  </span><span class="hs-keyword">let</span><span> </span><span class="hs-special">{</span><a name="local-1627930036"><a href="#local-1627930036"><span class="hs-identifier">a1'</span></a></a><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">useDeviceHandle</span><span> </span><span class="hs-identifier">a1</span><span class="hs-special">}</span><span> </span><span class="hs-keyword">in</span><span> </span><span>
 </span><a name="line-337"></a><span>  </span><a href="Foreign.CUDA.Driver.Marshal.html#cuMemcpyDtoH%27_"><span class="hs-identifier hs-var">cuMemFree'_</span></a><span> </span><span class="hs-identifier">a1'</span><span> </span><span class="hs-operator">&gt;&gt;=</span><span> </span><span class="hs-glyph">\</span><span class="hs-identifier">res</span><span> </span><span class="hs-glyph">-&gt;</span><span>
-</span><a name="line-338"></a><span>  </span><span class="hs-keyword">let</span><span> </span><span class="hs-special">{</span><a name="local-1627929425"><a href="#local-1627929425"><span class="hs-identifier">res'</span></a></a><span> </span><span class="hs-glyph">=</span><span> </span><a href="Foreign.CUDA.Internal.C2HS.html#cToEnum"><span class="hs-identifier hs-var">cToEnum</span></a><span> </span><a href="#local-1627929424"><span class="hs-identifier hs-var">res</span></a><span class="hs-special">}</span><span> </span><span class="hs-keyword">in</span><span>
-</span><a name="line-339"></a><span>  </span><span class="hs-identifier hs-var">return</span><span> </span><span class="hs-special">(</span><a href="#local-1627929425"><span class="hs-identifier hs-var">res'</span></a><span class="hs-special">)</span><span>
+</span><a name="line-338"></a><span>  </span><span class="hs-keyword">let</span><span> </span><span class="hs-special">{</span><a name="local-1627930038"><a href="#local-1627930038"><span class="hs-identifier">res'</span></a></a><span> </span><span class="hs-glyph">=</span><span> </span><a href="Foreign.CUDA.Internal.C2HS.html#cToEnum"><span class="hs-identifier hs-var">cToEnum</span></a><span> </span><a href="#local-1627930037"><span class="hs-identifier hs-var">res</span></a><span class="hs-special">}</span><span> </span><span class="hs-keyword">in</span><span>
+</span><a name="line-339"></a><span>  </span><span class="hs-identifier hs-var">return</span><span> </span><span class="hs-special">(</span><a href="#local-1627930038"><span class="hs-identifier hs-var">res'</span></a><span class="hs-special">)</span><span>
 </span><a name="line-340"></a><span>
-</span><a name="line-341"></a><span class="hs-pragma">{-# LINE 272 &quot;./Foreign/CUDA/Driver/Marshal.chs&quot; #-}</span><span>
+</span><a name="line-341"></a><span class="hs-pragma">{-# LINE 272 &quot;src/Foreign/CUDA/Driver/Marshal.chs&quot; #-}</span><span>
 </span><a name="line-342"></a><span>
 </span><a name="line-343"></a><span>
 </span><a name="line-344"></a><span>
@@ -408,7 +408,7 @@ cuMemcpyDtoH a1 a2 a3 =
   let {res' = cToEnum res} in
   return (res')
 
-{-# LINE 356 &quot;./Foreign/CUDA/Driver/Marshal.chs&quot; #-}
+{-# LINE 356 &quot;src/Foreign/CUDA/Driver/Marshal.chs&quot; #-}
 
 
 
@@ -436,7 +436,7 @@ cuMemcpyDtoHAsync a1 a2 a3 a4 =
   let {res' = cToEnum res} in
   return (res')
 
-{-# LINE 377 &quot;./Foreign/CUDA/Driver/Marshal.chs&quot; #-}
+{-# LINE 377 &quot;src/Foreign/CUDA/Driver/Marshal.chs&quot; #-}
 
   where
     useHP = castPtr . useHostPtr
@@ -491,7 +491,7 @@ cuMemcpy2DDtoH a1 a2 a3 a4 a5 a6 a7 a8 a9 a10 =
   let {res' = cToEnum res} in
   return (res')
 
-{-# LINE 427 &quot;./Foreign/CUDA/Driver/Marshal.chs&quot; #-}
+{-# LINE 427 &quot;src/Foreign/CUDA/Driver/Marshal.chs&quot; #-}
 
 
 
@@ -549,7 +549,7 @@ cuMemcpy2DDtoHAsync a1 a2 a3 a4 a5 a6 a7 a8 a9 a10 a11 =
   let {res' = cToEnum res} in
   return (res')
 
-{-# LINE 480 &quot;./Foreign/CUDA/Driver/Marshal.chs&quot; #-}
+{-# LINE 480 &quot;src/Foreign/CUDA/Driver/Marshal.chs&quot; #-}
 
   where
     useHP = castPtr . useHostPtr
@@ -593,7 +593,7 @@ cuMemcpyHtoD a1 a2 a3 =
   let {res' = cToEnum res} in
   return (res')
 
-{-# LINE 517 &quot;./Foreign/CUDA/Driver/Marshal.chs&quot; #-}
+{-# LINE 517 &quot;src/Foreign/CUDA/Driver/Marshal.chs&quot; #-}
 
 
 
@@ -621,7 +621,7 @@ cuMemcpyHtoDAsync a1 a2 a3 a4 =
   let {res' = cToEnum res} in
   return (res')
 
-{-# LINE 538 &quot;./Foreign/CUDA/Driver/Marshal.chs&quot; #-}
+{-# LINE 538 &quot;src/Foreign/CUDA/Driver/Marshal.chs&quot; #-}
 
   where
     useHP = castPtr . useHostPtr
@@ -676,7 +676,7 @@ cuMemcpy2DHtoD a1 a2 a3 a4 a5 a6 a7 a8 a9 a10 =
   let {res' = cToEnum res} in
   return (res')
 
-{-# LINE 588 &quot;./Foreign/CUDA/Driver/Marshal.chs&quot; #-}
+{-# LINE 588 &quot;src/Foreign/CUDA/Driver/Marshal.chs&quot; #-}
 
 
 
@@ -734,7 +734,7 @@ cuMemcpy2DHtoDAsync a1 a2 a3 a4 a5 a6 a7 a8 a9 a10 a11 =
   let {res' = cToEnum res} in
   return (res')
 
-{-# LINE 641 &quot;./Foreign/CUDA/Driver/Marshal.chs&quot; #-}
+{-# LINE 641 &quot;src/Foreign/CUDA/Driver/Marshal.chs&quot; #-}
 
   where
     useHP = castPtr . useHostPtr
@@ -778,7 +778,7 @@ cuMemcpyDtoD a1 a2 a3 =
   let {res' = cToEnum res} in
   return (res')
 
-{-# LINE 678 &quot;./Foreign/CUDA/Driver/Marshal.chs&quot; #-}
+{-# LINE 678 &quot;src/Foreign/CUDA/Driver/Marshal.chs&quot; #-}
 
 
 
@@ -808,7 +808,7 @@ cuMemcpyDtoDAsync a1 a2 a3 a4 =
   let {res' = cToEnum res} in
   return (res')
 
-{-# LINE 701 &quot;./Foreign/CUDA/Driver/Marshal.chs&quot; #-}
+{-# LINE 701 &quot;src/Foreign/CUDA/Driver/Marshal.chs&quot; #-}
 
 
 
@@ -864,7 +864,7 @@ cuMemcpy2DDtoD a1 a2 a3 a4 a5 a6 a7 a8 a9 a10 =
   let {res' = cToEnum res} in
   return (res')
 
-{-# LINE 752 &quot;./Foreign/CUDA/Driver/Marshal.chs&quot; #-}
+{-# LINE 752 &quot;src/Foreign/CUDA/Driver/Marshal.chs&quot; #-}
 
 
 
@@ -923,7 +923,7 @@ cuMemcpy2DDtoDAsync a1 a2 a3 a4 a5 a6 a7 a8 a9 a10 a11 =
   let {res' = cToEnum res} in
   return (res')
 
-{-# LINE 806 &quot;./Foreign/CUDA/Driver/Marshal.chs&quot; #-}
+{-# LINE 806 &quot;src/Foreign/CUDA/Driver/Marshal.chs&quot; #-}
 
 
 
@@ -965,7 +965,7 @@ cuMemcpyPeer a1 a2 a3 a4 a5 =
   let {res' = cToEnum res} in
   return (res')
 
-{-# LINE 845 &quot;./Foreign/CUDA/Driver/Marshal.chs&quot; #-}
+{-# LINE 845 &quot;src/Foreign/CUDA/Driver/Marshal.chs&quot; #-}
 
 
 
@@ -1004,7 +1004,7 @@ cuMemcpyPeerAsync a1 a2 a3 a4 a5 a6 =
   let {res' = cToEnum res} in
   return (res')
 
-{-# LINE 881 &quot;./Foreign/CUDA/Driver/Marshal.chs&quot; #-}
+{-# LINE 881 &quot;src/Foreign/CUDA/Driver/Marshal.chs&quot; #-}
 
 
 
@@ -1101,7 +1101,7 @@ cuMemsetD8 a1 a2 a3 =
   let {res' = cToEnum res} in
   return (res')
 
-{-# LINE 971 &quot;./Foreign/CUDA/Driver/Marshal.chs&quot; #-}
+{-# LINE 971 &quot;src/Foreign/CUDA/Driver/Marshal.chs&quot; #-}
 
 
 {-# INLINE cuMemsetD16 #-}
@@ -1114,7 +1114,7 @@ cuMemsetD16 a1 a2 a3 =
   let {res' = cToEnum res} in
   return (res')
 
-{-# LINE 977 &quot;./Foreign/CUDA/Driver/Marshal.chs&quot; #-}
+{-# LINE 977 &quot;src/Foreign/CUDA/Driver/Marshal.chs&quot; #-}
 
 
 {-# INLINE cuMemsetD32 #-}
@@ -1127,7 +1127,7 @@ cuMemsetD32 a1 a2 a3 =
   let {res' = cToEnum res} in
   return (res')
 
-{-# LINE 983 &quot;./Foreign/CUDA/Driver/Marshal.chs&quot; #-}
+{-# LINE 983 &quot;src/Foreign/CUDA/Driver/Marshal.chs&quot; #-}
 
 
 
@@ -1165,7 +1165,7 @@ cuMemsetD8Async a1 a2 a3 a4 =
   let {res' = cToEnum res} in
   return (res')
 
-{-# LINE 1017 &quot;./Foreign/CUDA/Driver/Marshal.chs&quot; #-}
+{-# LINE 1017 &quot;src/Foreign/CUDA/Driver/Marshal.chs&quot; #-}
 
 
 {-# INLINE cuMemsetD16Async #-}
@@ -1179,7 +1179,7 @@ cuMemsetD16Async a1 a2 a3 a4 =
   let {res' = cToEnum res} in
   return (res')
 
-{-# LINE 1024 &quot;./Foreign/CUDA/Driver/Marshal.chs&quot; #-}
+{-# LINE 1024 &quot;src/Foreign/CUDA/Driver/Marshal.chs&quot; #-}
 
 
 {-# INLINE cuMemsetD32Async #-}
@@ -1193,7 +1193,7 @@ cuMemsetD32Async a1 a2 a3 a4 =
   let {res' = cToEnum res} in
   return (res')
 
-{-# LINE 1032 &quot;./Foreign/CUDA/Driver/Marshal.chs&quot; #-}
+{-# LINE 1032 &quot;src/Foreign/CUDA/Driver/Marshal.chs&quot; #-}
 
 
 
@@ -1220,7 +1220,7 @@ cuMemHostGetDevicePointer a2 a3 =
   peekDeviceHandle  a1'&gt;&gt;= \a1'' -&gt; 
   return (res', a1'')
 
-{-# LINE 1051 &quot;./Foreign/CUDA/Driver/Marshal.chs&quot; #-}
+{-# LINE 1051 &quot;src/Foreign/CUDA/Driver/Marshal.chs&quot; #-}
 
   where
     alloca'  = F.alloca
@@ -1250,7 +1250,7 @@ cuMemGetAddressRange a3 =
   peekIntConv  a2'&gt;&gt;= \a2'' -&gt; 
   return (res', a1'', a2'')
 
-{-# LINE 1072 &quot;./Foreign/CUDA/Driver/Marshal.chs&quot; #-}
+{-# LINE 1072 &quot;src/Foreign/CUDA/Driver/Marshal.chs&quot; #-}
 
   where
     alloca' :: Storable a =&gt; (Ptr a -&gt; IO b) -&gt; IO b
@@ -1279,7 +1279,7 @@ cuMemGetInfo =
   peekIntConv  a2'&gt;&gt;= \a2'' -&gt; 
   return (res', a1'', a2'')
 
-{-# LINE 1092 &quot;./Foreign/CUDA/Driver/Marshal.chs&quot; #-}
+{-# LINE 1092 &quot;src/Foreign/CUDA/Driver/Marshal.chs&quot; #-}
 
   where
     alloca' = F.alloca
@@ -1290,7 +1290,7 @@ cuMemGetInfo =
 --------------------------------------------------------------------------------
 
 type DeviceHandle = (C2HSImp.CULLong)
-{-# LINE 1101 &quot;./Foreign/CUDA/Driver/Marshal.chs&quot; #-}
+{-# LINE 1101 &quot;src/Foreign/CUDA/Driver/Marshal.chs&quot; #-}
 
 
 -- Lift an opaque handle to a typed DevicePtr representation. This occasions

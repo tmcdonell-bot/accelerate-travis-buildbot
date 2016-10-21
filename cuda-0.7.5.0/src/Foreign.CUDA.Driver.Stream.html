@@ -2,7 +2,7 @@
 </span><a name="line-2"></a><span class="hs-comment">-- Edit the ORIGNAL .chs file instead!</span><span>
 </span><a name="line-3"></a><span>
 </span><a name="line-4"></a><span>
-</span><a name="line-5"></a><span class="hs-pragma">{-# LINE 1 &quot;./Foreign/CUDA/Driver/Stream.chs&quot; #-}</span><span>
+</span><a name="line-5"></a><span class="hs-pragma">{-# LINE 1 &quot;src/Foreign/CUDA/Driver/Stream.chs&quot; #-}</span><span>
 </span><a name="line-6"></a><span class="hs-pragma">{-# LANGUAGE BangPatterns             #-}</span><span>
 </span><a name="line-7"></a><span class="hs-pragma">{-# LANGUAGE EmptyDataDecls           #-}</span><span>
 </span><a name="line-8"></a><span class="hs-pragma">{-# LANGUAGE ForeignFunctionInterface #-}</span><span>
@@ -33,7 +33,7 @@
 </span><a name="line-33"></a><span>
 </span><a name="line-34"></a><span>
 </span><a name="line-35"></a><span>
-</span><a name="line-36"></a><span class="hs-pragma">{-# LINE 26 &quot;./Foreign/CUDA/Driver/Stream.chs&quot; #-}</span><span>
+</span><a name="line-36"></a><span class="hs-pragma">{-# LINE 26 &quot;src/Foreign/CUDA/Driver/Stream.chs&quot; #-}</span><span>
 </span><a name="line-37"></a><span>
 </span><a name="line-38"></a><span>
 </span><a name="line-39"></a><span class="hs-comment">-- Friends</span><span>
@@ -71,7 +71,7 @@
 </span><a name="line-71"></a><span>  </span><span class="hs-identifier">peekStream</span><span>  </span><span class="hs-identifier">a1'</span><span class="hs-operator">&gt;&gt;=</span><span> </span><span class="hs-glyph">\</span><span class="hs-identifier">a1''</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span>
 </span><a name="line-72"></a><span>  </span><span class="hs-identifier">return</span><span> </span><span class="hs-special">(</span><span class="hs-identifier">res'</span><span class="hs-special">,</span><span> </span><span class="hs-identifier">a1''</span><span class="hs-special">)</span><span>
 </span><a name="line-73"></a><span>
-</span><a name="line-74"></a><span class="hs-pragma">{-# LINE 56 &quot;./Foreign/CUDA/Driver/Stream.chs&quot; #-}</span><span>
+</span><a name="line-74"></a><span class="hs-pragma">{-# LINE 56 &quot;src/Foreign/CUDA/Driver/Stream.chs&quot; #-}</span><span>
 </span><a name="line-75"></a><span>
 </span><a name="line-76"></a><span>  </span><span class="hs-keyword">where</span><span>
 </span><a name="line-77"></a><span>    </span><span class="hs-identifier">peekStream</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">liftM</span><span> </span><span class="hs-identifier">Stream</span><span> </span><span class="hs-operator">.</span><span> </span><span class="hs-identifier">peek</span><span>
@@ -95,7 +95,7 @@
 </span><a name="line-95"></a><span class="hs-comment">--</span><span>
 </span><a name="line-96"></a><span class="hs-pragma">{-# INLINEABLE createWithPriority #-}</span><span>
 </span><a name="line-97"></a><span class="hs-identifier">createWithPriority</span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-identifier">StreamPriority</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="hs-identifier">StreamFlag</span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier">IO</span><span> </span><span class="hs-identifier">Stream</span><span>
-</span><a name="line-98"></a><span class="hs-identifier">createWithPriority</span><span> </span><span class="hs-identifier">_</span><span> </span><a href="#local-1627795414"><span class="hs-identifier hs-var">_</span></a><span>              </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">requireSDK</span><span> </span><span class="hs-char">'createWithPriority 5.5
+</span><a name="line-98"></a><span class="hs-identifier">createWithPriority</span><span> </span><span class="hs-identifier">_</span><span> </span><a href="#local-1627796027"><span class="hs-identifier hs-var">_</span></a><span>              </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">requireSDK</span><span> </span><span class="hs-char">'createWithPriority 5.5
 
 
 -- |
@@ -118,7 +118,7 @@ cuStreamDestroy a1 =
   let {res' = cToEnum res} in
   return (res')
 
-{-# LINE 110 &quot;./Foreign/CUDA/Driver/Stream.chs&quot; #-}
+{-# LINE 110 &quot;src/Foreign/CUDA/Driver/Stream.chs&quot; #-}
 
 
 
@@ -144,7 +144,7 @@ cuStreamQuery a1 =
   let {res' = cToEnum res} in
   return (res')
 
-{-# LINE 129 &quot;./Foreign/CUDA/Driver/Stream.chs&quot; #-}
+{-# LINE 129 &quot;src/Foreign/CUDA/Driver/Stream.chs&quot; #-}
 
 
 
@@ -165,7 +165,7 @@ cuStreamSynchronize a1 =
   let {res' = cToEnum res} in
   return (res')
 
-{-# LINE 143 &quot;./Foreign/CUDA/Driver/Stream.chs&quot; #-}
+{-# LINE 143 &quot;src/Foreign/CUDA/Driver/Stream.chs&quot; #-}
 
 
 

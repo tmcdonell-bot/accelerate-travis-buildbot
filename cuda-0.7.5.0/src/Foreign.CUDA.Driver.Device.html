@@ -2,7 +2,7 @@
 </span><a name="line-2"></a><span class="hs-comment">-- Edit the ORIGNAL .chs file instead!</span><span>
 </span><a name="line-3"></a><span>
 </span><a name="line-4"></a><span>
-</span><a name="line-5"></a><span class="hs-pragma">{-# LINE 1 &quot;./Foreign/CUDA/Driver/Device.chs&quot; #-}</span><span>
+</span><a name="line-5"></a><span class="hs-pragma">{-# LINE 1 &quot;src/Foreign/CUDA/Driver/Device.chs&quot; #-}</span><span>
 </span><a name="line-6"></a><span class="hs-pragma">{-# LANGUAGE BangPatterns             #-}</span><span>
 </span><a name="line-7"></a><span class="hs-pragma">{-# LANGUAGE CPP                      #-}</span><span>
 </span><a name="line-8"></a><span class="hs-pragma">{-# LANGUAGE EmptyDataDecls           #-}</span><span>
@@ -35,7 +35,7 @@
 </span><a name="line-35"></a><span>
 </span><a name="line-36"></a><span>
 </span><a name="line-37"></a><span>
-</span><a name="line-38"></a><span class="hs-pragma">{-# LINE 28 &quot;./Foreign/CUDA/Driver/Device.chs&quot; #-}</span><span>
+</span><a name="line-38"></a><span class="hs-pragma">{-# LINE 28 &quot;src/Foreign/CUDA/Driver/Device.chs&quot; #-}</span><span>
 </span><a name="line-39"></a><span>
 </span><a name="line-40"></a><span>
 </span><a name="line-41"></a><span class="hs-comment">-- Friends</span><span>
@@ -322,12 +322,12 @@
 </span><a name="line-322"></a><span>  </span><span class="hs-identifier">toEnum</span><span> </span><span class="hs-number">50</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">PciDomainId</span><span>
 </span><a name="line-323"></a><span>  </span><span class="hs-identifier">toEnum</span><span> </span><span class="hs-identifier">unmatched</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">error</span><span> </span><span class="hs-special">(</span><span class="hs-string">&quot;DeviceAttribute.toEnum: Cannot match &quot;</span><span> </span><span class="hs-operator">++</span><span> </span><span class="hs-identifier">show</span><span> </span><span class="hs-identifier">unmatched</span><span class="hs-special">)</span><span>
 </span><a name="line-324"></a><span>
-</span><a name="line-325"></a><span class="hs-pragma">{-# LINE 60 &quot;./Foreign/CUDA/Driver/Device.chs&quot; #-}</span><span>
+</span><a name="line-325"></a><span class="hs-pragma">{-# LINE 60 &quot;src/Foreign/CUDA/Driver/Device.chs&quot; #-}</span><span>
 </span><a name="line-326"></a><span>
 </span><a name="line-327"></a><span>
 </span><a name="line-328"></a><span>
 </span><a name="line-329"></a><span>
-</span><a name="line-330"></a><span class="hs-pragma">{-# LINE 64 &quot;./Foreign/CUDA/Driver/Device.chs&quot; #-}</span><span>
+</span><a name="line-330"></a><span class="hs-pragma">{-# LINE 64 &quot;src/Foreign/CUDA/Driver/Device.chs&quot; #-}</span><span>
 </span><a name="line-331"></a><span>
 </span><a name="line-332"></a><span>
 </span><a name="line-333"></a><span class="hs-comment">--</span><span>
@@ -352,7 +352,7 @@
 </span><a name="line-352"></a><span>
 </span><a name="line-353"></a><span class="hs-keyword">instance</span><span> </span><span class="hs-identifier">Storable</span><span> </span><span class="hs-identifier">CUDevProp</span><span> </span><span class="hs-keyword">where</span><span>
 </span><a name="line-354"></a><span>  </span><span class="hs-identifier">sizeOf</span><span> </span><span class="hs-identifier">_</span><span>    </span><span class="hs-glyph">=</span><span> </span><span class="hs-number">56</span><span>
-</span><a name="line-355"></a><span class="hs-pragma">{-# LINE 87 &quot;./Foreign/CUDA/Driver/Device.chs&quot; #-}</span><span>
+</span><a name="line-355"></a><span class="hs-pragma">{-# LINE 87 &quot;src/Foreign/CUDA/Driver/Device.chs&quot; #-}</span><span>
 </span><a name="line-356"></a><span>
 </span><a name="line-357"></a><span>  </span><span class="hs-identifier">alignment</span><span> </span><span class="hs-identifier">_</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">alignment</span><span> </span><span class="hs-special">(</span><span class="hs-identifier">undefined</span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-identifier">Ptr</span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span class="hs-special">)</span><span>
 </span><a name="line-358"></a><span>
@@ -415,7 +415,7 @@
 </span><a name="line-415"></a><span>  </span><span class="hs-identifier">enable_constructors'_</span><span> </span><span class="hs-operator hs-type">&gt;&gt;</span><span>
 </span><a name="line-416"></a><span>  </span><span class="hs-identifier">return</span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span>
 </span><a name="line-417"></a><span>
-</span><a name="line-418"></a><span class="hs-pragma">{-# LINE 147 &quot;./Foreign/CUDA/Driver/Device.chs&quot; #-}</span><span>
+</span><a name="line-418"></a><span class="hs-pragma">{-# LINE 147 &quot;src/Foreign/CUDA/Driver/Device.chs&quot; #-}</span><span>
 </span><a name="line-419"></a><span>
 </span><a name="line-420"></a><span>
 </span><a name="line-421"></a><span class="hs-pragma">{-# INLINE cuInit #-}</span><span>
@@ -426,7 +426,7 @@
 </span><a name="line-426"></a><span>  </span><span class="hs-keyword">let</span><span> </span><span class="hs-special">{</span><span class="hs-identifier">res'</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">cToEnum</span><span> </span><span class="hs-identifier">res</span><span class="hs-special">}</span><span> </span><span class="hs-keyword">in</span><span>
 </span><a name="line-427"></a><span>  </span><span class="hs-identifier">return</span><span> </span><span class="hs-special">(</span><span class="hs-identifier">res'</span><span class="hs-special">)</span><span>
 </span><a name="line-428"></a><span>
-</span><a name="line-429"></a><span class="hs-pragma">{-# LINE 151 &quot;./Foreign/CUDA/Driver/Device.chs&quot; #-}</span><span>
+</span><a name="line-429"></a><span class="hs-pragma">{-# LINE 151 &quot;src/Foreign/CUDA/Driver/Device.chs&quot; #-}</span><span>
 </span><a name="line-430"></a><span>
 </span><a name="line-431"></a><span>
 </span><a name="line-432"></a><span>
@@ -456,7 +456,7 @@
 </span><a name="line-456"></a><span>  </span><span class="hs-identifier">peekIntConv</span><span>  </span><span class="hs-identifier">a2'</span><span class="hs-operator">&gt;&gt;=</span><span> </span><span class="hs-glyph">\</span><span class="hs-identifier">a2''</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span>
 </span><a name="line-457"></a><span>  </span><span class="hs-identifier">return</span><span> </span><span class="hs-special">(</span><span class="hs-identifier">res'</span><span class="hs-special">,</span><span> </span><span class="hs-identifier">a1''</span><span class="hs-special">,</span><span> </span><span class="hs-identifier">a2''</span><span class="hs-special">)</span><span>
 </span><a name="line-458"></a><span>
-</span><a name="line-459"></a><span class="hs-pragma">{-# LINE 178 &quot;./Foreign/CUDA/Driver/Device.chs&quot; #-}</span><span>
+</span><a name="line-459"></a><span class="hs-pragma">{-# LINE 178 &quot;src/Foreign/CUDA/Driver/Device.chs&quot; #-}</span><span>
 </span><a name="line-460"></a><span>
 </span><a name="line-461"></a><span>
 </span><a name="line-462"></a><span>
@@ -479,7 +479,7 @@
 </span><a name="line-479"></a><span>  </span><span class="hs-identifier">dev</span><span>  </span><span class="hs-identifier">a1'</span><span class="hs-operator">&gt;&gt;=</span><span> </span><span class="hs-glyph">\</span><span class="hs-identifier">a1''</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span>
 </span><a name="line-480"></a><span>  </span><span class="hs-identifier">return</span><span> </span><span class="hs-special">(</span><span class="hs-identifier">res'</span><span class="hs-special">,</span><span> </span><span class="hs-identifier">a1''</span><span class="hs-special">)</span><span>
 </span><a name="line-481"></a><span>
-</span><a name="line-482"></a><span class="hs-pragma">{-# LINE 193 &quot;./Foreign/CUDA/Driver/Device.chs&quot; #-}</span><span>
+</span><a name="line-482"></a><span class="hs-pragma">{-# LINE 193 &quot;src/Foreign/CUDA/Driver/Device.chs&quot; #-}</span><span>
 </span><a name="line-483"></a><span>
 </span><a name="line-484"></a><span>  </span><span class="hs-keyword">where</span><span> </span><span class="hs-identifier">dev</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">liftM</span><span> </span><span class="hs-identifier">Device</span><span> </span><span class="hs-operator">.</span><span> </span><span class="hs-identifier">peek</span><span>
 </span><a name="line-485"></a><span>
@@ -504,7 +504,7 @@
 </span><a name="line-504"></a><span>  </span><span class="hs-identifier">peekIntConv</span><span>  </span><span class="hs-identifier">a1'</span><span class="hs-operator">&gt;&gt;=</span><span> </span><span class="hs-glyph">\</span><span class="hs-identifier">a1''</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span>
 </span><a name="line-505"></a><span>  </span><span class="hs-identifier">return</span><span> </span><span class="hs-special">(</span><span class="hs-identifier">res'</span><span class="hs-special">,</span><span> </span><span class="hs-identifier">a1''</span><span class="hs-special">)</span><span>
 </span><a name="line-506"></a><span>
-</span><a name="line-507"></a><span class="hs-pragma">{-# LINE 210 &quot;./Foreign/CUDA/Driver/Device.chs&quot; #-}</span><span>
+</span><a name="line-507"></a><span class="hs-pragma">{-# LINE 210 &quot;src/Foreign/CUDA/Driver/Device.chs&quot; #-}</span><span>
 </span><a name="line-508"></a><span>
 </span><a name="line-509"></a><span>
 </span><a name="line-510"></a><span>
@@ -526,7 +526,7 @@
 </span><a name="line-526"></a><span>  </span><span class="hs-identifier">peekIntConv</span><span>  </span><span class="hs-identifier">a1'</span><span class="hs-operator">&gt;&gt;=</span><span> </span><span class="hs-glyph">\</span><span class="hs-identifier">a1''</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span>
 </span><a name="line-527"></a><span>  </span><span class="hs-identifier">return</span><span> </span><span class="hs-special">(</span><span class="hs-identifier">res'</span><span class="hs-special">,</span><span> </span><span class="hs-identifier">a1''</span><span class="hs-special">)</span><span>
 </span><a name="line-528"></a><span>
-</span><a name="line-529"></a><span class="hs-pragma">{-# LINE 224 &quot;./Foreign/CUDA/Driver/Device.chs&quot; #-}</span><span>
+</span><a name="line-529"></a><span class="hs-pragma">{-# LINE 224 &quot;src/Foreign/CUDA/Driver/Device.chs&quot; #-}</span><span>
 </span><a name="line-530"></a><span>
 </span><a name="line-531"></a><span>
 </span><a name="line-532"></a><span>
@@ -549,7 +549,7 @@
 </span><a name="line-549"></a><span>  </span><span class="hs-identifier">peekS</span><span>  </span><span class="hs-identifier">a1'1</span><span>  </span><span class="hs-identifier">a1'2</span><span class="hs-operator">&gt;&gt;=</span><span> </span><span class="hs-glyph">\</span><span class="hs-identifier">a1''</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span>
 </span><a name="line-550"></a><span>  </span><span class="hs-identifier">return</span><span> </span><span class="hs-special">(</span><span class="hs-identifier">res'</span><span class="hs-special">,</span><span> </span><span class="hs-identifier">a1''</span><span class="hs-special">)</span><span>
 </span><a name="line-551"></a><span>
-</span><a name="line-552"></a><span class="hs-pragma">{-# LINE 239 &quot;./Foreign/CUDA/Driver/Device.chs&quot; #-}</span><span>
+</span><a name="line-552"></a><span class="hs-pragma">{-# LINE 239 &quot;src/Foreign/CUDA/Driver/Device.chs&quot; #-}</span><span>
 </span><a name="line-553"></a><span>
 </span><a name="line-554"></a><span>  </span><span class="hs-keyword">where</span><span>
 </span><a name="line-555"></a><span>    </span><span class="hs-identifier">len</span><span>       </span><span class="hs-glyph">=</span><span> </span><span class="hs-number">512</span><span>
@@ -658,7 +658,7 @@
 </span><a name="line-658"></a><span>  </span><span class="hs-identifier">peek</span><span>  </span><span class="hs-identifier">a1'</span><span class="hs-operator">&gt;&gt;=</span><span> </span><span class="hs-glyph">\</span><span class="hs-identifier">a1''</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span>
 </span><a name="line-659"></a><span>  </span><span class="hs-identifier">return</span><span> </span><span class="hs-special">(</span><span class="hs-identifier">res'</span><span class="hs-special">,</span><span> </span><span class="hs-identifier">a1''</span><span class="hs-special">)</span><span>
 </span><a name="line-660"></a><span>
-</span><a name="line-661"></a><span class="hs-pragma">{-# LINE 387 &quot;./Foreign/CUDA/Driver/Device.chs&quot; #-}</span><span>
+</span><a name="line-661"></a><span class="hs-pragma">{-# LINE 387 &quot;src/Foreign/CUDA/Driver/Device.chs&quot; #-}</span><span>
 </span><a name="line-662"></a><span>
 </span><a name="line-663"></a><span>
 </span><a name="line-664"></a><span>
@@ -681,7 +681,7 @@
 </span><a name="line-681"></a><span>  </span><span class="hs-identifier">peekIntConv</span><span>  </span><span class="hs-identifier">a1'</span><span class="hs-operator">&gt;&gt;=</span><span> </span><span class="hs-glyph">\</span><span class="hs-identifier">a1''</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span>
 </span><a name="line-682"></a><span>  </span><span class="hs-identifier">return</span><span> </span><span class="hs-special">(</span><span class="hs-identifier">res'</span><span class="hs-special">,</span><span> </span><span class="hs-identifier">a1''</span><span class="hs-special">)</span><span>
 </span><a name="line-683"></a><span>
-</span><a name="line-684"></a><span class="hs-pragma">{-# LINE 402 &quot;./Foreign/CUDA/Driver/Device.chs&quot; #-}</span><span>
+</span><a name="line-684"></a><span class="hs-pragma">{-# LINE 402 &quot;src/Foreign/CUDA/Driver/Device.chs&quot; #-}</span><span>
 </span><a name="line-685"></a><span>
 </span><a name="line-686"></a><span>
 </span><a name="line-687"></a><span>

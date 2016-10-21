@@ -2,7 +2,7 @@
 </span><a name="line-2"></a><span class="hs-comment">-- Edit the ORIGNAL .chs file instead!</span><span>
 </span><a name="line-3"></a><span>
 </span><a name="line-4"></a><span>
-</span><a name="line-5"></a><span class="hs-pragma">{-# LINE 1 &quot;./Foreign/CUDA/Driver/Context/Config.chs&quot; #-}</span><span>
+</span><a name="line-5"></a><span class="hs-pragma">{-# LINE 1 &quot;src/Foreign/CUDA/Driver/Context/Config.chs&quot; #-}</span><span>
 </span><a name="line-6"></a><span class="hs-pragma">{-# LANGUAGE BangPatterns             #-}</span><span>
 </span><a name="line-7"></a><span class="hs-pragma">{-# LANGUAGE CPP                      #-}</span><span>
 </span><a name="line-8"></a><span class="hs-pragma">{-# LANGUAGE EmptyDataDecls           #-}</span><span>
@@ -48,7 +48,7 @@
 </span><a name="line-48"></a><span>
 </span><a name="line-49"></a><span>
 </span><a name="line-50"></a><span>
-</span><a name="line-51"></a><span class="hs-pragma">{-# LINE 43 &quot;./Foreign/CUDA/Driver/Context/Config.chs&quot; #-}</span><span>
+</span><a name="line-51"></a><span class="hs-pragma">{-# LINE 43 &quot;src/Foreign/CUDA/Driver/Context/Config.chs&quot; #-}</span><span>
 </span><a name="line-52"></a><span>
 </span><a name="line-53"></a><span>
 </span><a name="line-54"></a><span class="hs-comment">-- Friends</span><span>
@@ -91,7 +91,7 @@
 </span><a name="line-91"></a><span>                 </span><span class="hs-identifier hs-var">EQ</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="hs-identifier">v</span><span class="hs-special">]</span><span>
 </span><a name="line-92"></a><span>                 </span><a href="Foreign.CUDA.Driver.Context.Config.html#PrintfFifoSize"><span class="hs-identifier hs-var">GT</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="hs-special">]</span><span>
 </span><a name="line-93"></a><span>
-</span><a name="line-94"></a><span>  </span><span class="hs-identifier">enumFrom</span><span> </span><a name="local-1627766311"><a href="#local-1627766311"><span class="hs-identifier">from</span></a></a><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">enumFromTo</span><span> </span><span class="hs-identifier">from</span><span> </span><span class="hs-identifier">MallocHeapSize</span><span>
+</span><a name="line-94"></a><span>  </span><span class="hs-identifier">enumFrom</span><span> </span><a name="local-1627766924"><a href="#local-1627766924"><span class="hs-identifier">from</span></a></a><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">enumFromTo</span><span> </span><span class="hs-identifier">from</span><span> </span><span class="hs-identifier">MallocHeapSize</span><span>
 </span><a name="line-95"></a><span>
 </span><a name="line-96"></a><span>  </span><span class="hs-identifier">fromEnum</span><span> </span><span class="hs-identifier">StackSize</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-number">0</span><span>
 </span><a name="line-97"></a><span>  </span><a name="local-805306531"><span class="hs-identifier">fromEnum</span></a><span> </span><span class="hs-identifier">PrintfFifoSize</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-number">1</span><span>
@@ -102,7 +102,7 @@
 </span><a name="line-102"></a><span>  </span><span class="hs-identifier">toEnum</span><span> </span><span class="hs-number">2</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">MallocHeapSize</span><span>
 </span><a name="line-103"></a><span>  </span><a name="local-1912608618"><span class="hs-identifier">toEnum</span></a><span> </span><span class="hs-identifier">unmatched</span><span> </span><span class="hs-glyph">=</span><span> </span><a href="Foreign.CUDA.Driver.Context.Base.html#ContextFlag"><span class="hs-identifier hs-type">error</span></a><span> </span><span class="hs-special">(</span><span class="hs-string">&quot;Limit.toEnum: Cannot match &quot;</span><span> </span><span class="hs-operator">++</span><span> </span><span class="hs-identifier">show</span><span> </span><span class="hs-identifier">unmatched</span><span class="hs-special">)</span><span>
 </span><a name="line-104"></a><span>
-</span><a name="line-105"></a><span class="hs-pragma">{-# LINE 70 &quot;./Foreign/CUDA/Driver/Context/Config.chs&quot; #-}</span><span>
+</span><a name="line-105"></a><span class="hs-pragma">{-# LINE 70 &quot;src/Foreign/CUDA/Driver/Context/Config.chs&quot; #-}</span><span>
 </span><a name="line-106"></a><span>
 </span><a name="line-107"></a><span>
 </span><a name="line-108"></a><span>
@@ -122,7 +122,7 @@
 </span><a name="line-122"></a><span>  </span><span class="hs-identifier">pred</span><span> </span><span class="hs-identifier">PreferL1</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">PreferShared</span><span>
 </span><a name="line-123"></a><span>  </span><a href="Foreign.CUDA.Driver.Context.Config.html#cuCtxGetLimit%27_"><span class="hs-identifier hs-var">pred</span></a><span> </span><a href="Foreign.CUDA.Driver.Context.Config.html#cuCtxGetLimit%27_"><span class="hs-identifier hs-var">PreferNone</span></a><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">error</span><span> </span><span class="hs-string">&quot;Cache.pred: PreferNone has no predecessor&quot;</span><span>
 </span><a name="line-124"></a><span>
-</span><a name="line-125"></a><span>  </span><a href="Foreign.CUDA.Internal.C2HS.html#peekIntConv"><span class="hs-identifier hs-var">enumFromTo</span></a><span> </span><span class="hs-identifier">from</span><span> </span><span class="hs-identifier hs-var">to</span><span> </span><span class="hs-glyph">=</span><span> </span><a name="local-1627766280"><a href="#local-1627766280"><span class="hs-identifier">go</span></a></a><span> </span><span class="hs-identifier">from</span><span>
+</span><a name="line-125"></a><span>  </span><a href="Foreign.CUDA.Internal.C2HS.html#peekIntConv"><span class="hs-identifier hs-var">enumFromTo</span></a><span> </span><span class="hs-identifier">from</span><span> </span><span class="hs-identifier hs-var">to</span><span> </span><span class="hs-glyph">=</span><span> </span><a name="local-1627766893"><a href="#local-1627766893"><span class="hs-identifier">go</span></a></a><span> </span><span class="hs-identifier">from</span><span>
 </span><a name="line-126"></a><span>    </span><span class="hs-keyword">where</span><span>
 </span><a name="line-127"></a><span>      </span><span class="hs-identifier">end</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">fromEnum</span><span> </span><span class="hs-identifier">to</span><span>
 </span><a name="line-128"></a><span>      </span><span class="hs-identifier">go</span><span> </span><span class="hs-identifier">v</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">case</span><span> </span><span class="hs-identifier">compare</span><span> </span><span class="hs-special">(</span><span class="hs-identifier">fromEnum</span><span> </span><span class="hs-identifier">v</span><span class="hs-special">)</span><span> </span><span class="hs-identifier">end</span><span> </span><span class="hs-keyword">of</span><span>
@@ -141,7 +141,7 @@
 </span><a name="line-141"></a><span>  </span><span class="hs-identifier">toEnum</span><span> </span><span class="hs-number">2</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">PreferL1</span><span>
 </span><a name="line-142"></a><span>  </span><span class="hs-identifier">toEnum</span><span> </span><span class="hs-identifier">unmatched</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">error</span><span> </span><span class="hs-special">(</span><span class="hs-string">&quot;Cache.toEnum: Cannot match &quot;</span><span> </span><span class="hs-operator">++</span><span> </span><span class="hs-identifier">show</span><span> </span><span class="hs-identifier">unmatched</span><span class="hs-special">)</span><span>
 </span><a name="line-143"></a><span>
-</span><a name="line-144"></a><span class="hs-pragma">{-# LINE 82 &quot;./Foreign/CUDA/Driver/Context/Config.chs&quot; #-}</span><span>
+</span><a name="line-144"></a><span class="hs-pragma">{-# LINE 82 &quot;src/Foreign/CUDA/Driver/Context/Config.chs&quot; #-}</span><span>
 </span><a name="line-145"></a><span>
 </span><a name="line-146"></a><span>
 </span><a name="line-147"></a><span>
@@ -188,7 +188,7 @@ cuCtxGetLimit a2 =
   peekIntConv  a1'&gt;&gt;= \a1'' -&gt; 
   return (res', a1'')
 
-{-# LINE 141 &quot;./Foreign/CUDA/Driver/Context/Config.chs&quot; #-}
+{-# LINE 141 &quot;src/Foreign/CUDA/Driver/Context/Config.chs&quot; #-}
 
 
 
@@ -212,7 +212,7 @@ cuCtxSetLimit a1 a2 =
   let {res' = cToEnum res} in
   return (res')
 
-{-# LINE 162 &quot;./Foreign/CUDA/Driver/Context/Config.chs&quot; #-}
+{-# LINE 162 &quot;src/Foreign/CUDA/Driver/Context/Config.chs&quot; #-}
 
 
 
@@ -238,7 +238,7 @@ cuCtxGetCacheConfig =
   peekEnum  a1'&gt;&gt;= \a1'' -&gt; 
   return (res', a1'')
 
-{-# LINE 184 &quot;./Foreign/CUDA/Driver/Context/Config.chs&quot; #-}
+{-# LINE 184 &quot;src/Foreign/CUDA/Driver/Context/Config.chs&quot; #-}
 
 
 
@@ -267,7 +267,7 @@ cuCtxSetCacheConfig a1 =
   let {res' = cToEnum res} in
   return (res')
 
-{-# LINE 210 &quot;./Foreign/CUDA/Driver/Context/Config.chs&quot; #-}
+{-# LINE 210 &quot;src/Foreign/CUDA/Driver/Context/Config.chs&quot; #-}
 
 
 

@@ -2,7 +2,7 @@
 </span><a name="line-2"></a><span class="hs-comment">-- Edit the ORIGNAL .chs file instead!</span><span>
 </span><a name="line-3"></a><span>
 </span><a name="line-4"></a><span>
-</span><a name="line-5"></a><span class="hs-pragma">{-# LINE 1 &quot;./Foreign/CUDA/Driver/Profiler.chs&quot; #-}</span><span>
+</span><a name="line-5"></a><span class="hs-pragma">{-# LINE 1 &quot;src/Foreign/CUDA/Driver/Profiler.chs&quot; #-}</span><span>
 </span><a name="line-6"></a><span class="hs-pragma">{-# LANGUAGE ForeignFunctionInterface #-}</span><span>
 </span><a name="line-7"></a><span class="hs-comment">--------------------------------------------------------------------------------</span><span>
 </span><a name="line-8"></a><span class="hs-comment">-- |</span><span>
@@ -29,7 +29,7 @@
 </span><a name="line-29"></a><span>
 </span><a name="line-30"></a><span>
 </span><a name="line-31"></a><span>
-</span><a name="line-32"></a><span class="hs-pragma">{-# LINE 21 &quot;./Foreign/CUDA/Driver/Profiler.chs&quot; #-}</span><span>
+</span><a name="line-32"></a><span class="hs-pragma">{-# LINE 21 &quot;src/Foreign/CUDA/Driver/Profiler.chs&quot; #-}</span><span>
 </span><a name="line-33"></a><span>
 </span><a name="line-34"></a><span>
 </span><a name="line-35"></a><span class="hs-comment">-- friends</span><span>
@@ -56,7 +56,7 @@
 </span><a name="line-56"></a><span>  </span><span class="hs-identifier">enumFromTo</span><span> </span><span class="hs-identifier">from</span><span> </span><span class="hs-identifier">to</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">go</span><span> </span><span class="hs-identifier">from</span><span>
 </span><a name="line-57"></a><span>    </span><span class="hs-keyword">where</span><span>
 </span><a name="line-58"></a><span>      </span><a href="Foreign.CUDA.Driver.Error.html#nothingIfOk"><span class="hs-identifier hs-var">end</span></a><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">fromEnum</span><span> </span><a href="Foreign.CUDA.Driver.Profiler.html#cuProfilerInitialize"><span class="hs-identifier hs-var">to</span></a><span>
-</span><a name="line-59"></a><span>      </span><span class="hs-identifier">go</span><span> </span><a name="local-1627458615"><a href="#local-1627458615"><span class="hs-identifier">v</span></a></a><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">case</span><span> </span><span class="hs-identifier">compare</span><span> </span><span class="hs-special">(</span><span class="hs-identifier">fromEnum</span><span> </span><span class="hs-identifier">v</span><span class="hs-special">)</span><span> </span><span class="hs-identifier">end</span><span> </span><span class="hs-keyword">of</span><span>
+</span><a name="line-59"></a><span>      </span><span class="hs-identifier">go</span><span> </span><a name="local-1627478865"><a href="#local-1627478865"><span class="hs-identifier">v</span></a></a><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">case</span><span> </span><span class="hs-identifier">compare</span><span> </span><span class="hs-special">(</span><span class="hs-identifier">fromEnum</span><span> </span><span class="hs-identifier">v</span><span class="hs-special">)</span><span> </span><span class="hs-identifier">end</span><span> </span><span class="hs-keyword">of</span><span>
 </span><a name="line-60"></a><span>                 </span><span class="hs-identifier">LT</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier">v</span><span> </span><span class="hs-glyph">:</span><span> </span><span class="hs-identifier">go</span><span> </span><span class="hs-special">(</span><span class="hs-identifier">succ</span><span> </span><span class="hs-identifier">v</span><span class="hs-special">)</span><span>
 </span><a name="line-61"></a><span>                 </span><span class="hs-identifier">EQ</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="hs-identifier">v</span><span class="hs-special">]</span><span>
 </span><a name="line-62"></a><span>                 </span><a name="cuProfilerInitialize"><a href="Foreign.CUDA.Driver.Profiler.html#cuProfilerInitialize"><span class="hs-identifier">GT</span></a></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="hs-special">]</span><span>
@@ -70,7 +70,7 @@
 </span><a name="line-70"></a><span>  </span><span class="hs-identifier">toEnum</span><span> </span><span class="hs-number">1</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">CSV</span><span>
 </span><a name="line-71"></a><span>  </span><span class="hs-identifier">toEnum</span><span> </span><span class="hs-identifier">unmatched</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">error</span><span> </span><span class="hs-special">(</span><span class="hs-string">&quot;OutputMode.toEnum: Cannot match &quot;</span><span> </span><span class="hs-operator">++</span><span> </span><span class="hs-identifier">show</span><span> </span><span class="hs-identifier">unmatched</span><span class="hs-special">)</span><span>
 </span><a name="line-72"></a><span>
-</span><a name="line-73"></a><span class="hs-pragma">{-# LINE 37 &quot;./Foreign/CUDA/Driver/Profiler.chs&quot; #-}</span><span>
+</span><a name="line-73"></a><span class="hs-pragma">{-# LINE 37 &quot;src/Foreign/CUDA/Driver/Profiler.chs&quot; #-}</span><span>
 </span><a name="line-74"></a><span>
 </span><a name="line-75"></a><span>
 </span><a name="line-76"></a><span>
@@ -97,14 +97,14 @@
 </span><a name="line-97"></a><span class="hs-pragma">{-# INLINE cuProfilerInitialize #-}</span><span>
 </span><a name="line-98"></a><span class="hs-identifier">cuProfilerInitialize</span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><span class="hs-identifier">String</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">(</span><span class="hs-identifier">String</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">(</span><span class="hs-identifier">OutputMode</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier">IO</span><span> </span><span class="hs-special">(</span><span class="hs-special">(</span><span class="hs-identifier">Status</span><span class="hs-special">)</span><span class="hs-special">)</span><span>
 </span><a name="line-99"></a><span class="hs-identifier">cuProfilerInitialize</span><span> </span><span class="hs-identifier">a1</span><span> </span><span class="hs-identifier">a2</span><span> </span><span class="hs-identifier">a3</span><span> </span><span class="hs-glyph">=</span><span>
-</span><a name="line-100"></a><span>  </span><a href="Foreign.CUDA.Driver.Profiler.html#cuProfilerStop%27_"><span class="hs-identifier hs-var">C2HSImp</span><span class="hs-operator hs-var">.</span></a><span class="hs-identifier">withCString</span><span> </span><span class="hs-identifier">a1</span><span> </span><a name="local-1627458607"><a href="#local-1627458607"><span class="hs-operator">$</span></a></a><span> </span><span class="hs-glyph">\</span><span class="hs-identifier">a1'</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span>
-</span><a name="line-101"></a><span>  </span><span class="hs-identifier">C2HSImp</span><a name="local-1627458608"><a href="#local-1627458608"><span class="hs-operator">.</span></a></a><span class="hs-identifier">withCString</span><span> </span><a href="#local-1627458607"><span class="hs-identifier hs-var">a2</span></a><span> </span><span class="hs-operator">$</span><span> </span><span class="hs-glyph">\</span><span class="hs-identifier">a2'</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span>
+</span><a name="line-100"></a><span>  </span><a href="Foreign.CUDA.Driver.Profiler.html#cuProfilerStop%27_"><span class="hs-identifier hs-var">C2HSImp</span><span class="hs-operator hs-var">.</span></a><span class="hs-identifier">withCString</span><span> </span><span class="hs-identifier">a1</span><span> </span><a name="local-1627478857"><a href="#local-1627478857"><span class="hs-operator">$</span></a></a><span> </span><span class="hs-glyph">\</span><span class="hs-identifier">a1'</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span>
+</span><a name="line-101"></a><span>  </span><span class="hs-identifier">C2HSImp</span><a name="local-1627478858"><a href="#local-1627478858"><span class="hs-operator">.</span></a></a><span class="hs-identifier">withCString</span><span> </span><a href="#local-1627478857"><span class="hs-identifier hs-var">a2</span></a><span> </span><span class="hs-operator">$</span><span> </span><span class="hs-glyph">\</span><span class="hs-identifier">a2'</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span>
 </span><a name="line-102"></a><span>  </span><span class="hs-keyword">let</span><span> </span><span class="hs-special">{</span><span class="hs-identifier">a3'</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">cFromEnum</span><span> </span><span class="hs-identifier">a3</span><span class="hs-special">}</span><span> </span><span class="hs-keyword">in</span><span> </span><span>
 </span><a name="line-103"></a><span>  </span><span class="hs-identifier">cuProfilerInitialize'_</span><span> </span><span class="hs-identifier">a1'</span><span> </span><span class="hs-identifier">a2'</span><span> </span><span class="hs-identifier hs-type">a3'</span><span> </span><span class="hs-operator hs-type">&gt;&gt;=</span><span> </span><span class="hs-glyph">\</span><span class="hs-identifier hs-type">res</span><span> </span><span class="hs-glyph">-&gt;</span><span>
 </span><a name="line-104"></a><span>  </span><span class="hs-keyword">let</span><span> </span><span class="hs-special">{</span><span class="hs-identifier">res'</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">cToEnum</span><span> </span><span class="hs-identifier">res</span><span class="hs-special">}</span><span> </span><span class="hs-keyword">in</span><span>
 </span><a name="line-105"></a><span>  </span><span class="hs-identifier">return</span><span> </span><span class="hs-special">(</span><span class="hs-identifier">res'</span><span class="hs-special">)</span><span>
 </span><a name="line-106"></a><span>
-</span><a name="line-107"></a><span class="hs-pragma">{-# LINE 66 &quot;./Foreign/CUDA/Driver/Profiler.chs&quot; #-}</span><span>
+</span><a name="line-107"></a><span class="hs-pragma">{-# LINE 66 &quot;src/Foreign/CUDA/Driver/Profiler.chs&quot; #-}</span><span>
 </span><a name="line-108"></a><span>
 </span><a name="line-109"></a><span>
 </span><a name="line-110"></a><span>
@@ -128,7 +128,7 @@
 </span><a name="line-128"></a><span>  </span><span class="hs-keyword">let</span><span> </span><span class="hs-special">{</span><span class="hs-identifier">res'</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">cToEnum</span><span> </span><span class="hs-identifier">res</span><span class="hs-special">}</span><span> </span><span class="hs-keyword">in</span><span>
 </span><a name="line-129"></a><span>  </span><span class="hs-identifier">return</span><span> </span><span class="hs-special">(</span><span class="hs-identifier">res'</span><span class="hs-special">)</span><span>
 </span><a name="line-130"></a><span>
-</span><a name="line-131"></a><span class="hs-pragma">{-# LINE 84 &quot;./Foreign/CUDA/Driver/Profiler.chs&quot; #-}</span><span>
+</span><a name="line-131"></a><span class="hs-pragma">{-# LINE 84 &quot;src/Foreign/CUDA/Driver/Profiler.chs&quot; #-}</span><span>
 </span><a name="line-132"></a><span>
 </span><a name="line-133"></a><span>
 </span><a name="line-134"></a><span>
@@ -149,7 +149,7 @@
 </span><a name="line-149"></a><span>  </span><span class="hs-keyword">let</span><span> </span><span class="hs-special">{</span><span class="hs-identifier">res'</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">cToEnum</span><span> </span><span class="hs-identifier">res</span><span class="hs-special">}</span><span> </span><span class="hs-keyword">in</span><span>
 </span><a name="line-150"></a><span>  </span><span class="hs-identifier">return</span><span> </span><span class="hs-special">(</span><span class="hs-identifier">res'</span><span class="hs-special">)</span><span>
 </span><a name="line-151"></a><span>
-</span><a name="line-152"></a><span class="hs-pragma">{-# LINE 99 &quot;./Foreign/CUDA/Driver/Profiler.chs&quot; #-}</span><span>
+</span><a name="line-152"></a><span class="hs-pragma">{-# LINE 99 &quot;src/Foreign/CUDA/Driver/Profiler.chs&quot; #-}</span><span>
 </span><a name="line-153"></a><span>
 </span><a name="line-154"></a><span>
 </span><a name="line-155"></a><span>

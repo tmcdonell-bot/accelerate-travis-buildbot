@@ -2,7 +2,7 @@
 </span><a name="line-2"></a><span class="hs-comment">-- Edit the ORIGNAL .chs file instead!</span><span>
 </span><a name="line-3"></a><span>
 </span><a name="line-4"></a><span>
-</span><a name="line-5"></a><span class="hs-pragma">{-# LINE 1 &quot;./Foreign/CUDA/Driver/Exec.chs&quot; #-}</span><span>
+</span><a name="line-5"></a><span class="hs-pragma">{-# LINE 1 &quot;src/Foreign/CUDA/Driver/Exec.chs&quot; #-}</span><span>
 </span><a name="line-6"></a><span class="hs-pragma">{-# LANGUAGE BangPatterns             #-}</span><span>
 </span><a name="line-7"></a><span class="hs-pragma">{-# LANGUAGE CPP                      #-}</span><span>
 </span><a name="line-8"></a><span class="hs-pragma">{-# LANGUAGE EmptyDataDecls           #-}</span><span>
@@ -39,7 +39,7 @@
 </span><a name="line-39"></a><span>
 </span><a name="line-40"></a><span>
 </span><a name="line-41"></a><span>
-</span><a name="line-42"></a><span class="hs-pragma">{-# LINE 32 &quot;./Foreign/CUDA/Driver/Exec.chs&quot; #-}</span><span>
+</span><a name="line-42"></a><span class="hs-pragma">{-# LINE 32 &quot;src/Foreign/CUDA/Driver/Exec.chs&quot; #-}</span><span>
 </span><a name="line-43"></a><span>
 </span><a name="line-44"></a><span>
 </span><a name="line-45"></a><span class="hs-comment">-- Friends</span><span>
@@ -129,7 +129,7 @@
 </span><a name="line-129"></a><span>  </span><span class="hs-identifier">toEnum</span><span> </span><span class="hs-number">7</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">CU_FUNC_ATTRIBUTE_MAX</span><span>
 </span><a name="line-130"></a><span>  </span><span class="hs-identifier">toEnum</span><span> </span><span class="hs-identifier">unmatched</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">error</span><span> </span><span class="hs-special">(</span><span class="hs-string">&quot;FunAttribute.toEnum: Cannot match &quot;</span><span> </span><span class="hs-operator">++</span><span> </span><span class="hs-identifier">show</span><span> </span><span class="hs-identifier">unmatched</span><span class="hs-special">)</span><span>
 </span><a name="line-131"></a><span>
-</span><a name="line-132"></a><span class="hs-pragma">{-# LINE 70 &quot;./Foreign/CUDA/Driver/Exec.chs&quot; #-}</span><span>
+</span><a name="line-132"></a><span class="hs-pragma">{-# LINE 70 &quot;src/Foreign/CUDA/Driver/Exec.chs&quot; #-}</span><span>
 </span><a name="line-133"></a><span>
 </span><a name="line-134"></a><span>
 </span><a name="line-135"></a><span class="hs-comment">-- |</span><span>
@@ -180,7 +180,7 @@
 </span><a name="line-180"></a><span>  </span><span class="hs-identifier">peekIntConv</span><span>  </span><span class="hs-identifier">a1'</span><span class="hs-operator">&gt;&gt;=</span><span> </span><span class="hs-glyph">\</span><span class="hs-identifier">a1''</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span>
 </span><a name="line-181"></a><span>  </span><span class="hs-identifier">return</span><span> </span><span class="hs-special">(</span><span class="hs-identifier">res'</span><span class="hs-special">,</span><span> </span><span class="hs-identifier">a1''</span><span class="hs-special">)</span><span>
 </span><a name="line-182"></a><span>
-</span><a name="line-183"></a><span class="hs-pragma">{-# LINE 113 &quot;./Foreign/CUDA/Driver/Exec.chs&quot; #-}</span><span>
+</span><a name="line-183"></a><span class="hs-pragma">{-# LINE 113 &quot;src/Foreign/CUDA/Driver/Exec.chs&quot; #-}</span><span>
 </span><a name="line-184"></a><span>
 </span><a name="line-185"></a><span>
 </span><a name="line-186"></a><span>
@@ -199,7 +199,7 @@
 </span><a name="line-199"></a><span class="hs-comment">--</span><span>
 </span><a name="line-200"></a><span class="hs-pragma">{-# INLINEABLE setCacheConfigFun #-}</span><span>
 </span><a name="line-201"></a><span class="hs-identifier">setCacheConfigFun</span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-identifier">Fun</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier">Cache</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier">IO</span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span>
-</span><a name="line-202"></a><span class="hs-identifier">setCacheConfigFun</span><span> </span><span class="hs-glyph">!</span><a name="local-1627802751"><a href="#local-1627802751"><span class="hs-identifier">fn</span></a></a><span> </span><span class="hs-glyph">!</span><span class="hs-identifier">pref</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">nothingIfOk</span><span> </span><span class="hs-operator">=&lt;&lt;</span><span> </span><span class="hs-identifier">cuFuncSetCacheConfig</span><span> </span><span class="hs-identifier">fn</span><span> </span><span class="hs-identifier">pref</span><span>
+</span><a name="line-202"></a><span class="hs-identifier">setCacheConfigFun</span><span> </span><span class="hs-glyph">!</span><a name="local-1627803364"><a href="#local-1627803364"><span class="hs-identifier">fn</span></a></a><span> </span><span class="hs-glyph">!</span><span class="hs-identifier">pref</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">nothingIfOk</span><span> </span><span class="hs-operator">=&lt;&lt;</span><span> </span><span class="hs-identifier">cuFuncSetCacheConfig</span><span> </span><span class="hs-identifier">fn</span><span> </span><span class="hs-identifier">pref</span><span>
 </span><a name="line-203"></a><span>
 </span><a name="line-204"></a><span class="hs-pragma">{-# INLINE cuFuncSetCacheConfig #-}</span><span>
 </span><a name="line-205"></a><span class="hs-identifier">cuFuncSetCacheConfig</span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><span class="hs-identifier">Fun</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">(</span><span class="hs-identifier">Cache</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier">IO</span><span> </span><span class="hs-special">(</span><span class="hs-special">(</span><span class="hs-identifier">Status</span><span class="hs-special">)</span><span class="hs-special">)</span><span>
@@ -210,7 +210,7 @@
 </span><a name="line-210"></a><span>  </span><span class="hs-keyword">let</span><span> </span><span class="hs-special">{</span><span class="hs-identifier">res'</span><span> </span><span class="hs-glyph">=</span><span> </span><a href="Foreign.CUDA.Driver.Exec.html#FunParam"><span class="hs-identifier hs-type">cToEnum</span></a><span> </span><span class="hs-identifier">res</span><span class="hs-special">}</span><span> </span><span class="hs-keyword">in</span><span>
 </span><a name="line-211"></a><span>  </span><span class="hs-identifier">return</span><span> </span><span class="hs-special">(</span><span class="hs-identifier">res'</span><span class="hs-special">)</span><span>
 </span><a name="line-212"></a><span>
-</span><a name="line-213"></a><span class="hs-pragma">{-# LINE 140 &quot;./Foreign/CUDA/Driver/Exec.chs&quot; #-}</span><span>
+</span><a name="line-213"></a><span class="hs-pragma">{-# LINE 140 &quot;src/Foreign/CUDA/Driver/Exec.chs&quot; #-}</span><span>
 </span><a name="line-214"></a><span>
 </span><a name="line-215"></a><span>
 </span><a name="line-216"></a><span>
@@ -339,7 +339,7 @@ cuLaunchKernel a1 a2 a3 a4 a5 a6 a7 a8 a9 a10 a11 =
   let {res' = cToEnum res} in
   return (res')
 
-{-# LINE 270 &quot;./Foreign/CUDA/Driver/Exec.chs&quot; #-}
+{-# LINE 270 &quot;src/Foreign/CUDA/Driver/Exec.chs&quot; #-}
 
 
 
@@ -369,7 +369,7 @@ cuLaunchGridAsync a1 a2 a3 a4 =
   let {res' = cToEnum res} in
   return (res')
 
-{-# LINE 302 &quot;./Foreign/CUDA/Driver/Exec.chs&quot; #-}
+{-# LINE 302 &quot;src/Foreign/CUDA/Driver/Exec.chs&quot; #-}
 
 
 
@@ -392,7 +392,7 @@ cuFuncSetBlockShape a1 a2 a3 a4 =
   let {res' = cToEnum res} in
   return (res')
 
-{-# LINE 318 &quot;./Foreign/CUDA/Driver/Exec.chs&quot; #-}
+{-# LINE 318 &quot;src/Foreign/CUDA/Driver/Exec.chs&quot; #-}
 
 
 
@@ -413,7 +413,7 @@ cuFuncSetSharedSize a1 a2 =
   let {res' = cToEnum res} in
   return (res')
 
-{-# LINE 332 &quot;./Foreign/CUDA/Driver/Exec.chs&quot; #-}
+{-# LINE 332 &quot;src/Foreign/CUDA/Driver/Exec.chs&quot; #-}
 
 
 
@@ -446,7 +446,7 @@ cuParamSetSize a1 a2 =
   let {res' = cToEnum res} in
   return (res')
 
-{-# LINE 358 &quot;./Foreign/CUDA/Driver/Exec.chs&quot; #-}
+{-# LINE 358 &quot;src/Foreign/CUDA/Driver/Exec.chs&quot; #-}
 
 
 {-# INLINE cuParamSeti #-}
@@ -459,7 +459,7 @@ cuParamSeti a1 a2 a3 =
   let {res' = cToEnum res} in
   return (res')
 
-{-# LINE 364 &quot;./Foreign/CUDA/Driver/Exec.chs&quot; #-}
+{-# LINE 364 &quot;src/Foreign/CUDA/Driver/Exec.chs&quot; #-}
 
 
 {-# INLINE cuParamSetf #-}
@@ -472,7 +472,7 @@ cuParamSetf a1 a2 a3 =
   let {res' = cToEnum res} in
   return (res')
 
-{-# LINE 370 &quot;./Foreign/CUDA/Driver/Exec.chs&quot; #-}
+{-# LINE 370 &quot;src/Foreign/CUDA/Driver/Exec.chs&quot; #-}
 
 
 {-# INLINE cuParamSetv #-}
@@ -486,7 +486,7 @@ cuParamSetv a1 a2 a3 a4 =
   let {res' = cToEnum res} in
   return (res')
 
-{-# LINE 378 &quot;./Foreign/CUDA/Driver/Exec.chs&quot; #-}
+{-# LINE 378 &quot;src/Foreign/CUDA/Driver/Exec.chs&quot; #-}
 
 
 

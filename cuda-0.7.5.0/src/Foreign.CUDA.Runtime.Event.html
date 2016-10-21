@@ -2,7 +2,7 @@
 </span><a name="line-2"></a><span class="hs-comment">-- Edit the ORIGNAL .chs file instead!</span><span>
 </span><a name="line-3"></a><span>
 </span><a name="line-4"></a><span>
-</span><a name="line-5"></a><span class="hs-pragma">{-# LINE 1 &quot;./Foreign/CUDA/Runtime/Event.chs&quot; #-}</span><span>
+</span><a name="line-5"></a><span class="hs-pragma">{-# LINE 1 &quot;src/Foreign/CUDA/Runtime/Event.chs&quot; #-}</span><span>
 </span><a name="line-6"></a><span class="hs-pragma">{-# LANGUAGE BangPatterns             #-}</span><span>
 </span><a name="line-7"></a><span class="hs-pragma">{-# LANGUAGE CPP                      #-}</span><span>
 </span><a name="line-8"></a><span class="hs-pragma">{-# LANGUAGE EmptyDataDecls           #-}</span><span>
@@ -32,7 +32,7 @@
 </span><a name="line-32"></a><span>
 </span><a name="line-33"></a><span>
 </span><a name="line-34"></a><span>
-</span><a name="line-35"></a><span class="hs-pragma">{-# LINE 25 &quot;./Foreign/CUDA/Runtime/Event.chs&quot; #-}</span><span>
+</span><a name="line-35"></a><span class="hs-pragma">{-# LINE 25 &quot;src/Foreign/CUDA/Runtime/Event.chs&quot; #-}</span><span>
 </span><a name="line-36"></a><span>
 </span><a name="line-37"></a><span>
 </span><a name="line-38"></a><span class="hs-comment">-- Friends</span><span>
@@ -69,7 +69,7 @@
 </span><a name="line-69"></a><span>  </span><a href="Foreign.CUDA.Runtime.Event.html#cudaEventDestroy%27_"><span class="hs-identifier hs-var">peekEvt</span></a><span>  </span><a href="Foreign.CUDA.Runtime.Event.html#cudaEventDestroy%27_"><span class="hs-identifier hs-var">a1'</span><span class="hs-operator hs-var">&gt;&gt;=</span></a><span> </span><span class="hs-glyph">\</span><span class="hs-identifier">a1''</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span>
 </span><a name="line-70"></a><span>  </span><span class="hs-identifier">return</span><span> </span><span class="hs-special">(</span><span class="hs-identifier">res'</span><span class="hs-special">,</span><span> </span><a href="Foreign.CUDA.Internal.C2HS.html#cToEnum"><span class="hs-identifier hs-var">a1''</span></a><span class="hs-special">)</span><span>
 </span><a name="line-71"></a><span>
-</span><a name="line-72"></a><span class="hs-pragma">{-# LINE 54 &quot;./Foreign/CUDA/Runtime/Event.chs&quot; #-}</span><span>
+</span><a name="line-72"></a><span class="hs-pragma">{-# LINE 54 &quot;src/Foreign/CUDA/Runtime/Event.chs&quot; #-}</span><span>
 </span><a name="line-73"></a><span>
 </span><a name="line-74"></a><span>  </span><span class="hs-keyword">where</span><span> </span><span class="hs-identifier">peekEvt</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">liftM</span><span> </span><a href="Foreign.CUDA.Types.html#Event"><span class="hs-identifier hs-type">Event</span></a><span> </span><span class="hs-operator">.</span><span> </span><span class="hs-identifier">peek</span><span>
 </span><a name="line-75"></a><span>
@@ -83,13 +83,13 @@
 </span><a name="line-83"></a><span>
 </span><a name="line-84"></a><span class="hs-pragma">{-# INLINE cudaEventDestroy #-}</span><span>
 </span><a name="line-85"></a><span class="hs-identifier">cudaEventDestroy</span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><span class="hs-identifier">Event</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier">IO</span><span> </span><span class="hs-special">(</span><span class="hs-special">(</span><span class="hs-identifier">Status</span><span class="hs-special">)</span><span class="hs-special">)</span><span>
-</span><a name="line-86"></a><span class="hs-identifier">cudaEventDestroy</span><span> </span><a href="#local-1627717444"><span class="hs-identifier hs-var">a1</span></a><span> </span><span class="hs-glyph">=</span><span>
+</span><a name="line-86"></a><span class="hs-identifier">cudaEventDestroy</span><span> </span><a href="#local-1627718057"><span class="hs-identifier hs-var">a1</span></a><span> </span><span class="hs-glyph">=</span><span>
 </span><a name="line-87"></a><span>  </span><span class="hs-keyword">let</span><span> </span><span class="hs-special">{</span><span class="hs-identifier">a1'</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">useEvent</span><span> </span><span class="hs-identifier">a1</span><span class="hs-special">}</span><span> </span><span class="hs-keyword">in</span><span> </span><span>
 </span><a name="line-88"></a><span>  </span><span class="hs-identifier">cudaEventDestroy'_</span><span> </span><span class="hs-identifier hs-type">a1'</span><span> </span><span class="hs-operator">&gt;&gt;=</span><span> </span><span class="hs-glyph">\</span><span class="hs-identifier">res</span><span> </span><span class="hs-glyph">-&gt;</span><span>
 </span><a name="line-89"></a><span>  </span><span class="hs-keyword">let</span><span> </span><span class="hs-special">{</span><span class="hs-identifier">res'</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">cToEnum</span><span> </span><span class="hs-identifier">res</span><span class="hs-special">}</span><span> </span><span class="hs-keyword">in</span><span>
 </span><a name="line-90"></a><span>  </span><a href="Foreign.CUDA.Runtime.Event.html#cudaEventQuery"><span class="hs-identifier hs-var">return</span></a><span> </span><span class="hs-special">(</span><a href="Foreign.CUDA.Runtime.Event.html#cudaEventQuery"><span class="hs-identifier hs-var">res'</span></a><span class="hs-special">)</span><span>
 </span><a name="line-91"></a><span>
-</span><a name="line-92"></a><span class="hs-pragma">{-# LINE 67 &quot;./Foreign/CUDA/Runtime/Event.chs&quot; #-}</span><span>
+</span><a name="line-92"></a><span class="hs-pragma">{-# LINE 67 &quot;src/Foreign/CUDA/Runtime/Event.chs&quot; #-}</span><span>
 </span><a name="line-93"></a><span>
 </span><a name="line-94"></a><span>
 </span><a name="line-95"></a><span>
@@ -111,7 +111,7 @@
 </span><a name="line-111"></a><span>  </span><span class="hs-identifier">peekFloatConv</span><span>  </span><span class="hs-identifier">a1'</span><a href="Foreign.CUDA.Types.html#Event"><span class="hs-operator hs-type">&gt;&gt;=</span></a><span> </span><span class="hs-glyph">\</span><span class="hs-identifier">a1''</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span>
 </span><a name="line-112"></a><span>  </span><a name="cudaEventRecord"><a href="Foreign.CUDA.Runtime.Event.html#cudaEventRecord"><span class="hs-identifier">return</span></a></a><span> </span><span class="hs-special">(</span><a name="cudaEventRecord"><a href="Foreign.CUDA.Runtime.Event.html#cudaEventRecord"><span class="hs-identifier">res'</span></a></a><span class="hs-special">,</span><span> </span><span class="hs-identifier">a1''</span><span class="hs-special">)</span><span>
 </span><a name="line-113"></a><span>
-</span><a name="line-114"></a><span class="hs-pragma">{-# LINE 81 &quot;./Foreign/CUDA/Runtime/Event.chs&quot; #-}</span><span>
+</span><a name="line-114"></a><span class="hs-pragma">{-# LINE 81 &quot;src/Foreign/CUDA/Runtime/Event.chs&quot; #-}</span><span>
 </span><a name="line-115"></a><span>
 </span><a name="line-116"></a><span>
 </span><a name="line-117"></a><span>
@@ -121,7 +121,7 @@
 </span><a name="line-121"></a><span class="hs-pragma">{-# INLINEABLE query #-}</span><span>
 </span><a name="line-122"></a><span class="hs-identifier">query</span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-identifier">Event</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier">IO</span><span> </span><span class="hs-identifier">Bool</span><span>
 </span><a name="line-123"></a><span class="hs-identifier">query</span><span> </span><span class="hs-glyph">!</span><span class="hs-identifier">ev</span><span> </span><span class="hs-glyph">=</span><span>
-</span><a name="line-124"></a><span>  </span><span class="hs-identifier">cudaEventQuery</span><span> </span><a name="local-1627717461"><a href="#local-1627717461"><span class="hs-identifier">ev</span></a></a><span> </span><span class="hs-operator">&gt;&gt;=</span><span> </span><span class="hs-glyph">\</span><span class="hs-identifier">rv</span><span> </span><span class="hs-glyph">-&gt;</span><span>
+</span><a name="line-124"></a><span>  </span><span class="hs-identifier">cudaEventQuery</span><span> </span><a name="local-1627718074"><a href="#local-1627718074"><span class="hs-identifier">ev</span></a></a><span> </span><span class="hs-operator">&gt;&gt;=</span><span> </span><span class="hs-glyph">\</span><span class="hs-identifier">rv</span><span> </span><span class="hs-glyph">-&gt;</span><span>
 </span><a name="line-125"></a><span>  </span><span class="hs-keyword">case</span><span> </span><span class="hs-identifier">rv</span><span> </span><span class="hs-keyword">of</span><span>
 </span><a name="line-126"></a><span>    </span><span class="hs-identifier">Success</span><span>  </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier">return</span><span> </span><a href="Foreign.CUDA.Runtime.Event.html#cudaStreamWaitEvent"><span class="hs-identifier hs-var">True</span></a><span>
 </span><a name="line-127"></a><span>    </span><span class="hs-identifier">NotReady</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier">return</span><span> </span><span class="hs-identifier">False</span><span>
@@ -130,12 +130,12 @@
 </span><a name="line-130"></a><span class="hs-pragma">{-# INLINE cudaEventQuery #-}</span><span>
 </span><a name="line-131"></a><span class="hs-identifier">cudaEventQuery</span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><span class="hs-identifier">Event</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier">IO</span><span> </span><span class="hs-special">(</span><span class="hs-special">(</span><span class="hs-identifier">Status</span><span class="hs-special">)</span><span class="hs-special">)</span><span>
 </span><a name="line-132"></a><span class="hs-identifier">cudaEventQuery</span><span> </span><span class="hs-identifier">a1</span><span> </span><span class="hs-glyph">=</span><span>
-</span><a name="line-133"></a><span>  </span><span class="hs-keyword">let</span><span> </span><span class="hs-special">{</span><a name="local-1627717468"><a href="#local-1627717468"><span class="hs-identifier">a1'</span></a></a><span> </span><span class="hs-glyph">=</span><span> </span><a href="Foreign.CUDA.Internal.C2HS.html#combineBitMasks"><span class="hs-identifier hs-var">useEvent</span></a><span> </span><a href="Foreign.CUDA.Internal.C2HS.html#combineBitMasks"><span class="hs-identifier hs-var">a1</span></a><span class="hs-special">}</span><span> </span><span class="hs-keyword">in</span><span> </span><span>
-</span><a name="line-134"></a><span>  </span><a href="Foreign.CUDA.Runtime.Event.html#cudaStreamWaitEvent%27_"><span class="hs-identifier hs-var">cudaEventQuery'_</span></a><span> </span><a href="Foreign.CUDA.Runtime.Event.html#cudaStreamWaitEvent%27_"><span class="hs-identifier hs-var">a1'</span></a><span> </span><span class="hs-operator">&gt;&gt;=</span><span> </span><span class="hs-glyph">\</span><a href="#local-1627717467"><span class="hs-identifier hs-var">res</span></a><span> </span><span class="hs-glyph">-&gt;</span><span>
-</span><a name="line-135"></a><span>  </span><span class="hs-keyword">let</span><span> </span><span class="hs-special">{</span><a name="local-1627717470"><a href="#local-1627717470"><span class="hs-identifier">res'</span></a></a><span> </span><span class="hs-glyph">=</span><span> </span><a href="Foreign.CUDA.Internal.C2HS.html#cToEnum"><span class="hs-identifier hs-var">cToEnum</span></a><span> </span><a href="#local-1627717469"><span class="hs-identifier hs-var">res</span></a><span class="hs-special">}</span><span> </span><span class="hs-keyword">in</span><span>
-</span><a name="line-136"></a><span>  </span><span class="hs-identifier hs-var">return</span><span> </span><span class="hs-special">(</span><a href="#local-1627717470"><span class="hs-identifier hs-var">res'</span></a><span class="hs-special">)</span><span>
+</span><a name="line-133"></a><span>  </span><span class="hs-keyword">let</span><span> </span><span class="hs-special">{</span><a name="local-1627718081"><a href="#local-1627718081"><span class="hs-identifier">a1'</span></a></a><span> </span><span class="hs-glyph">=</span><span> </span><a href="Foreign.CUDA.Internal.C2HS.html#combineBitMasks"><span class="hs-identifier hs-var">useEvent</span></a><span> </span><a href="Foreign.CUDA.Internal.C2HS.html#combineBitMasks"><span class="hs-identifier hs-var">a1</span></a><span class="hs-special">}</span><span> </span><span class="hs-keyword">in</span><span> </span><span>
+</span><a name="line-134"></a><span>  </span><a href="Foreign.CUDA.Runtime.Event.html#cudaStreamWaitEvent%27_"><span class="hs-identifier hs-var">cudaEventQuery'_</span></a><span> </span><a href="Foreign.CUDA.Runtime.Event.html#cudaStreamWaitEvent%27_"><span class="hs-identifier hs-var">a1'</span></a><span> </span><span class="hs-operator">&gt;&gt;=</span><span> </span><span class="hs-glyph">\</span><a href="#local-1627718080"><span class="hs-identifier hs-var">res</span></a><span> </span><span class="hs-glyph">-&gt;</span><span>
+</span><a name="line-135"></a><span>  </span><span class="hs-keyword">let</span><span> </span><span class="hs-special">{</span><a name="local-1627718083"><a href="#local-1627718083"><span class="hs-identifier">res'</span></a></a><span> </span><span class="hs-glyph">=</span><span> </span><a href="Foreign.CUDA.Internal.C2HS.html#cToEnum"><span class="hs-identifier hs-var">cToEnum</span></a><span> </span><a href="#local-1627718082"><span class="hs-identifier hs-var">res</span></a><span class="hs-special">}</span><span> </span><span class="hs-keyword">in</span><span>
+</span><a name="line-136"></a><span>  </span><span class="hs-identifier hs-var">return</span><span> </span><span class="hs-special">(</span><a href="#local-1627718083"><span class="hs-identifier hs-var">res'</span></a><span class="hs-special">)</span><span>
 </span><a name="line-137"></a><span>
-</span><a name="line-138"></a><span class="hs-pragma">{-# LINE 98 &quot;./Foreign/CUDA/Runtime/Event.chs&quot; #-}</span><span>
+</span><a name="line-138"></a><span class="hs-pragma">{-# LINE 98 &quot;src/Foreign/CUDA/Runtime/Event.chs&quot; #-}</span><span>
 </span><a name="line-139"></a><span>
 </span><a name="line-140"></a><span>
 </span><a name="line-141"></a><span>
@@ -145,8 +145,8 @@
 </span><a name="line-145"></a><span class="hs-comment">--</span><span>
 </span><a name="line-146"></a><span class="hs-pragma">{-# INLINEABLE record #-}</span><span>
 </span><a name="line-147"></a><a name="cudaEventSynchronize"><a href="Foreign.CUDA.Runtime.Event.html#cudaEventSynchronize"><span class="hs-identifier">record</span></a></a><span> </span><span class="hs-glyph">::</span><span> </span><a name="cudaEventSynchronize"><a href="Foreign.CUDA.Runtime.Event.html#cudaEventSynchronize"><span class="hs-identifier">Event</span></a></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier">Maybe</span><span> </span><span class="hs-identifier">Stream</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier">IO</span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span>
-</span><a name="line-148"></a><span class="hs-identifier">record</span><span> </span><span class="hs-glyph">!</span><a name="local-1627717473"><a href="#local-1627717473"><span class="hs-identifier">ev</span></a></a><span> </span><span class="hs-glyph">!</span><span class="hs-identifier">mst</span><span> </span><span class="hs-glyph">=</span><span>
-</span><a name="line-149"></a><span>  </span><a href="Foreign.CUDA.Runtime.Event.html#cudaEventSynchronize%27_"><span class="hs-identifier hs-var">nothingIfOk</span></a><span> </span><a href="Foreign.CUDA.Runtime.Event.html#cudaEventSynchronize%27_"><span class="hs-operator hs-var">=&lt;&lt;</span></a><span> </span><span class="hs-identifier">cudaEventRecord</span><span> </span><a name="local-1627717474"><a href="#local-1627717474"><span class="hs-identifier">ev</span></a></a><span> </span><span class="hs-special">(</span><span class="hs-identifier">maybe</span><span> </span><span class="hs-identifier">defaultStream</span><span> </span><span class="hs-identifier">id</span><span> </span><span class="hs-identifier">mst</span><span class="hs-special">)</span><span>
+</span><a name="line-148"></a><span class="hs-identifier">record</span><span> </span><span class="hs-glyph">!</span><a name="local-1627718086"><a href="#local-1627718086"><span class="hs-identifier">ev</span></a></a><span> </span><span class="hs-glyph">!</span><span class="hs-identifier">mst</span><span> </span><span class="hs-glyph">=</span><span>
+</span><a name="line-149"></a><span>  </span><a href="Foreign.CUDA.Runtime.Event.html#cudaEventSynchronize%27_"><span class="hs-identifier hs-var">nothingIfOk</span></a><span> </span><a href="Foreign.CUDA.Runtime.Event.html#cudaEventSynchronize%27_"><span class="hs-operator hs-var">=&lt;&lt;</span></a><span> </span><span class="hs-identifier">cudaEventRecord</span><span> </span><a name="local-1627718087"><a href="#local-1627718087"><span class="hs-identifier">ev</span></a></a><span> </span><span class="hs-special">(</span><span class="hs-identifier">maybe</span><span> </span><span class="hs-identifier">defaultStream</span><span> </span><span class="hs-identifier">id</span><span> </span><span class="hs-identifier">mst</span><span class="hs-special">)</span><span>
 </span><a name="line-150"></a><span>
 </span><a name="line-151"></a><span class="hs-pragma">{-# INLINE cudaEventRecord #-}</span><span>
 </span><a name="line-152"></a><span class="hs-identifier">cudaEventRecord</span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><span class="hs-identifier">Event</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">(</span><span class="hs-identifier">Stream</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier">IO</span><span> </span><span class="hs-special">(</span><span class="hs-special">(</span><span class="hs-identifier">Status</span><span class="hs-special">)</span><span class="hs-special">)</span><span>
@@ -157,7 +157,7 @@
 </span><a name="line-157"></a><span>  </span><span class="hs-keyword">let</span><span> </span><span class="hs-special">{</span><span class="hs-identifier">res'</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">cToEnum</span><span> </span><span class="hs-identifier">res</span><span class="hs-special">}</span><span> </span><span class="hs-keyword">in</span><span>
 </span><a name="line-158"></a><span>  </span><span class="hs-identifier">return</span><span> </span><span class="hs-special">(</span><span class="hs-identifier">res'</span><span class="hs-special">)</span><span>
 </span><a name="line-159"></a><span>
-</span><a name="line-160"></a><span class="hs-pragma">{-# LINE 113 &quot;./Foreign/CUDA/Runtime/Event.chs&quot; #-}</span><span>
+</span><a name="line-160"></a><span class="hs-pragma">{-# LINE 113 &quot;src/Foreign/CUDA/Runtime/Event.chs&quot; #-}</span><span>
 </span><a name="line-161"></a><span>
 </span><a name="line-162"></a><span>
 </span><a name="line-163"></a><span>
@@ -183,7 +183,7 @@
 </span><a name="line-183"></a><span>  </span><span class="hs-keyword">let</span><span> </span><span class="hs-special">{</span><span class="hs-identifier">res'</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">cToEnum</span><span> </span><span class="hs-identifier">res</span><span class="hs-special">}</span><span> </span><span class="hs-keyword">in</span><span>
 </span><a name="line-184"></a><span>  </span><span class="hs-identifier">return</span><span> </span><span class="hs-special">(</span><span class="hs-identifier">res'</span><span class="hs-special">)</span><span>
 </span><a name="line-185"></a><span>
-</span><a name="line-186"></a><span class="hs-pragma">{-# LINE 136 &quot;./Foreign/CUDA/Runtime/Event.chs&quot; #-}</span><span>
+</span><a name="line-186"></a><span class="hs-pragma">{-# LINE 136 &quot;src/Foreign/CUDA/Runtime/Event.chs&quot; #-}</span><span>
 </span><a name="line-187"></a><span>
 </span><a name="line-188"></a><span>
 </span><a name="line-189"></a><span class="hs-comment">-- |</span><span>
@@ -201,7 +201,7 @@
 </span><a name="line-201"></a><span>  </span><span class="hs-keyword">let</span><span> </span><span class="hs-special">{</span><span class="hs-identifier">res'</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">cToEnum</span><span> </span><span class="hs-identifier">res</span><span class="hs-special">}</span><span> </span><span class="hs-keyword">in</span><span>
 </span><a name="line-202"></a><span>  </span><span class="hs-identifier">return</span><span> </span><span class="hs-special">(</span><span class="hs-identifier">res'</span><span class="hs-special">)</span><span>
 </span><a name="line-203"></a><span>
-</span><a name="line-204"></a><span class="hs-pragma">{-# LINE 147 &quot;./Foreign/CUDA/Runtime/Event.chs&quot; #-}</span><span>
+</span><a name="line-204"></a><span class="hs-pragma">{-# LINE 147 &quot;src/Foreign/CUDA/Runtime/Event.chs&quot; #-}</span><span>
 </span><a name="line-205"></a><span>
 </span><a name="line-206"></a><span>
 </span><a name="line-207"></a><span>
