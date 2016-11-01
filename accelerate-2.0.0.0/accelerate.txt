@@ -127,6 +127,8 @@
 --   <li><a>Data.Array.Accelerate.Interpreter</a></li>
 --   <li><a>Data.Array.Accelerate.Data.Bits</a></li>
 --   <li><a>Data.Array.Accelerate.Data.Complex</a></li>
+--   <li><a>Data.Array.Accelerate.Data.Fold</a></li>
+--   <li><a>Data.Array.Accelerate.Data.Monoid</a></li>
 --   </ul>
 @package accelerate
 @version 2.0.0.0
@@ -965,6 +967,9 @@ gatherIf :: (Elt a, Elt b) => Acc (Vector Int) -> Acc (Vector a) -> (Exp a -> Ex
 -- | Reduction of the innermost dimension of an array of arbitrary rank.
 --   The first argument needs to be an <i>associative</i> function to
 --   enable an efficient parallel implementation.
+--   
+--   See also <a>Fold</a>, which can be a useful way to compute multiple
+--   results from a single reduction.
 fold :: (Shape ix, Elt a) => (Exp a -> Exp a -> Exp a) -> Exp a -> Acc (Array (ix :. Int) a) -> Acc (Array ix a)
 
 -- | Variant of <a>fold</a> that requires the reduced array to be non-empty
@@ -1882,3 +1887,135 @@ error :: HasCallStack => [Char] -> a
 --   recognize this and insert error messages which are more appropriate to
 --   the context in which <a>undefined</a> appears.
 undefined :: HasCallStack => a
+
+
+-- | Monoid instances for Accelerate
+module Data.Array.Accelerate.Data.Monoid
+
+-- | The class of monoids (types with an associative binary operation that
+--   has an identity). Instances should satisfy the following laws:
+--   
+--   <ul>
+--   <li><pre>mappend mempty x = x</pre></li>
+--   <li><pre>mappend x mempty = x</pre></li>
+--   <li><pre>mappend x (mappend y z) = mappend (mappend x y) z</pre></li>
+--   <li><pre>mconcat = <a>foldr</a> mappend mempty</pre></li>
+--   </ul>
+--   
+--   The method names refer to the monoid of lists under concatenation, but
+--   there are many other instances.
+--   
+--   Some types can be viewed as a monoid in more than one way, e.g. both
+--   addition and multiplication on numbers. In such cases we often define
+--   <tt>newtype</tt>s and make those instances of <a>Monoid</a>, e.g.
+--   <tt>Sum</tt> and <tt>Product</tt>.
+class Monoid a
+
+-- | Identity of <a>mappend</a>
+mempty :: a
+
+-- | An associative operation
+mappend :: a -> a -> a
+
+-- | Fold a list using the monoid. For most types, the default definition
+--   for <a>mconcat</a> will be used, but the function is included in the
+--   class definition so that an optimized version can be provided for
+--   specific types.
+mconcat :: [a] -> a
+
+-- | An infix synonym for <a>mappend</a>.
+(<>) :: Monoid m => m -> m -> m
+infixr 6 <>
+
+-- | Monoid under addition.
+newtype Sum a :: * -> *
+Sum :: a -> Sum a
+[getSum] :: Sum a -> a
+
+-- | Monoid under multiplication.
+newtype Product a :: * -> *
+Product :: a -> Product a
+[getProduct] :: Product a -> a
+instance Data.Array.Accelerate.Array.Sugar.Elt a => Data.Array.Accelerate.Array.Sugar.Elt (Data.Monoid.Sum a)
+instance Data.Array.Accelerate.Array.Sugar.Elt a => Data.Array.Accelerate.Product.IsProduct Data.Array.Accelerate.Array.Sugar.Elt (Data.Monoid.Sum a)
+instance (Data.Array.Accelerate.Lift.Lift Data.Array.Accelerate.Smart.Exp a, Data.Array.Accelerate.Array.Sugar.Elt (Data.Array.Accelerate.Lift.Plain a)) => Data.Array.Accelerate.Lift.Lift Data.Array.Accelerate.Smart.Exp (Data.Monoid.Sum a)
+instance Data.Array.Accelerate.Array.Sugar.Elt a => Data.Array.Accelerate.Lift.Unlift Data.Array.Accelerate.Smart.Exp (Data.Monoid.Sum (Data.Array.Accelerate.Smart.Exp a))
+instance Data.Array.Accelerate.Classes.Num.Num a => GHC.Base.Monoid (Data.Array.Accelerate.Smart.Exp (Data.Monoid.Sum a))
+instance Data.Array.Accelerate.Classes.Num.Num a => GHC.Num.Num (Data.Array.Accelerate.Smart.Exp (Data.Monoid.Sum a))
+instance Data.Array.Accelerate.Classes.Eq.Eq a => Data.Array.Accelerate.Classes.Eq.Eq (Data.Monoid.Sum a)
+instance Data.Array.Accelerate.Classes.Ord.Ord a => Data.Array.Accelerate.Classes.Ord.Ord (Data.Monoid.Sum a)
+instance Data.Array.Accelerate.Array.Sugar.Elt a => Data.Array.Accelerate.Array.Sugar.Elt (Data.Monoid.Product a)
+instance Data.Array.Accelerate.Array.Sugar.Elt a => Data.Array.Accelerate.Product.IsProduct Data.Array.Accelerate.Array.Sugar.Elt (Data.Monoid.Product a)
+instance (Data.Array.Accelerate.Lift.Lift Data.Array.Accelerate.Smart.Exp a, Data.Array.Accelerate.Array.Sugar.Elt (Data.Array.Accelerate.Lift.Plain a)) => Data.Array.Accelerate.Lift.Lift Data.Array.Accelerate.Smart.Exp (Data.Monoid.Product a)
+instance Data.Array.Accelerate.Array.Sugar.Elt a => Data.Array.Accelerate.Lift.Unlift Data.Array.Accelerate.Smart.Exp (Data.Monoid.Product (Data.Array.Accelerate.Smart.Exp a))
+instance Data.Array.Accelerate.Classes.Num.Num a => GHC.Base.Monoid (Data.Array.Accelerate.Smart.Exp (Data.Monoid.Product a))
+instance Data.Array.Accelerate.Classes.Num.Num a => GHC.Num.Num (Data.Array.Accelerate.Smart.Exp (Data.Monoid.Product a))
+instance Data.Array.Accelerate.Classes.Eq.Eq a => Data.Array.Accelerate.Classes.Eq.Eq (Data.Monoid.Product a)
+instance Data.Array.Accelerate.Classes.Ord.Ord a => Data.Array.Accelerate.Classes.Ord.Ord (Data.Monoid.Product a)
+instance GHC.Base.Monoid (Data.Array.Accelerate.Smart.Exp ())
+instance (Data.Array.Accelerate.Array.Sugar.Elt a, Data.Array.Accelerate.Array.Sugar.Elt b, GHC.Base.Monoid (Data.Array.Accelerate.Smart.Exp a), GHC.Base.Monoid (Data.Array.Accelerate.Smart.Exp b)) => GHC.Base.Monoid (Data.Array.Accelerate.Smart.Exp (a, b))
+instance (Data.Array.Accelerate.Array.Sugar.Elt a, Data.Array.Accelerate.Array.Sugar.Elt b, Data.Array.Accelerate.Array.Sugar.Elt c, GHC.Base.Monoid (Data.Array.Accelerate.Smart.Exp a), GHC.Base.Monoid (Data.Array.Accelerate.Smart.Exp b), GHC.Base.Monoid (Data.Array.Accelerate.Smart.Exp c)) => GHC.Base.Monoid (Data.Array.Accelerate.Smart.Exp (a, b, c))
+instance (Data.Array.Accelerate.Array.Sugar.Elt a, Data.Array.Accelerate.Array.Sugar.Elt b, Data.Array.Accelerate.Array.Sugar.Elt c, Data.Array.Accelerate.Array.Sugar.Elt d, GHC.Base.Monoid (Data.Array.Accelerate.Smart.Exp a), GHC.Base.Monoid (Data.Array.Accelerate.Smart.Exp b), GHC.Base.Monoid (Data.Array.Accelerate.Smart.Exp c), GHC.Base.Monoid (Data.Array.Accelerate.Smart.Exp d)) => GHC.Base.Monoid (Data.Array.Accelerate.Smart.Exp (a, b, c, d))
+instance (Data.Array.Accelerate.Array.Sugar.Elt a, Data.Array.Accelerate.Array.Sugar.Elt b, Data.Array.Accelerate.Array.Sugar.Elt c, Data.Array.Accelerate.Array.Sugar.Elt d, Data.Array.Accelerate.Array.Sugar.Elt e, GHC.Base.Monoid (Data.Array.Accelerate.Smart.Exp a), GHC.Base.Monoid (Data.Array.Accelerate.Smart.Exp b), GHC.Base.Monoid (Data.Array.Accelerate.Smart.Exp c), GHC.Base.Monoid (Data.Array.Accelerate.Smart.Exp d), GHC.Base.Monoid (Data.Array.Accelerate.Smart.Exp e)) => GHC.Base.Monoid (Data.Array.Accelerate.Smart.Exp (a, b, c, d, e))
+
+
+-- | Combine folds in <a>Applicative</a> style to generate multiple results
+--   with a single pass over the array. Based on Max Rabkin's "Beautiful
+--   Folding" [1] and talks by Gabriel Gonzalez [2].
+--   
+--   <ol>
+--   
+--   <li><a>http://squing.blogspot.com/2008/11/beautiful-folding.html</a></li>
+--   <li><a>https://www.youtube.com/watch?v=6a5Ti0r8Q2s</a></li>
+--   </ol>
+module Data.Array.Accelerate.Data.Fold
+
+-- | <a>Fold</a> describes how to process data of some <tt>i</tt>nput type
+--   into some <tt>o</tt>utput type, via a reduction using some
+--   intermediate Monoid <tt>w</tt>. For example, both <tt>sum</tt> and
+--   <tt>length</tt> below use the <a>Sum</a> monoid:
+--   
+--   <pre>
+--   &gt;&gt;&gt; let sum = Fold (lift . Sum) (getSum . unlift)
+--   
+--   &gt;&gt;&gt; let length = Fold (\_ -&gt; 1) (getSum . unlift)
+--   </pre>
+--   
+--   The key is that <a>Fold</a>s can be combined using <a>Applicative</a>
+--   in order to produce multiple outputs from a <i>single</i> reduction of
+--   the array. For example:
+--   
+--   <pre>
+--   &gt;&gt;&gt; let average = (/) &lt;$&gt; sum &lt;*&gt; length
+--   </pre>
+--   
+--   This computes both the sum of the array as well as its length in a
+--   single traversal, then combines both results to compute the average.
+--   
+--   Because <a>Fold</a> has some numeric instances, this can also be
+--   defined more succinctly as:
+--   
+--   <pre>
+--   &gt;&gt;&gt; let average = sum / length
+--   </pre>
+--   
+--   A more complex example:
+--   
+--   <pre>
+--   &gt;&gt;&gt; let sumOfSquares = Fold (lift . Sum . (^2)) (getSum . unlift)
+--   
+--   &gt;&gt;&gt; let standardDeviation = sqrt ((sumOfSquares / length) - (sum / length) ^ 2)
+--   </pre>
+--   
+--   These will all execute with a single reduction kernel and a single map
+--   to summarise (combine) the results.
+data Fold i o
+[Fold] :: (Elt w, Monoid (Exp w)) => (i -> Exp w) -> (Exp w -> o) -> Fold i o
+
+-- | Apply a <a>Fold</a> to an array.
+runFold :: (Shape sh, Elt i, Elt o) => Fold (Exp i) (Exp o) -> Acc (Array (sh :. Int) i) -> Acc (Array sh o)
+instance GHC.Base.Functor (Data.Array.Accelerate.Data.Fold.Fold i)
+instance GHC.Base.Applicative (Data.Array.Accelerate.Data.Fold.Fold i)
+instance Data.Array.Accelerate.Classes.Num.Num b => GHC.Num.Num (Data.Array.Accelerate.Data.Fold.Fold a (Data.Array.Accelerate.Smart.Exp b))
+instance Data.Array.Accelerate.Classes.Fractional.Fractional b => GHC.Real.Fractional (Data.Array.Accelerate.Data.Fold.Fold a (Data.Array.Accelerate.Smart.Exp b))
+instance Data.Array.Accelerate.Classes.Floating.Floating b => GHC.Float.Floating (Data.Array.Accelerate.Data.Fold.Fold a (Data.Array.Accelerate.Smart.Exp b))
