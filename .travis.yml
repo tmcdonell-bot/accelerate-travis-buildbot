@@ -9,7 +9,7 @@
 #
 language: c
 dist: trusty
-sudo: false
+sudo: required
 
 cache:
   timeout: 600
@@ -30,7 +30,7 @@ addons:
       - libgmp-dev
       - libfftw3-dev
       - freeglut3-dev
-      - cabal-install-1.24
+      - cabal-install-1.22
       - happy-1.19.5
       - alex-3.1.7
 
@@ -62,17 +62,18 @@ matrix:
   fast_finish: true
 
 before_install:
+  - export PATH=/opt/cabal/1.22/bin:/opt/alex/3.1.7/bin:/opt/happy/1.19.5/bin:$HOME/.cabal/bin:$PATH
   - export GHC=${CC:4}
+  - unset CC
   - |
       case ${GHC%.*} in
         7.8)  export LLVM="3.5.2" ; export UPGRADE_CABAL=1 ;;
         7.10) export LLVM="3.5.2" ;;
         8.0)  export LLVM="3.8.1" ;;
       esac
-  - export PATH=/opt/cabal/1.24/bin:/opt/alex/3.1.7/bin:/opt/happy/1.19.5/bin:$HOME/.cabal/bin:$PATH
-  - unset CC
   - source .travis/install-stack.sh
   - source .travis/install-llvm-trusty.sh
+  - source .travis/update-ghc-settings.sh
   - travis_retry stack install hscolour
 
 install:
