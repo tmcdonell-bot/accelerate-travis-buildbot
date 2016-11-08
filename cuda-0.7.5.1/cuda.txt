@@ -122,6 +122,19 @@ ProfilerDisabled :: Status
 ProfilerNotInitialized :: Status
 ProfilerAlreadyStarted :: Status
 ProfilerAlreadyStopped :: Status
+Assert :: Status
+TooManyPeers :: Status
+HostMemoryAlreadyRegistered :: Status
+HostMemoryNotRegistered :: Status
+OperatingSystem :: Status
+PeerAccessUnsupported :: Status
+LaunchMaxDepthExceeded :: Status
+LaunchFileScopedTex :: Status
+LaunchFileScopedSurf :: Status
+SyncDepthExceeded :: Status
+LaunchPendingCountExceeded :: Status
+NotPermitted :: Status
+NotSupported :: Status
 StartupFailure :: Status
 ApiFailureBase :: Status
 data CUDAException
@@ -189,6 +202,7 @@ NotMappedAsPointer :: Status
 EccUncorrectable :: Status
 UnsupportedLimit :: Status
 ContextAlreadyInUse :: Status
+PeerAccessUnsupported :: Status
 InvalidSource :: Status
 FileNotFound :: Status
 SharedObjectSymbolNotFound :: Status
@@ -205,6 +219,12 @@ PeerAccessAlreadyEnabled :: Status
 PeerAccessNotEnabled :: Status
 PrimaryContextActive :: Status
 ContextIsDestroyed :: Status
+Assert :: Status
+TooManyPeers :: Status
+HostMemoryAlreadyRegistered :: Status
+HostMemoryNotRegistered :: Status
+NotPermitted :: Status
+NotSupported :: Status
 Unknown :: Status
 data CUDAException
 ExitCode :: Status -> CUDAException
@@ -305,7 +325,7 @@ ExclusiveProcess :: ComputeMode
 
 -- | The properties of a compute device
 data DeviceProperties
-DeviceProperties :: !String -> !Compute -> !Int64 -> !Int64 -> !Int64 -> !Int -> !Int -> !Int -> !Int -> !(Int, Int, Int) -> !(Int, Int, Int) -> !Int -> !(Int, Int) -> !(Int, Int, Int) -> !Int -> !Int -> !Int64 -> !Int -> !Int -> !Int64 -> !ComputeMode -> !Bool -> !Bool -> !Bool -> !Int -> !Int -> !PCI -> !Bool -> !Bool -> !Bool -> !Bool -> !Bool -> DeviceProperties
+DeviceProperties :: !String -> !Compute -> !Int64 -> !Int64 -> !Int64 -> !Int -> !Int -> !Int -> !Int -> !(Int, Int, Int) -> !(Int, Int, Int) -> !Int -> !(Int, Int) -> !(Int, Int, Int) -> !Int -> !Int -> !Int64 -> !Int -> !Int -> !Int64 -> !ComputeMode -> !Bool -> !Bool -> !Bool -> !Int -> !Int -> !PCI -> !Bool -> !Bool -> !Bool -> !Bool -> !Bool -> !Bool -> DeviceProperties
 
 -- | Identifier
 [deviceName] :: DeviceProperties -> !String
@@ -396,6 +416,9 @@ DeviceProperties :: !String -> !Compute -> !Int64 -> !Int64 -> !Int64 -> !Int ->
 
 -- | Device shares a unified address space with the host
 [unifiedAddressing] :: DeviceProperties -> !Bool
+
+-- | Device supports stream priorities
+[streamPriorities] :: DeviceProperties -> !Bool
 data DeviceResources
 DeviceResources :: !Int -> !Int -> !Int -> !Int -> !Int -> !Int -> !Int -> !Int -> !Int -> !Int -> !Int -> !Allocation -> DeviceResources
 
@@ -580,7 +603,7 @@ LMemResizeToMax :: DeviceFlag
 
 -- | The properties of a compute device
 data DeviceProperties
-DeviceProperties :: !String -> !Compute -> !Int64 -> !Int64 -> !Int64 -> !Int -> !Int -> !Int -> !Int -> !(Int, Int, Int) -> !(Int, Int, Int) -> !Int -> !(Int, Int) -> !(Int, Int, Int) -> !Int -> !Int -> !Int64 -> !Int -> !Int -> !Int64 -> !ComputeMode -> !Bool -> !Bool -> !Bool -> !Int -> !Int -> !PCI -> !Bool -> !Bool -> !Bool -> !Bool -> !Bool -> DeviceProperties
+DeviceProperties :: !String -> !Compute -> !Int64 -> !Int64 -> !Int64 -> !Int -> !Int -> !Int -> !Int -> !(Int, Int, Int) -> !(Int, Int, Int) -> !Int -> !(Int, Int) -> !(Int, Int, Int) -> !Int -> !Int -> !Int64 -> !Int -> !Int -> !Int64 -> !ComputeMode -> !Bool -> !Bool -> !Bool -> !Int -> !Int -> !PCI -> !Bool -> !Bool -> !Bool -> !Bool -> !Bool -> !Bool -> DeviceProperties
 
 -- | Identifier
 [deviceName] :: DeviceProperties -> !String
@@ -671,6 +694,9 @@ DeviceProperties :: !String -> !Compute -> !Int64 -> !Int64 -> !Int64 -> !Int ->
 
 -- | Device shares a unified address space with the host
 [unifiedAddressing] :: DeviceProperties -> !Bool
+
+-- | Device supports stream priorities
+[streamPriorities] :: DeviceProperties -> !Bool
 
 -- | GPU compute capability, major and minor revision number respectively.
 data Compute
@@ -741,6 +767,8 @@ data Limit
 Stacksize :: Limit
 Printffifosize :: Limit
 Mallocheapsize :: Limit
+Devruntimesyncdepth :: Limit
+Devruntimependinglaunchcount :: Limit
 
 -- | Query compute 2.0 call stack limits. Requires cuda-3.1.
 getLimit :: Limit -> IO Int
@@ -768,7 +796,7 @@ Device :: (CInt) -> Device
 
 -- | The properties of a compute device
 data DeviceProperties
-DeviceProperties :: !String -> !Compute -> !Int64 -> !Int64 -> !Int64 -> !Int -> !Int -> !Int -> !Int -> !(Int, Int, Int) -> !(Int, Int, Int) -> !Int -> !(Int, Int) -> !(Int, Int, Int) -> !Int -> !Int -> !Int64 -> !Int -> !Int -> !Int64 -> !ComputeMode -> !Bool -> !Bool -> !Bool -> !Int -> !Int -> !PCI -> !Bool -> !Bool -> !Bool -> !Bool -> !Bool -> DeviceProperties
+DeviceProperties :: !String -> !Compute -> !Int64 -> !Int64 -> !Int64 -> !Int -> !Int -> !Int -> !Int -> !(Int, Int, Int) -> !(Int, Int, Int) -> !Int -> !(Int, Int) -> !(Int, Int, Int) -> !Int -> !Int -> !Int64 -> !Int -> !Int -> !Int64 -> !ComputeMode -> !Bool -> !Bool -> !Bool -> !Int -> !Int -> !PCI -> !Bool -> !Bool -> !Bool -> !Bool -> !Bool -> !Bool -> DeviceProperties
 
 -- | Identifier
 [deviceName] :: DeviceProperties -> !String
@@ -860,6 +888,9 @@ DeviceProperties :: !String -> !Compute -> !Int64 -> !Int64 -> !Int64 -> !Int ->
 -- | Device shares a unified address space with the host
 [unifiedAddressing] :: DeviceProperties -> !Bool
 
+-- | Device supports stream priorities
+[streamPriorities] :: DeviceProperties -> !Bool
+
 -- | Device attributes
 data DeviceAttribute
 MaxThreadsPerBlock :: DeviceAttribute
@@ -910,7 +941,42 @@ AsyncEngineCount :: DeviceAttribute
 UnifiedAddressing :: DeviceAttribute
 MaximumTexture1dLayeredWidth :: DeviceAttribute
 MaximumTexture1dLayeredLayers :: DeviceAttribute
+CanTex2dGather :: DeviceAttribute
+MaximumTexture2dGatherWidth :: DeviceAttribute
+MaximumTexture2dGatherHeight :: DeviceAttribute
+MaximumTexture3dWidthAlternate :: DeviceAttribute
+MaximumTexture3dHeightAlternate :: DeviceAttribute
+MaximumTexture3dDepthAlternate :: DeviceAttribute
 PciDomainId :: DeviceAttribute
+TexturePitchAlignment :: DeviceAttribute
+MaximumTexturecubemapWidth :: DeviceAttribute
+MaximumTexturecubemapLayeredWidth :: DeviceAttribute
+MaximumTexturecubemapLayeredLayers :: DeviceAttribute
+MaximumSurface1dWidth :: DeviceAttribute
+MaximumSurface2dWidth :: DeviceAttribute
+MaximumSurface2dHeight :: DeviceAttribute
+MaximumSurface3dWidth :: DeviceAttribute
+MaximumSurface3dHeight :: DeviceAttribute
+MaximumSurface3dDepth :: DeviceAttribute
+MaximumSurface1dLayeredWidth :: DeviceAttribute
+MaximumSurface1dLayeredLayers :: DeviceAttribute
+MaximumSurface2dLayeredWidth :: DeviceAttribute
+MaximumSurface2dLayeredHeight :: DeviceAttribute
+MaximumSurface2dLayeredLayers :: DeviceAttribute
+MaximumSurfacecubemapWidth :: DeviceAttribute
+MaximumSurfacecubemapLayeredWidth :: DeviceAttribute
+MaximumSurfacecubemapLayeredLayers :: DeviceAttribute
+MaximumTexture1dLinearWidth :: DeviceAttribute
+MaximumTexture2dLinearWidth :: DeviceAttribute
+MaximumTexture2dLinearHeight :: DeviceAttribute
+MaximumTexture2dLinearPitch :: DeviceAttribute
+MaximumTexture2dMipmappedWidth :: DeviceAttribute
+MaximumTexture2dMipmappedHeight :: DeviceAttribute
+ComputeCapabilityMajor :: DeviceAttribute
+ComputeCapabilityMinor :: DeviceAttribute
+MaximumTexture1dMipmappedWidth :: DeviceAttribute
+StreamPrioritiesSupported :: DeviceAttribute
+CU_DEVICE_ATTRIBUTE_MAX :: DeviceAttribute
 
 -- | GPU compute capability, major and minor revision number respectively.
 data Compute
@@ -969,13 +1035,11 @@ props :: Device -> IO DeviceProperties
 --   
 --   <a>http://docs.nvidia.com/cuda/cuda-driver-api/group__CUDA__DEVICE.html#group__CUDA__DEVICE_1gc6a0d6551335a3780f9f3c967a0fde5d</a>
 totalMem :: Device -> IO Int64
-instance GHC.Show.Show Foreign.CUDA.Driver.Device.CUDevProp
 instance GHC.Show.Show Foreign.CUDA.Driver.Device.DeviceAttribute
 instance GHC.Classes.Eq Foreign.CUDA.Driver.Device.DeviceAttribute
 instance GHC.Show.Show Foreign.CUDA.Driver.Device.Device
 instance GHC.Classes.Eq Foreign.CUDA.Driver.Device.Device
 instance GHC.Enum.Enum Foreign.CUDA.Driver.Device.DeviceAttribute
-instance Foreign.Storable.Storable Foreign.CUDA.Driver.Device.CUDevProp
 instance GHC.Enum.Enum Foreign.CUDA.Driver.Device.InitFlag
 
 
@@ -1233,6 +1297,9 @@ Compute12 :: JITTarget
 Compute13 :: JITTarget
 Compute20 :: JITTarget
 Compute21 :: JITTarget
+Compute30 :: JITTarget
+Compute35 :: JITTarget
+CuMaxJitTarget :: JITTarget
 
 -- | Results of online compilation
 data JITResult
@@ -1254,6 +1321,12 @@ PreferBinary :: JITFallback
 
 -- | Device code formats that can be used for online linking
 data JITInputType
+Cubin :: JITInputType
+PTX :: JITInputType
+Fatbinary :: JITInputType
+Object :: JITInputType
+Library :: JITInputType
+CuJitNumInputTypes :: JITInputType
 
 -- | Load the contents of the specified file (either a ptx or cubin file)
 --   to create a new module, and load that module into the current context.
@@ -1301,6 +1374,8 @@ loadDataFromPtrEx :: Ptr Word8 -> [JITOption] -> IO JITResult
 unload :: Module -> IO ()
 instance GHC.Show.Show Foreign.CUDA.Driver.Module.Base.JITOptionInternal
 instance GHC.Classes.Eq Foreign.CUDA.Driver.Module.Base.JITOptionInternal
+instance GHC.Show.Show Foreign.CUDA.Driver.Module.Base.JITInputType
+instance GHC.Classes.Eq Foreign.CUDA.Driver.Module.Base.JITInputType
 instance GHC.Show.Show Foreign.CUDA.Driver.Module.Base.JITOption
 instance GHC.Show.Show Foreign.CUDA.Driver.Module.Base.JITFallback
 instance GHC.Classes.Eq Foreign.CUDA.Driver.Module.Base.JITFallback
@@ -1311,6 +1386,7 @@ instance GHC.Show.Show Foreign.CUDA.Driver.Module.Base.Module
 instance GHC.Classes.Eq Foreign.CUDA.Driver.Module.Base.Module
 instance GHC.Enum.Enum Foreign.CUDA.Driver.Module.Base.JITTarget
 instance GHC.Enum.Enum Foreign.CUDA.Driver.Module.Base.JITFallback
+instance GHC.Enum.Enum Foreign.CUDA.Driver.Module.Base.JITInputType
 instance GHC.Enum.Enum Foreign.CUDA.Driver.Module.Base.JITOptionInternal
 
 
@@ -1351,6 +1427,12 @@ Verbose :: JITOption
 
 -- | Device code formats that can be used for online linking
 data JITInputType
+Cubin :: JITInputType
+PTX :: JITInputType
+Fatbinary :: JITInputType
+Object :: JITInputType
+Library :: JITInputType
+CuJitNumInputTypes :: JITInputType
 
 -- | Create a pending JIT linker invocation. The returned <a>LinkState</a>
 --   should be <a>destroy</a>ed once no longer needed. The device code
@@ -1398,6 +1480,7 @@ addData :: LinkState -> ByteString -> JITInputType -> [JITOption] -> IO ()
 -- | As <a>addData</a>, but read the specified number of bytes of image
 --   data from the given pointer.
 addDataFromPtr :: LinkState -> Int -> Ptr Word8 -> JITInputType -> [JITOption] -> IO ()
+instance GHC.Show.Show Foreign.CUDA.Driver.Module.Link.LinkState
 
 
 -- | Meta-module exporting CUDA analysis routines
@@ -1440,6 +1523,7 @@ data EventFlag
 Default :: EventFlag
 BlockingSync :: EventFlag
 DisableTiming :: EventFlag
+Interprocess :: EventFlag
 data WaitFlag
 
 -- | A processing stream. All operations in a stream are synchronous and
@@ -1495,6 +1579,7 @@ data EventFlag
 Default :: EventFlag
 BlockingSync :: EventFlag
 DisableTiming :: EventFlag
+Interprocess :: EventFlag
 data WaitFlag
 
 -- | Create a new event
@@ -1560,7 +1645,7 @@ module Foreign.CUDA.Runtime.Exec
 --   
 --   Note that the use of a string naming a function was deprecated in CUDA
 --   4.1 and removed in CUDA 5.0.
-type Fun = String
+type Fun = FunPtr ()
 data FunAttributes
 FunAttributes :: !Int64 -> !Int64 -> !Int64 -> !Int -> !Int -> FunAttributes
 [constSizeBytes] :: FunAttributes -> !Int64
@@ -1587,6 +1672,7 @@ data CacheConfig
 None :: CacheConfig
 Shared :: CacheConfig
 L1 :: CacheConfig
+Equal :: CacheConfig
 
 -- | Obtain the attributes of the named <tt><b>global</b></tt> device
 --   function. This itemises the requirements to successfully launch the
@@ -1645,6 +1731,9 @@ data Limit
 StackSize :: Limit
 PrintfFifoSize :: Limit
 MallocHeapSize :: Limit
+DevRuntimeSyncDepth :: Limit
+DevRuntimePendingLaunchCount :: Limit
+Max :: Limit
 
 -- | Query compute 2.0 call stack limits.
 --   
@@ -1667,6 +1756,7 @@ data Cache
 PreferNone :: Cache
 PreferShared :: Cache
 PreferL1 :: Cache
+PreferEqual :: Cache
 
 -- | On devices where the L1 cache and shared memory use the same hardware
 --   resources, this function returns the preferred cache configuration for
@@ -1693,6 +1783,9 @@ setCache :: Cache -> IO ()
 
 -- | Device shared memory configuration preference
 data SharedMem
+DefaultBankSize :: SharedMem
+FourByteBankSize :: SharedMem
+EightByteBankSize :: SharedMem
 
 -- | Return the current size of the shared memory banks in the current
 --   context. On devices with configurable shared memory banks,
@@ -1742,12 +1835,15 @@ type StreamPriority = Int
 --   
 --   <a>http://docs.nvidia.com/cuda/cuda-driver-api/group__CUDA__CTX.html#group__CUDA__CTX_1g137920ab61a71be6ce67605b9f294091</a>
 getStreamPriorityRange :: IO (StreamPriority, StreamPriority)
+instance GHC.Show.Show Foreign.CUDA.Driver.Context.Config.SharedMem
+instance GHC.Classes.Eq Foreign.CUDA.Driver.Context.Config.SharedMem
 instance GHC.Show.Show Foreign.CUDA.Driver.Context.Config.Cache
 instance GHC.Classes.Eq Foreign.CUDA.Driver.Context.Config.Cache
 instance GHC.Show.Show Foreign.CUDA.Driver.Context.Config.Limit
 instance GHC.Classes.Eq Foreign.CUDA.Driver.Context.Config.Limit
 instance GHC.Enum.Enum Foreign.CUDA.Driver.Context.Config.Limit
 instance GHC.Enum.Enum Foreign.CUDA.Driver.Context.Config.Cache
+instance GHC.Enum.Enum Foreign.CUDA.Driver.Context.Config.SharedMem
 
 
 -- | Context management for low-level driver interface
@@ -1768,6 +1864,7 @@ data EventFlag
 Default :: EventFlag
 BlockingSync :: EventFlag
 DisableTiming :: EventFlag
+Interprocess :: EventFlag
 data WaitFlag
 
 -- | Create a new event
@@ -1832,7 +1929,7 @@ module Foreign.CUDA.Driver.IPC.Event
 data IPCEvent
 
 -- | Create an inter-process event handle for a previously allocated event.
---   The event must be created with the <tt>Interprocess</tt> and
+--   The event must be created with the <a>Interprocess</a> and
 --   <a>DisableTiming</a> event flags. The returned handle may then be sent
 --   to another process and <a>open</a>ed to allow efficient hardware
 --   synchronisation between GPU work in other processes.
@@ -1964,6 +2061,9 @@ CU_FUNC_ATTRIBUTE_MAX :: FunAttribute
 
 -- | Device shared memory configuration preference
 data SharedMem
+DefaultBankSize :: SharedMem
+FourByteBankSize :: SharedMem
+EightByteBankSize :: SharedMem
 
 -- | Returns the value of the selected attribute requirement for the given
 --   kernel.
@@ -2725,6 +2825,7 @@ data IPCDevicePtr a
 
 -- | Flags for controlling IPC memory access
 data IPCFlag
+LazyEnablePeerAccess :: IPCFlag
 
 -- | Create an inter-process memory handle for an existing device memory
 --   allocation. The handle can then be sent to another process and made
@@ -2742,8 +2843,7 @@ export :: DevicePtr a -> IO (IPCDevicePtr a)
 --   Maps memory exported by another process with <tt>create</tt> into the
 --   current device address space. For contexts on different devices,
 --   <a>open</a> can attempt to enable peer access if the user called
---   <a>add</a>, and is controlled by the <tt>LazyEnablePeerAccess</tt>
---   flag.
+--   <a>add</a>, and is controlled by the <a>LazyEnablePeerAccess</a> flag.
 --   
 --   Each handle from a given device and context may only be <a>open</a>ed
 --   by one context per device per other process. Memory returned by
@@ -2769,6 +2869,10 @@ open :: IPCDevicePtr a -> [IPCFlag] -> IO (DevicePtr a)
 close :: DevicePtr a -> IO ()
 instance GHC.Show.Show (Foreign.CUDA.Driver.IPC.Marshal.IPCDevicePtr a)
 instance GHC.Classes.Eq (Foreign.CUDA.Driver.IPC.Marshal.IPCDevicePtr a)
+instance GHC.Enum.Bounded Foreign.CUDA.Driver.IPC.Marshal.IPCFlag
+instance GHC.Show.Show Foreign.CUDA.Driver.IPC.Marshal.IPCFlag
+instance GHC.Classes.Eq Foreign.CUDA.Driver.IPC.Marshal.IPCFlag
+instance GHC.Enum.Enum Foreign.CUDA.Driver.IPC.Marshal.IPCFlag
 
 
 -- | Texture management for low-level driver interface
