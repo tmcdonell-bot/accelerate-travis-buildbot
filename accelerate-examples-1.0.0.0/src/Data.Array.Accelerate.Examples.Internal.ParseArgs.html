@@ -1,0 +1,304 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-pragma">{-# LANGUAGE CPP             #-}</span><span>
+</span><a name="line-2"></a><span class="hs-pragma">{-# LANGUAGE PatternGuards   #-}</span><span>
+</span><a name="line-3"></a><span class="hs-pragma">{-# LANGUAGE TemplateHaskell #-}</span><span>
+</span><a name="line-4"></a><span class="hs-pragma">{-# LANGUAGE TypeOperators   #-}</span><span>
+</span><a name="line-5"></a><span class="hs-pragma">{-# LANGUAGE ViewPatterns    #-}</span><span>
+</span><a name="line-6"></a><span class="hs-comment">-- |</span><span>
+</span><a name="line-7"></a><span class="hs-comment">-- Module:      : Data.Array.Accelerate.Examples.Internal.ParseArgs</span><span>
+</span><a name="line-8"></a><span class="hs-comment">-- Copyright    : [2014] Trevor L. McDonell</span><span>
+</span><a name="line-9"></a><span class="hs-comment">-- License      : BSD3</span><span>
+</span><a name="line-10"></a><span class="hs-comment">--</span><span>
+</span><a name="line-11"></a><span class="hs-comment">-- Maintainer   : Trevor L. McDonell &lt;tmcdonell@cse.unsw.edu.au&gt;</span><span>
+</span><a name="line-12"></a><span class="hs-comment">-- Stability    : experimental</span><span>
+</span><a name="line-13"></a><span class="hs-comment">-- Portability  : non-portable (GHC extensions)</span><span>
+</span><a name="line-14"></a><span class="hs-comment">--</span><span>
+</span><a name="line-15"></a><span>
+</span><a name="line-16"></a><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">Data</span><span class="hs-operator">.</span><span class="hs-identifier">Array</span><span class="hs-operator">.</span><span class="hs-identifier">Accelerate</span><span class="hs-operator">.</span><span class="hs-identifier">Examples</span><span class="hs-operator">.</span><span class="hs-identifier">Internal</span><span class="hs-operator">.</span><span class="hs-identifier">ParseArgs</span><span> </span><span class="hs-special">(</span><span>
+</span><a name="line-17"></a><span>
+</span><a name="line-18"></a><span>  </span><span class="hs-comment">-- * Options processing</span><span>
+</span><a name="line-19"></a><span>  </span><a href="Data.Array.Accelerate.Examples.Internal.ParseArgs.html#parseArgs"><span class="hs-identifier hs-var">parseArgs</span></a><span class="hs-special">,</span><span>
+</span><a name="line-20"></a><span>  </span><a href="Data.Array.Accelerate.Examples.Internal.ParseArgs.html#Options"><span class="hs-identifier hs-type">Options</span></a><span class="hs-special">,</span><span> </span><a href="Data.Array.Accelerate.Examples.Internal.ParseArgs.html#optBackend"><span class="hs-identifier hs-var">optBackend</span></a><span class="hs-special">,</span><span> </span><a href="Data.Array.Accelerate.Examples.Internal.ParseArgs.html#optTest"><span class="hs-identifier hs-var">optTest</span></a><span class="hs-special">,</span><span> </span><a href="Data.Array.Accelerate.Examples.Internal.ParseArgs.html#optBenchmark"><span class="hs-identifier hs-var">optBenchmark</span></a><span class="hs-special">,</span><span> </span><a href="Data.Array.Accelerate.Examples.Internal.ParseArgs.html#optCodespeed"><span class="hs-identifier hs-var">optCodespeed</span></a><span class="hs-special">,</span><span> </span><a href="Data.Array.Accelerate.Examples.Internal.ParseArgs.html#optHostname"><span class="hs-identifier hs-var">optHostname</span></a><span class="hs-special">,</span><span>
+</span><a name="line-21"></a><span>  </span><a href="Data.Array.Accelerate.Examples.Internal.ParseArgs.html#optVariant"><span class="hs-identifier hs-var">optVariant</span></a><span class="hs-special">,</span><span> </span><a href="Data.Array.Accelerate.Examples.Internal.ParseArgs.html#optHelp"><span class="hs-identifier hs-var">optHelp</span></a><span class="hs-special">,</span><span> </span><a href="Data.Array.Accelerate.Examples.Internal.ParseArgs.html#optCriterion"><span class="hs-identifier hs-var">optCriterion</span></a><span class="hs-special">,</span><span> </span><a href="Data.Array.Accelerate.Examples.Internal.ParseArgs.html#optTestFramework"><span class="hs-identifier hs-var">optTestFramework</span></a><span class="hs-special">,</span><span>
+</span><a name="line-22"></a><span>
+</span><a name="line-23"></a><span>  </span><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">System</span><span class="hs-operator">.</span><span class="hs-identifier">Console</span><span class="hs-operator">.</span><span class="hs-identifier">GetOpt</span><span class="hs-special">,</span><span>
+</span><a name="line-24"></a><span>
+</span><a name="line-25"></a><span>  </span><span class="hs-comment">-- * Executing programs</span><span>
+</span><a name="line-26"></a><span>  </span><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">Data</span><span class="hs-operator">.</span><span class="hs-identifier">Array</span><span class="hs-operator">.</span><span class="hs-identifier">Accelerate</span><span class="hs-operator">.</span><span class="hs-identifier">Examples</span><span class="hs-operator">.</span><span class="hs-identifier">Internal</span><span class="hs-operator">.</span><span class="hs-identifier">Backend</span><span class="hs-special">,</span><span>
+</span><a name="line-27"></a><span>
+</span><a name="line-28"></a><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><a name="line-29"></a><span>
+</span><a name="line-30"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">Data</span><span class="hs-operator">.</span><span class="hs-identifier">Array</span><span class="hs-operator">.</span><span class="hs-identifier">Accelerate</span><span class="hs-operator">.</span><span class="hs-identifier">Debug</span><span>                                              </span><span class="hs-special">(</span><span> </span><span class="hs-identifier hs-var">accInit</span><span> </span><span class="hs-special">)</span><span>
+</span><a name="line-31"></a><span class="hs-keyword">import</span><span> </span><a href="Data.Array.Accelerate.Examples.Internal.Backend.html"><span class="hs-identifier">Data</span><span class="hs-operator">.</span><span class="hs-identifier">Array</span><span class="hs-operator">.</span><span class="hs-identifier">Accelerate</span><span class="hs-operator">.</span><span class="hs-identifier">Examples</span><span class="hs-operator">.</span><span class="hs-identifier">Internal</span><span class="hs-operator">.</span><span class="hs-identifier">Backend</span></a><span>
+</span><a name="line-32"></a><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><a href="Data.Array.Accelerate.Examples.Internal.Criterion.Config.html"><span class="hs-identifier">Data</span><span class="hs-operator">.</span><span class="hs-identifier">Array</span><span class="hs-operator">.</span><span class="hs-identifier">Accelerate</span><span class="hs-operator">.</span><span class="hs-identifier">Examples</span><span class="hs-operator">.</span><span class="hs-identifier">Internal</span><span class="hs-operator">.</span><span class="hs-identifier">Criterion</span><span class="hs-operator">.</span><span class="hs-identifier">Config</span></a><span>       </span><span class="hs-keyword">as</span><span> </span><span class="hs-identifier">Criterion</span><span>
+</span><a name="line-33"></a><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><a href="Data.Array.Accelerate.Examples.Internal.TestFramework.Config.html"><span class="hs-identifier">Data</span><span class="hs-operator">.</span><span class="hs-identifier">Array</span><span class="hs-operator">.</span><span class="hs-identifier">Accelerate</span><span class="hs-operator">.</span><span class="hs-identifier">Examples</span><span class="hs-operator">.</span><span class="hs-identifier">Internal</span><span class="hs-operator">.</span><span class="hs-identifier">TestFramework</span><span class="hs-operator">.</span><span class="hs-identifier">Config</span></a><span>   </span><span class="hs-keyword">as</span><span> </span><span class="hs-identifier">TestFramework</span><span>
+</span><a name="line-34"></a><span>
+</span><a name="line-35"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">Data</span><span class="hs-operator">.</span><span class="hs-identifier">List</span><span>
+</span><a name="line-36"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">Data</span><span class="hs-operator">.</span><span class="hs-identifier">Label</span><span>
+</span><a name="line-37"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">Data</span><span class="hs-operator">.</span><span class="hs-identifier">Monoid</span><span>
+</span><a name="line-38"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">Control</span><span class="hs-operator">.</span><span class="hs-identifier">Monad</span><span>
+</span><a name="line-39"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">System</span><span class="hs-operator">.</span><span class="hs-identifier">Exit</span><span>
+</span><a name="line-40"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">System</span><span class="hs-operator">.</span><span class="hs-identifier">Environment</span><span>
+</span><a name="line-41"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">System</span><span class="hs-operator">.</span><span class="hs-identifier">Console</span><span class="hs-operator">.</span><span class="hs-identifier">GetOpt</span><span>
+</span><a name="line-42"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">Text</span><span class="hs-operator">.</span><span class="hs-identifier">PrettyPrint</span><span class="hs-operator">.</span><span class="hs-identifier">ANSI</span><span class="hs-operator">.</span><span class="hs-identifier">Leijen</span><span>
+</span><a name="line-43"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">Prelude</span><span>
+</span><a name="line-44"></a><span>
+</span><a name="line-45"></a><span class="hs-cpp">#ifdef ACCELERATE_ENABLE_CODESPEED</span><span>
+</span><a name="line-46"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">Data</span><span class="hs-operator">.</span><span class="hs-identifier">Char</span><span>
+</span><a name="line-47"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">Network</span><span class="hs-operator">.</span><span class="hs-identifier">BSD</span><span>
+</span><a name="line-48"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">System</span><span class="hs-operator">.</span><span class="hs-identifier">IO</span><span class="hs-operator">.</span><span class="hs-identifier">Unsafe</span><span>
+</span><a name="line-49"></a><span class="hs-cpp">#endif</span><span>
+</span><a name="line-50"></a><span>
+</span><a name="line-51"></a><span class="hs-comment">-- Generic program options</span><span>
+</span><a name="line-52"></a><span class="hs-comment">-- -----------------------</span><span>
+</span><a name="line-53"></a><span>
+</span><a name="line-54"></a><span class="hs-keyword">data</span><span> </span><a name="Options"><a href="Data.Array.Accelerate.Examples.Internal.ParseArgs.html#Options"><span class="hs-identifier">Options</span></a></a><span> </span><span class="hs-glyph">=</span><span> </span><a name="Options"><a href="Data.Array.Accelerate.Examples.Internal.ParseArgs.html#Options"><span class="hs-identifier">Options</span></a></a><span>
+</span><a name="line-55"></a><span>  </span><span class="hs-special">{</span><span>
+</span><a name="line-56"></a><span>    </span><a name="_optBackend"><a href="Data.Array.Accelerate.Examples.Internal.ParseArgs.html#_optBackend"><span class="hs-identifier">_optBackend</span></a></a><span>         </span><span class="hs-glyph">::</span><span> </span><a href="Data.Array.Accelerate.Examples.Internal.Backend.html#Backend"><span class="hs-identifier hs-type">Backend</span></a><span>                      </span><span class="hs-comment">-- ^ Accelerate backend to execute programs with</span><span>
+</span><a name="line-57"></a><span>  </span><span class="hs-special">,</span><span> </span><a name="_optTest"><a href="Data.Array.Accelerate.Examples.Internal.ParseArgs.html#_optTest"><span class="hs-identifier">_optTest</span></a></a><span>            </span><span class="hs-glyph">::</span><span> </span><span class="hs-identifier hs-type">Bool</span><span>                         </span><span class="hs-comment">-- ^ Should tests be run?</span><span>
+</span><a name="line-58"></a><span>  </span><span class="hs-special">,</span><span> </span><a name="_optBenchmark"><a href="Data.Array.Accelerate.Examples.Internal.ParseArgs.html#_optBenchmark"><span class="hs-identifier">_optBenchmark</span></a></a><span>       </span><span class="hs-glyph">::</span><span> </span><span class="hs-identifier hs-type">Bool</span><span>                         </span><span class="hs-comment">-- ^ Should benchmarks be run?</span><span>
+</span><a name="line-59"></a><span>  </span><span class="hs-special">,</span><span> </span><a name="_optCodespeed"><a href="Data.Array.Accelerate.Examples.Internal.ParseArgs.html#_optCodespeed"><span class="hs-identifier">_optCodespeed</span></a></a><span>       </span><span class="hs-glyph">::</span><span> </span><span class="hs-identifier hs-type">Maybe</span><span> </span><span class="hs-identifier hs-type">String</span><span>                 </span><span class="hs-comment">-- ^ URL of codespeed server to upload results to</span><span>
+</span><a name="line-60"></a><span>  </span><span class="hs-special">,</span><span> </span><a name="_optHostname"><a href="Data.Array.Accelerate.Examples.Internal.ParseArgs.html#_optHostname"><span class="hs-identifier">_optHostname</span></a></a><span>        </span><span class="hs-glyph">::</span><span> </span><span class="hs-identifier hs-type">String</span><span>                       </span><span class="hs-comment">-- ^ Machine name to use for reported results</span><span>
+</span><a name="line-61"></a><span>  </span><span class="hs-special">,</span><span> </span><a name="_optVariant"><a href="Data.Array.Accelerate.Examples.Internal.ParseArgs.html#_optVariant"><span class="hs-identifier">_optVariant</span></a></a><span>         </span><span class="hs-glyph">::</span><span> </span><span class="hs-identifier hs-type">String</span><span>                       </span><span class="hs-comment">-- ^ Variant to use for reported results</span><span>
+</span><a name="line-62"></a><span>  </span><span class="hs-special">,</span><span> </span><a name="_optHelp"><a href="Data.Array.Accelerate.Examples.Internal.ParseArgs.html#_optHelp"><span class="hs-identifier">_optHelp</span></a></a><span>            </span><span class="hs-glyph">::</span><span> </span><span class="hs-identifier hs-type">Bool</span><span>                         </span><span class="hs-comment">-- ^ Display help message (and exit)?</span><span>
+</span><a name="line-63"></a><span>  </span><span class="hs-comment">--</span><span>
+</span><a name="line-64"></a><span>  </span><span class="hs-special">,</span><span> </span><a name="_optTestFramework"><a href="Data.Array.Accelerate.Examples.Internal.ParseArgs.html#_optTestFramework"><span class="hs-identifier">_optTestFramework</span></a></a><span>   </span><span class="hs-glyph">::</span><span> </span><a href="Data.Array.Accelerate.Examples.Internal.TestFramework.Config.html#Config"><span class="hs-identifier hs-type">TestFramework</span><span class="hs-operator hs-type">.</span><span class="hs-identifier hs-type">Config</span></a><span>         </span><span class="hs-comment">-- ^ Options for test-framework</span><span>
+</span><a name="line-65"></a><span>  </span><span class="hs-special">,</span><span> </span><a name="_optCriterion"><a href="Data.Array.Accelerate.Examples.Internal.ParseArgs.html#_optCriterion"><span class="hs-identifier">_optCriterion</span></a></a><span>       </span><span class="hs-glyph">::</span><span> </span><span class="hs-identifier hs-type">Criterion</span><span class="hs-operator hs-type">.</span><span class="hs-identifier hs-type">Config</span><span>             </span><span class="hs-comment">-- ^ Options for criterion benchmarks</span><span>
+</span><a name="line-66"></a><span>  </span><span class="hs-special">}</span><span>
+</span><a name="line-67"></a><span>
+</span><a name="line-68"></a><span class="hs-operator">$</span><span class="hs-special">(</span><span class="hs-identifier hs-var">mkLabels</span><span> </span><span class="hs-special">[</span><span class="hs-char">''Options])
+
+
+-- Options parsing infrastructure
+-- ------------------------------
+
+defaultOptions :: Options
+defaultOptions = Options
+  {
+    _optBackend         = backend
+  , _optTest            = True
+#ifndef ACCELERATE_ENABLE_GUI
+  , _optBenchmark       = True
+#else
+  , _optBenchmark       = False
+#endif
+  , _optCodespeed       = Nothing
+  , _optVariant         = variant
+  , _optHostname        = hostname
+  , _optHelp            = False
+  , _optCriterion       = Criterion.defaultConfig
+  , _optTestFramework   = TestFramework.defaultConfig backend
+  }
+  where
+    backend     = defaultBackend
+#ifdef ACCELERATE_ENABLE_CODESPEED
+    variant     = &quot;accelerate-&quot; ++ show (_optBackend defaultOptions)
+    hostname    = unsafePerformIO $ do
+      h &lt;- getHostName
+      return $ map toLower $ takeWhile (/= '.') h
+#else
+    variant     = []
+    hostname    = []
+#endif
+
+
+options :: [OptDescr (Options -&gt; Options)]
+options = availableBackends optBackend ++
+  [
+    Option  [] [&quot;benchmark&quot;]
+            (OptArg (set optBenchmark . maybe True read) &quot;BOOL&quot;)
+            (describe optBenchmark &quot;enable benchmark mode&quot;)
+
+  , Option  [] [&quot;test&quot;]
+            (OptArg (set optTest  . maybe True read) &quot;BOOL&quot;)
+            (describe optTest &quot;enable test mode&quot;)
+
+#ifdef ACCELERATE_ENABLE_CODESPEED
+  , Option  [] [&quot;upload&quot;]
+            (ReqArg (set optCodespeed . Just) &quot;URL&quot;)
+            &quot;address of codespeed server to upload benchmark results&quot;
+
+  , Option  [] [&quot;hostname&quot;]
+            (ReqArg (set optHostname) &quot;HOSTNAME&quot;)
+            (describe optHostname &quot;hostname to use for reported results&quot;)
+
+  , Option  [] [&quot;variant&quot;]
+            (ReqArg (set optVariant) &quot;STRING&quot;)
+            (describe optVariant &quot;variant to use for reported results&quot;)
+#endif
+
+  , Option  &quot;h?&quot; [&quot;help&quot;]
+            (NoArg  (set optHelp True))
+            &quot;show help message&quot;
+  ]
+  where
+    describe f msg
+      = msg ++ &quot; (&quot; ++ show (get f defaultOptions) ++ &quot;)&quot;
+
+
+-- | Format a (console) string as bold text. Assume the user has configured
+-- their terminal colours to something that looks good (and avoids the light vs.
+-- dark background debate).
+--
+sectionHeader :: String -&gt; String
+sectionHeader = show . bold . text
+
+-- | Generate the list of available (and the selected) Accelerate backends.
+--
+fancyHeader :: Options -&gt; [String] -&gt; [String] -&gt; String
+fancyHeader opts header footer = intercalate &quot;\n&quot; (header ++ body ++ footer)
+  where
+    active this         = if this == show (get optBackend opts) then &quot;*&quot; else &quot;&quot;
+    (ss,bs,ds)          = unzip3 $ map (\(b,d) -&gt; (active b, b, d)) $ concatMap extract (availableBackends optBackend)
+    table               = zipWith3 paste (sameLen ss) (sameLen bs) ds
+    paste x y z         = &quot;  &quot; ++ x ++ &quot;  &quot; ++ y ++ &quot;  &quot; ++ z
+    sameLen xs          = flushLeft ((maximum . map length) xs) xs
+    flushLeft n xs      = [ take n (x ++ repeat ' ') | x &lt;- xs ]
+    --
+    extract (Option _ los _ descr) =
+      let losFmt  = intercalate &quot;, &quot; los
+      in  case lines descr of
+            []          -&gt; [(losFmt, &quot;&quot;)]
+            (x:xs)      -&gt; (losFmt, x) : [ (&quot;&quot;,x') | x' &lt;- xs ]
+    --
+    body                = &quot;Available backends:&quot; : table
+
+
+-- | Strip the short option arguments that have a required or optional argument.
+-- Because we use several different options groups, the flag and its argument
+-- get separated. The user is required to instead use a --flag=value format.
+--
+stripShortOpts :: [OptDescr a] -&gt; [OptDescr a]
+stripShortOpts = map strip
+  where
+    strip (Option _ long arg@(ReqArg _ _) desc) = Option [] long arg desc
+    strip (Option _ long arg@(OptArg _ _) desc) = Option [] long arg desc
+    strip x                                     = x
+
+
+-- | Strip the operational part of the options description structure, so that
+-- the option lists can be combined for the purposes of displaying the usage
+-- information.
+--
+_stripArgDescr :: [OptDescr a] -&gt; [OptDescr b]
+_stripArgDescr = map strip
+  where
+    strip (Option s l (NoArg _)    d) = Option s l (NoArg  undefined)   d
+    strip (Option s l (ReqArg _ a) d) = Option s l (ReqArg undefined a) d
+    strip (Option s l (OptArg _ a) d) = Option s l (OptArg undefined a) d
+
+
+-- | Extract the option flags
+--
+extractOptFlags :: [OptDescr a] -&gt; [String]
+extractOptFlags = concatMap extract
+  where
+    extract (Option short long _ _) = map (\s -&gt; '-':s:[]) short ++ map (&quot;--&quot;++) long
+
+
+-- | Process the command line arguments and return a tuple consisting of the
+-- user options structure, accelerate-examples options (including options for
+-- criterion and test-framework), and a list of unrecognised command line
+-- arguments.
+--
+-- Since criterion and test-framework both bail if they encounter unrecognised
+-- options, we run getOpt' ourselves. This means that the error messages might
+-- be slightly different.
+--
+-- Any command line arguments following a &quot;--&quot; are not processed, but are
+-- included as part of the unprocessed arguments returned on output.
+--
+parseArgs :: [OptDescr (config -&gt; config)]      -- ^ the user option descriptions
+          -&gt; config                             -- ^ user default option set
+          -&gt; [String]                           -- ^ header text
+          -&gt; [String]                           -- ^ footer text
+          -&gt; IO (config, Options, [String])
+parseArgs programOptions programConfig header footer = do
+  accInit
+  args &lt;- getArgs
+
+  let
+      -- The option &quot;--list&quot; is ambiguous. It is handled by criterion only when
+      -- benchmarks are being run, but if passed to test framework during option
+      -- processing it will be consumed and treated as the &quot;--list-tests&quot; flag.
+      --
+      (argv, rest) =
+        let (x,  y)     = span (/= &quot;--&quot;) args
+            (ls, x')    = partition (== &quot;--list&quot;) x
+        in
+        (x', ls ++ dropWhile (== &quot;--&quot;) y)
+
+      criterionOptions      = stripShortOpts $ Criterion.defaultOptions ++ Criterion.extraOptions
+      testframeworkOptions  = stripShortOpts $ TestFramework.defaultOptions
+
+      helpMsg []  = helpMsg'
+      helpMsg err = unlines [ concat err, helpMsg' ]
+
+      section (sectionHeader -&gt; str) opts = usageInfo str opts
+
+      helpMsg'    = unlines
+        [ fancyHeader defaultOptions header []
+        , &quot;&quot;
+        , section &quot;Options:&quot;                    options
+        , section &quot;Program options:&quot;            programOptions
+        , section &quot;Criterion options:&quot;          criterionOptions
+        , Criterion.regressHelp
+        , &quot;&quot;
+        , section &quot;Test-Framework options:&quot;     testframeworkOptions
+        ]
+
+  -- In the first round process options for the user program. Processing the
+  -- user options first means that we can still handle any short or long options
+  -- that take arguments but which were not joined with an equals sign; e.g.
+  --
+  --   &quot;-f blah&quot; or &quot;--foo blah&quot;.
+  --
+  -- Following this phase we must disallow short options with arguments, and
+  -- only long options in the form &quot;--foo=blah&quot; will work correctly. This is
+  -- because getOpt is splitting the unrecognised options (&quot;--foo&quot;) from the
+  -- non-option arguments (&quot;blah&quot;).
+  --
+  (c1,non,u1)   &lt;- case getOpt' Permute programOptions argv of
+      (opts,n,u,[]) -&gt; case foldr id programConfig opts of
+        conf      -&gt; return (conf,n,u)
+      (_,_,_,err) -&gt; error (helpMsg err)
+
+  -- The standard accelerate-examples options
+  --
+  (c2,u2)       &lt;- case getOpt' Permute options u1 of
+      (opts,_,u,[]) -&gt; return (foldr id defaultOptions opts, u)
+      (_,_,_,err)   -&gt; error (helpMsg err)
+
+  -- Criterion options
+  --
+  (c3,u3)       &lt;- case getOpt' Permute Criterion.defaultOptions u2 of
+      (opts,_,u,[]) -&gt; return (foldr id Criterion.defaultConfig opts, u)
+      (_,_,_,err)   -&gt; error  (helpMsg err)
+
+  -- Test framework options
+  --
+  (c4,u4)       &lt;- case getOpt' Permute testframeworkOptions u3 of
+      (opts,_,u,[]) | Just os &lt;- sequence opts
+                    -&gt; return (mconcat (TestFramework.defaultConfig (_optBackend c2) : os), u)
+      (_,_,_,err)   -&gt; error  (helpMsg err)
+
+  -- Show the help message if that was requested. This is done last so that the
+  -- header is not shown twice in the case of a subsequent options parse error.
+  --
+  if get optHelp c2
+     then putStr   (helpMsg []) &gt;&gt; exitSuccess
+     else putStrLn (fancyHeader c2 header footer)
+
+  -- Issue a warning if there are any unrecognised options. Criterion will error
+  -- if we are in benchmark mode and there is anything it doesn't understand,
+  -- and the error message is somewhat confusing.
+  --
+  let eco       = extractOptFlags Criterion.extraOptions
+      (yes,no)  = partition (\x -&gt; takeWhile (/= '=') x `elem` eco) u4
+
+  unless (null no) $ do
+    putStrLn &quot;Warning: unrecognised options&quot;
+    putStrLn $ unlines $ map (&quot;  &quot;++) no
+
+  return (c1, c2 { _optCriterion = c3, _optTestFramework = c4 }, yes ++ non ++ rest)
+
+</span></pre></body></html>
