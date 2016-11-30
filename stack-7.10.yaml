@@ -92,7 +92,7 @@ flags:
   accelerate-examples:
     cuda:       true
     llvm-cpu:   true
-    llvm-gpu:   true
+    llvm-ptx:   true
     gui:        true
     ekg:        true
     codespeed:  false
