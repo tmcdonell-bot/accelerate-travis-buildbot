@@ -20,18 +20,25 @@
 </span><a name="line-20"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">Data</span><span class="hs-operator">.</span><span class="hs-identifier">Monoid</span><span>
 </span><a name="line-21"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">Data</span><span class="hs-operator">.</span><span class="hs-identifier">Label</span><span>
 </span><a name="line-22"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">Data</span><span class="hs-operator">.</span><span class="hs-identifier">Label</span><span class="hs-operator">.</span><span class="hs-identifier">Derive</span><span>
-</span><a name="line-23"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">Test</span><span class="hs-operator">.</span><span class="hs-identifier">Framework</span><span>                           </span><span class="hs-special">(</span><span> </span><span class="hs-identifier hs-type">RunnerOptions</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-type">RunnerOptions'</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-var">optionsDescription</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-type">SuppliedRunnerOptions</span><span> </span><span class="hs-special">)</span><span>
+</span><a name="line-23"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">Test</span><span class="hs-operator">.</span><span class="hs-identifier">Framework</span><span>                           </span><span class="hs-special">(</span><span> </span><span class="hs-identifier hs-type">RunnerOptions</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-type">RunnerOptions'</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-type">TestOptions'</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-var">optionsDescription</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-type">SuppliedRunnerOptions</span><span> </span><span class="hs-special">)</span><span>
 </span><a name="line-24"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">System</span><span class="hs-operator">.</span><span class="hs-identifier">Console</span><span class="hs-operator">.</span><span class="hs-identifier">GetOpt</span><span>
 </span><a name="line-25"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">Prelude</span><span>
 </span><a name="line-26"></a><span>
 </span><a name="line-27"></a><span class="hs-keyword">import</span><span> </span><a href="Data.Array.Accelerate.Examples.Internal.Backend.html"><span class="hs-identifier">Data</span><span class="hs-operator">.</span><span class="hs-identifier">Array</span><span class="hs-operator">.</span><span class="hs-identifier">Accelerate</span><span class="hs-operator">.</span><span class="hs-identifier">Examples</span><span class="hs-operator">.</span><span class="hs-identifier">Internal</span><span class="hs-operator">.</span><span class="hs-identifier">Backend</span></a><span>
 </span><a name="line-28"></a><span>
 </span><a name="line-29"></a><span class="hs-operator">$</span><span class="hs-special">(</span><span class="hs-identifier hs-var">mkLabelsNamed</span><span> </span><span class="hs-identifier hs-var">id</span><span> </span><span class="hs-special">[</span><span class="hs-char">''RunnerOptions'])
+$(mkLabelsNamed id [''TestOptions'])
 
 type Config = RunnerOptions
 
 defaultConfig :: Backend -&gt; Config
-defaultConfig b = set ropt_threads (concurrentBackends b) mempty
+defaultConfig b
+  = set ropt_threads (concurrentBackends b)
+  $ set ropt_test_options
+    ( Just $ set topt_maximum_generated_tests            (Just 1000)
+           $ set topt_maximum_unsuitable_generated_tests (Just 1000)
+           $ mempty)
+  $ mempty
 
 defaultOptions :: [OptDescr SuppliedRunnerOptions]
 defaultOptions = optionsDescription

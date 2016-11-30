@@ -73,6 +73,18 @@ toVectors :: (Shape sh, Elt e) => Array sh e -> Vectors (EltRepr e)
 --   elements
 fromVectors :: (Shape sh, Elt e) => sh -> Vectors (EltRepr e) -> Array sh e
 
+-- | Convert an <a>IArray</a> to an accelerated array.
+--   
+--   While the type signature mentions Accelerate internals that are not
+--   exported, in practice satisfying the type equality is straight
+--   forward. The index type <tt>ix</tt> must be the unit type <tt>()</tt>
+--   for singleton arrays, or an <tt>Int</tt> or tuple of <tt>Int</tt>'s
+--   for multidimensional arrays.
+fromIArray :: (IxShapeRepr (EltRepr ix) ~ EltRepr sh, IArray a e, Ix ix, Shape sh, Elt ix, Elt e) => a ix e -> Array sh e
+
+-- | Convert an accelerated array to an <a>IArray</a>.
+toIArray :: (IxShapeRepr (EltRepr ix) ~ EltRepr sh, IArray a e, Ix ix, Shape sh, Elt ix) => Array sh e -> a ix e
+
 -- | Packed RGBA pixel data
 type RGBA32 = Word32
 

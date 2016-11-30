@@ -15,3 +15,7 @@
 module Data.Array.Accelerate.LLVM.CodeGen.Ptr
 asPtr :: AddrSpace -> Operand t -> Operand (Ptr t)
 unPtr :: Operand (Ptr t) -> Operand t
+
+
+module Data.Array.Accelerate.LLVM.Analysis.Match
+matchShapeType :: forall sh sh'. (Shape sh, Shape sh') => sh -> sh' -> Maybe (sh :~: sh')

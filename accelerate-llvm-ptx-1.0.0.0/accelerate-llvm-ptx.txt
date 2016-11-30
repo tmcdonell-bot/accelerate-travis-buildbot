@@ -73,8 +73,87 @@ instance Data.Array.Accelerate.Array.Sugar.Foreign Data.Array.Accelerate.LLVM.PT
 --   on the GPU.
 module Data.Array.Accelerate.LLVM.PTX
 
--- | Array-valued collective computations
+-- | Accelerate is an <i>embedded language</i> that distinguishes between
+--   vanilla arrays (e.g. in Haskell memory on the CPU) and embedded arrays
+--   (e.g. in device memory on a GPU), as well as the computations on both
+--   of these. Since Accelerate is an embedded language, programs written
+--   in Accelerate are not compiled by the Haskell compiler (GHC). Rather,
+--   each Accelerate backend is a <i>runtime compiler</i> which generates
+--   and executes parallel SIMD code of the target language at application
+--   <i>runtime</i>.
+--   
+--   The type constructor <a>Acc</a> represents embedded collective array
+--   operations. A term of type <tt>Acc a</tt> is an Accelerate program
+--   which, once executed, will produce a value of type <tt>a</tt> (an
+--   <a>Array</a> or a tuple of <a>Arrays</a>). Collective operations of
+--   type <tt>Acc a</tt> comprise many <i>scalar expressions</i>, wrapped
+--   in type constructor <a>Exp</a>, which will be executed in parallel.
+--   Although collective operations comprise many scalar operations
+--   executed in parallel, scalar operations <i>cannot</i> initiate new
+--   collective operations: this stratification between scalar operations
+--   in <a>Exp</a> and array operations in <a>Acc</a> helps statically
+--   exclude <i>nested data parallelism</i>, which is difficult to execute
+--   efficiently on constrained hardware such as GPUs.
+--   
+--   For example, to compute a vector dot product we could write:
+--   
+--   <pre>
+--   dotp :: Num a =&gt; Vector a -&gt; Vector a -&gt; Acc (Scalar a)
+--   dotp xs ys =
+--     let
+--         xs' = use xs
+--         ys' = use ys
+--     in
+--     fold (+) 0 ( zipWith (*) xs' ys' )
+--   </pre>
+--   
+--   The function <tt>dotp</tt> consumes two one-dimensional arrays
+--   (<a>Vector</a>s) of values, and produces a single (<a>Scalar</a>)
+--   result as output. As the return type is wrapped in the type
+--   <a>Acc</a>, we see that it is an embedded Accelerate computation - it
+--   will be evaluated in the <i>object</i> language of dynamically
+--   generated parallel code, rather than the <i>meta</i> language of
+--   vanilla Haskell.
+--   
+--   As the arguments to <tt>dotp</tt> are plain Haskell arrays, to make
+--   these available to Accelerate computations they must be embedded with
+--   the <a>use</a> function.
+--   
+--   An Accelerate backend is used to evaluate the embedded computation and
+--   return the result back to vanilla Haskell. Calling the <tt>run</tt>
+--   function of a backend will generate code for the target architecture,
+--   compile, and execute it. For example, the following backends are
+--   available:
+--   
+--   <ul>
+--   <li><a>accelerate-llvm-native</a>: for execution on multicore
+--   CPUs</li>
+--   <li><a>accelerate-llvm-ptx</a>: for execution on NVIDIA CUDA-capable
+--   GPUs</li>
+--   </ul>
+--   
+--   <ul>
+--   <li><i><i>Tips:</i></i></li>
+--   </ul>
+--   
+--   <ul>
+--   <li>Since <a>Acc</a> represents embedded computations that will only
+--   be executed when evaluated by a backend, we can programatically
+--   generate these computations using the meta language Haskell; for
+--   example, unrolling loops or embedding input values into the generated
+--   code.</li>
+--   <li>It is usually best to keep all intermediate computations in
+--   <a>Acc</a>, and only <tt>run</tt> the computation at the very end to
+--   produce the final result. This enables optimisations between
+--   intermediate results (e.g. array fusion) and, if the target
+--   architecture has a separate memory space as is the case of GPUs, to
+--   prevent excessive data transfers.</li>
+--   </ul>
 data Acc a :: * -> *
+
+-- | <a>Arrays</a> consists of nested tuples of individual <a>Array</a>s,
+--   currently up to 15-elements wide. Accelerate computations can thereby
+--   return multiple results.
 class (Typeable * a, Typeable * (ArrRepr a)) => Arrays a
 
 -- | Compile and run a complete embedded array program.

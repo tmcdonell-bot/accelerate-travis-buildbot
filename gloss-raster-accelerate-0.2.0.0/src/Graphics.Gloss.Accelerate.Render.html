@@ -5,27 +5,14 @@
 </span><a name="line-5"></a><span>  </span><span class="hs-keyword">where</span><span>
 </span><a name="line-6"></a><span>
 </span><a name="line-7"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">Data</span><span class="hs-operator">.</span><span class="hs-identifier">Array</span><span class="hs-operator">.</span><span class="hs-identifier">Accelerate</span><span>
-</span><a name="line-8"></a><span class="hs-cpp">#ifdef ACCELERATE_CUDA_BACKEND</span><span>
-</span><a name="line-9"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">Data</span><span class="hs-operator">.</span><span class="hs-identifier">Array</span><span class="hs-operator">.</span><span class="hs-identifier">Accelerate</span><span class="hs-operator">.</span><span class="hs-identifier">CUDA</span><span>
-</span><a name="line-10"></a><span class="hs-cpp">#else</span><span>
-</span><a name="line-11"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">Data</span><span class="hs-operator">.</span><span class="hs-identifier">Array</span><span class="hs-operator">.</span><span class="hs-identifier">Accelerate</span><span class="hs-operator">.</span><span class="hs-identifier">Interpreter</span><span>
-</span><a name="line-12"></a><span class="hs-cpp">#endif</span><span>
-</span><a name="line-13"></a><span>
-</span><a name="line-14"></a><span>
-</span><a name="line-15"></a><span class="hs-comment">-- | The type of executing Accelerate computations. The CUDA and Interpreter</span><span>
-</span><a name="line-16"></a><span class="hs-comment">--   backends both provide a function 'run1' that can be used.</span><span>
-</span><a name="line-17"></a><span class="hs-comment">--</span><span>
-</span><a name="line-18"></a><span class="hs-comment">--   Some variants of the display functions take an argument of this type, which</span><span>
-</span><a name="line-19"></a><span class="hs-comment">--   determine how computations are executed.</span><span>
-</span><a name="line-20"></a><span class="hs-comment">--</span><span>
-</span><a name="line-21"></a><span class="hs-keyword">type</span><span> </span><a name="Render"><a href="Graphics.Gloss.Accelerate.Render.html#Render"><span class="hs-identifier">Render</span></a></a><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">forall</span><span> </span><a name="local-1627455813"><a href="#local-1627455813"><span class="hs-identifier">a</span></a></a><span> </span><a name="local-1627455814"><a href="#local-1627455814"><span class="hs-identifier">b</span></a></a><span class="hs-operator">.</span><span> </span><span class="hs-special">(</span><span class="hs-identifier hs-type">Arrays</span><span> </span><a href="#local-1627455813"><span class="hs-identifier hs-type">a</span></a><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-type">Arrays</span><span> </span><a href="#local-1627455814"><span class="hs-identifier hs-type">b</span></a><span class="hs-special">)</span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="hs-special">(</span><span class="hs-identifier hs-type">Acc</span><span> </span><a href="#local-1627455813"><span class="hs-identifier hs-type">a</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier hs-type">Acc</span><span> </span><a href="#local-1627455814"><span class="hs-identifier hs-type">b</span></a><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><a href="#local-1627455813"><span class="hs-identifier hs-type">a</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><a href="#local-1627455814"><span class="hs-identifier hs-type">b</span></a><span>
-</span><a name="line-22"></a><span>
-</span><a name="line-23"></a><span>
-</span><a name="line-24"></a><span class="hs-comment">-- | The set of backends available to execute Accelerate programs. The default</span><span>
-</span><a name="line-25"></a><span class="hs-comment">--   chooses the fastest available, which is currently the CUDA backend. This is</span><span>
-</span><a name="line-26"></a><span class="hs-comment">--   controlled via the import statements.</span><span>
-</span><a name="line-27"></a><span class="hs-comment">--</span><span>
-</span><a name="line-28"></a><span class="hs-identifier">defaultRender</span><span> </span><span class="hs-glyph">::</span><span> </span><a href="Graphics.Gloss.Accelerate.Render.html#Render"><span class="hs-identifier hs-type">Render</span></a><span>
-</span><a name="line-29"></a><a name="defaultRender"><a href="Graphics.Gloss.Accelerate.Render.html#defaultRender"><span class="hs-identifier">defaultRender</span></a></a><span> </span><span class="hs-glyph">=</span><span>  </span><span class="hs-identifier hs-var">run1</span><span>
-</span><a name="line-30"></a><span>
-</span><a name="line-31"></a></pre></body></html>
+</span><a name="line-8"></a><span>
+</span><a name="line-9"></a><span>
+</span><a name="line-10"></a><span class="hs-comment">-- | The type for executing Accelerate computations. This matches the 'run1'</span><span>
+</span><a name="line-11"></a><span class="hs-comment">--   style of executing programs.</span><span>
+</span><a name="line-12"></a><span class="hs-comment">--</span><span>
+</span><a name="line-13"></a><span class="hs-comment">--   Some variants of the display functions take an argument of this type, which</span><span>
+</span><a name="line-14"></a><span class="hs-comment">--   determine how computations are executed.</span><span>
+</span><a name="line-15"></a><span class="hs-comment">--</span><span>
+</span><a name="line-16"></a><span class="hs-keyword">type</span><span> </span><a name="Render"><a href="Graphics.Gloss.Accelerate.Render.html#Render"><span class="hs-identifier">Render</span></a></a><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">forall</span><span> </span><a name="local-1627409941"><a href="#local-1627409941"><span class="hs-identifier">a</span></a></a><span> </span><a name="local-1627409942"><a href="#local-1627409942"><span class="hs-identifier">b</span></a></a><span class="hs-operator">.</span><span> </span><span class="hs-special">(</span><span class="hs-identifier hs-type">Arrays</span><span> </span><a href="#local-1627409941"><span class="hs-identifier hs-type">a</span></a><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-type">Arrays</span><span> </span><a href="#local-1627409942"><span class="hs-identifier hs-type">b</span></a><span class="hs-special">)</span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="hs-special">(</span><span class="hs-identifier hs-type">Acc</span><span> </span><a href="#local-1627409941"><span class="hs-identifier hs-type">a</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier hs-type">Acc</span><span> </span><a href="#local-1627409942"><span class="hs-identifier hs-type">b</span></a><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><a href="#local-1627409941"><span class="hs-identifier hs-type">a</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><a href="#local-1627409942"><span class="hs-identifier hs-type">b</span></a><span>
+</span><a name="line-17"></a><span>
+</span><a name="line-18"></a></pre></body></html>
