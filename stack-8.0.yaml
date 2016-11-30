@@ -10,7 +10,7 @@ packages:
 
 - location:
     git:    https://github.com/tmcdonell/accelerate-cuda.git
-    commit: 3b45613e8e02e67b57024e99577cf5e73938e17c
+    commit: cd8d31c24717ab1041057d1979113689ac79fead
 
 - location:
     git:    https://github.com/tmcdonell/accelerate-llvm.git
