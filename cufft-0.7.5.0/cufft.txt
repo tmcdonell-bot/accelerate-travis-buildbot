@@ -15,9 +15,10 @@
 --   standard places, and if the <a>nvcc</a> compiler is in your PATH,
 --   relative to that.
 --   
---   This release tested with versions 6.5 and 7.0 of the CUDA toolkit.
+--   This release tested with versions 6.5, 7.0, and 7.5 of the CUDA
+--   toolkit.
 @package cufft
-@version 0.7.0.0
+@version 0.7.5.0
 
 module Foreign.CUDA.FFT
 data Result
