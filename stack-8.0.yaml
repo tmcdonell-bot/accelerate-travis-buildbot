@@ -54,7 +54,7 @@ packages:
 
 - location:
     git:    https://github.com/tmcdonell/mwc-random-accelerate.git
-    commit: e1e153645ac25898144e29574f3499b7b4eba3d5
+    commit: 1f76b6ed03a835a6077f68aa4bc65506eb1cd64f
 
 - location:
     git:    https://github.com/tmcdonell/numeric-prelude-accelerate.git
