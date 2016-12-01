@@ -70,7 +70,7 @@ packages:
 
 - location:
     git:    https://github.com/tmcdonell/cufft.git
-    commit: 2cc91ce6c04d0a4e29948c0f8a89e30786ba55f5
+    commit: dc7ae89035777e5bc9629a6049e7fc1f46a61a87
 
 extra-deps:
 - 'chaselev-deque-0.5.0.5'
