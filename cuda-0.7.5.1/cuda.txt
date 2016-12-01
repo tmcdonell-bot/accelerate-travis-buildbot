@@ -50,6 +50,8 @@
 --   <li><a>https://ghc.haskell.org/trac/ghc/ticket/12573</a></li>
 --   </ul>
 --   
+--   The bug should be fixed in ghc-8.0.2 and beyond.
+--   
 --   For additional notes on installing on Windows, see:
 --   
 --   <ul>
