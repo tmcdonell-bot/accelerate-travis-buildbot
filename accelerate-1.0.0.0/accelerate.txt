@@ -125,7 +125,7 @@ module Data.Array.Accelerate.Data.Bits
 -- | The <a>Bits</a> class defines bitwise operations over integral scalar
 --   expression types. As usual, bits are numbered from zero, with zero
 --   being the least significant bit.
-class Eq a => Bits a where shift x i = cond (i <* 0) (x `shiftR` (- i)) $ cond (i >* 0) (x `shiftL` i) $ x rotate x i = cond (i <* 0) (x `rotateR` (- i)) $ cond (i >* 0) (x `rotateL` i) $ x zeroBits = clearBit (bit 0) 0 setBit x i = x .|. bit i clearBit x i = x .&. complement (bit i) complementBit x i = x `xor` bit i shiftL x i = x `shift` i unsafeShiftL = shiftL shiftR x i = x `shift` (- i) unsafeShiftR = shiftR rotateL x i = x `rotate` i rotateR x i = x `rotate` (- i)
+class Eq a => Bits a where shift x i = cond (i < 0) (x `shiftR` (- i)) $ cond (i > 0) (x `shiftL` i) $ x rotate x i = cond (i < 0) (x `rotateR` (- i)) $ cond (i > 0) (x `rotateL` i) $ x zeroBits = clearBit (bit 0) 0 setBit x i = x .|. bit i clearBit x i = x .&. complement (bit i) complementBit x i = x `xor` bit i shiftL x i = x `shift` i unsafeShiftL = shiftL shiftR x i = x `shift` (- i) unsafeShiftR = shiftR rotateL x i = x `rotate` i rotateR x i = x `rotate` (- i)
 
 -- | Bitwise "and"
 (.&.) :: Bits a => Exp a -> Exp a -> Exp a
@@ -963,7 +963,7 @@ infixl 1 >->
 --   loop :: Exp Int -&gt; Exp Int
 --   loop ticks =
 --     let clockRate = 900000   -- kHz
---     in  while (\i -&gt; i &lt;* clockRate * ticks) (+1) 0
+--     in  while (\i -&gt; i &lt; clockRate * ticks) (+1) 0
 --   
 --   test :: Acc (Vector Int)
 --   test =
@@ -2216,20 +2216,20 @@ type Stencil5x5x5 a = (Stencil5x5 a, Stencil5x5 a, Stencil5x5 a, Stencil5x5 a, S
 --   GPUs, and is thus currently unsupported.
 data Exp t
 
--- | The <a>Eq</a> class defines equality <a>==*</a> and inequality
---   <a>/=*</a> for scalar Accelerate expressions.
+-- | The <a>Eq</a> class defines equality <a>==</a> and inequality
+--   <a>/=</a> for scalar Accelerate expressions.
 --   
 --   For convenience, we include <a>Elt</a> as a superclass.
-class Elt a => Eq a where x ==* y = mkLNot (x /=* y) x /=* y = mkLNot (x ==* y)
-(==*) :: Eq a => Exp a -> Exp a -> Exp Bool
-(/=*) :: Eq a => Exp a -> Exp a -> Exp Bool
+class Elt a => Eq a where x == y = mkLNot (x /= y) x /= y = mkLNot (x == y)
+(==) :: Eq a => Exp a -> Exp a -> Exp Bool
+(/=) :: Eq a => Exp a -> Exp a -> Exp Bool
 
 -- | The <a>Ord</a> class for totally ordered datatypes
-class Eq a => Ord a where x <* y = x /=* y &&* x <=* y x >* y = not (x <=* y) x <=* y = not (x >* y) x >=* y = x ==* y ||* not (x <=* y) min x y = Exp $ Cond (x <=* y) x y max x y = Exp $ Cond (x <=* y) y x
-(<*) :: Ord a => Exp a -> Exp a -> Exp Bool
-(>*) :: Ord a => Exp a -> Exp a -> Exp Bool
-(<=*) :: Ord a => Exp a -> Exp a -> Exp Bool
-(>=*) :: Ord a => Exp a -> Exp a -> Exp Bool
+class Eq a => Ord a where x < y = x /= y && x <= y x > y = not (x <= y) x <= y = not (x > y) x >= y = x == y || not (x <= y) min x y = Exp $ Cond (x <= y) x y max x y = Exp $ Cond (x <= y) y x
+(<) :: Ord a => Exp a -> Exp a -> Exp Bool
+(>) :: Ord a => Exp a -> Exp a -> Exp Bool
+(<=) :: Ord a => Exp a -> Exp a -> Exp Bool
+(>=) :: Ord a => Exp a -> Exp a -> Exp Bool
 min :: Ord a => Exp a -> Exp a -> Exp a
 max :: Ord a => Exp a -> Exp a -> Exp a
 
@@ -2548,14 +2548,14 @@ sfoldl :: forall sh a b. (Shape sh, Slice sh, Elt a, Elt b) => (Exp a -> Exp b -
 -- | Conjunction: True if both arguments are true. This is a short-circuit
 --   operator, so the second argument will be evaluated only if the first
 --   is true.
-(&&*) :: Exp Bool -> Exp Bool -> Exp Bool
-infixr 3 &&*
+(&&) :: Exp Bool -> Exp Bool -> Exp Bool
+infixr 3 &&
 
 -- | Disjunction: True if either argument is true. This is a short-circuit
 --   operator, so the second argument will be evaluated only if the first
 --   is false.
-(||*) :: Exp Bool -> Exp Bool -> Exp Bool
-infixr 2 ||*
+(||) :: Exp Bool -> Exp Bool -> Exp Bool
+infixr 2 ||
 
 -- | Logical negation
 not :: Exp Bool -> Exp Bool
@@ -2760,6 +2760,17 @@ error :: HasCallStack => [Char] -> a
 --   recognize this and insert error messages which are more appropriate to
 --   the context in which <a>undefined</a> appears.
 undefined :: HasCallStack => a
+
+-- | <tt>const x</tt> is a unary function which evaluates to <tt>x</tt> for
+--   all inputs.
+--   
+--   For instance,
+--   
+--   <pre>
+--   &gt;&gt;&gt; map (const 42) [0..3]
+--   [42,42,42,42]
+--   </pre>
+const :: a -> b -> a
 
 -- | A fixed-precision integer type with at least the range <tt>[-2^29 ..
 --   2^29-1]</tt>. The exact range for a given implementation can be
