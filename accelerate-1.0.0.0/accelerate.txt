@@ -521,6 +521,9 @@ module Data.Array.Accelerate
 --   GPUs</li>
 --   </ul>
 --   
+--   See also <a>Exp</a>, which encapsulates embedded _scalar_
+--   computations.
+--   
 --   <ul>
 --   <li><i><i>Tips:</i></i></li>
 --   </ul>
