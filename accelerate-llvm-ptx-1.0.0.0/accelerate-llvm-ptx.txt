@@ -60,7 +60,16 @@ copyToHostLazy :: Arrays arrs => arrs -> LLVM PTX arrs
 -- | Clone an array into a newly allocated array on the device.
 cloneArrayAsync :: (Shape sh, Elt e) => Stream -> Array sh e -> LLVM PTX (Array sh e)
 type Async a = AsyncR PTX a
+
+-- | A <a>Stream</a> represents an independent sequence of computations
+--   executed on the GPU. Operations in different streams may be executed
+--   concurrently with each other, but operations in the same stream can
+--   never overlap. <a>Event</a>s can be used for efficient cross-stream
+--   synchronisation.
 type Stream = Lifetime Stream
+
+-- | Events can be used for efficient device-side synchronisation between
+--   execution streams and between the host.
 type Event = Lifetime Event
 instance Data.Array.Accelerate.LLVM.Foreign.Foreign Data.Array.Accelerate.LLVM.PTX.Target.PTX
 instance Data.Array.Accelerate.Array.Sugar.Foreign Data.Array.Accelerate.LLVM.PTX.Foreign.ForeignAcc
