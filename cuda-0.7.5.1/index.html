@@ -5,8 +5,8 @@ window.onload = function () {pageLoad();};
 model for NVIDIA graphics cards (G8x series onwards). This is a collection
 of bindings to allow you to call and control, although not write, such
 functions from Haskell-land. You will need to install the CUDA driver and
-developer toolkit.</p><p><a href="http://developer.nvidia.com/cuda-downloads">http://developer.nvidia.com/cuda-downloads</a></p><p>The setup script will look for your CUDA installation in the standard
-places, and if the nvcc compiler is found in your PATH, relative to that.</p><p>This library provides bindings to both the CUDA Driver and Runtime APIs. To
+developer toolkit.</p><p><a href="http://developer.nvidia.com/cuda-downloads">http://developer.nvidia.com/cuda-downloads</a></p><p>The setup script will look for your CUDA installation by checking, in the
+following order:</p><ol><li>The <code>CUDA_PATH</code> environment variable</li><li>Searching for <code>nvcc</code> on the <code>PATH</code></li><li>Checking at <code>/usr/local/cuda</code></li></ol><p>This library provides bindings to both the CUDA Driver and Runtime APIs. To
 get started, see one of:</p><ul><li><a href="Foreign-CUDA-Driver.html">Foreign.CUDA.Driver</a> (a short tutorial is available here)</li><li><a href="Foreign-CUDA-Runtime.html">Foreign.CUDA.Runtime</a></li></ul><p>This release tested with versions 6.0, 6.5, 7.0, and 7.5 of the CUDA toolkit.</p><dl><dt><em>NOTES:</em></dt><dd></dd></dl><p>The setup script for this package requires at least Cabal-1.22. To upgrade,
 execute one of:</p><ul><li>cabal users: <code>cabal install Cabal --constraint=&quot;Cabal &gt;= 1.22&quot;</code></li><li>stack users: <code>stack setup --upgrade-cabal</code></li></ul><p>Due to an interaction between GHC-8 and unified virtual address spaces in
 CUDA, this package does not currently work with GHCi on ghc-8.0.1 (compiled
