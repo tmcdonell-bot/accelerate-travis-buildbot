@@ -230,11 +230,8 @@ data Native
 type Strategy = Gang -> Executable
 
 -- | Create a Native execution target by spawning a worker thread on each
---   of the given capabilities, using the given strategy to load balance
---   the workers.
---   
---   Note that it is *not* safe to use the same target concurrently from
---   different threads; instead, create separate targets for each thread.
+--   of the given capabilities, and using the given strategy to load
+--   balance the workers when executing parallel operations.
 createTarget :: [Int] -> Strategy -> IO Native
 
 -- | Execute a computation where threads use work stealing (based on lazy
@@ -242,7 +239,7 @@ createTarget :: [Int] -> Strategy -> IO Native
 --   automatically balance the workload amongst themselves. A suitable PPT
 --   should be chosen when invoking the continuation in order to balance
 --   scheduler overhead with fine-grained function calls.
-balancedParIO :: Strategy
+balancedParIO :: Int -> Strategy
 
 -- | Execute a computation without load balancing. Each thread computes an
 --   equally sized chunk of the input. No work stealing occurs.
