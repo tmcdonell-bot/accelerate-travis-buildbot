@@ -19,6 +19,8 @@
 --   <li>The <tt>CUDA_PATH</tt> environment variable</li>
 --   <li>Searching for <tt>nvcc</tt> on the <tt>PATH</tt></li>
 --   <li>Checking at <tt>/usr/local/cuda</tt></li>
+--   <li><tt>CUDA_PATH_Vx_y</tt> environment variable, for recent CUDA
+--   toolkit versions x.y</li>
 --   </ol>
 --   
 --   This library provides bindings to both the CUDA Driver and Runtime
