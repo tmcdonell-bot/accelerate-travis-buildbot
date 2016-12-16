@@ -16,196 +16,387 @@
 --   <a>http://paulbourke.net/texture_colour/colourspace/</a>
 module Data.Array.Accelerate.Data.Colour.Names
 class NamedColour c
+
 antiqueWhite :: NamedColour c => c
+
 azure :: NamedColour c => c
+
 bisque :: NamedColour c => c
+
 blanchedAlmond :: NamedColour c => c
+
 cornsilk :: NamedColour c => c
+
 eggshell :: NamedColour c => c
+
 floralWhite :: NamedColour c => c
+
 gainsboro :: NamedColour c => c
+
 ghostWhite :: NamedColour c => c
+
 honeydew :: NamedColour c => c
+
 ivory :: NamedColour c => c
+
 lavender :: NamedColour c => c
+
 lavenderBlush :: NamedColour c => c
+
 lemonChiffon :: NamedColour c => c
+
 linen :: NamedColour c => c
+
 mintCream :: NamedColour c => c
+
 mistyRose :: NamedColour c => c
+
 moccasin :: NamedColour c => c
+
 navajoWhite :: NamedColour c => c
+
 oldLace :: NamedColour c => c
+
 papayaWhip :: NamedColour c => c
+
 peachPuff :: NamedColour c => c
+
 seashell :: NamedColour c => c
+
 snow :: NamedColour c => c
+
 thistle :: NamedColour c => c
+
 titaniumWhite :: NamedColour c => c
+
 wheat :: NamedColour c => c
+
 white :: NamedColour c => c
+
 whiteSmoke :: NamedColour c => c
+
 zincWhite :: NamedColour c => c
+
 coldGrey :: NamedColour c => c
+
 dimGrey :: NamedColour c => c
+
 grey :: NamedColour c => c
+
 lightGrey :: NamedColour c => c
+
 slateGrey :: NamedColour c => c
+
 slateGreyDark :: NamedColour c => c
+
 slateGreyLight :: NamedColour c => c
+
 warmGrey :: NamedColour c => c
+
 black :: NamedColour c => c
+
 ivoryBlack :: NamedColour c => c
+
 lampBlack :: NamedColour c => c
+
 alizarinCrimson :: NamedColour c => c
+
 brick :: NamedColour c => c
+
 cadmiumRedDeep :: NamedColour c => c
+
 coral :: NamedColour c => c
+
 coralLight :: NamedColour c => c
+
 deepPink :: NamedColour c => c
+
 englishRed :: NamedColour c => c
+
 firebrick :: NamedColour c => c
+
 geraniumLake :: NamedColour c => c
+
 hotPink :: NamedColour c => c
+
 indianRed :: NamedColour c => c
+
 lightSalmon :: NamedColour c => c
+
 madderLakeDeep :: NamedColour c => c
+
 maroon :: NamedColour c => c
+
 pink :: NamedColour c => c
+
 pinkLight :: NamedColour c => c
+
 raspberry :: NamedColour c => c
+
 red :: NamedColour c => c
+
 roseMadder :: NamedColour c => c
+
 salmon :: NamedColour c => c
+
 tomato :: NamedColour c => c
+
 venetianRed :: NamedColour c => c
+
 beige :: NamedColour c => c
+
 brown :: NamedColour c => c
+
 brownMadder :: NamedColour c => c
+
 brownOchre :: NamedColour c => c
+
 burlywood :: NamedColour c => c
+
 burntSienna :: NamedColour c => c
+
 burntUmber :: NamedColour c => c
+
 chocolate :: NamedColour c => c
+
 deepOchre :: NamedColour c => c
+
 flesh :: NamedColour c => c
+
 fleshOchre :: NamedColour c => c
+
 goldOchre :: NamedColour c => c
+
 greenishUmber :: NamedColour c => c
+
 khaki :: NamedColour c => c
+
 khakiDark :: NamedColour c => c
+
 lightBeige :: NamedColour c => c
+
 peru :: NamedColour c => c
+
 rosyBrown :: NamedColour c => c
+
 rawSienna :: NamedColour c => c
+
 rawUmber :: NamedColour c => c
+
 sepia :: NamedColour c => c
+
 sienna :: NamedColour c => c
+
 saddleBrown :: NamedColour c => c
+
 sandyBrown :: NamedColour c => c
+
 tan :: NamedColour c => c
+
 vanDykeBrown :: NamedColour c => c
+
 cadmiumOrange :: NamedColour c => c
+
 cadmiumRedLight :: NamedColour c => c
+
 carrot :: NamedColour c => c
+
 darkOrange :: NamedColour c => c
+
 marsOrange :: NamedColour c => c
+
 marsYellow :: NamedColour c => c
+
 orange :: NamedColour c => c
+
 orangeRed :: NamedColour c => c
+
 yellowOchre :: NamedColour c => c
+
 aureolineYellow :: NamedColour c => c
+
 banana :: NamedColour c => c
+
 cadmiumLemon :: NamedColour c => c
+
 cadmiumYellow :: NamedColour c => c
+
 gold :: NamedColour c => c
+
 goldenrod :: NamedColour c => c
+
 goldenrodDark :: NamedColour c => c
+
 goldenrodLight :: NamedColour c => c
+
 goldenrodPale :: NamedColour c => c
+
 lightGoldenrod :: NamedColour c => c
+
 melon :: NamedColour c => c
-naplesyellowdeep :: NamedColour c => c
+
+naplesYellowDeep :: NamedColour c => c
+
 yellow :: NamedColour c => c
+
 yellowLight :: NamedColour c => c
+
 chartreuse :: NamedColour c => c
-chromeoxidegreen :: NamedColour c => c
+
+chromeoxideGreen :: NamedColour c => c
+
 cinnabarGreen :: NamedColour c => c
+
 cobaltGreen :: NamedColour c => c
+
 emeraldGreen :: NamedColour c => c
+
 forestGreen :: NamedColour c => c
+
 green :: NamedColour c => c
+
 greenDark :: NamedColour c => c
+
 greenPale :: NamedColour c => c
+
 greenYellow :: NamedColour c => c
+
 lawnGreen :: NamedColour c => c
+
 limeGreen :: NamedColour c => c
+
 mint :: NamedColour c => c
+
 olive :: NamedColour c => c
+
 oliveDrab :: NamedColour c => c
+
 oliveGreenDark :: NamedColour c => c
+
 permanentGreen :: NamedColour c => c
+
 sapGreen :: NamedColour c => c
+
 seaGreen :: NamedColour c => c
+
 seaGreenDark :: NamedColour c => c
+
 seaGreenMedium :: NamedColour c => c
+
 seaGreenLight :: NamedColour c => c
+
 springGreen :: NamedColour c => c
-springGreenmedium :: NamedColour c => c
+
+springGreenMedium :: NamedColour c => c
+
 terreVerte :: NamedColour c => c
+
 viridianLight :: NamedColour c => c
+
 yellowGreen :: NamedColour c => c
+
 aquamarine :: NamedColour c => c
-aquamarinemedium :: NamedColour c => c
+
+aquamarineMedium :: NamedColour c => c
+
 cyan :: NamedColour c => c
+
 cyanWhite :: NamedColour c => c
+
 turquoise :: NamedColour c => c
+
 turquoiseDark :: NamedColour c => c
+
 turquoiseMedium :: NamedColour c => c
+
 turquoisePale :: NamedColour c => c
+
 aliceBlue :: NamedColour c => c
+
 blue :: NamedColour c => c
+
 blueLight :: NamedColour c => c
+
 blueMedium :: NamedColour c => c
+
 cadet :: NamedColour c => c
+
 cobalt :: NamedColour c => c
+
 cornflower :: NamedColour c => c
+
 cerulean :: NamedColour c => c
+
 dodgerBlue :: NamedColour c => c
+
 indigo :: NamedColour c => c
+
 manganeseBlue :: NamedColour c => c
+
 midnightBlue :: NamedColour c => c
+
 navy :: NamedColour c => c
+
 peacock :: NamedColour c => c
+
 powderBlue :: NamedColour c => c
+
 royalBlue :: NamedColour c => c
+
 slateBlue :: NamedColour c => c
+
 slateBlueDark :: NamedColour c => c
+
 slateBlueLight :: NamedColour c => c
+
 slateBlueMedium :: NamedColour c => c
+
 skyBlue :: NamedColour c => c
+
 skyBlueDeep :: NamedColour c => c
+
 skyBlueLight :: NamedColour c => c
+
 steelBlue :: NamedColour c => c
+
 steelBlueLight :: NamedColour c => c
+
 turquoiseBlue :: NamedColour c => c
+
 ultramarine :: NamedColour c => c
+
 blueViolet :: NamedColour c => c
-cobaltVioletdeep :: NamedColour c => c
+
+cobaltVioletDeep :: NamedColour c => c
+
 magenta :: NamedColour c => c
+
 orchid :: NamedColour c => c
+
 orchidDark :: NamedColour c => c
+
 orchidMedium :: NamedColour c => c
+
 permanentViolet :: NamedColour c => c
+
 plum :: NamedColour c => c
+
 purple :: NamedColour c => c
+
 purpleMedium :: NamedColour c => c
+
 ultramarineViolet :: NamedColour c => c
+
 violet :: NamedColour c => c
+
 violetDark :: NamedColour c => c
+
 violetRed :: NamedColour c => c
-violetRedmedium :: NamedColour c => c
+
+violetRedMedium :: NamedColour c => c
+
 violetRedPale :: NamedColour c => c
+instance (Data.Array.Accelerate.Array.Sugar.Elt c, Data.Array.Accelerate.Data.Colour.Names.NamedColour c) => Data.Array.Accelerate.Data.Colour.Names.NamedColour (Data.Array.Accelerate.Smart.Exp c)
 
 
 -- | RGBA quadruples for an unspecified colour space
