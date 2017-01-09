@@ -58,7 +58,7 @@ packages:
 
 - location:
     git:    https://github.com/tmcdonell/numeric-prelude-accelerate.git
-    commit: b1c3630f09e9e45a26deac3c1fe6194b9eb40263
+    commit: 8adc16cf42bfc43ca3967b8bdc33d4d442026751
 
 - location:
     git:    https://github.com/tmcdonell/lulesh-accelerate.git
