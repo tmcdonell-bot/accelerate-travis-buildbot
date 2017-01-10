@@ -112,11 +112,10 @@
 </span><a name="line-112"></a><span>  </span><span class="hs-keyword">let</span><span> </span><span class="hs-identifier">dir</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">tmp</span><span> </span><span class="hs-operator">&lt;/&gt;</span><span> </span><span class="hs-string">&quot;accelerate-&quot;</span><span> </span><span class="hs-operator">++</span><span> </span><span class="hs-identifier">show</span><span> </span><span class="hs-identifier">pid</span><span>
 </span><a name="line-113"></a><span>  </span><span class="hs-identifier">createDirectoryIfMissing</span><span> </span><span class="hs-identifier">True</span><span> </span><span class="hs-identifier">dir</span><span>
 </span><a name="line-114"></a><span>  </span><span class="hs-identifier">bracket</span><span> </span><span class="hs-special">(</span><span class="hs-identifier">openTempFile</span><span> </span><span class="hs-identifier">dir</span><span> </span><span class="hs-identifier">template</span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="hs-identifier">hClose</span><span> </span><span class="hs-operator">.</span><span> </span><span class="hs-identifier">snd</span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="hs-identifier">uncurry</span><span> </span><span class="hs-identifier">go</span><span class="hs-special">)</span><span>
-</span><a name="line-115"></a><span class="hs-cpp">#endif</span><span>
-</span><a name="line-116"></a><span>
-</span><a name="line-117"></a><span class="hs-cpp">#ifdef WIN32</span><span>
-</span><a name="line-118"></a><span class="hs-identifier">getProcessID</span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-identifier">IO</span><span> </span><span class="hs-identifier">ProcessId</span><span>
-</span><a name="line-119"></a><span class="hs-identifier">getProcessID</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">return</span><span> </span><span class="hs-number">0xaaaa</span><span>
+</span><a name="line-115"></a><span>
+</span><a name="line-116"></a><span class="hs-cpp">#ifdef WIN32</span><span>
+</span><a name="line-117"></a><span class="hs-identifier">getProcessID</span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-identifier">IO</span><span> </span><span class="hs-identifier">ProcessId</span><span>
+</span><a name="line-118"></a><span class="hs-identifier">getProcessID</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">return</span><span> </span><span class="hs-number">0xaaaa</span><span>
+</span><a name="line-119"></a><span class="hs-cpp">#endif</span><span>
 </span><a name="line-120"></a><span class="hs-cpp">#endif</span><span>
-</span><a name="line-121"></a><span>
-</span><a name="line-122"></a></pre></body></html>
+</span><a name="line-121"></a></pre></body></html>
