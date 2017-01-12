@@ -131,14 +131,7 @@ class (Typeable * a, Typeable * (ArrRepr a)) => Arrays a
 
 -- | Compile and run a complete embedded array program.
 --   
---   NOTE:
---   
---   <ol>
---   <li>It is recommended that you use <a>run1</a> whenever possible.</li>
---   <li>It is *not* safe to call <a>run</a> concurrently from different
---   threads. Instead, use <a>createTarget</a> and <a>runWith</a> so that
---   each thread executes using its own thread gang.</li>
---   </ol>
+--   NOTE: it is recommended to use <a>run1</a> whenever possible.
 run :: Arrays a => Acc a -> a
 
 -- | As <a>run</a>, but execute using the specified target (thread gang).
