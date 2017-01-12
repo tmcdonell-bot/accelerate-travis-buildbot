@@ -229,9 +229,7 @@ createTarget :: [Int] -> Strategy -> IO Native
 
 -- | Execute a computation where threads use work stealing (based on lazy
 --   splitting of work stealing queues and exponential backoff) in order to
---   automatically balance the workload amongst themselves. A suitable PPT
---   should be chosen when invoking the continuation in order to balance
---   scheduler overhead with fine-grained function calls.
+--   automatically balance the workload amongst themselves.
 balancedParIO :: Int -> Strategy
 
 -- | Execute a computation without load balancing. Each thread computes an
