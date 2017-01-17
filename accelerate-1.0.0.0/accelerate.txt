@@ -210,6 +210,23 @@ class Bits b => FiniteBits b
 
 -- | Return the number of bits in the type of the argument.
 finiteBitSize :: FiniteBits b => Exp b -> Exp Int
+
+-- | Count the number of zero bits preceding the most significant set bit.
+--   This can be used to compute a base-2 logarithm via:
+--   
+--   <pre>
+--   logBase2 x = finiteBitSize x - 1 - countLeadingZeros x
+--   </pre>
+countLeadingZeros :: FiniteBits b => Exp b -> Exp Int
+
+-- | Count the number of zero bits following the least significant set bit.
+--   The related <a>find-first-set operation</a> can be expressed in terms
+--   of this as:
+--   
+--   <pre>
+--   findFirstSet x = 1 + countTrailingZeros x
+--   </pre>
+countTrailingZeros :: FiniteBits b => Exp b -> Exp Int
 instance Data.Array.Accelerate.Data.Bits.Bits GHC.Types.Bool
 instance Data.Array.Accelerate.Data.Bits.Bits GHC.Types.Int
 instance Data.Array.Accelerate.Data.Bits.Bits GHC.Int.Int8
@@ -2367,7 +2384,7 @@ divMod' :: (Floating a, RealFrac a, Num b, IsIntegral b, ToFloating b a) => Exp 
 
 -- | Efficient, machine-independent access to the components of a
 --   floating-point number
-class (RealFrac a, Floating a) => RealFloat a where floatRadix _ = fromInteger (floatRadix (undefined :: a)) floatDigits _ = constant (floatDigits (undefined :: a)) floatRange _ = let (m, n) = floatRange (undefined :: a) in (constant m, constant n) isIEEE _ = constant (isIEEE (undefined :: Float)) decodeFloat = ((\ format_acVLx kind_acVLy fn_acVLz msg_acVLA -> error (format_acVLx kind_acVLy (call fn_acVLz msg_acVLA))) (\ kind_acVLB msg_acVLC -> message kind_acVLB ("Data/Array/Accelerate/Classes/RealFloat.hs:100:21: " ++ msg_acVLC)) Internal) "RealFloat.decodeFloat" "Not implemented yet" encodeFloat = ((\ format_acVLG kind_acVLH fn_acVLI msg_acVLJ -> error (format_acVLG kind_acVLH (call fn_acVLI msg_acVLJ))) (\ kind_acVLK msg_acVLL -> message kind_acVLK ("Data/Array/Accelerate/Classes/RealFloat.hs:101:21: " ++ msg_acVLL)) Internal) "RealFloat.encodeFloat" "Not implemented yet" exponent = ((\ format_acVLP kind_acVLQ fn_acVLR msg_acVLS -> error (format_acVLP kind_acVLQ (call fn_acVLR msg_acVLS))) (\ kind_acVLT msg_acVLU -> message kind_acVLT ("Data/Array/Accelerate/Classes/RealFloat.hs:102:21: " ++ msg_acVLU)) Internal) "RealFloat.exponent" "Not implemented yet" significand = ((\ format_acVLY kind_acVLZ fn_acVM0 msg_acVM1 -> error (format_acVLY kind_acVLZ (call fn_acVM0 msg_acVM1))) (\ kind_acVM2 msg_acVM3 -> message kind_acVM2 ("Data/Array/Accelerate/Classes/RealFloat.hs:103:21: " ++ msg_acVM3)) Internal) "RealFloat.significand" "Not implemented yet" scaleFloat = ((\ format_acVM7 kind_acVM8 fn_acVM9 msg_acVMa -> error (format_acVM7 kind_acVM8 (call fn_acVM9 msg_acVMa))) (\ kind_acVMb msg_acVMc -> message kind_acVMb ("Data/Array/Accelerate/Classes/RealFloat.hs:104:21: " ++ msg_acVMc)) Internal) "RealFloat.scaleFloat" "Not implemented yet" isInfinite = ((\ format_acVMg kind_acVMh fn_acVMi msg_acVMj -> error (format_acVMg kind_acVMh (call fn_acVMi msg_acVMj))) (\ kind_acVMk msg_acVMl -> message kind_acVMk ("Data/Array/Accelerate/Classes/RealFloat.hs:105:21: " ++ msg_acVMl)) Internal) "RealFloat.isInfinite" "Not implemented yet" isDenormalized = ((\ format_acVMp kind_acVMq fn_acVMr msg_acVMs -> error (format_acVMp kind_acVMq (call fn_acVMr msg_acVMs))) (\ kind_acVMt msg_acVMu -> message kind_acVMt ("Data/Array/Accelerate/Classes/RealFloat.hs:106:21: " ++ msg_acVMu)) Internal) "RealFloat.isDenormalized" "Not implemented yet" isNegativeZero = ((\ format_acVMy kind_acVMz fn_acVMA msg_acVMB -> error (format_acVMy kind_acVMz (call fn_acVMA msg_acVMB))) (\ kind_acVMC msg_acVMD -> message kind_acVMC ("Data/Array/Accelerate/Classes/RealFloat.hs:107:21: " ++ msg_acVMD)) Internal) "RealFloat.isNegativeZero" "Not implemented yet"
+class (RealFrac a, Floating a) => RealFloat a where floatRadix _ = fromInteger (floatRadix (undefined :: a)) floatDigits _ = constant (floatDigits (undefined :: a)) floatRange _ = let (m, n) = floatRange (undefined :: a) in (constant m, constant n) isIEEE _ = constant (isIEEE (undefined :: Float)) decodeFloat = ((\ format_acYIc kind_acYId fn_acYIe msg_acYIf -> error (format_acYIc kind_acYId (call fn_acYIe msg_acYIf))) (\ kind_acYIg msg_acYIh -> message kind_acYIg ("Data/Array/Accelerate/Classes/RealFloat.hs:100:21: " ++ msg_acYIh)) Internal) "RealFloat.decodeFloat" "Not implemented yet" encodeFloat = ((\ format_acYIl kind_acYIm fn_acYIn msg_acYIo -> error (format_acYIl kind_acYIm (call fn_acYIn msg_acYIo))) (\ kind_acYIp msg_acYIq -> message kind_acYIp ("Data/Array/Accelerate/Classes/RealFloat.hs:101:21: " ++ msg_acYIq)) Internal) "RealFloat.encodeFloat" "Not implemented yet" exponent = ((\ format_acYIu kind_acYIv fn_acYIw msg_acYIx -> error (format_acYIu kind_acYIv (call fn_acYIw msg_acYIx))) (\ kind_acYIy msg_acYIz -> message kind_acYIy ("Data/Array/Accelerate/Classes/RealFloat.hs:102:21: " ++ msg_acYIz)) Internal) "RealFloat.exponent" "Not implemented yet" significand = ((\ format_acYID kind_acYIE fn_acYIF msg_acYIG -> error (format_acYID kind_acYIE (call fn_acYIF msg_acYIG))) (\ kind_acYIH msg_acYII -> message kind_acYIH ("Data/Array/Accelerate/Classes/RealFloat.hs:103:21: " ++ msg_acYII)) Internal) "RealFloat.significand" "Not implemented yet" scaleFloat = ((\ format_acYIM kind_acYIN fn_acYIO msg_acYIP -> error (format_acYIM kind_acYIN (call fn_acYIO msg_acYIP))) (\ kind_acYIQ msg_acYIR -> message kind_acYIQ ("Data/Array/Accelerate/Classes/RealFloat.hs:104:21: " ++ msg_acYIR)) Internal) "RealFloat.scaleFloat" "Not implemented yet" isInfinite = ((\ format_acYIV kind_acYIW fn_acYIX msg_acYIY -> error (format_acYIV kind_acYIW (call fn_acYIX msg_acYIY))) (\ kind_acYIZ msg_acYJ0 -> message kind_acYIZ ("Data/Array/Accelerate/Classes/RealFloat.hs:105:21: " ++ msg_acYJ0)) Internal) "RealFloat.isInfinite" "Not implemented yet" isDenormalized = ((\ format_acYJ4 kind_acYJ5 fn_acYJ6 msg_acYJ7 -> error (format_acYJ4 kind_acYJ5 (call fn_acYJ6 msg_acYJ7))) (\ kind_acYJ8 msg_acYJ9 -> message kind_acYJ8 ("Data/Array/Accelerate/Classes/RealFloat.hs:106:21: " ++ msg_acYJ9)) Internal) "RealFloat.isDenormalized" "Not implemented yet" isNegativeZero = ((\ format_acYJd kind_acYJe fn_acYJf msg_acYJg -> error (format_acYJd kind_acYJe (call fn_acYJf msg_acYJg))) (\ kind_acYJh msg_acYJi -> message kind_acYJh ("Data/Array/Accelerate/Classes/RealFloat.hs:107:21: " ++ msg_acYJi)) Internal) "RealFloat.isNegativeZero" "Not implemented yet"
 
 -- | The radix of the representation (often 2) (constant)
 floatRadix :: RealFloat a => Exp a -> Exp Int64
