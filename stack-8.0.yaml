@@ -29,6 +29,10 @@ packages:
     commit: f4c84a5c961345bf65059f555f21c6e8bf3070a1
 
 - location:
+    git:    https://github.com/tmcdonell/accelerate-bignum.git
+    commit: {SHA_accelerate-bignum}
+
+- location:
     git:    https://github.com/tmcdonell/accelerate-examples.git
     commit: e1542c3fc1b698bb93ae3ff54760e048d632bac1
 

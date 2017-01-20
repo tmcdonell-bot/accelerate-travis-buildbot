@@ -29,6 +29,10 @@ packages:
     commit: {SHA_accelerate-io}
 
 - location:
+    git:    https://github.com/{REPO_accelerate-bignum}.git
+    commit: {SHA_accelerate-bignum}
+
+- location:
     git:    https://github.com/{REPO_accelerate-examples}.git
     commit: {SHA_accelerate-examples}
 

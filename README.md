@@ -15,6 +15,7 @@ Status of individual repositories:
  - [![Build Status](https://travis-ci.org/tmcdonell/accelerate-llvm.svg?branch=master)](https://travis-ci.org/tmcdonell/accelerate-llvm) [tmcdonell/accelerate-llvm](https://github.com/tmcdonell/accelerate-llvm)
  - [![Build Status](https://travis-ci.org/tmcdonell/accelerate-fft.svg?branch=master)](https://travis-ci.org/tmcdonell/accelerate-fft) [tmcdonell/accelerate-fft](https://github.com/tmcdonell/accelerate-fft)
  - [![Build Status](https://travis-ci.org/tmcdonell/accelerate-io.svg?branch=master)](https://travis-ci.org/tmcdonell/accelerate-io) [tmcdonell/accelerate-io](https://github.com/tmcdonell/accelerate-io)
+ - [![Build Status](https://travis-ci.org/tmcdonell/accelerate-bignum.svg?branch=master)](https://travis-ci.org/tmcdonell/accelerate-bignum) [tmcdonell/accelerate-bignum](https://github.com/tmcdonell/accelerate-bignum)
  - [![Build Status](https://travis-ci.org/tmcdonell/colour-accelerate.svg?branch=master)](https://travis-ci.org/tmcdonell/colour-accelerate) [tmcdonell/colour-accelerate](https://github.com/tmcdonell/colour-accelerate)
  - [![Build Status](https://travis-ci.org/tmcdonell/gloss-accelerate.svg?branch=master)](https://travis-ci.org/tmcdonell/gloss-accelerate) [tmcdonell/gloss-accelerate](https://github.com/tmcdonell/gloss-accelerate)
  - [![Build Status](https://travis-ci.org/tmcdonell/gloss-raster-accelerate.svg?branch=master)](https://travis-ci.org/tmcdonell/gloss-raster-accelerate) [tmcdonell/gloss-raster-accelerate](https://github.com/tmcdonell/gloss-raster-accelerate)
