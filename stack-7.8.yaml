@@ -26,7 +26,7 @@ packages:
 
 - location:
     git:    https://github.com/tmcdonell/accelerate-io.git
-    commit: f4c84a5c961345bf65059f555f21c6e8bf3070a1
+    commit: c8a618b563853b08f3501979e05e51d1303d7fa4
 
 - location:
     git:    https://github.com/tmcdonell/accelerate-examples.git
