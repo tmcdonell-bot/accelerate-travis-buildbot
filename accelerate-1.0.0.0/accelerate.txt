@@ -2640,10 +2640,10 @@ index3 :: (Elt i, Slice (Z :. i), Slice ((Z :. i) :. i)) => Exp i -> Exp i -> Ex
 -- | Destruct a rank-3 index into an Exp tuple of Int`s
 unindex3 :: forall i. (Elt i, Slice (Z :. i), Slice ((Z :. i) :. i)) => Exp (((Z :. i) :. i) :. i) -> Exp (i, i, i)
 
--- | Get the outermost dimension of a shape
+-- | Get the innermost dimension of a shape
 indexHead :: (Slice sh, Elt a) => Exp (sh :. a) -> Exp a
 
--- | Get all but the outermost element of a shape
+-- | Get all but the innermost element of a shape
 indexTail :: (Slice sh, Elt a) => Exp (sh :. a) -> Exp sh
 
 -- | Map a multi-dimensional index into a linear, row-major representation
