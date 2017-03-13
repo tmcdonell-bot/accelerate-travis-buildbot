@@ -25,7 +25,7 @@
 --   Compile modules that use the CUDA backend with the <tt>-threaded</tt>
 --   flag.
 @package accelerate-cuda
-@version 0.16.0.0
+@version 0.17.0.0
 
 
 -- | This module implements the CUDA backend for the embedded array
