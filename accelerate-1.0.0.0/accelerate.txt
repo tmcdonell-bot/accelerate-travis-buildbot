@@ -375,6 +375,16 @@ run1 :: (Arrays a, Arrays b) => (Acc a -> Acc b) -> a -> b
 --   multi-dimensional arrays.
 --   
 --   <ul>
+--   <li><i><i>Optimisations:</i></i></li>
+--   </ul>
+--   
+--   Accelerate uses a number of scalar and array optimisations, including
+--   <i>array fusion</i>, in order to improve the performance of programs.
+--   Fusing a program entails combining successive traversals (loops) over
+--   an array into a single traversal, which reduces memory traffic and
+--   eliminates intermediate arrays.
+--   
+--   <ul>
 --   <li><i><i>Code execution:</i></i></li>
 --   </ul>
 --   
@@ -538,8 +548,79 @@ module Data.Array.Accelerate
 --   GPUs</li>
 --   </ul>
 --   
---   See also <a>Exp</a>, which encapsulates embedded _scalar_
+--   See also <a>Exp</a>, which encapsulates embedded <i>scalar</i>
 --   computations.
+--   
+--   <ul>
+--   <li><i><i>Fusion:</i></i></li>
+--   </ul>
+--   
+--   Array computations of type <a>Acc</a> will be subject to <i>array
+--   fusion</i>; Accelerate will combine individual <a>Acc</a> computations
+--   into a single computation, which reduces the number of traversals over
+--   the input data and thus improves performance. As such, it is often
+--   useful to have some intuition on when fusion should occur.
+--   
+--   The main idea is to first partition array operations into two
+--   categories:
+--   
+--   <ol>
+--   <li>Element-wise operations, such as <a>map</a>, <a>generate</a>, and
+--   <a>backpermute</a>. Each element of these operations can be computed
+--   independently of all others.</li>
+--   <li>Collective operations such as <a>fold</a>, <a>scanl</a>, and
+--   <a>stencil</a>. To compute each output element of these operations
+--   requires reading multiple elements from the input array(s).</li>
+--   </ol>
+--   
+--   Element-wise operations fuse together whenever the consumer operation
+--   uses a single element of the input array. Element-wise operations can
+--   both fuse their inputs into themselves, as well be fused into later
+--   operations. Both these examples should fuse into a single loop:
+--   
+--   <pre>
+--   map -&gt; reverse -&gt; reshape -&gt; map -&gt; map
+--   </pre>
+--   
+--   <pre>
+--   map -&gt; backpermute -&gt;
+--                         zipWith -&gt; map
+--             generate -&gt;
+--   </pre>
+--   
+--   If the consumer operation uses more than one element of the input
+--   array (typically, via <a>generate</a> indexing an array multiple
+--   times), then the input array will be completely evaluated first; no
+--   fusion occurs in this case, because fusing the first operation into
+--   the second implies duplicating work.
+--   
+--   On the other hand, collective operations can fuse their input arrays
+--   into themselves, but on output always evaluate to an array; collective
+--   operations will not be fused into a later step. For example:
+--   
+--   <pre>
+--        use -&gt;
+--               zipWith -&gt; fold |-&gt; map
+--   generate -&gt;
+--   </pre>
+--   
+--   Here the element-wise sequence (<a>use</a> + <a>generate</a> +
+--   <a>zipWith</a>) will fuse into a single operation, which then fuses
+--   into the collective <a>fold</a> operation. At this point in the
+--   program the <a>fold</a> must now be evaluated. In the final step the
+--   <a>map</a> reads in the array produced by <a>fold</a>. As there is no
+--   fusion between the <a>fold</a> and <a>map</a> steps, this program
+--   consists of two "loops"; one for the <a>use</a> + <a>generate</a> +
+--   <a>zipWith</a> + <a>fold</a> step, and one for the final <a>map</a>
+--   step.
+--   
+--   You can see how many operations will be executed in the fused program
+--   by <a>Show</a>-ing the <a>Acc</a> program, or by using the debugging
+--   option <tt>-ddump-dot</tt> to save the program as a graphviz DOT file.
+--   
+--   As a special note, the operations <a>unzip</a> and <a>reshape</a>,
+--   when applied to a real array, are executed in constant time, so in
+--   this situation these operations will not be fused.
 --   
 --   <ul>
 --   <li><i><i>Tips:</i></i></li>
@@ -1467,6 +1548,23 @@ slit :: forall sh e. (Slice sh, Shape sh, Elt e) => Exp Int -> Exp Int -> Acc (A
 --   &gt;&gt;&gt; histogram (use xs)
 --   Vector (Z :. 10) [2,4,4,3,2,2,0,0,2,1]
 --   </pre>
+--   
+--   <ul>
+--   <li><i><i>Note:</i></i></li>
+--   </ul>
+--   
+--   Regarding array fusion:
+--   
+--   <ol>
+--   <li>The <a>permute</a> operation will always be evaluated; it can not
+--   be fused into a later step.</li>
+--   <li>Since the index permutation function might not cover all positions
+--   in the output array (the function is not surjective), the array of
+--   default values must be evaluated. However, other operations may fuse
+--   into this.</li>
+--   <li>The array of source values can fuse into the permutation
+--   operation.</li>
+--   </ol>
 permute :: (Shape sh, Shape sh', Elt a) => (Exp a -> Exp a -> Exp a) -> Acc (Array sh' a) -> (Exp sh -> Exp sh') -> Acc (Array sh a) -> Acc (Array sh' a)
 
 -- | Magic value identifying elements that are ignored in a forward
