@@ -76,6 +76,7 @@ extra-deps:
 - 'atomic-primops-0.8.0.4'
 - 'base-orphans-0.4.4'
 - 'bytestring-lexing-0.5.0.2'
+- 'Cabal-1.24.2.0'
 - 'chaselev-deque-0.5.0.5'
 - 'ekg-0.4.0.10'
 - 'ekg-core-0.1.1.1'
@@ -85,8 +86,8 @@ extra-deps:
 - 'GLURaw-1.4.0.2'
 - 'GLUT-2.5.1.1'
 - 'libffi-0.1'
-- 'llvm-general-3.5.1.2'
-- 'llvm-general-pure-3.5.1.0'
+- 'llvm-hs-4.0.0.0'
+- 'llvm-hs-pure-4.0.0.0'
 - 'matrix-market-attoparsec-0.1.0.5'
 - 'mtl-2.2.1'
 - 'non-negative-0.1.1'
@@ -96,16 +97,21 @@ extra-deps:
 - 'OpenGLRaw-1.5.0.1'
 - 'SafeSemaphore-0.10.1'
 - 'scientific-0.3.4.9'
+- 'semigroups-0.18.1'
 - 'storable-record-0.0.3.1'
 - 'transformers-0.4.3.0'
 - 'transformers-compat-0.4.0.4'
 - 'unique-0'
 - 'utility-ht-0.0.11'
+- 'void-0.7.1'
 
 # Override default flag values for local packages and extra-deps
 flags:
-  llvm-general:
+  llvm-hs:
     shared-llvm: true
+    semigroups:  true
+  llvm-hs-pure:
+    semigroups: true
   accelerate-examples:
     cuda:       true
     llvm-cpu:   true

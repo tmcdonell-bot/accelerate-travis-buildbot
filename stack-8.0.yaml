@@ -76,17 +76,11 @@ packages:
     git:    https://github.com/tmcdonell/cufft.git
     commit: dc7ae89035777e5bc9629a6049e7fc1f46a61a87
 
-- location:
-    git:    https://github.com/bscarlet/llvm-general.git
-    commit: 529f9bf117b5ffd1ccf7ebeb679a97b3b1c67938
-  extra-dep: true
-  subdirs:
-    - 'llvm-general'
-    - 'llvm-general-pure'
-
 extra-deps:
 - 'chaselev-deque-0.5.0.5'
 - 'libffi-0.1'
+- 'llvm-hs-4.0.0.0'
+- 'llvm-hs-pure-4.0.0.0'
 - 'matrix-market-attoparsec-0.1.0.5'
 - 'non-negative-0.1.1'
 - 'normaldistribution-1.1.0.3'
@@ -95,7 +89,7 @@ extra-deps:
 
 # Override default flag values for local packages and extra-deps
 flags:
-  llvm-general:
+  llvm-hs:
     shared-llvm: true
   accelerate-examples:
     cuda:       true
