@@ -32,10 +32,6 @@ ExecFailed :: Result
 SetupFailed :: Result
 InvalidSize :: Result
 UnalignedData :: Result
-IncompleteParameterList :: Result
-InvalidDevice :: Result
-ParseError :: Result
-NoWorkspace :: Result
 describe :: Result -> String
 data CUFFTException
 ExitCode :: Result -> CUFFTException
@@ -79,8 +75,8 @@ execZ2D :: Handle -> DevicePtr Double -> DevicePtr Double -> IO ()
 
 -- | Operations handle
 newtype Handle
-Handle :: (CInt) -> Handle
-[useHandle] :: Handle -> (CInt)
+Handle :: (CUInt) -> Handle
+[useHandle] :: Handle -> (CUInt)
 data Type
 C2C :: Type
 R2C :: Type

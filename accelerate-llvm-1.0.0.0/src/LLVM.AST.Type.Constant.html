@@ -1,0 +1,42 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-pragma">{-# LANGUAGE GADTs #-}</span><span>
+</span><a name="line-2"></a><span class="hs-pragma">{-# OPTIONS_HADDOCK hide #-}</span><span>
+</span><a name="line-3"></a><span class="hs-comment">-- |</span><span>
+</span><a name="line-4"></a><span class="hs-comment">-- Module      : LLVM.AST.Type.Constant</span><span>
+</span><a name="line-5"></a><span class="hs-comment">-- Copyright   : [2015] Trevor L. McDonell</span><span>
+</span><a name="line-6"></a><span class="hs-comment">-- License     : BSD3</span><span>
+</span><a name="line-7"></a><span class="hs-comment">--</span><span>
+</span><a name="line-8"></a><span class="hs-comment">-- Maintainer  : Trevor L. McDonell &lt;tmcdonell@cse.unsw.edu.au&gt;</span><span>
+</span><a name="line-9"></a><span class="hs-comment">-- Stability   : experimental</span><span>
+</span><a name="line-10"></a><span class="hs-comment">-- Portability : non-portable (GHC extensions)</span><span>
+</span><a name="line-11"></a><span class="hs-comment">--</span><span>
+</span><a name="line-12"></a><span>
+</span><a name="line-13"></a><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">LLVM</span><span class="hs-operator">.</span><span class="hs-identifier">AST</span><span class="hs-operator">.</span><span class="hs-identifier">Type</span><span class="hs-operator">.</span><span class="hs-identifier">Constant</span><span>
+</span><a name="line-14"></a><span>  </span><span class="hs-keyword">where</span><span>
+</span><a name="line-15"></a><span>
+</span><a name="line-16"></a><span class="hs-keyword">import</span><span> </span><a href="LLVM.AST.Type.Name.html"><span class="hs-identifier">LLVM</span><span class="hs-operator">.</span><span class="hs-identifier">AST</span><span class="hs-operator">.</span><span class="hs-identifier">Type</span><span class="hs-operator">.</span><span class="hs-identifier">Name</span></a><span>
+</span><a name="line-17"></a><span class="hs-keyword">import</span><span> </span><a href="LLVM.AST.Type.Representation.html"><span class="hs-identifier">LLVM</span><span class="hs-operator">.</span><span class="hs-identifier">AST</span><span class="hs-operator">.</span><span class="hs-identifier">Type</span><span class="hs-operator">.</span><span class="hs-identifier">Representation</span></a><span>
+</span><a name="line-18"></a><span>
+</span><a name="line-19"></a><span>
+</span><a name="line-20"></a><span class="hs-comment">-- | Although constant expressions and instructions have many similarities,</span><span>
+</span><a name="line-21"></a><span class="hs-comment">-- there are important differences - so they're represented using different</span><span>
+</span><a name="line-22"></a><span class="hs-comment">-- types in this AST. At the cost of making it harder to move an code back and</span><span>
+</span><a name="line-23"></a><span class="hs-comment">-- forth between being constant and not, this approach embeds more of the rules</span><span>
+</span><a name="line-24"></a><span class="hs-comment">-- of what IR is legal into the Haskell types.</span><span>
+</span><a name="line-25"></a><span class="hs-comment">--</span><span>
+</span><a name="line-26"></a><span class="hs-comment">-- &lt;http://llvm.org/docs/LangRef.html#constants&gt;</span><span>
+</span><a name="line-27"></a><span class="hs-comment">--</span><span>
+</span><a name="line-28"></a><span class="hs-comment">-- &lt;http://llvm.org/docs/LangRef.html#constant-expressions&gt;</span><span>
+</span><a name="line-29"></a><span class="hs-comment">--</span><span>
+</span><a name="line-30"></a><span class="hs-keyword">data</span><span> </span><a name="Constant"><a href="LLVM.AST.Type.Constant.html#Constant"><span class="hs-identifier">Constant</span></a></a><span> </span><a name="local-1627610651"><a href="#local-1627610651"><span class="hs-identifier">a</span></a></a><span> </span><span class="hs-keyword">where</span><span>
+</span><a name="line-31"></a><span>  </span><a name="ScalarConstant"><a href="LLVM.AST.Type.Constant.html#ScalarConstant"><span class="hs-identifier">ScalarConstant</span></a></a><span>        </span><span class="hs-glyph">::</span><span> </span><span class="hs-identifier hs-type">ScalarType</span><span> </span><a href="#local-1627610652"><span class="hs-identifier hs-type">a</span></a><span>
+</span><a name="line-32"></a><span>                        </span><span class="hs-glyph">-&gt;</span><span> </span><a href="#local-1627610652"><span class="hs-identifier hs-type">a</span></a><span>
+</span><a name="line-33"></a><span>                        </span><span class="hs-glyph">-&gt;</span><span> </span><a href="LLVM.AST.Type.Constant.html#Constant"><span class="hs-identifier hs-type">Constant</span></a><span> </span><a href="#local-1627610652"><span class="hs-identifier hs-type">a</span></a><span>
+</span><a name="line-34"></a><span>
+</span><a name="line-35"></a><span>  </span><a name="UndefConstant"><a href="LLVM.AST.Type.Constant.html#UndefConstant"><span class="hs-identifier">UndefConstant</span></a></a><span>         </span><span class="hs-glyph">::</span><span> </span><a href="LLVM.AST.Type.Representation.html#Type"><span class="hs-identifier hs-type">Type</span></a><span> </span><a href="#local-1627610653"><span class="hs-identifier hs-type">a</span></a><span>
+</span><a name="line-36"></a><span>                        </span><span class="hs-glyph">-&gt;</span><span> </span><a href="LLVM.AST.Type.Constant.html#Constant"><span class="hs-identifier hs-type">Constant</span></a><span> </span><a href="#local-1627610653"><span class="hs-identifier hs-type">a</span></a><span>
+</span><a name="line-37"></a><span>
+</span><a name="line-38"></a><span>  </span><a name="GlobalReference"><a href="LLVM.AST.Type.Constant.html#GlobalReference"><span class="hs-identifier">GlobalReference</span></a></a><span>       </span><span class="hs-glyph">::</span><span> </span><a href="LLVM.AST.Type.Representation.html#Type"><span class="hs-identifier hs-type">Type</span></a><span> </span><a href="#local-1627610654"><span class="hs-identifier hs-type">a</span></a><span>
+</span><a name="line-39"></a><span>                        </span><span class="hs-glyph">-&gt;</span><span> </span><a href="LLVM.AST.Type.Name.html#Name"><span class="hs-identifier hs-type">Name</span></a><span> </span><a href="#local-1627610654"><span class="hs-identifier hs-type">a</span></a><span>
+</span><a name="line-40"></a><span>                        </span><span class="hs-glyph">-&gt;</span><span> </span><a href="LLVM.AST.Type.Constant.html#Constant"><span class="hs-identifier hs-type">Constant</span></a><span> </span><a href="#local-1627610654"><span class="hs-identifier hs-type">a</span></a><span>
+</span><a name="line-41"></a><span>
+</span><a name="line-42"></a></pre></body></html>

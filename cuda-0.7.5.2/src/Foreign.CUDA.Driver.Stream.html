@@ -95,136 +95,101 @@
 </span><a name="line-95"></a><span class="hs-comment">--</span><span>
 </span><a name="line-96"></a><span class="hs-pragma">{-# INLINEABLE createWithPriority #-}</span><span>
 </span><a name="line-97"></a><span class="hs-identifier">createWithPriority</span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-identifier">StreamPriority</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="hs-identifier">StreamFlag</span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier">IO</span><span> </span><span class="hs-identifier">Stream</span><span>
-</span><a name="line-98"></a><span class="hs-identifier">createWithPriority</span><span> </span><span class="hs-glyph">!</span><span class="hs-identifier">priority</span><span> </span><span class="hs-glyph">!</span><span class="hs-identifier">flags</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">resultIfOk</span><span> </span><span class="hs-operator">=&lt;&lt;</span><span> </span><span class="hs-identifier">cuStreamCreateWithPriority</span><span> </span><span class="hs-identifier">flags</span><span> </span><span class="hs-identifier">priority</span><span>
-</span><a name="line-99"></a><span>
-</span><a name="line-100"></a><span class="hs-pragma">{-# INLINE cuStreamCreateWithPriority #-}</span><span>
-</span><a name="line-101"></a><span class="hs-identifier">cuStreamCreateWithPriority</span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><span class="hs-special">[</span><span class="hs-identifier">StreamFlag</span><span class="hs-special">]</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">(</span><span class="hs-identifier">StreamPriority</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier">IO</span><span> </span><span class="hs-special">(</span><span class="hs-special">(</span><span class="hs-identifier">Status</span><span class="hs-special">)</span><span class="hs-special">,</span><span> </span><span class="hs-special">(</span><span class="hs-identifier">Stream</span><span class="hs-special">)</span><span class="hs-special">)</span><span>
-</span><a name="line-102"></a><span class="hs-identifier">cuStreamCreateWithPriority</span><span> </span><span class="hs-identifier">a2</span><span> </span><span class="hs-identifier">a3</span><span> </span><span class="hs-glyph">=</span><span>
-</span><a name="line-103"></a><span>  </span><span class="hs-identifier">alloca</span><span> </span><span class="hs-operator">$</span><span> </span><span class="hs-glyph">\</span><span class="hs-identifier">a1'</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span>
-</span><a name="line-104"></a><span>  </span><span class="hs-keyword">let</span><span> </span><span class="hs-special">{</span><span class="hs-identifier">a2'</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">combineBitMasks</span><span> </span><span class="hs-identifier">a2</span><span class="hs-special">}</span><span> </span><span class="hs-keyword">in</span><span> </span><span>
-</span><a name="line-105"></a><span>  </span><span class="hs-keyword">let</span><span> </span><span class="hs-special">{</span><span class="hs-identifier">a3'</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">cIntConv</span><span> </span><a href="Foreign.CUDA.Driver.Error.html#nothingIfOk"><span class="hs-identifier hs-var">a3</span></a><span class="hs-special">}</span><span> </span><span class="hs-keyword">in</span><span> </span><span>
-</span><a name="line-106"></a><span>  </span><span class="hs-identifier">cuStreamCreateWithPriority'_</span><span> </span><span class="hs-identifier">a1'</span><span> </span><span class="hs-identifier">a2'</span><span> </span><span class="hs-identifier">a3'</span><span> </span><span class="hs-operator">&gt;&gt;=</span><span> </span><span class="hs-glyph">\</span><span class="hs-identifier">res</span><span> </span><span class="hs-glyph">-&gt;</span><span>
-</span><a name="line-107"></a><span>  </span><span class="hs-keyword">let</span><span> </span><span class="hs-special">{</span><span class="hs-identifier">res'</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">cToEnum</span><span> </span><span class="hs-identifier">res</span><span class="hs-special">}</span><span> </span><span class="hs-keyword">in</span><span>
-</span><a name="line-108"></a><span>  </span><span class="hs-identifier">peekStream</span><span>  </span><span class="hs-identifier">a1'</span><span class="hs-operator">&gt;&gt;=</span><span> </span><span class="hs-glyph">\</span><a href="Foreign.CUDA.Types.html#Stream"><span class="hs-identifier hs-type">a1''</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span>
-</span><a name="line-109"></a><span>  </span><a name="cuStreamDestroy"><a href="Foreign.CUDA.Driver.Stream.html#cuStreamDestroy"><span class="hs-identifier">return</span></a></a><span> </span><span class="hs-special">(</span><a name="cuStreamDestroy"><a href="Foreign.CUDA.Driver.Stream.html#cuStreamDestroy"><span class="hs-identifier">res'</span></a></a><span class="hs-special">,</span><span> </span><span class="hs-identifier">a1''</span><span class="hs-special">)</span><span>
-</span><a name="line-110"></a><span>
-</span><a name="line-111"></a><span class="hs-pragma">{-# LINE 90 &quot;src/Foreign/CUDA/Driver/Stream.chs&quot; #-}</span><span>
-</span><a name="line-112"></a><span>
-</span><a name="line-113"></a><span>  </span><span class="hs-keyword">where</span><span>
-</span><a name="line-114"></a><span>    </span><span class="hs-identifier">peekStream</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">liftM</span><span> </span><span class="hs-identifier">Stream</span><span> </span><span class="hs-operator">.</span><span> </span><span class="hs-identifier">peek</span><span>
-</span><a name="line-115"></a><span>
-</span><a name="line-116"></a><span>
-</span><a name="line-117"></a><span class="hs-comment">-- |</span><span>
-</span><a name="line-118"></a><span class="hs-comment">-- Destroy a stream. If the device is still doing work in the stream when</span><span>
-</span><a name="line-119"></a><span class="hs-comment">-- 'destroy' is called, the function returns immediately and the resources</span><span>
-</span><a name="line-120"></a><span class="hs-comment">-- associated with the stream will be released automatically once the</span><span>
-</span><a name="line-121"></a><span class="hs-comment">-- device has completed all work.</span><span>
-</span><a name="line-122"></a><span class="hs-comment">--</span><span>
-</span><a name="line-123"></a><span class="hs-comment">-- &lt;http://docs.nvidia.com/cuda/cuda-driver-api/group__CUDA__STREAM.html#group__CUDA__STREAM_1g244c8833de4596bcd31a06cdf21ee758&gt;</span><span>
-</span><a name="line-124"></a><span class="hs-comment">--</span><span>
-</span><a name="line-125"></a><span class="hs-pragma">{-# INLINEABLE destroy #-}</span><span>
-</span><a name="line-126"></a><span class="hs-identifier">destroy</span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-identifier">Stream</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier">IO</span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span>
-</span><a name="line-127"></a><span class="hs-identifier">destroy</span><span> </span><span class="hs-glyph">!</span><span class="hs-identifier">st</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">nothingIfOk</span><span> </span><span class="hs-operator">=&lt;&lt;</span><span> </span><span class="hs-identifier">cuStreamDestroy</span><span> </span><span class="hs-identifier">st</span><span>
-</span><a name="line-128"></a><span>
-</span><a name="line-129"></a><span class="hs-pragma">{-# INLINE cuStreamDestroy #-}</span><span>
-</span><a name="line-130"></a><span class="hs-identifier">cuStreamDestroy</span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><span class="hs-identifier">Stream</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier">IO</span><span> </span><span class="hs-special">(</span><span class="hs-special">(</span><span class="hs-identifier">Status</span><span class="hs-special">)</span><span class="hs-special">)</span><span>
-</span><a name="line-131"></a><span class="hs-identifier">cuStreamDestroy</span><span> </span><span class="hs-identifier">a1</span><span> </span><span class="hs-glyph">=</span><span>
-</span><a name="line-132"></a><span>  </span><span class="hs-keyword">let</span><span> </span><span class="hs-special">{</span><a name="local-1627852395"><a href="#local-1627852395"><span class="hs-identifier">a1'</span></a></a><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">useStream</span><span> </span><a href="#local-1627852394"><span class="hs-identifier hs-var">a1</span></a><span class="hs-special">}</span><span> </span><span class="hs-keyword">in</span><span> </span><span>
-</span><a name="line-133"></a><span>  </span><span class="hs-identifier">cuStreamDestroy'_</span><span> </span><span class="hs-identifier">a1'</span><span> </span><span class="hs-operator">&gt;&gt;=</span><span> </span><span class="hs-glyph">\</span><span class="hs-identifier">res</span><span> </span><span class="hs-glyph">-&gt;</span><span>
-</span><a name="line-134"></a><span>  </span><span class="hs-keyword">let</span><span> </span><span class="hs-special">{</span><span class="hs-identifier">res'</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">cToEnum</span><span> </span><span class="hs-identifier">res</span><span class="hs-special">}</span><span> </span><span class="hs-keyword">in</span><span>
-</span><a name="line-135"></a><span>  </span><span class="hs-identifier">return</span><span> </span><span class="hs-special">(</span><span class="hs-identifier">res'</span><span class="hs-special">)</span><span>
-</span><a name="line-136"></a><span>
-</span><a name="line-137"></a><span class="hs-pragma">{-# LINE 110 &quot;src/Foreign/CUDA/Driver/Stream.chs&quot; #-}</span><span>
-</span><a name="line-138"></a><span>
-</span><a name="line-139"></a><span>
-</span><a name="line-140"></a><span>
-</span><a name="line-141"></a><span class="hs-comment">-- |</span><span>
-</span><a name="line-142"></a><span class="hs-comment">-- Check if all operations in the stream have completed.</span><span>
-</span><a name="line-143"></a><span class="hs-comment">--</span><span>
-</span><a name="line-144"></a><span class="hs-comment">-- &lt;http://docs.nvidia.com/cuda/cuda-driver-api/group__CUDA__STREAM.html#group__CUDA__STREAM_1g1b0d24bbe97fa68e4bc511fb6adfeb0b&gt;</span><span>
-</span><a name="line-145"></a><span class="hs-comment">--</span><span>
-</span><a name="line-146"></a><span class="hs-pragma">{-# INLINEABLE finished #-}</span><span>
-</span><a name="line-147"></a><span class="hs-identifier">finished</span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-identifier">Stream</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier">IO</span><span> </span><span class="hs-identifier">Bool</span><span>
-</span><a name="line-148"></a><span class="hs-identifier">finished</span><span> </span><span class="hs-glyph">!</span><span class="hs-identifier">st</span><span> </span><span class="hs-glyph">=</span><span>
-</span><a name="line-149"></a><span>  </span><span class="hs-identifier">cuStreamQuery</span><span> </span><span class="hs-identifier">st</span><span> </span><span class="hs-operator">&gt;&gt;=</span><span> </span><span class="hs-glyph">\</span><span class="hs-identifier">rv</span><span> </span><span class="hs-glyph">-&gt;</span><span>
-</span><a name="line-150"></a><span>  </span><span class="hs-keyword">case</span><span> </span><span class="hs-identifier">rv</span><span> </span><span class="hs-keyword">of</span><span>
-</span><a name="line-151"></a><span>    </span><span class="hs-identifier">Success</span><span>  </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier">return</span><span> </span><span class="hs-identifier">True</span><span>
-</span><a name="line-152"></a><span>    </span><span class="hs-identifier">NotReady</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier">return</span><span> </span><span class="hs-identifier">False</span><span>
-</span><a name="line-153"></a><span>    </span><span class="hs-identifier">_</span><span>        </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier">throwIO</span><span> </span><span class="hs-special">(</span><span class="hs-identifier">ExitCode</span><span> </span><span class="hs-identifier">rv</span><span class="hs-special">)</span><span>
-</span><a name="line-154"></a><span>
-</span><a name="line-155"></a><span class="hs-pragma">{-# INLINE cuStreamQuery #-}</span><span>
-</span><a name="line-156"></a><span class="hs-identifier">cuStreamQuery</span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><span class="hs-identifier">Stream</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier">IO</span><span> </span><span class="hs-special">(</span><span class="hs-special">(</span><span class="hs-identifier">Status</span><span class="hs-special">)</span><span class="hs-special">)</span><span>
-</span><a name="line-157"></a><span class="hs-identifier">cuStreamQuery</span><span> </span><span class="hs-identifier">a1</span><span> </span><span class="hs-glyph">=</span><span>
-</span><a name="line-158"></a><span>  </span><span class="hs-keyword">let</span><span> </span><span class="hs-special">{</span><span class="hs-identifier">a1'</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">useStream</span><span> </span><span class="hs-identifier">a1</span><span class="hs-special">}</span><span> </span><span class="hs-keyword">in</span><span> </span><span>
-</span><a name="line-159"></a><span>  </span><a name="cuStreamGetPriority"><a href="Foreign.CUDA.Driver.Stream.html#cuStreamGetPriority"><span class="hs-identifier">cuStreamQuery'_</span></a></a><span> </span><span class="hs-identifier">a1'</span><span> </span><span class="hs-operator">&gt;&gt;=</span><span> </span><span class="hs-glyph">\</span><span class="hs-identifier">res</span><span> </span><span class="hs-glyph">-&gt;</span><span>
-</span><a name="line-160"></a><span>  </span><span class="hs-keyword">let</span><span> </span><span class="hs-special">{</span><span class="hs-identifier">res'</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">cToEnum</span><span> </span><span class="hs-identifier">res</span><span class="hs-special">}</span><span> </span><span class="hs-keyword">in</span><span>
-</span><a name="line-161"></a><span>  </span><span class="hs-identifier hs-var">return</span><span> </span><span class="hs-special">(</span><span class="hs-identifier">res'</span><span class="hs-special">)</span><span>
-</span><a name="line-162"></a><span>
-</span><a name="line-163"></a><span class="hs-pragma">{-# LINE 129 &quot;src/Foreign/CUDA/Driver/Stream.chs&quot; #-}</span><span>
-</span><a name="line-164"></a><span>
-</span><a name="line-165"></a><span>
-</span><a name="line-166"></a><span>
-</span><a name="line-167"></a><span class="hs-comment">-- |</span><span>
-</span><a name="line-168"></a><span class="hs-comment">-- Wait until the device has completed all operations in the Stream.</span><span>
-</span><a name="line-169"></a><span class="hs-comment">--</span><span>
-</span><a name="line-170"></a><span class="hs-comment">-- &lt;http://docs.nvidia.com/cuda/cuda-driver-api/group__CUDA__STREAM.html#group__CUDA__STREAM_1g15e49dd91ec15991eb7c0a741beb7dad&gt;</span><span>
-</span><a name="line-171"></a><span class="hs-comment">--</span><span>
-</span><a name="line-172"></a><span class="hs-pragma">{-# INLINEABLE block #-}</span><span>
-</span><a name="line-173"></a><span class="hs-identifier">block</span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-identifier">Stream</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier">IO</span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span>
-</span><a name="line-174"></a><span class="hs-identifier">block</span><span> </span><span class="hs-glyph">!</span><span class="hs-identifier">st</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">nothingIfOk</span><span> </span><span class="hs-operator">=&lt;&lt;</span><span> </span><span class="hs-identifier">cuStreamSynchronize</span><span> </span><span class="hs-identifier">st</span><span>
-</span><a name="line-175"></a><span>
-</span><a name="line-176"></a><span class="hs-pragma">{-# INLINE cuStreamSynchronize #-}</span><span>
-</span><a name="line-177"></a><span class="hs-identifier">cuStreamSynchronize</span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><span class="hs-identifier">Stream</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier">IO</span><span> </span><span class="hs-special">(</span><span class="hs-special">(</span><span class="hs-identifier">Status</span><span class="hs-special">)</span><span class="hs-special">)</span><span>
-</span><a name="line-178"></a><span class="hs-identifier">cuStreamSynchronize</span><span> </span><span class="hs-identifier">a1</span><span> </span><span class="hs-glyph">=</span><span>
-</span><a name="line-179"></a><span>  </span><span class="hs-keyword">let</span><span> </span><span class="hs-special">{</span><span class="hs-identifier">a1'</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">useStream</span><span> </span><span class="hs-identifier hs-type">a1</span><span class="hs-special">}</span><span> </span><span class="hs-keyword">in</span><span> </span><span>
-</span><a name="line-180"></a><span>  </span><span class="hs-identifier">cuStreamSynchronize'_</span><span> </span><span class="hs-identifier">a1'</span><span> </span><span class="hs-operator">&gt;&gt;=</span><span> </span><span class="hs-glyph">\</span><span class="hs-identifier">res</span><span> </span><span class="hs-glyph">-&gt;</span><span>
-</span><a name="line-181"></a><span>  </span><span class="hs-keyword">let</span><span> </span><span class="hs-special">{</span><span class="hs-identifier">res'</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">cToEnum</span><span> </span><span class="hs-identifier">res</span><span class="hs-special">}</span><span> </span><span class="hs-keyword">in</span><span>
-</span><a name="line-182"></a><span>  </span><span class="hs-identifier">return</span><span> </span><span class="hs-special">(</span><span class="hs-identifier">res'</span><span class="hs-special">)</span><span>
-</span><a name="line-183"></a><span>
-</span><a name="line-184"></a><span class="hs-pragma">{-# LINE 143 &quot;src/Foreign/CUDA/Driver/Stream.chs&quot; #-}</span><span>
-</span><a name="line-185"></a><span>
-</span><a name="line-186"></a><span>
-</span><a name="line-187"></a><span>
-</span><a name="line-188"></a><span class="hs-comment">-- |</span><span>
-</span><a name="line-189"></a><span class="hs-comment">-- Query the priority of a stream.</span><span>
-</span><a name="line-190"></a><span class="hs-comment">--</span><span>
-</span><a name="line-191"></a><span class="hs-comment">-- Requires CUDA-5.5.</span><span>
-</span><a name="line-192"></a><span class="hs-comment">--</span><span>
-</span><a name="line-193"></a><span class="hs-comment">-- &lt;http://docs.nvidia.com/cuda/cuda-driver-api/group__CUDA__STREAM.html#group__CUDA__STREAM_1g5bd5cb26915a2ecf1921807339488484&gt;</span><span>
-</span><a name="line-194"></a><span class="hs-comment">--</span><span>
-</span><a name="line-195"></a><span class="hs-pragma">{-# INLINEABLE getPriority #-}</span><span>
-</span><a name="line-196"></a><span class="hs-identifier">getPriority</span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-identifier">Stream</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier">IO</span><span> </span><span class="hs-identifier">StreamPriority</span><span>
-</span><a name="line-197"></a><span class="hs-identifier">getPriority</span><span> </span><span class="hs-glyph">!</span><span class="hs-identifier">st</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">resultIfOk</span><span> </span><span class="hs-operator">=&lt;&lt;</span><span> </span><span class="hs-identifier">cuStreamGetPriority</span><span> </span><span class="hs-identifier">st</span><span>
-</span><a name="line-198"></a><span>
-</span><a name="line-199"></a><span class="hs-pragma">{-# INLINE cuStreamGetPriority #-}</span><span>
-</span><a name="line-200"></a><span class="hs-identifier">cuStreamGetPriority</span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><span class="hs-identifier">Stream</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier">IO</span><span> </span><span class="hs-special">(</span><span class="hs-special">(</span><span class="hs-identifier">Status</span><span class="hs-special">)</span><span class="hs-special">,</span><span> </span><span class="hs-special">(</span><span class="hs-identifier">StreamPriority</span><span class="hs-special">)</span><span class="hs-special">)</span><span>
-</span><a name="line-201"></a><span class="hs-identifier">cuStreamGetPriority</span><span> </span><span class="hs-identifier">a1</span><span> </span><span class="hs-glyph">=</span><span>
-</span><a name="line-202"></a><span>  </span><span class="hs-keyword">let</span><span> </span><span class="hs-special">{</span><span class="hs-identifier">a1'</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">useStream</span><span> </span><span class="hs-identifier">a1</span><span class="hs-special">}</span><span> </span><span class="hs-keyword">in</span><span> </span><span>
-</span><a name="line-203"></a><span>  </span><span class="hs-identifier">alloca</span><span> </span><span class="hs-operator">$</span><span> </span><span class="hs-glyph">\</span><span class="hs-identifier">a2'</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span>
-</span><a name="line-204"></a><span>  </span><span class="hs-identifier">cuStreamGetPriority'_</span><span> </span><span class="hs-identifier">a1'</span><span> </span><span class="hs-identifier">a2'</span><span> </span><span class="hs-operator">&gt;&gt;=</span><span> </span><span class="hs-glyph">\</span><span class="hs-identifier">res</span><span> </span><span class="hs-glyph">-&gt;</span><span>
-</span><a name="line-205"></a><span>  </span><span class="hs-keyword">let</span><span> </span><span class="hs-special">{</span><span class="hs-identifier">res'</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">cToEnum</span><span> </span><span class="hs-identifier">res</span><span class="hs-special">}</span><span> </span><span class="hs-keyword">in</span><span>
-</span><a name="line-206"></a><span>  </span><span class="hs-identifier">peekIntConv</span><span>  </span><span class="hs-identifier">a2'</span><span class="hs-operator">&gt;&gt;=</span><span> </span><span class="hs-glyph">\</span><span class="hs-identifier">a2''</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span>
-</span><a name="line-207"></a><span>  </span><span class="hs-identifier">return</span><span> </span><span class="hs-special">(</span><span class="hs-identifier">res'</span><span class="hs-special">,</span><span> </span><span class="hs-identifier">a2''</span><span class="hs-special">)</span><span>
-</span><a name="line-208"></a><span>
-</span><a name="line-209"></a><span class="hs-pragma">{-# LINE 166 &quot;src/Foreign/CUDA/Driver/Stream.chs&quot; #-}</span><span>
-</span><a name="line-210"></a><span>
-</span><a name="line-211"></a><span>
-</span><a name="line-212"></a><span>
-</span><a name="line-213"></a><span class="hs-identifier">foreign</span><span> </span><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">ccall</span><span> </span><span class="hs-identifier">unsafe</span><span> </span><span class="hs-string">&quot;Foreign/CUDA/Driver/Stream.chs.h cuStreamCreate&quot;</span><span>
-</span><a name="line-214"></a><span>  </span><span class="hs-identifier">cuStreamCreate'_</span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><span class="hs-special">(</span><span class="hs-identifier">C2HSImp</span><span class="hs-operator">.</span><span class="hs-identifier">Ptr</span><span> </span><span class="hs-special">(</span><span class="hs-identifier">C2HSImp</span><span class="hs-operator">.</span><span class="hs-identifier">Ptr</span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">(</span><span class="hs-identifier">C2HSImp</span><span class="hs-operator">.</span><span class="hs-identifier">CUInt</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">(</span><span class="hs-identifier">IO</span><span> </span><span class="hs-identifier">C2HSImp</span><span class="hs-operator">.</span><span class="hs-identifier">CInt</span><span class="hs-special">)</span><span class="hs-special">)</span><span class="hs-special">)</span><span>
-</span><a name="line-215"></a><span>
-</span><a name="line-216"></a><span class="hs-identifier">foreign</span><span> </span><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">ccall</span><span> </span><span class="hs-identifier">unsafe</span><span> </span><span class="hs-string">&quot;Foreign/CUDA/Driver/Stream.chs.h cuStreamCreateWithPriority&quot;</span><span>
-</span><a name="line-217"></a><span>  </span><span class="hs-identifier">cuStreamCreateWithPriority'_</span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><span class="hs-special">(</span><span class="hs-identifier">C2HSImp</span><span class="hs-operator">.</span><span class="hs-identifier">Ptr</span><span> </span><span class="hs-special">(</span><span class="hs-identifier">C2HSImp</span><span class="hs-operator">.</span><span class="hs-identifier">Ptr</span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">(</span><span class="hs-identifier">C2HSImp</span><span class="hs-operator">.</span><span class="hs-identifier">CUInt</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">(</span><span class="hs-identifier">C2HSImp</span><span class="hs-operator">.</span><span class="hs-identifier">CInt</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">(</span><span class="hs-identifier">IO</span><span> </span><span class="hs-identifier">C2HSImp</span><span class="hs-operator">.</span><span class="hs-identifier">CInt</span><span class="hs-special">)</span><span class="hs-special">)</span><span class="hs-special">)</span><span class="hs-special">)</span><span>
-</span><a name="line-218"></a><span>
-</span><a name="line-219"></a><span class="hs-identifier">foreign</span><span> </span><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">ccall</span><span> </span><span class="hs-identifier">unsafe</span><span> </span><span class="hs-string">&quot;Foreign/CUDA/Driver/Stream.chs.h cuStreamDestroy&quot;</span><span>
-</span><a name="line-220"></a><span>  </span><span class="hs-identifier">cuStreamDestroy'_</span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><span class="hs-special">(</span><span class="hs-identifier">C2HSImp</span><span class="hs-operator">.</span><span class="hs-identifier">Ptr</span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">(</span><span class="hs-identifier">IO</span><span> </span><span class="hs-identifier">C2HSImp</span><span class="hs-operator">.</span><span class="hs-identifier">CInt</span><span class="hs-special">)</span><span class="hs-special">)</span><span>
-</span><a name="line-221"></a><span>
-</span><a name="line-222"></a><span class="hs-identifier">foreign</span><span> </span><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">ccall</span><span> </span><span class="hs-identifier">unsafe</span><span> </span><span class="hs-string">&quot;Foreign/CUDA/Driver/Stream.chs.h cuStreamQuery&quot;</span><span>
-</span><a name="line-223"></a><span>  </span><span class="hs-identifier">cuStreamQuery'_</span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><span class="hs-special">(</span><span class="hs-identifier">C2HSImp</span><span class="hs-operator">.</span><span class="hs-identifier">Ptr</span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">(</span><span class="hs-identifier">IO</span><span> </span><span class="hs-identifier">C2HSImp</span><span class="hs-operator">.</span><span class="hs-identifier">CInt</span><span class="hs-special">)</span><span class="hs-special">)</span><span>
-</span><a name="line-224"></a><span>
-</span><a name="line-225"></a><span class="hs-identifier">foreign</span><span> </span><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">ccall</span><span> </span><span class="hs-identifier">safe</span><span> </span><span class="hs-string">&quot;Foreign/CUDA/Driver/Stream.chs.h cuStreamSynchronize&quot;</span><span>
-</span><a name="line-226"></a><span>  </span><span class="hs-identifier">cuStreamSynchronize'_</span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><span class="hs-special">(</span><span class="hs-identifier">C2HSImp</span><span class="hs-operator">.</span><span class="hs-identifier">Ptr</span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">(</span><span class="hs-identifier">IO</span><span> </span><span class="hs-identifier">C2HSImp</span><span class="hs-operator">.</span><span class="hs-identifier">CInt</span><span class="hs-special">)</span><span class="hs-special">)</span><span>
-</span><a name="line-227"></a><span>
-</span><a name="line-228"></a><span class="hs-identifier">foreign</span><span> </span><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">ccall</span><span> </span><span class="hs-identifier">unsafe</span><span> </span><span class="hs-string">&quot;Foreign/CUDA/Driver/Stream.chs.h cuStreamGetPriority&quot;</span><span>
-</span><a name="line-229"></a><span>  </span><span class="hs-identifier">cuStreamGetPriority'_</span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><span class="hs-special">(</span><span class="hs-identifier">C2HSImp</span><span class="hs-operator">.</span><span class="hs-identifier">Ptr</span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">(</span><span class="hs-special">(</span><span class="hs-identifier">C2HSImp</span><span class="hs-operator">.</span><span class="hs-identifier">Ptr</span><span> </span><span class="hs-identifier">C2HSImp</span><span class="hs-operator">.</span><span class="hs-identifier">CInt</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">(</span><span class="hs-identifier">IO</span><span> </span><span class="hs-identifier">C2HSImp</span><span class="hs-operator">.</span><span class="hs-identifier">CInt</span><span class="hs-special">)</span><span class="hs-special">)</span><span class="hs-special">)</span><span>
-</span><a name="line-230"></a></pre></body></html>
+</span><a name="line-98"></a><span class="hs-identifier">createWithPriority</span><span> </span><span class="hs-identifier">_</span><span> </span><a href="#local-1627796027"><span class="hs-identifier hs-var">_</span></a><span>              </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">requireSDK</span><span> </span><span class="hs-char">'createWithPriority 5.5
+
+
+-- |
+-- Destroy a stream. If the device is still doing work in the stream when
+-- 'destroy' is called, the function returns immediately and the resources
+-- associated with the stream will be released automatically once the
+-- device has completed all work.
+--
+-- &lt;http://docs.nvidia.com/cuda/cuda-driver-api/group__CUDA__STREAM.html#group__CUDA__STREAM_1g244c8833de4596bcd31a06cdf21ee758&gt;
+--
+{-# INLINEABLE destroy #-}
+destroy :: Stream -&gt; IO ()
+destroy !st = nothingIfOk =&lt;&lt; cuStreamDestroy st
+
+{-# INLINE cuStreamDestroy #-}
+cuStreamDestroy :: (Stream) -&gt; IO ((Status))
+cuStreamDestroy a1 =
+  let {a1' = useStream a1} in 
+  cuStreamDestroy'_ a1' &gt;&gt;= \res -&gt;
+  let {res' = cToEnum res} in
+  return (res')
+
+{-# LINE 110 &quot;src/Foreign/CUDA/Driver/Stream.chs&quot; #-}
+
+
+
+-- |
+-- Check if all operations in the stream have completed.
+--
+-- &lt;http://docs.nvidia.com/cuda/cuda-driver-api/group__CUDA__STREAM.html#group__CUDA__STREAM_1g1b0d24bbe97fa68e4bc511fb6adfeb0b&gt;
+--
+{-# INLINEABLE finished #-}
+finished :: Stream -&gt; IO Bool
+finished !st =
+  cuStreamQuery st &gt;&gt;= \rv -&gt;
+  case rv of
+    Success  -&gt; return True
+    NotReady -&gt; return False
+    _        -&gt; throwIO (ExitCode rv)
+
+{-# INLINE cuStreamQuery #-}
+cuStreamQuery :: (Stream) -&gt; IO ((Status))
+cuStreamQuery a1 =
+  let {a1' = useStream a1} in 
+  cuStreamQuery'_ a1' &gt;&gt;= \res -&gt;
+  let {res' = cToEnum res} in
+  return (res')
+
+{-# LINE 129 &quot;src/Foreign/CUDA/Driver/Stream.chs&quot; #-}
+
+
+
+-- |
+-- Wait until the device has completed all operations in the Stream.
+--
+-- &lt;http://docs.nvidia.com/cuda/cuda-driver-api/group__CUDA__STREAM.html#group__CUDA__STREAM_1g15e49dd91ec15991eb7c0a741beb7dad&gt;
+--
+{-# INLINEABLE block #-}
+block :: Stream -&gt; IO ()
+block !st = nothingIfOk =&lt;&lt; cuStreamSynchronize st
+
+{-# INLINE cuStreamSynchronize #-}
+cuStreamSynchronize :: (Stream) -&gt; IO ((Status))
+cuStreamSynchronize a1 =
+  let {a1' = useStream a1} in 
+  cuStreamSynchronize'_ a1' &gt;&gt;= \res -&gt;
+  let {res' = cToEnum res} in
+  return (res')
+
+{-# LINE 143 &quot;src/Foreign/CUDA/Driver/Stream.chs&quot; #-}
+
+
+
+-- |
+-- Query the priority of a stream.
+--
+-- Requires CUDA-5.5.
+--
+-- &lt;http://docs.nvidia.com/cuda/cuda-driver-api/group__CUDA__STREAM.html#group__CUDA__STREAM_1g5bd5cb26915a2ecf1921807339488484&gt;
+--
+{-# INLINEABLE getPriority #-}
+getPriority :: Stream -&gt; IO StreamPriority
+getPriority _   = requireSDK 'getPriority 5.5
+
+
+foreign import ccall unsafe &quot;Foreign/CUDA/Driver/Stream.chs.h cuStreamCreate&quot;
+  cuStreamCreate'_ :: ((C2HSImp.Ptr (C2HSImp.Ptr ())) -&gt; (C2HSImp.CUInt -&gt; (IO C2HSImp.CInt)))
+
+foreign import ccall unsafe &quot;Foreign/CUDA/Driver/Stream.chs.h cuStreamDestroy&quot;
+  cuStreamDestroy'_ :: ((C2HSImp.Ptr ()) -&gt; (IO C2HSImp.CInt))
+
+foreign import ccall unsafe &quot;Foreign/CUDA/Driver/Stream.chs.h cuStreamQuery&quot;
+  cuStreamQuery'_ :: ((C2HSImp.Ptr ()) -&gt; (IO C2HSImp.CInt))
+
+foreign import ccall safe &quot;Foreign/CUDA/Driver/Stream.chs.h cuStreamSynchronize&quot;
+  cuStreamSynchronize'_ :: ((C2HSImp.Ptr ()) -&gt; (IO C2HSImp.CInt))
+</span></pre></body></html>
