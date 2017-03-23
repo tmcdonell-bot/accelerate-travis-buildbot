@@ -70,7 +70,7 @@ packages:
 
 - location:
     git:    https://github.com/tmcdonell/cuda.git
-    commit: 5c761cb3128ff58794ea2a7028d7e98b22b8fe18
+    commit: 382b445505104ee3243284f69ff0e1bc6b782921
 
 - location:
     git:    https://github.com/tmcdonell/cufft.git
