@@ -406,10 +406,16 @@ DeviceProperties :: !String -> !Compute -> !Int64 -> !Int64 -> !Int64 -> !Int ->
 -- | Device shares a unified address space with the host
 [unifiedAddressing] :: DeviceProperties -> !Bool
 data DeviceResources
-DeviceResources :: !Int -> !Int -> !Int -> !Int -> !Int -> !Int -> !Int -> !Int -> !Int -> !Int -> !Int -> !Allocation -> DeviceResources
+DeviceResources :: !Int -> !Int -> !Int -> !Int -> !Int -> !Int -> !Int -> !Int -> !Int -> !Int -> !Allocation -> !Int -> !Int -> !Int -> !Int -> DeviceResources
 
 -- | Warp size
 [threadsPerWarp] :: DeviceResources -> !Int
+
+-- | Number of SIMD arithmetic units per multiprocessor
+[coresPerMP] :: DeviceResources -> !Int
+
+-- | Maximum number of in-flight warps per multiprocessor
+[warpsPerMP] :: DeviceResources -> !Int
 
 -- | Maximum number of in-flight threads on a multiprocessor
 [threadsPerMP] :: DeviceResources -> !Int
@@ -417,32 +423,36 @@ DeviceResources :: !Int -> !Int -> !Int -> !Int -> !Int -> !Int -> !Int -> !Int 
 -- | Maximum number of thread blocks resident on a multiprocessor
 [threadBlocksPerMP] :: DeviceResources -> !Int
 
--- | Maximum number of in-flight warps per multiprocessor
-[warpsPerMP] :: DeviceResources -> !Int
-
--- | Number of SIMD arithmetic units per multiprocessor
-[coresPerMP] :: DeviceResources -> !Int
-
 -- | Total amount of shared memory per multiprocessor (bytes)
 [sharedMemPerMP] :: DeviceResources -> !Int
 
--- | Shared memory allocation unit size (bytes)
-[sharedMemAllocUnit] :: DeviceResources -> !Int
+-- | Maximum amount of shared memory per thread block (bytes)
+[maxSharedMemPerBlock] :: DeviceResources -> !Int
 
 -- | Total number of registers in a multiprocessor
-[regFileSize] :: DeviceResources -> !Int
+[regFileSizePerMP] :: DeviceResources -> !Int
+
+-- | Maximum number of registers per block
+[maxRegPerBlock] :: DeviceResources -> !Int
 
 -- | Register allocation unit size
 [regAllocUnit] :: DeviceResources -> !Int
 
--- | Register allocation granularity for warps
-[regAllocWarp] :: DeviceResources -> !Int
+-- | How multiprocessor resources are divided (register allocation
+--   granularity)
+[regAllocationStyle] :: DeviceResources -> !Allocation
 
 -- | Maximum number of registers per thread
-[regPerThread] :: DeviceResources -> !Int
+[maxRegPerThread] :: DeviceResources -> !Int
 
--- | How multiprocessor resources are divided
-[allocation] :: DeviceResources -> !Allocation
+-- | Shared memory allocation unit size (bytes)
+[sharedMemAllocUnit] :: DeviceResources -> !Int
+
+-- | Warp allocation granularity
+[warpAllocUnit] :: DeviceResources -> !Int
+
+-- | Warp register allocation granularity
+[warpRegAllocUnit] :: DeviceResources -> !Int
 data Allocation
 Warp :: Allocation
 Block :: Allocation
