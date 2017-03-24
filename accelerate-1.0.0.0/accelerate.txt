@@ -54,12 +54,8 @@
 --   and other array formats (including vector and repa).</li>
 --   <li><tt>accelerate-fft</tt>: Discrete Fourier transforms, with FFI
 --   bindings to optimised implementations.</li>
---   </ul>
---   
---   Additionally, we maintain the following libraries which can be used
---   with Accelerate:
---   
---   <ul>
+--   <li><tt>accelerate-bignum</tt>: Fixed-width large integer
+--   arithmetic.</li>
 --   <li><tt>colour-accelerate</tt>: Colour representations in Accelerate
 --   (RGB, sRGB, HSV, and HSL).</li>
 --   <li><tt>gloss-accelerate</tt>: Generate gloss pictures from
@@ -437,6 +433,8 @@ run1 :: (Arrays a, Arrays b) => (Acc a -> Acc b) -> a -> b
 --   and other formats (e.g. Repa, Vector).</li>
 --   <li><a>accelerate-fft</a>: Fast Fourier transform, with FFI bindings
 --   to optimised implementations.</li>
+--   <li><a>accelerate-bignum</a>: Fixed-width large integer
+--   arithmetic.</li>
 --   <li><a>colour-accelerate</a>: Colour representations in Accelerate
 --   (RGB, sRGB, HSV, and HSL).</li>
 --   <li><a>gloss-accelerate</a>: Generate <a>gloss</a> pictures from
