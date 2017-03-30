@@ -8,6 +8,7 @@
 @package gloss-raster-accelerate
 @version 0.2.0.0
 
+
 module Graphics.Gloss.Accelerate.Render
 
 -- | The type for executing Accelerate computations. This matches the
