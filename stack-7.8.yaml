@@ -46,7 +46,7 @@ packages:
 
 - location:
     git:    https://github.com/tmcdonell/lens-accelerate.git
-    commit: d7e3e8a7f433e1baa2a044c6acbc1df30d3846a6
+    commit: b19b89518f4e58f75a207f06112c75943ab1b998
 
 - location:
     git:    https://github.com/tmcdonell/linear-accelerate.git
