@@ -4,6 +4,9 @@
 
 -- | Accelerate backend for NVIDIA GPUs
 --   
+--   <b>This backend has been deprecated in favour of
+--   <a>accelerate-llvm-ptx</a>.</b>
+--   
 --   This library implements a backend for the <i>Accelerate</i> language
 --   instrumented for parallel execution on CUDA-capable NVIDIA GPUs. For
 --   further information, refer to the main <i>Accelerate</i> package:
