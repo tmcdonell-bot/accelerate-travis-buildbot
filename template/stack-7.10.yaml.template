@@ -77,6 +77,7 @@ packages:
     commit: {SHA_cufft}
 
 extra-deps:
+- 'cabal-doctest-1'
 - 'chaselev-deque-0.5.0.5'
 - 'gloss-1.10.1.1'
 - 'gloss-rendering-1.10.1.1'

@@ -77,6 +77,7 @@ packages:
     commit: {SHA_cufft}
 
 extra-deps:
+- 'cabal-doctest-1'
 - 'chaselev-deque-0.5.0.5'
 - 'libffi-0.1'
 - 'llvm-hs-4.0.0.0'
