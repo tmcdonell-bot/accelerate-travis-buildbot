@@ -17,8 +17,8 @@
 --   
 --   <ul>
 --   <li><a>LLVM</a></li>
---   <li><a>libFFI</a> (if using <a>accelerate-llvm-native</a>)</li>
---   <li><a>CUDA</a> (if using <a>accelerate-llvm-ptx</a>)</li>
+--   <li><a>libFFI</a> (if using <tt>accelerate-llvm-native</tt>)</li>
+--   <li><a>CUDA</a> (if using <tt>accelerate-llvm-ptx</tt>)</li>
 --   </ul>
 --   
 --   <ul>
