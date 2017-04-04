@@ -5,10 +5,10 @@ window.onload = function () {pageLoad();};
 generates LLVM-IR targeting multicore CPUs. For further information, refer
 to the main <a href="http://hackage.haskell.org/package/accelerate">accelerate</a>
 package.</p><dl><dt><em>Dependencies</em></dt><dd></dd></dl><p>Haskell dependencies are available from Hackage. The following external
-libraries are alse required:</p><ul><li><a href="http://llvm.org">LLVM</a></li><li><a href="http://sourceware.org/libffi/">libFFI</a></li></ul><dl><dt><em>Installing LLVM</em></dt><dd></dd></dl><p><strong>Homebrew</strong></p><p>Example using Homebrew on macOS:</p><pre>brew install llvm-hs/homebrew-llvm/llvm-4.0</pre><p><strong>Debian/Ubuntu</strong></p><p>For Debian/Ubuntu based Linux distributions, the LLVM.org website provides
+libraries are alse required:</p><ul><li><a href="http://llvm.org">LLVM</a></li><li><a href="http://sourceware.org/libffi/">libFFI</a></li></ul><dl><dt><em>Installing LLVM</em></dt><dd></dd></dl><p><em>Homebrew</em></p><p>Example using Homebrew on macOS:</p><pre>brew install llvm-hs/homebrew-llvm/llvm-4.0</pre><p><em>Debian &amp; Ubuntu</em></p><p>For Debian/Ubuntu based Linux distributions, the LLVM.org website provides
 binary distribution packages. Check <a href="http://apt.llvm.org">apt.llvm.org</a> for
 instructions for adding the correct package database for your OS version,
-and then:</p><pre>apt-get install llvm-4.0-dev</pre><p><strong>Building from source</strong></p><p>If your OS does not have an appropriate LLVM distribution available, you can
+and then:</p><pre>apt-get install llvm-4.0-dev</pre><p><em>Building from source</em></p><p>If your OS does not have an appropriate LLVM distribution available, you can
 also build from source. Detailed build instructions are available on
 <a href="http://releases.llvm.org/4.0.0/docs/CMake.html">LLVM.org</a>. Make sure to
 include the cmake build options

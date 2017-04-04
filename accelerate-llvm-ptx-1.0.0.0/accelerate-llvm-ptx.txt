@@ -24,7 +24,7 @@
 --   <li><i><i>Installing LLVM</i></i></li>
 --   </ul>
 --   
---   <b>Homebrew</b>
+--   <i>Homebrew</i>
 --   
 --   Example using Homebrew on macOS:
 --   
@@ -32,7 +32,7 @@
 --   brew install llvm-hs/homebrew-llvm/llvm-4.0
 --   </pre>
 --   
---   <b>Debian/Ubuntu</b>
+--   <i>Debian &amp; Ubuntu</i>
 --   
 --   For Debian/Ubuntu based Linux distributions, the LLVM.org website
 --   provides binary distribution packages. Check <a>apt.llvm.org</a> for
@@ -43,7 +43,7 @@
 --   apt-get install llvm-4.0-dev
 --   </pre>
 --   
---   <b>Building from source</b>
+--   <i>Building from source</i>
 --   
 --   If your OS does not have an appropriate LLVM distribution available,
 --   you can also build from source. Detailed build instructions are
