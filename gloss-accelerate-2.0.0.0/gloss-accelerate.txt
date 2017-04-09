@@ -6,7 +6,7 @@
 --   
 --   Extras to interface Gloss and Accelerate
 @package gloss-accelerate
-@version 0.2.0.0
+@version 2.0.0.0
 
 
 module Graphics.Gloss.Accelerate.Data.Point
