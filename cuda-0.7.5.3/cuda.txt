@@ -3214,6 +3214,16 @@ module Foreign.CUDA.Driver.Module
 module Foreign.CUDA.Driver
 
 
+module Foreign.CUDA.Path
+
+-- | The base path to the CUDA toolkit installation that this package was
+--   compiled against.
+cudaInstallPath :: FilePath
+cudaBinPath :: FilePath
+cudaLibraryPath :: FilePath
+cudaIncludePath :: FilePath
+
+
 -- | Top level bindings to the C-for-CUDA runtime API
 module Foreign.CUDA.Runtime
 
