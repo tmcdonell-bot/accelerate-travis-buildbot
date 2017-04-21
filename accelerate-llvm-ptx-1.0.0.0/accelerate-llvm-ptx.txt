@@ -319,23 +319,37 @@ run :: Arrays a => Acc a -> a
 --   to separate devices of differing compute capabilities.
 runWith :: Arrays a => PTX -> Acc a -> a
 
--- | Prepare and execute an embedded array program of one argument.
+-- | This is <a>runN</a>, specialised to an array program of one argument.
+run1 :: (Arrays a, Arrays b) => (Acc a -> Acc b) -> a -> b
+
+-- | As <a>run1</a>, but execute using the specified target rather than
+--   using the default, automatically selected device.
+run1With :: (Arrays a, Arrays b) => PTX -> (Acc a -> Acc b) -> a -> b
+
+-- | Prepare and execute an embedded array program.
 --   
 --   This function can be used to improve performance in cases where the
 --   array program is constant between invocations, because it enables us
 --   to bypass front-end conversion stages and move directly to the
 --   execution phase. If you have a computation applied repeatedly to
 --   different input data, use this, specifying any changing aspects of the
---   computation via the input parameter. If the function is only evaluated
---   once, this is equivalent to <a>run</a>.
+--   computation via the input parameters. If the function is only
+--   evaluated once, this is equivalent to <a>run</a>.
 --   
---   To use <a>run1</a> effectively you must express your program as a
---   function of one argument. If your program takes more than one
---   argument, you can use <a>lift</a> and <a>unlift</a> to tuple up the
---   arguments.
+--   In order to use <a>runN</a> you must express your Accelerate program
+--   as a function of array terms:
 --   
---   At an example, once your program is expressed as a function of one
---   argument, instead of the usual:
+--   <pre>
+--   f :: (Arrays a, Arrays b, ... Arrays c) =&gt; Acc a -&gt; Acc b -&gt; ... -&gt; Acc c
+--   </pre>
+--   
+--   This function then returns the compiled version of <tt>f</tt>:
+--   
+--   <pre>
+--   runN f :: (Arrays a, Arrays b, ... Arrays c) =&gt; a -&gt; b -&gt; ... -&gt; c
+--   </pre>
+--   
+--   At an example, rather than:
 --   
 --   <pre>
 --   step :: Acc (Vector a) -&gt; Acc (Vector b)
@@ -348,19 +362,21 @@ runWith :: Arrays a => PTX -> Acc a -> a
 --   Instead write:
 --   
 --   <pre>
---   simulate xs = run1 step xs
+--   simulate = runN step
 --   </pre>
 --   
 --   You can use the debugging options to check whether this is working
---   successfully by, for example, observing no output from the
---   <tt>-ddump-cc</tt> flag at the second and subsequent invocations.
+--   successfully. For example, running with the <tt>-ddump-phases</tt>
+--   flag should show that the compilation steps only happen once, not on
+--   the second and subsequent invocations of <tt>simulate</tt>. Note that
+--   this typically relies on GHC knowing that it can lift out the function
+--   returned by <a>runN</a> and reuse it.
 --   
 --   See the programs in the 'accelerate-examples' package for examples.
-run1 :: (Arrays a, Arrays b) => (Acc a -> Acc b) -> a -> b
+runN :: Afunction f => f -> AfunctionR f
 
--- | As <a>run1</a>, but execute using the specified target rather than
---   using the default, automatically selected device.
-run1With :: (Arrays a, Arrays b) => PTX -> (Acc a -> Acc b) -> a -> b
+-- | As <a>runN</a>, but execute using the specified target device.
+runNWith :: Afunction f => PTX -> f -> AfunctionR f
 
 -- | Stream a lazily read list of input arrays through the given program,
 --   collecting results as we go.
@@ -402,6 +418,12 @@ run1Async :: (Arrays a, Arrays b) => (Acc a -> Acc b) -> a -> IO (Async b)
 -- | As <a>run1With</a>, but execute asynchronously.
 run1AsyncWith :: (Arrays a, Arrays b) => PTX -> (Acc a -> Acc b) -> a -> IO (Async b)
 
+-- | As <a>runN</a>, but execute asynchronously.
+runNAsync :: (Afunction f, RunAsync r, AfunctionR f ~ RunAsyncR r) => f -> r
+
+-- | As <a>runNWith</a>, but execute asynchronously.
+runNAsyncWith :: (Afunction f, RunAsync r, AfunctionR f ~ RunAsyncR r) => PTX -> f -> r
+
 -- | The PTX execution target for NVIDIA GPUs.
 --   
 --   The execution target carries state specific for the current execution
@@ -431,3 +453,5 @@ registerPinnedAllocator :: IO ()
 -- | As with <a>registerPinnedAllocator</a>, but configure the given
 --   execution context.
 registerPinnedAllocatorWith :: PTX -> IO ()
+instance Data.Array.Accelerate.LLVM.PTX.RunAsync b => Data.Array.Accelerate.LLVM.PTX.RunAsync (a -> b)
+instance Data.Array.Accelerate.LLVM.PTX.RunAsync (GHC.Types.IO (Data.Array.Accelerate.Async.Async b))
