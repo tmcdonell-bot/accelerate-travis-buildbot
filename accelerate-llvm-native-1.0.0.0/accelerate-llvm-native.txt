@@ -106,6 +106,9 @@ instance Data.Array.Accelerate.Array.Sugar.Foreign Data.Array.Accelerate.LLVM.Na
 --   code, which is just-in-time executed in parallel over the available
 --   CPUs. Functions are automatically parallel, provided you specify '+RTS
 --   -Nwhatever' on the command line when running the program.
+--   
+--   Programs must be compiled with '-threaded', otherwise you will get a
+--   "Blocked indefinitely on MVar" error.
 module Data.Array.Accelerate.LLVM.Native
 
 -- | Accelerate is an <i>embedded language</i> that distinguishes between
