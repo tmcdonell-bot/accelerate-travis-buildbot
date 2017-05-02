@@ -15,22 +15,22 @@ module Data.Array.Accelerate.Linear.Epsilon
 -- | Provides a fairly subjective test to see if a quantity is near zero.
 --   
 --   <pre>
---   &gt;&gt;&gt; nearZero (1e-11 :: Double)
+--   &gt;&gt;&gt; nearZero (1e-11 :: Exp Double)
 --   False
 --   </pre>
 --   
 --   <pre>
---   &gt;&gt;&gt; nearZero (1e-17 :: Double)
+--   &gt;&gt;&gt; nearZero (1e-17 :: Exp Double)
 --   True
 --   </pre>
 --   
 --   <pre>
---   &gt;&gt;&gt; nearZero (1e-5 :: Float)
+--   &gt;&gt;&gt; nearZero (1e-5 :: Exp Float)
 --   False
 --   </pre>
 --   
 --   <pre>
---   &gt;&gt;&gt; nearZero (1e-7 :: Float)
+--   &gt;&gt;&gt; nearZero (1e-7 :: Exp Float)
 --   True
 --   </pre>
 class Num a => Epsilon a
@@ -78,16 +78,16 @@ zero :: (Additive f, Elt (f a), Num a) => Exp (f a)
 -- | Compute the sum of two vectors
 --   
 --   <pre>
---   &gt;&gt;&gt; V2 1 2 ^+^ V2 3 4
---   V2 4 6
+--   &gt;&gt;&gt; lift (V2 1 2 :: V2 Int) ^+^ lift (V2 3 4 :: V2 Int)
+--   (4,6)
 --   </pre>
 (^+^) :: forall a. (Additive f, Num a, Box f a) => Exp (f a) -> Exp (f a) -> Exp (f a)
 
 -- | Compute the difference between two vectors
 --   
 --   <pre>
---   &gt;&gt;&gt; V2 4 5 - V2 3 1
---   V2 1 4
+--   &gt;&gt;&gt; lift (V2 4 5 :: V2 Int) ^-^ lift (V2 3 1 :: V2 Int)
+--   (1,4)
 --   </pre>
 (^-^) :: forall a. (Additive f, Num a, Box f a) => Exp (f a) -> Exp (f a) -> Exp (f a)
 
@@ -103,16 +103,16 @@ E :: (forall a. (Elt a, Box t a) => Lens' (Exp (t a)) (Exp a)) -> E t
 -- | Compute the negation of a vector
 --   
 --   <pre>
---   &gt;&gt;&gt; negated (V2 2 4)
---   V2 (-2) (-4)
+--   &gt;&gt;&gt; negated (lift (V2 2 4 :: V2 Int))
+--   (-2,-4)
 --   </pre>
 negated :: forall f a. (Functor f, Num a, Box f a) => Exp (f a) -> Exp (f a)
 
 -- | Compute the left scalar product
 --   
 --   <pre>
---   &gt;&gt;&gt; 2 *^ V2 3 4
---   V2 6 8
+--   &gt;&gt;&gt; 2 *^ lift (V2 3 4 :: V2 Int)
+--   (6,8)
 --   </pre>
 (*^) :: forall f a. (Functor f, Num a, Box f a) => Exp a -> Exp (f a) -> Exp (f a)
 infixl 7 *^
@@ -120,23 +120,23 @@ infixl 7 *^
 -- | Compute the right scalar product
 --   
 --   <pre>
---   &gt;&gt;&gt; V2 3 4 ^* 2
---   V2 6 8
+--   &gt;&gt;&gt; lift (V2 3 4 :: V2 Int) ^* 2
+--   (6,8)
 --   </pre>
 (^*) :: forall f a. (Functor f, Num a, Box f a) => Exp (f a) -> Exp a -> Exp (f a)
 infixl 7 ^*
 
 -- | Compute division by a scalar on the right
 --   
---   V2 4 6 ^/ 2 V2 2 3
+--   lift (V2 4 6 :: V2 Double) ^/ 2 V2 2 3
 (^/) :: forall f a. (Functor f, Fractional a, Box f a) => Exp (f a) -> Exp a -> Exp (f a)
 infixl 7 ^/
 
 -- | Compute division of a scalar on the left
 --   
 --   <pre>
---   &gt;&gt;&gt; 4 /^ V2 2 4
---   V2 2 1
+--   &gt;&gt;&gt; 4 /^ lift (V2 2 4 :: V2 Double)
+--   (2.0,1.0)
 --   </pre>
 (/^) :: forall f a. (Functor f, Fractional a, Box f a) => Exp a -> Exp (f a) -> Exp (f a)
 infixl 7 /^
@@ -144,8 +144,8 @@ infixl 7 /^
 -- | Addition with a scalar on the left
 --   
 --   <pre>
---   &gt;&gt;&gt; 2 +^ V2 3 4
---   V2 5 4
+--   &gt;&gt;&gt; 2 +^ lift (V2 3 4 :: V2 Int)
+--   (5,6)
 --   </pre>
 (+^) :: forall f a. (Functor f, Num a, Box f a) => Exp a -> Exp (f a) -> Exp (f a)
 infixl 6 +^
@@ -153,8 +153,8 @@ infixl 6 +^
 -- | Addition with a scalar on the right
 --   
 --   <pre>
---   &gt;&gt;&gt; V2 1 2 ^+ 3
---   V2 4 3
+--   &gt;&gt;&gt; lift (V2 1 2 :: V2 Int) ^+ 3
+--   (4,5)
 --   </pre>
 (^+) :: forall f a. (Functor f, Num a, Box f a) => Exp (f a) -> Exp a -> Exp (f a)
 infixl 6 ^+
@@ -162,8 +162,8 @@ infixl 6 ^+
 -- | Subtraction with a scalar on the left
 --   
 --   <pre>
---   &gt;&gt;&gt; 2 -^ V2 3 4
---   V2 1 2
+--   &gt;&gt;&gt; 2 -^ lift (V2 3 4 :: V2 Int)
+--   (-1,-2)
 --   </pre>
 (-^) :: forall f a. (Functor f, Num a, Box f a) => Exp a -> Exp (f a) -> Exp (f a)
 infixl 6 -^
@@ -171,8 +171,8 @@ infixl 6 -^
 -- | Subtraction with a scalar on the right
 --   
 --   <pre>
---   &gt;&gt;&gt; V2 1 2 ^- 3
---   V2 (-2) (-1)
+--   &gt;&gt;&gt; lift (V2 1 2 :: V2 Int) ^- 3
+--   (-2,-1)
 --   </pre>
 (^-) :: forall f a. (Functor f, Num a, Box f a) => Exp (f a) -> Exp a -> Exp (f a)
 infixl 6 ^-
@@ -188,7 +188,7 @@ class Metric f => Metric f where dot = lift2 (dot :: f (Exp a) -> f (Exp a) -> E
 --   vector <tt>f a</tt> into a covector <tt>f a -&gt; a</tt>.
 --   
 --   <pre>
---   &gt;&gt;&gt; V2 1 2 `dot` V2 3 4
+--   &gt;&gt;&gt; lift (V2 1 2 :: V2 Int) `dot` lift (V2 3 4 :: V2 Int)
 --   11
 --   </pre>
 dot :: forall a. (Metric f, Num a, Box f a) => Exp (f a) -> Exp (f a) -> Exp a
@@ -242,13 +242,13 @@ V1 :: a -> V1 a
 class R1 t => R1 t where _x = liftLens (_x :: Lens' (t (Exp a)) (Exp a))
 
 -- | <pre>
---   &gt;&gt;&gt; V1 2 ^._x
+--   &gt;&gt;&gt; lift (V1 2 :: V1 Int) ^._x
 --   2
 --   </pre>
 --   
 --   <pre>
---   &gt;&gt;&gt; V1 2 &amp; _x .~ 3
---   V1 3
+--   &gt;&gt;&gt; lift (V1 2 :: V1 Int) &amp; _x .~ 3
+--   (3)
 --   </pre>
 _x :: (R1 t, Elt a, Box t a) => Lens' (Exp (t a)) (Exp a)
 ex :: R1 t => E t
@@ -274,13 +274,13 @@ V2 :: ~a -> ~a -> V2 a
 class R1 t => R1 t where _x = liftLens (_x :: Lens' (t (Exp a)) (Exp a))
 
 -- | <pre>
---   &gt;&gt;&gt; V1 2 ^._x
+--   &gt;&gt;&gt; lift (V1 2 :: V1 Int) ^._x
 --   2
 --   </pre>
 --   
 --   <pre>
---   &gt;&gt;&gt; V1 2 &amp; _x .~ 3
---   V1 3
+--   &gt;&gt;&gt; lift (V1 2 :: V1 Int) &amp; _x .~ 3
+--   (3)
 --   </pre>
 _x :: (R1 t, Elt a, Box t a) => Lens' (Exp (t a)) (Exp a)
 
@@ -289,20 +289,20 @@ _x :: (R1 t, Elt a, Box t a) => Lens' (Exp (t a)) (Exp a)
 class (R2 t, R1 t) => R2 t where _y = liftLens (_y :: Lens' (t (Exp a)) (Exp a)) _xy = liftLens (_xy :: Lens' (t (Exp a)) (V2 (Exp a)))
 
 -- | <pre>
---   &gt;&gt;&gt; V2 1 2 ^._y
+--   &gt;&gt;&gt; lift (V2 1 2 :: V2 Int) ^._y
 --   2
 --   </pre>
 --   
 --   <pre>
---   &gt;&gt;&gt; V2 1 2 &amp; _y .~ 3
---   V2 1 3
+--   &gt;&gt;&gt; lift (V2 1 2 :: V2 Int) &amp; _y .~ 3
+--   (1,3)
 --   </pre>
 _y :: (R2 t, Elt a, Box t a) => Lens' (Exp (t a)) (Exp a)
 _xy :: (R2 t, Elt a, Box t a) => Lens' (Exp (t a)) (Exp (V2 a))
 
 -- | <pre>
---   &gt;&gt;&gt; V2 1 2 ^. _yx
---   V2 2 1
+--   &gt;&gt;&gt; lift (V2 1 2 :: V2 Int) ^. _yx
+--   (2,1)
 --   </pre>
 _yx :: forall t a. (R2 t, Elt a, Box t a) => Lens' (Exp (t a)) (Exp (V2 a))
 ex :: R1 t => E t
@@ -311,8 +311,8 @@ ey :: R2 t => E t
 -- | the counter-clockwise perpendicular vector
 --   
 --   <pre>
---   &gt;&gt;&gt; perp $ V2 10 20
---   V2 (-20) 10
+--   &gt;&gt;&gt; perp $ lift (V2 10 20 :: V2 Int)
+--   (-20,10)
 --   </pre>
 perp :: forall a. Num a => Exp (V2 a) -> Exp (V2 a)
 
@@ -347,13 +347,13 @@ triple :: forall a. Num a => Exp (V3 a) -> Exp (V3 a) -> Exp (V3 a) -> Exp a
 class R1 t => R1 t where _x = liftLens (_x :: Lens' (t (Exp a)) (Exp a))
 
 -- | <pre>
---   &gt;&gt;&gt; V1 2 ^._x
+--   &gt;&gt;&gt; lift (V1 2 :: V1 Int) ^._x
 --   2
 --   </pre>
 --   
 --   <pre>
---   &gt;&gt;&gt; V1 2 &amp; _x .~ 3
---   V1 3
+--   &gt;&gt;&gt; lift (V1 2 :: V1 Int) &amp; _x .~ 3
+--   (3)
 --   </pre>
 _x :: (R1 t, Elt a, Box t a) => Lens' (Exp (t a)) (Exp a)
 
@@ -362,20 +362,20 @@ _x :: (R1 t, Elt a, Box t a) => Lens' (Exp (t a)) (Exp a)
 class (R2 t, R1 t) => R2 t where _y = liftLens (_y :: Lens' (t (Exp a)) (Exp a)) _xy = liftLens (_xy :: Lens' (t (Exp a)) (V2 (Exp a)))
 
 -- | <pre>
---   &gt;&gt;&gt; V2 1 2 ^._y
+--   &gt;&gt;&gt; lift (V2 1 2 :: V2 Int) ^._y
 --   2
 --   </pre>
 --   
 --   <pre>
---   &gt;&gt;&gt; V2 1 2 &amp; _y .~ 3
---   V2 1 3
+--   &gt;&gt;&gt; lift (V2 1 2 :: V2 Int) &amp; _y .~ 3
+--   (1,3)
 --   </pre>
 _y :: (R2 t, Elt a, Box t a) => Lens' (Exp (t a)) (Exp a)
 _xy :: (R2 t, Elt a, Box t a) => Lens' (Exp (t a)) (Exp (V2 a))
 
 -- | <pre>
---   &gt;&gt;&gt; V2 1 2 ^. _yx
---   V2 2 1
+--   &gt;&gt;&gt; lift (V2 1 2 :: V2 Int) ^. _yx
+--   (2,1)
 --   </pre>
 _yx :: forall t a. (R2 t, Elt a, Box t a) => Lens' (Exp (t a)) (Exp (V2 a))
 
@@ -384,7 +384,7 @@ _yx :: forall t a. (R2 t, Elt a, Box t a) => Lens' (Exp (t a)) (Exp (V2 a))
 class (R3 t, R2 t) => R3 t where _z = liftLens (_z :: Lens' (t (Exp a)) (Exp a)) _xyz = liftLens (_xyz :: Lens' (t (Exp a)) (V3 (Exp a)))
 
 -- | <pre>
---   &gt;&gt;&gt; V3 1 2 3 ^. _z
+--   &gt;&gt;&gt; lift (V3 1 2 3 :: V3 Int) ^. _z
 --   3
 --   </pre>
 _z :: forall a. (R3 t, Elt a, Box t a) => Lens' (Exp (t a)) (Exp a)
@@ -453,13 +453,13 @@ normalizePoint :: forall a. Floating a => Exp (V4 a) -> Exp (V3 a)
 class R1 t => R1 t where _x = liftLens (_x :: Lens' (t (Exp a)) (Exp a))
 
 -- | <pre>
---   &gt;&gt;&gt; V1 2 ^._x
+--   &gt;&gt;&gt; lift (V1 2 :: V1 Int) ^._x
 --   2
 --   </pre>
 --   
 --   <pre>
---   &gt;&gt;&gt; V1 2 &amp; _x .~ 3
---   V1 3
+--   &gt;&gt;&gt; lift (V1 2 :: V1 Int) &amp; _x .~ 3
+--   (3)
 --   </pre>
 _x :: (R1 t, Elt a, Box t a) => Lens' (Exp (t a)) (Exp a)
 
@@ -468,20 +468,20 @@ _x :: (R1 t, Elt a, Box t a) => Lens' (Exp (t a)) (Exp a)
 class (R2 t, R1 t) => R2 t where _y = liftLens (_y :: Lens' (t (Exp a)) (Exp a)) _xy = liftLens (_xy :: Lens' (t (Exp a)) (V2 (Exp a)))
 
 -- | <pre>
---   &gt;&gt;&gt; V2 1 2 ^._y
+--   &gt;&gt;&gt; lift (V2 1 2 :: V2 Int) ^._y
 --   2
 --   </pre>
 --   
 --   <pre>
---   &gt;&gt;&gt; V2 1 2 &amp; _y .~ 3
---   V2 1 3
+--   &gt;&gt;&gt; lift (V2 1 2 :: V2 Int) &amp; _y .~ 3
+--   (1,3)
 --   </pre>
 _y :: (R2 t, Elt a, Box t a) => Lens' (Exp (t a)) (Exp a)
 _xy :: (R2 t, Elt a, Box t a) => Lens' (Exp (t a)) (Exp (V2 a))
 
 -- | <pre>
---   &gt;&gt;&gt; V2 1 2 ^. _yx
---   V2 2 1
+--   &gt;&gt;&gt; lift (V2 1 2 :: V2 Int) ^. _yx
+--   (2,1)
 --   </pre>
 _yx :: forall t a. (R2 t, Elt a, Box t a) => Lens' (Exp (t a)) (Exp (V2 a))
 
@@ -490,7 +490,7 @@ _yx :: forall t a. (R2 t, Elt a, Box t a) => Lens' (Exp (t a)) (Exp (V2 a))
 class (R3 t, R2 t) => R3 t where _z = liftLens (_z :: Lens' (t (Exp a)) (Exp a)) _xyz = liftLens (_xyz :: Lens' (t (Exp a)) (V3 (Exp a)))
 
 -- | <pre>
---   &gt;&gt;&gt; V3 1 2 3 ^. _z
+--   &gt;&gt;&gt; lift (V3 1 2 3 :: V3 Int) ^. _z
 --   3
 --   </pre>
 _z :: forall a. (R3 t, Elt a, Box t a) => Lens' (Exp (t a)) (Exp a)
@@ -510,7 +510,7 @@ _zyx :: forall t a. (R3 t, Elt a, Box t a) => Lens' (Exp (t a)) (Exp (V3 a))
 class (R4 t, R3 t) => R4 t where _w = liftLens (_w :: Lens' (t (Exp a)) (Exp a)) _xyzw = liftLens (_xyzw :: Lens' (t (Exp a)) (V4 (Exp a)))
 
 -- | <pre>
---   &gt;&gt;&gt; V4 1 2 3 4 ^._w
+--   &gt;&gt;&gt; lift (V4 1 2 3 4 :: V4 Int) ^._w
 --   4
 --   </pre>
 _w :: forall a. (R4 t, Elt a, Box t a) => Lens' (Exp (t a)) (Exp a)
@@ -632,13 +632,8 @@ type M44 a = V4 (V4 a)
 --   multiplication.
 --   
 --   <pre>
---   &gt;&gt;&gt; V2 (V3 1 2 3) (V3 4 5 6) !*! V3 (V2 1 2) (V2 3 4) (V2 4 5)
---   V2 (V2 19 25) (V2 43 58)
---   </pre>
---   
---   <pre>
---   &gt;&gt;&gt; V2 (fromList [(1,2)]) (fromList [(2,3)]) !*! fromList [(1,V3 0 0 1), (2, V3 0 0 5)]
---   V2 (V3 0 0 2) (V3 0 0 15)
+--   &gt;&gt;&gt; lift (V2 (V3 1 2 3) (V3 4 5 6) :: M23 Int) !*! lift (V3 (V2 1 2) (V2 3 4) (V2 4 5) :: M32 Int)
+--   ((19,25),(43,58))
 --   </pre>
 (!*!) :: (Functor m, Foldable t, Additive t, Additive n, Num a, Box2 m t a, Box2 t n a, Box2 m n a) => Exp (m (t a)) -> Exp (t (n a)) -> Exp (m (n a))
 infixl 7 !*!
@@ -646,8 +641,8 @@ infixl 7 !*!
 -- | Entry-wise matrix addition.
 --   
 --   <pre>
---   &gt;&gt;&gt; V2 (V3 1 2 3) (V3 4 5 6) !+! V2 (V3 7 8 9) (V3 1 2 3)
---   V2 (V3 8 10 12) (V3 5 7 9)
+--   &gt;&gt;&gt; lift (V2 (V3 1 2 3) (V3 4 5 6) :: M23 Int) !+! lift (V2 (V3 7 8 9) (V3 1 2 3) :: M23 Int)
+--   ((8,10,12),(5,7,9))
 --   </pre>
 (!+!) :: (Additive m, Additive n, Num a, Box2 m n a) => Exp (m (n a)) -> Exp (m (n a)) -> Exp (m (n a))
 infixl 6 !+!
@@ -655,8 +650,8 @@ infixl 6 !+!
 -- | Entry-wise matrix subtraction.
 --   
 --   <pre>
---   &gt;&gt;&gt; V2 (V3 1 2 3) (V3 4 5 6) !-! V2 (V3 7 8 9) (V3 1 2 3)
---   V2 (V3 (-6) (-6) (-6)) (V3 3 3 3)
+--   &gt;&gt;&gt; lift (V2 (V3 1 2 3) (V3 4 5 6) :: M23 Int) !-! lift (V2 (V3 7 8 9) (V3 1 2 3) :: M23 Int)
+--   ((-6,-6,-6),(3,3,3))
 --   </pre>
 (!-!) :: (Additive m, Additive n, Num a, Box2 m n a) => Exp (m (n a)) -> Exp (m (n a)) -> Exp (m (n a))
 infixl 6 !-!
@@ -664,8 +659,8 @@ infixl 6 !-!
 -- | Matrix * column vector
 --   
 --   <pre>
---   &gt;&gt;&gt; V2 (V3 1 2 3) (V3 4 5 6) !* V3 7 8 9
---   V2 50 122
+--   &gt;&gt;&gt; lift (V2 (V3 1 2 3) (V3 4 5 6) :: M23 Int) !* lift (V3 7 8 9 :: V3 Int)
+--   (50,122)
 --   </pre>
 (!*) :: (Functor m, Foldable r, Additive r, Num a, Box2 m r a, Box m a) => Exp (m (r a)) -> Exp (r a) -> Exp (m a)
 infixl 7 !*
@@ -673,8 +668,8 @@ infixl 7 !*
 -- | Row vector * matrix
 --   
 --   <pre>
---   &gt;&gt;&gt; V2 1 2 *! V2 (V3 3 4 5) (V3 6 7 8)
---   V3 15 18 21
+--   &gt;&gt;&gt; lift (V2 1 2 :: V2 Int) *! lift (V2 (V3 3 4 5) (V3 6 7 8) :: M23 Int)
+--   (15,18,21)
 --   </pre>
 (*!) :: (Foldable t, Additive f, Additive t, Num a, Box t a, Box f a, Box2 t f a) => Exp (t a) -> Exp (t (f a)) -> Exp (f a)
 infixl 7 *!
@@ -682,8 +677,8 @@ infixl 7 *!
 -- | Matrix-scalar product
 --   
 --   <pre>
---   &gt;&gt;&gt; V2 (V2 1 2) (V2 3 4) !!* 5
---   V2 (V2 5 10) (V2 15 20)
+--   &gt;&gt;&gt; lift (V2 (V2 1 2) (V2 3 4) :: M22 Int) !!* 5
+--   ((5,10),(15,20))
 --   </pre>
 (!!*) :: (Functor m, Functor r, Num a, Box2 m r a) => Exp (m (r a)) -> Exp a -> Exp (m (r a))
 infixl 7 !!*
@@ -691,8 +686,8 @@ infixl 7 !!*
 -- | Scalar-matrix product
 --   
 --   <pre>
---   &gt;&gt;&gt; 5 *!! V2 (V2 1 2) (V2 3 4)
---   V2 (V2 5 10) (V2 15 20)
+--   &gt;&gt;&gt; 5 *!! lift (V2 (V2 1 2) (V2 3 4) :: M22 Int)
+--   ((5,10),(15,20))
 --   </pre>
 (*!!) :: (Functor m, Functor r, Num a, Box2 m r a) => Exp a -> Exp (m (r a)) -> Exp (m (r a))
 infixl 7 *!!
@@ -713,13 +708,17 @@ transpose :: (Distributive g, Functor f, Box2 f g a, Box2 g f a) => Exp (f (g a)
 -- | The identity matrix for any dimension vector.
 --   
 --   <pre>
---   &gt;&gt;&gt; identity :: M44 Int
---   V4 (V4 1 0 0 0) (V4 0 1 0 0) (V4 0 0 1 0) (V4 0 0 0 1)
+--   &gt;&gt;&gt; identity :: Exp (M44 Int)
+--   let x0 = 1 in
+--   let x1 = 0
+--   in ((x0,x1,x1,x1),(x1,x0,x1,x1),(x1,x1,x0,x1),(x1,x1,x1,x0))
 --   </pre>
 --   
 --   <pre>
---   &gt;&gt;&gt; identity :: V3 (V3 Int)
---   V3 (V3 1 0 0) (V3 0 1 0) (V3 0 0 1)
+--   &gt;&gt;&gt; identity :: Exp (V3 (V3 Int))
+--   let x0 = 1 in
+--   let x1 = 0
+--   in ((x0,x1,x1),(x1,x0,x1),(x1,x1,x0))
 --   </pre>
 identity :: forall t a. (Traversable t, Applicative t, Num a, Box2 t t a) => Exp (t (t a))
 class Trace m => Trace m where trace = lift . trace . unlift' diagonal = lift . diagonal . unlift'

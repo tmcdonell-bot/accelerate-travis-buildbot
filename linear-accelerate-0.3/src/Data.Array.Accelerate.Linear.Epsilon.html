@@ -23,16 +23,16 @@
 </span><a name="line-23"></a><span>
 </span><a name="line-24"></a><span class="hs-comment">-- | Provides a fairly subjective test to see if a quantity is near zero.</span><span>
 </span><a name="line-25"></a><span class="hs-comment">--</span><span>
-</span><a name="line-26"></a><span class="hs-comment">-- &gt;&gt;&gt; nearZero (1e-11 :: Double)</span><span>
+</span><a name="line-26"></a><span class="hs-comment">-- &gt;&gt;&gt; nearZero (1e-11 :: Exp Double)</span><span>
 </span><a name="line-27"></a><span class="hs-comment">-- False</span><span>
 </span><a name="line-28"></a><span class="hs-comment">--</span><span>
-</span><a name="line-29"></a><span class="hs-comment">-- &gt;&gt;&gt; nearZero (1e-17 :: Double)</span><span>
+</span><a name="line-29"></a><span class="hs-comment">-- &gt;&gt;&gt; nearZero (1e-17 :: Exp Double)</span><span>
 </span><a name="line-30"></a><span class="hs-comment">-- True</span><span>
 </span><a name="line-31"></a><span class="hs-comment">--</span><span>
-</span><a name="line-32"></a><span class="hs-comment">-- &gt;&gt;&gt; nearZero (1e-5 :: Float)</span><span>
+</span><a name="line-32"></a><span class="hs-comment">-- &gt;&gt;&gt; nearZero (1e-5 :: Exp Float)</span><span>
 </span><a name="line-33"></a><span class="hs-comment">-- False</span><span>
 </span><a name="line-34"></a><span class="hs-comment">--</span><span>
-</span><a name="line-35"></a><span class="hs-comment">-- &gt;&gt;&gt; nearZero (1e-7 :: Float)</span><span>
+</span><a name="line-35"></a><span class="hs-comment">-- &gt;&gt;&gt; nearZero (1e-7 :: Exp Float)</span><span>
 </span><a name="line-36"></a><span class="hs-comment">-- True</span><span>
 </span><a name="line-37"></a><span class="hs-comment">--</span><span>
 </span><a name="line-38"></a><span class="hs-keyword">class</span><span> </span><span class="hs-identifier hs-type">Num</span><span> </span><a href="#local-1627409672"><span class="hs-identifier hs-type">a</span></a><span> </span><span class="hs-glyph">=&gt;</span><span> </span><a name="Epsilon"><a href="Data.Array.Accelerate.Linear.Epsilon.html#Epsilon"><span class="hs-identifier">Epsilon</span></a></a><span> </span><a name="local-1627409672"><a href="#local-1627409672"><span class="hs-identifier">a</span></a></a><span> </span><span class="hs-keyword">where</span><span>
