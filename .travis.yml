@@ -83,6 +83,7 @@ before_install:
   # - source .travis/install-llvm-trusty.sh
   - source .travis/update-ghc-settings.sh
   - travis_retry stack install hscolour
+  - travis_retry stack install alex
 
 install:
   - echo "$(stack exec ghc -- --version) [$(stack exec ghc -- --print-project-git-commit-id 2> /dev/null || echo '?')]"
