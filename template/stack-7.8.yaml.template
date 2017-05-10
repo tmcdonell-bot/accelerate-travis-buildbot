@@ -100,6 +100,7 @@ extra-deps:
 - 'scientific-0.3.4.9'
 - 'semigroups-0.18.1'
 - 'storable-record-0.0.3.1'
+- 'th-lift-instances-0.1.11'
 - 'transformers-0.4.3.0'
 - 'transformers-compat-0.4.0.4'
 - 'unique-0'
