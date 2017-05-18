@@ -1528,6 +1528,9 @@ slit :: forall sh e. (Slice sh, Shape sh, Elt e) => Exp Int -> Exp Int -> Acc (A
 --   <i>commutative</i>. Elements that are mapped to the magic value
 --   <a>ignore</a> by the permutation function are dropped.
 --   
+--   The combination function is given the new value being permuted as its
+--   first argument, and the current value of the array as its second.
+--   
 --   For example, we can use <a>permute</a> to compute the occurrence count
 --   (histogram) for an array of values in the range <tt>[0,10)</tt>:
 --   
@@ -1545,6 +1548,30 @@ slit :: forall sh e. (Slice sh, Shape sh, Elt e) => Exp Int -> Exp Int -> Acc (A
 --   
 --   &gt;&gt;&gt; histogram (use xs)
 --   Vector (Z :. 10) [2,4,4,3,2,2,0,0,2,1]
+--   </pre>
+--   
+--   As a second example, note that the dimensionality of the source and
+--   destination arrays can differ. In this way, we can use <a>permute</a>
+--   to create an identity matrix by overwriting elements along the
+--   diagonal:
+--   
+--   <pre>
+--   identity :: Num a =&gt; Exp Int -&gt; Acc (Array DIM2 a)
+--   identity n =
+--     let zeros = fill (index2 n n) 0
+--         ones  = fill (index1 n)   1
+--     in
+--     permute const zeros (\(unindex1 -&gt; i) -&gt; index2 i i) ones
+--   </pre>
+--   
+--   <pre>
+--   &gt;&gt;&gt; identity 5
+--   Matrix (Z :. 5 :. 5)
+--     [1,0,0,0,0,
+--      0,1,0,0,0,
+--      0,0,1,0,0,
+--      0,0,0,1,0,
+--      0,0,0,0,1]
 --   </pre>
 --   
 --   <ul>
