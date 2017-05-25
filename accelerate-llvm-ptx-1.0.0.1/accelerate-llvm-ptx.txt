@@ -76,7 +76,7 @@
 --   cabal install llvm-hs -fshared-llvm
 --   </pre>
 @package accelerate-llvm-ptx
-@version 1.0.0.0
+@version 1.0.0.1
 
 
 module Data.Array.Accelerate.LLVM.PTX.Foreign
