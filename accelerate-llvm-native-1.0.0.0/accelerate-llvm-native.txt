@@ -90,6 +90,10 @@ data LLVM target a :: * -> * -> *
 
 -- | Native machine code JIT execution target
 data Native
+Native :: {-# UNPACK #-} !Int -> {-# UNPACK #-} !Executable -> {-# UNPACK #-} !Executable -> Native
+[gangSize] :: Native -> {-# UNPACK #-} !Int
+[fillS] :: Native -> {-# UNPACK #-} !Executable
+[fillP] :: Native -> {-# UNPACK #-} !Executable
 
 -- | Lift a computation from the <a>IO</a> monad.
 liftIO :: MonadIO m => forall a. IO a -> m a

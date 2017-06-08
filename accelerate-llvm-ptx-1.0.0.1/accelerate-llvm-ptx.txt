@@ -100,6 +100,18 @@ data LLVM target a :: * -> * -> *
 --   example state related to [persistent] kernel caching should _not_ go
 --   here.
 data PTX
+PTX :: {-# UNPACK #-} !Context -> {-# UNPACK #-} !MemoryTable -> {-# UNPACK #-} !Reservoir -> {-# UNPACK #-} !Executable -> PTX
+[ptxContext] :: PTX -> {-# UNPACK #-} !Context
+[ptxMemoryTable] :: PTX -> {-# UNPACK #-} !MemoryTable
+[ptxStreamReservoir] :: PTX -> {-# UNPACK #-} !Reservoir
+[fillP] :: PTX -> {-# UNPACK #-} !Executable
+
+-- | An execution context, which is tied to a specific device and CUDA
+--   execution context.
+data Context
+Context :: {-# UNPACK #-} !DeviceProperties -> {-# UNPACK #-} !(Lifetime Context) -> Context
+[deviceProperties] :: Context -> {-# UNPACK #-} !DeviceProperties
+[deviceContext] :: Context -> {-# UNPACK #-} !(Lifetime Context)
 
 -- | Lift a computation from the <a>IO</a> monad.
 liftIO :: MonadIO m => forall a. IO a -> m a
