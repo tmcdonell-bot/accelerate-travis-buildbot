@@ -72,6 +72,10 @@ packages:
     git:    https://github.com/tmcdonell/cufft.git
     commit: dc7ae89035777e5bc9629a6049e7fc1f46a61a87
 
+- location:
+    git:    https://github.com/tmcdonell/cublas.git
+    commit: 37eb3367b7edaea0072b8c809e8ac1ef3353d769
+
 extra-deps:
 - 'atomic-primops-0.8.0.4'
 - 'attoparsec-0.13.1.0'

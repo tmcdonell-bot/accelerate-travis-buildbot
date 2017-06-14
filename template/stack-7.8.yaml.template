@@ -72,6 +72,10 @@ packages:
     git:    https://github.com/{REPO_cufft}.git
     commit: {SHA_cufft}
 
+- location:
+    git:    https://github.com/{REPO_cublas}.git
+    commit: {SHA_cublas}
+
 extra-deps:
 - 'atomic-primops-0.8.0.4'
 - 'attoparsec-0.13.1.0'
