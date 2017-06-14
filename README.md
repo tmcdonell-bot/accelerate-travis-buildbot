@@ -14,6 +14,7 @@ Status of individual repositories:
  - [![Build Status](https://travis-ci.org/tmcdonell/accelerate-cuda.svg?branch=master)](https://travis-ci.org/tmcdonell/accelerate-cuda) [tmcdonell/accelerate-cuda](https://github.com/tmcdonell/accelerate-cuda)
  - [![Build Status](https://travis-ci.org/tmcdonell/accelerate-llvm.svg?branch=master)](https://travis-ci.org/tmcdonell/accelerate-llvm) [tmcdonell/accelerate-llvm](https://github.com/tmcdonell/accelerate-llvm)
  - [![Build Status](https://travis-ci.org/tmcdonell/accelerate-fft.svg?branch=master)](https://travis-ci.org/tmcdonell/accelerate-fft) [tmcdonell/accelerate-fft](https://github.com/tmcdonell/accelerate-fft)
+ - [![Build Status](https://travis-ci.org/tmcdonell/accelerate-blas.svg?branch=master)](https://travis-ci.org/tmcdonell/accelerate-blas) [tmcdonell/accelerate-blas](https://github.com/tmcdonell/accelerate-blas)
  - [![Build Status](https://travis-ci.org/tmcdonell/accelerate-io.svg?branch=master)](https://travis-ci.org/tmcdonell/accelerate-io) [tmcdonell/accelerate-io](https://github.com/tmcdonell/accelerate-io)
  - [![Build Status](https://travis-ci.org/tmcdonell/accelerate-bignum.svg?branch=master)](https://travis-ci.org/tmcdonell/accelerate-bignum) [tmcdonell/accelerate-bignum](https://github.com/tmcdonell/accelerate-bignum)
  - [![Build Status](https://travis-ci.org/tmcdonell/colour-accelerate.svg?branch=master)](https://travis-ci.org/tmcdonell/colour-accelerate) [tmcdonell/colour-accelerate](https://github.com/tmcdonell/colour-accelerate)

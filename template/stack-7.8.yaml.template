@@ -25,6 +25,10 @@ packages:
     commit: {SHA_accelerate-fft}
 
 - location:
+    git:    https://github.com/{REPO_accelerate-blas}.git
+    commit: {SHA_accelerate-blas}
+
+- location:
     git:    https://github.com/{REPO_accelerate-io}.git
     commit: {SHA_accelerate-io}
 

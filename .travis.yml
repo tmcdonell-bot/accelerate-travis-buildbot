@@ -48,6 +48,7 @@ env:
   - TARGET=accelerate
   - TARGET=accelerate-cuda
   - TARGET=accelerate-fft
+  - TARGET=accelerate-blas
   - TARGET=accelerate-io
   - TARGET=accelerate-bignum
   - TARGET=accelerate-llvm

@@ -11,6 +11,7 @@ s|{SHA_accelerate}|be851212c1f5c26e948b85c5e428207c78bdae16|
 s|{SHA_accelerate-cuda}|6285f87859788628ce68d1ff76ce7b348f585f9e|
 s|{SHA_accelerate-llvm}|b44db1fccd73b294006c513bd3a2b90b72cc8c02|
 s|{SHA_accelerate-fft}|0f18a273e865a26ba7c68f1a3d063ff494587216|
+s|{SHA_accelerate-blas}|39c2851bf0b59090196689746f088e2b1f693a8e|
 s|{SHA_accelerate-io}|893ab10a7daadfc3050968a0eabc515770578b5a|
 s|{SHA_accelerate-bignum}|249e1fe1dd91ca975c0623e20779cc0e1875956d|
 s|{SHA_accelerate-examples}|33f014bcb4d771f0193f302116d4141bc05f0592|
@@ -31,6 +32,7 @@ s|{REPO_accelerate}|tmcdonell/accelerate|g
 s|{REPO_accelerate-cuda}|tmcdonell/accelerate-cuda|g
 s|{REPO_accelerate-llvm}|tmcdonell/accelerate-llvm|g
 s|{REPO_accelerate-fft}|tmcdonell/accelerate-fft|g
+s|{REPO_accelerate-blas}|tmcdonell/accelerate-blas|g
 s|{REPO_accelerate-io}|tmcdonell/accelerate-io|g
 s|{REPO_accelerate-bignum}|tmcdonell/accelerate-bignum|g
 s|{REPO_accelerate-examples}|tmcdonell/accelerate-examples|g
