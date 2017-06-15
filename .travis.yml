@@ -8,8 +8,8 @@
 # build matrix is constructed as the product of compiler x target.
 #
 language: c
-dist: precise
-# sudo: required
+dist: trusty
+sudo: required
 
 cache:
   timeout: 600
@@ -24,7 +24,7 @@ addons:
     sources:
       - hvr-ghc
       - ubuntu-toolchain-r-test
-      - llvm-toolchain-precise
+      - llvm-toolchain-trusty
       - sourceline: 'deb http://apt.llvm.org/trusty/ llvm-toolchain-trusty-4.0 main'
         key_url: 'http://apt.llvm.org/llvm-snapshot.gpg.key'
 
@@ -36,7 +36,6 @@ addons:
       - libfftw3-dev
       - libgmp-dev
       - llvm-4.0-dev
-      - nvidia-cuda-toolkit
 
 compiler:
   - GHC-8.0.1
@@ -44,25 +43,28 @@ compiler:
   - GHC-7.8.4
 
 env:
-  - TARGET="" # all packages
-  - TARGET=accelerate
-  - TARGET=accelerate-cuda
-  - TARGET=accelerate-fft
-  - TARGET=accelerate-blas
-  - TARGET=accelerate-io
-  - TARGET=accelerate-bignum
-  - TARGET=accelerate-llvm
-  - TARGET=accelerate-llvm-native
-  - TARGET=accelerate-llvm-ptx
-  - TARGET=accelerate-examples
-  - TARGET=colour-accelerate
-  - TARGET=gloss-accelerate
-  - TARGET=gloss-raster-accelerate
-  - TARGET=lens-accelerate
-  - TARGET=linear-accelerate
-  - TARGET=mwc-random-accelerate
-  - TARGET=numeric-prelude-accelerate
-  - TARGET=lulesh-accelerate
+  global:
+    - CUDA=8.0.61-1
+  matrix:
+    - TARGET="" # all packages
+    - TARGET=accelerate
+    - TARGET=accelerate-cuda
+    - TARGET=accelerate-fft
+    - TARGET=accelerate-blas
+    - TARGET=accelerate-io
+    - TARGET=accelerate-bignum
+    - TARGET=accelerate-llvm
+    - TARGET=accelerate-llvm-native
+    - TARGET=accelerate-llvm-ptx
+    - TARGET=accelerate-examples
+    - TARGET=colour-accelerate
+    - TARGET=gloss-accelerate
+    - TARGET=gloss-raster-accelerate
+    - TARGET=lens-accelerate
+    - TARGET=linear-accelerate
+    - TARGET=mwc-random-accelerate
+    - TARGET=numeric-prelude-accelerate
+    - TARGET=lulesh-accelerate
 
 matrix:
   fast_finish: true
@@ -80,11 +82,13 @@ before_install:
   #       7.10) export LLVM="3.5.2" ;;
   #       8.0)  export LLVM="3.8.1" ;;
   #     esac
-  - source .travis/install-stack.sh
   # - source .travis/install-llvm-trusty.sh
+  - source .travis/install-cuda-trusty.sh
+  - source .travis/install-stack.sh
   - source .travis/update-ghc-settings.sh
   - travis_retry stack install hscolour
   - travis_retry stack install alex
+  - travis_retry stack install c2hs
 
 install:
   - echo "$(stack exec ghc -- --version) [$(stack exec ghc -- --print-project-git-commit-id 2> /dev/null || echo '?')]"
