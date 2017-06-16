@@ -26,4 +26,5 @@ Status of individual repositories:
  - [![Build Status](https://travis-ci.org/tmcdonell/numeric-prelude-accelerate.svg?branch=master)](https://travis-ci.org/tmcdonell/numeric-prelude-accelerate) [tmcdonell/numeric-prelude-accelerate](https://github.com/tmcdonell/numeric-prelude-accelerate)
  - [![Build Status](https://travis-ci.org/tmcdonell/cuda.svg?branch=master)](https://travis-ci.org/tmcdonell/cuda) [tmcdonell/cuda](https://github.com/tmcdonell/cuda)
  - [![Build Status](https://travis-ci.org/tmcdonell/cufft.svg?branch=master)](https://travis-ci.org/tmcdonell/cufft) [tmcdonell/cufft](https://github.com/tmcdonell/cufft)
+ - [![Build Status](https://travis-ci.org/tmcdonell/cublas.svg?branch=master)](https://travis-ci.org/tmcdonell/cublas) [tmcdonell/cublas](https://github.com/tmcdonell/cublas)
 
