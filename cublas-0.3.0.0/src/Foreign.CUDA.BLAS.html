@@ -1,0 +1,135 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-comment">-- |</span><span>
+</span><a name="line-2"></a><span class="hs-comment">-- Module      : Foreign.CUDA.BLAS</span><span>
+</span><a name="line-3"></a><span class="hs-comment">-- Copyright   : [2014..2017] Trevor L. McDonell</span><span>
+</span><a name="line-4"></a><span class="hs-comment">-- License     : BSD3</span><span>
+</span><a name="line-5"></a><span class="hs-comment">--</span><span>
+</span><a name="line-6"></a><span class="hs-comment">-- Maintainer  : Trevor L. McDonell &lt;tmcdonell@cse.unsw.edu.au&gt;</span><span>
+</span><a name="line-7"></a><span class="hs-comment">-- Stability   : experimental</span><span>
+</span><a name="line-8"></a><span class="hs-comment">-- Portability : non-portable (GHC extensions)</span><span>
+</span><a name="line-9"></a><span class="hs-comment">--</span><span>
+</span><a name="line-10"></a><span class="hs-comment">-- The cuBLAS library is an implementation of BLAS (Basic Linear Algebra</span><span>
+</span><a name="line-11"></a><span class="hs-comment">-- Subprograms) for NVIDIA GPUs.</span><span>
+</span><a name="line-12"></a><span class="hs-comment">--</span><span>
+</span><a name="line-13"></a><span class="hs-comment">-- To use operations from the cuBLAS library, the user must allocate the</span><span>
+</span><a name="line-14"></a><span class="hs-comment">-- required matrices and vectors in the GPU memory space, fill them with data,</span><span>
+</span><a name="line-15"></a><span class="hs-comment">-- call the desired sequence of cuBLAS functions, then copy the results from the</span><span>
+</span><a name="line-16"></a><span class="hs-comment">-- GPU memory space back to the host.</span><span>
+</span><a name="line-17"></a><span class="hs-comment">--</span><span>
+</span><a name="line-18"></a><span class="hs-comment">-- The &lt;http://hackage.haskell.org/package/cuda cuda&gt; package can be used for</span><span>
+</span><a name="line-19"></a><span class="hs-comment">-- writing to and retrieving data from the GPU.</span><span>
+</span><a name="line-20"></a><span class="hs-comment">--</span><span>
+</span><a name="line-21"></a><span class="hs-comment">-- [/Data layout/]</span><span>
+</span><a name="line-22"></a><span class="hs-comment">--</span><span>
+</span><a name="line-23"></a><span class="hs-comment">-- Unlike modern BLAS libraries, cuBLAS /only/ provides Fortran-style</span><span>
+</span><a name="line-24"></a><span class="hs-comment">-- implementations of the subprograms, using column-major storage and 1-based</span><span>
+</span><a name="line-25"></a><span class="hs-comment">-- indexing.</span><span>
+</span><a name="line-26"></a><span class="hs-comment">--</span><span>
+</span><a name="line-27"></a><span class="hs-comment">-- The @&lt;http://docs.nvidia.com/cuda/cublas/index.html#cublas-lt-t-gt-geam ?geam&gt;@</span><span>
+</span><a name="line-28"></a><span class="hs-comment">-- operation can be used to perform matrix transposition.</span><span>
+</span><a name="line-29"></a><span class="hs-comment">--</span><span>
+</span><a name="line-30"></a><span class="hs-comment">-- [/Example/]</span><span>
+</span><a name="line-31"></a><span class="hs-comment">--</span><span>
+</span><a name="line-32"></a><span class="hs-comment">-- At a short example, we show how to compute the following matrix-matrix</span><span>
+</span><a name="line-33"></a><span class="hs-comment">-- product with 'dgemm':</span><span>
+</span><a name="line-34"></a><span class="hs-comment">--</span><span>
+</span><a name="line-35"></a><span class="hs-comment">-- \[</span><span>
+</span><a name="line-36"></a><span class="hs-comment">-- \left(\begin{matrix} 1 &amp; 2 \\ 3 &amp; 4 \\ 5 &amp; 6 \\ \end{matrix}\right) \cdot</span><span>
+</span><a name="line-37"></a><span class="hs-comment">-- \left(\begin{matrix} 1 &amp; 2 &amp; 3 \\ 4 &amp; 5 &amp; 6 \\ \end{matrix}\right)  =</span><span>
+</span><a name="line-38"></a><span class="hs-comment">-- \left(\begin{matrix} 9 &amp; 12 &amp; 15 \\ 19 &amp; 26 &amp; 33 \\ 29 &amp; 40 &amp; 51 \\ \end{matrix}\right)</span><span>
+</span><a name="line-39"></a><span class="hs-comment">-- \]</span><span>
+</span><a name="line-40"></a><span class="hs-comment">--</span><span>
+</span><a name="line-41"></a><span class="hs-comment">-- I assume you know how to initialise the CUDA</span><span>
+</span><a name="line-42"></a><span class="hs-comment">-- environment, as described in the &quot;Foreign.CUDA.Driver&quot; module:</span><span>
+</span><a name="line-43"></a><span class="hs-comment">--</span><span>
+</span><a name="line-44"></a><span class="hs-comment">-- &gt;&gt;&gt; import Foreign.CUDA.Driver as CUDA</span><span>
+</span><a name="line-45"></a><span class="hs-comment">-- &gt;&gt;&gt; import Foreign.CUDA.BLAS as BLAS</span><span>
+</span><a name="line-46"></a><span class="hs-comment">-- &gt;&gt;&gt; CUDA.initialise []</span><span>
+</span><a name="line-47"></a><span class="hs-comment">-- &gt;&gt;&gt; dev &lt;- CUDA.device 0</span><span>
+</span><a name="line-48"></a><span class="hs-comment">-- &gt;&gt;&gt; ctx &lt;- CUDA.create dev []</span><span>
+</span><a name="line-49"></a><span class="hs-comment">--</span><span>
+</span><a name="line-50"></a><span class="hs-comment">-- Just as we must create a CUDA execution context with</span><span>
+</span><a name="line-51"></a><span class="hs-comment">-- 'Foreign.CUDA.Driver.create' before interacting with the GPU, we must create</span><span>
+</span><a name="line-52"></a><span class="hs-comment">-- a BLAS context handle before executing any cuBLAS library operations, which</span><span>
+</span><a name="line-53"></a><span class="hs-comment">-- will be associated with the current device context:</span><span>
+</span><a name="line-54"></a><span class="hs-comment">--</span><span>
+</span><a name="line-55"></a><span class="hs-comment">-- &gt;&gt;&gt; hdl &lt;- BLAS.create</span><span>
+</span><a name="line-56"></a><span class="hs-comment">--</span><span>
+</span><a name="line-57"></a><span class="hs-comment">-- Now, let us generate the matrix data on the GPU. (For simplicity in this</span><span>
+</span><a name="line-58"></a><span class="hs-comment">-- example we will just marshal the data via lists, but in a real application</span><span>
+</span><a name="line-59"></a><span class="hs-comment">-- with a large amount of data we should of course use some kind of unboxed</span><span>
+</span><a name="line-60"></a><span class="hs-comment">-- array):</span><span>
+</span><a name="line-61"></a><span class="hs-comment">--</span><span>
+</span><a name="line-62"></a><span class="hs-comment">-- &gt;&gt;&gt; let rowsA = 3; colsA = 2; sizeA = rowsA * colsA</span><span>
+</span><a name="line-63"></a><span class="hs-comment">-- &gt;&gt;&gt; let rowsB = 2; colsB = 3; sizeB = rowsB * colsB</span><span>
+</span><a name="line-64"></a><span class="hs-comment">-- &gt;&gt;&gt; let sizeC = rowsA * colsB</span><span>
+</span><a name="line-65"></a><span class="hs-comment">-- &gt;&gt;&gt; matA &lt;- CUDA.newListArray (take sizeA [1..])</span><span>
+</span><a name="line-66"></a><span class="hs-comment">-- &gt;&gt;&gt; matB &lt;- CUDA.newListArray (take sizeB [1..])</span><span>
+</span><a name="line-67"></a><span class="hs-comment">-- &gt;&gt;&gt; matC &lt;- CUDA.mallocArray sizeC</span><span>
+</span><a name="line-68"></a><span class="hs-comment">--</span><span>
+</span><a name="line-69"></a><span class="hs-comment">-- Note in the above that we store data in row-major order, as is the convention</span><span>
+</span><a name="line-70"></a><span class="hs-comment">-- in C. However, the cuBLAS library assumes a column-major representation, as</span><span>
+</span><a name="line-71"></a><span class="hs-comment">-- is the style of Fortran. However, we can make use of the following</span><span>
+</span><a name="line-72"></a><span class="hs-comment">-- equivalency:</span><span>
+</span><a name="line-73"></a><span class="hs-comment">--</span><span>
+</span><a name="line-74"></a><span class="hs-comment">-- \[</span><span>
+</span><a name="line-75"></a><span class="hs-comment">-- B^T \cdot A^T = (A \cdot B)^T</span><span>
+</span><a name="line-76"></a><span class="hs-comment">-- \]</span><span>
+</span><a name="line-77"></a><span class="hs-comment">--</span><span>
+</span><a name="line-78"></a><span class="hs-comment">-- and, since the transposed matrix in column-major representation is equivalent</span><span>
+</span><a name="line-79"></a><span class="hs-comment">-- to our matrix in row-major representation, we can avoid any actual data</span><span>
+</span><a name="line-80"></a><span class="hs-comment">-- manipulation to get things into a form suitable for cuBLAS (phew!).</span><span>
+</span><a name="line-81"></a><span class="hs-comment">--</span><span>
+</span><a name="line-82"></a><span class="hs-comment">-- The final thing to take care of are the scaling parameters to the 'dgemm'</span><span>
+</span><a name="line-83"></a><span class="hs-comment">-- operation, \(\alpha\) and \(\beta\). By default, it is assumed that these</span><span>
+</span><a name="line-84"></a><span class="hs-comment">-- values reside in host memory, but this setting can be changed with</span><span>
+</span><a name="line-85"></a><span class="hs-comment">-- 'setPointerMode'; When set to 'Device' mode, the function</span><span>
+</span><a name="line-86"></a><span class="hs-comment">-- 'Foreign.CUDA.Ptr.withDevicePtr' can be used to treat the device memory</span><span>
+</span><a name="line-87"></a><span class="hs-comment">-- pointer as a plain pointer to pass to the function.</span><span>
+</span><a name="line-88"></a><span class="hs-comment">--</span><span>
+</span><a name="line-89"></a><span class="hs-comment">-- Now, we are ready to piece it all together:</span><span>
+</span><a name="line-90"></a><span class="hs-comment">--</span><span>
+</span><a name="line-91"></a><span class="hs-comment">-- &gt;&gt;&gt; import Foreign.Marshal</span><span>
+</span><a name="line-92"></a><span class="hs-comment">-- &gt;&gt;&gt; with 1.0 $ \alpha -&gt;</span><span>
+</span><a name="line-93"></a><span class="hs-comment">-- &gt;&gt;&gt; with 0.0 $ \beta -&gt;</span><span>
+</span><a name="line-94"></a><span class="hs-comment">-- &gt;&gt;&gt;   dgemm hdl N N colsB rowsA colsA alpha matB colsB matA colsA beta matC colsB</span><span>
+</span><a name="line-95"></a><span class="hs-comment">--</span><span>
+</span><a name="line-96"></a><span class="hs-comment">-- And retrieve the result:</span><span>
+</span><a name="line-97"></a><span class="hs-comment">--</span><span>
+</span><a name="line-98"></a><span class="hs-comment">-- &gt;&gt;&gt; print =&lt;&lt; CUDA.peekListArray sizeC matC</span><span>
+</span><a name="line-99"></a><span class="hs-comment">-- [9.0,12.0,15.0,19.0,26.0,33.0,29.0,40.0,51.0]</span><span>
+</span><a name="line-100"></a><span class="hs-comment">--</span><span>
+</span><a name="line-101"></a><span class="hs-comment">-- Finally, we should 'Foreign.CUDA.Driver.free' the device memory we allocated,</span><span>
+</span><a name="line-102"></a><span class="hs-comment">-- and release the BLAS context handle:</span><span>
+</span><a name="line-103"></a><span class="hs-comment">--</span><span>
+</span><a name="line-104"></a><span class="hs-comment">-- &gt;&gt;&gt; BLAS.destroy hdl</span><span>
+</span><a name="line-105"></a><span class="hs-comment">--</span><span>
+</span><a name="line-106"></a><span class="hs-comment">-- [/Additional information/]</span><span>
+</span><a name="line-107"></a><span class="hs-comment">--</span><span>
+</span><a name="line-108"></a><span class="hs-comment">-- For more information, see the NVIDIA cuBLAS documentation:</span><span>
+</span><a name="line-109"></a><span class="hs-comment">--</span><span>
+</span><a name="line-110"></a><span class="hs-comment">-- &lt;http://docs.nvidia.com/cuda/cublas/index.html&gt;</span><span>
+</span><a name="line-111"></a><span class="hs-comment">--</span><span>
+</span><a name="line-112"></a><span>
+</span><a name="line-113"></a><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">Foreign</span><span class="hs-operator">.</span><span class="hs-identifier">CUDA</span><span class="hs-operator">.</span><span class="hs-identifier">BLAS</span><span> </span><span class="hs-special">(</span><span>
+</span><a name="line-114"></a><span>
+</span><a name="line-115"></a><span>  </span><span class="hs-comment">-- * Control</span><span>
+</span><a name="line-116"></a><span>  </span><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">Foreign</span><span class="hs-operator">.</span><span class="hs-identifier">CUDA</span><span class="hs-operator">.</span><span class="hs-identifier">BLAS</span><span class="hs-operator">.</span><span class="hs-identifier">Context</span><span class="hs-special">,</span><span>
+</span><a name="line-117"></a><span>  </span><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">Foreign</span><span class="hs-operator">.</span><span class="hs-identifier">CUDA</span><span class="hs-operator">.</span><span class="hs-identifier">BLAS</span><span class="hs-operator">.</span><span class="hs-identifier">Stream</span><span class="hs-special">,</span><span>
+</span><a name="line-118"></a><span>  </span><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">Foreign</span><span class="hs-operator">.</span><span class="hs-identifier">CUDA</span><span class="hs-operator">.</span><span class="hs-identifier">BLAS</span><span class="hs-operator">.</span><span class="hs-identifier">Error</span><span class="hs-special">,</span><span>
+</span><a name="line-119"></a><span>
+</span><a name="line-120"></a><span>  </span><span class="hs-comment">-- * Operations</span><span>
+</span><a name="line-121"></a><span>  </span><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">Foreign</span><span class="hs-operator">.</span><span class="hs-identifier">CUDA</span><span class="hs-operator">.</span><span class="hs-identifier">BLAS</span><span class="hs-operator">.</span><span class="hs-identifier">Level1</span><span class="hs-special">,</span><span>
+</span><a name="line-122"></a><span>  </span><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">Foreign</span><span class="hs-operator">.</span><span class="hs-identifier">CUDA</span><span class="hs-operator">.</span><span class="hs-identifier">BLAS</span><span class="hs-operator">.</span><span class="hs-identifier">Level2</span><span class="hs-special">,</span><span>
+</span><a name="line-123"></a><span>  </span><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">Foreign</span><span class="hs-operator">.</span><span class="hs-identifier">CUDA</span><span class="hs-operator">.</span><span class="hs-identifier">BLAS</span><span class="hs-operator">.</span><span class="hs-identifier">Level3</span><span class="hs-special">,</span><span>
+</span><a name="line-124"></a><span>
+</span><a name="line-125"></a><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><a name="line-126"></a><span>
+</span><a name="line-127"></a><span class="hs-keyword">import</span><span> </span><a href="Foreign.CUDA.BLAS.Context.html"><span class="hs-identifier">Foreign</span><span class="hs-operator">.</span><span class="hs-identifier">CUDA</span><span class="hs-operator">.</span><span class="hs-identifier">BLAS</span><span class="hs-operator">.</span><span class="hs-identifier">Context</span></a><span>                </span><span class="hs-keyword">hiding</span><span> </span><span class="hs-special">(</span><span> </span><a href="Foreign.CUDA.BLAS.Internal.Types.html#useHandle"><span class="hs-identifier hs-var">useHandle</span></a><span> </span><span class="hs-special">)</span><span>
+</span><a name="line-128"></a><span class="hs-keyword">import</span><span> </span><a href="Foreign.CUDA.BLAS.Error.html"><span class="hs-identifier">Foreign</span><span class="hs-operator">.</span><span class="hs-identifier">CUDA</span><span class="hs-operator">.</span><span class="hs-identifier">BLAS</span><span class="hs-operator">.</span><span class="hs-identifier">Error</span></a><span>                  </span><span class="hs-keyword">hiding</span><span> </span><span class="hs-special">(</span><span> </span><a href="Foreign.CUDA.BLAS.Error.html#resultIfOk"><span class="hs-identifier hs-var">resultIfOk</span></a><span class="hs-special">,</span><span> </span><a href="Foreign.CUDA.BLAS.Error.html#nothingIfOk"><span class="hs-identifier hs-var">nothingIfOk</span></a><span> </span><span class="hs-special">)</span><span>
+</span><a name="line-129"></a><span class="hs-keyword">import</span><span> </span><a href="Foreign.CUDA.BLAS.Stream.html"><span class="hs-identifier">Foreign</span><span class="hs-operator">.</span><span class="hs-identifier">CUDA</span><span class="hs-operator">.</span><span class="hs-identifier">BLAS</span><span class="hs-operator">.</span><span class="hs-identifier">Stream</span></a><span>
+</span><a name="line-130"></a><span>
+</span><a name="line-131"></a><span class="hs-keyword">import</span><span> </span><a href="Foreign.CUDA.BLAS.Level1.html"><span class="hs-identifier">Foreign</span><span class="hs-operator">.</span><span class="hs-identifier">CUDA</span><span class="hs-operator">.</span><span class="hs-identifier">BLAS</span><span class="hs-operator">.</span><span class="hs-identifier">Level1</span></a><span>
+</span><a name="line-132"></a><span class="hs-keyword">import</span><span> </span><a href="Foreign.CUDA.BLAS.Level2.html"><span class="hs-identifier">Foreign</span><span class="hs-operator">.</span><span class="hs-identifier">CUDA</span><span class="hs-operator">.</span><span class="hs-identifier">BLAS</span><span class="hs-operator">.</span><span class="hs-identifier">Level2</span></a><span>
+</span><a name="line-133"></a><span class="hs-keyword">import</span><span> </span><a href="Foreign.CUDA.BLAS.Level3.html"><span class="hs-identifier">Foreign</span><span class="hs-operator">.</span><span class="hs-identifier">CUDA</span><span class="hs-operator">.</span><span class="hs-identifier">BLAS</span><span class="hs-operator">.</span><span class="hs-identifier">Level3</span></a><span>
+</span><a name="line-134"></a><span>
+</span><a name="line-135"></a></pre></body></html>

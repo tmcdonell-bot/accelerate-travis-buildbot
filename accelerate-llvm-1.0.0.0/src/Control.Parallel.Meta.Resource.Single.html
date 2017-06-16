@@ -1,0 +1,34 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-pragma">{-# OPTIONS_HADDOCK hide #-}</span><span>
+</span><a name="line-2"></a><span class="hs-comment">-- |</span><span>
+</span><a name="line-3"></a><span class="hs-comment">-- Module      : Control.Parallel.Meta.Resource.Single</span><span>
+</span><a name="line-4"></a><span class="hs-comment">-- Copyright   : [2014..2017] Trevor L. McDonell</span><span>
+</span><a name="line-5"></a><span class="hs-comment">--               [2014..2014] Vinod Grover (NVIDIA Corporation)</span><span>
+</span><a name="line-6"></a><span class="hs-comment">-- License     : BSD3</span><span>
+</span><a name="line-7"></a><span class="hs-comment">--</span><span>
+</span><a name="line-8"></a><span class="hs-comment">-- Maintainer  : Trevor L. McDonell &lt;tmcdonell@cse.unsw.edu.au&gt;</span><span>
+</span><a name="line-9"></a><span class="hs-comment">-- Stability   : experimental</span><span>
+</span><a name="line-10"></a><span class="hs-comment">-- Portability : non-portable (GHC extensions)</span><span>
+</span><a name="line-11"></a><span class="hs-comment">--</span><span>
+</span><a name="line-12"></a><span>
+</span><a name="line-13"></a><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">Control</span><span class="hs-operator">.</span><span class="hs-identifier">Parallel</span><span class="hs-operator">.</span><span class="hs-identifier">Meta</span><span class="hs-operator">.</span><span class="hs-identifier">Resource</span><span class="hs-operator">.</span><span class="hs-identifier">Single</span><span>
+</span><a name="line-14"></a><span>  </span><span class="hs-keyword">where</span><span>
+</span><a name="line-15"></a><span>
+</span><a name="line-16"></a><span class="hs-comment">-- accelerate</span><span>
+</span><a name="line-17"></a><span class="hs-keyword">import</span><span> </span><a href="Control.Parallel.Meta.html"><span class="hs-identifier">Control</span><span class="hs-operator">.</span><span class="hs-identifier">Parallel</span><span class="hs-operator">.</span><span class="hs-identifier">Meta</span></a><span>
+</span><a name="line-18"></a><span class="hs-keyword">import</span><span> </span><a href="Control.Parallel.Meta.Worker.html"><span class="hs-identifier">Control</span><span class="hs-operator">.</span><span class="hs-identifier">Parallel</span><span class="hs-operator">.</span><span class="hs-identifier">Meta</span><span class="hs-operator">.</span><span class="hs-identifier">Worker</span></a><span>
+</span><a name="line-19"></a><span>
+</span><a name="line-20"></a><span class="hs-comment">-- library</span><span>
+</span><a name="line-21"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">Data</span><span class="hs-operator">.</span><span class="hs-identifier">Concurrent</span><span class="hs-operator">.</span><span class="hs-identifier">Deque</span><span class="hs-operator">.</span><span class="hs-identifier">Class</span><span>
+</span><a name="line-22"></a><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="hs-identifier">Data</span><span class="hs-operator">.</span><span class="hs-identifier">Vector</span><span>                                    </span><span class="hs-keyword">as</span><span> </span><span class="hs-identifier">V</span><span>
+</span><a name="line-23"></a><span>
+</span><a name="line-24"></a><span>
+</span><a name="line-25"></a><span class="hs-comment">-- | Create a resource where each thread works in isolation. The resource is not</span><span>
+</span><a name="line-26"></a><span class="hs-comment">-- aware of any other sources of work (at this level) and only ever tries to pop</span><span>
+</span><a name="line-27"></a><span class="hs-comment">-- from its own local queue.</span><span>
+</span><a name="line-28"></a><span class="hs-comment">--</span><span>
+</span><a name="line-29"></a><span class="hs-identifier">mkResource</span><span> </span><span class="hs-glyph">::</span><span> </span><a href="Control.Parallel.Meta.html#Resource"><span class="hs-identifier hs-type">Resource</span></a><span>
+</span><a name="line-30"></a><a name="mkResource"><a href="Control.Parallel.Meta.Resource.Single.html#mkResource"><span class="hs-identifier">mkResource</span></a></a><span>
+</span><a name="line-31"></a><span>  </span><span class="hs-glyph">=</span><span> </span><a href="Control.Parallel.Meta.html#Resource"><span class="hs-identifier hs-var">Resource</span></a><span>
+</span><a name="line-32"></a><span>  </span><span class="hs-operator hs-var">$</span><span> </span><a href="Control.Parallel.Meta.html#WorkSearch"><span class="hs-identifier hs-var">WorkSearch</span></a><span> </span><span class="hs-operator hs-var">$</span><span> </span><span class="hs-glyph">\</span><a name="local-1627515327"><a href="#local-1627515327"><span class="hs-identifier">tid</span></a></a><span> </span><a name="local-1627515328"><a href="#local-1627515328"><span class="hs-identifier">workers</span></a></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier hs-var">tryPopL</span><span> </span><span class="hs-special">(</span><span class="hs-identifier">workpool</span><span> </span><span class="hs-special">(</span><span class="hs-identifier hs-var">V</span><span class="hs-operator hs-var">.</span><span class="hs-identifier hs-var">unsafeIndex</span><span> </span><a href="#local-1627515328"><span class="hs-identifier hs-var">workers</span></a><span> </span><a href="#local-1627515327"><span class="hs-identifier hs-var">tid</span></a><span class="hs-special">)</span><span class="hs-special">)</span><span>
+</span><a name="line-33"></a><span>
+</span><a name="line-34"></a></pre></body></html>

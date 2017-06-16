@@ -1,0 +1,56 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-pragma">{-# LANGUAGE DataKinds            #-}</span><span>
+</span><a name="line-2"></a><span class="hs-pragma">{-# LANGUAGE GADTs                #-}</span><span>
+</span><a name="line-3"></a><span class="hs-pragma">{-# LANGUAGE KindSignatures       #-}</span><span>
+</span><a name="line-4"></a><span class="hs-pragma">{-# LANGUAGE TypeOperators        #-}</span><span>
+</span><a name="line-5"></a><span class="hs-pragma">{-# OPTIONS_HADDOCK hide #-}</span><span>
+</span><a name="line-6"></a><span class="hs-comment">-- |</span><span>
+</span><a name="line-7"></a><span class="hs-comment">-- Module      : LLVM.AST.Type.Global</span><span>
+</span><a name="line-8"></a><span class="hs-comment">-- Copyright   : [2015..2017] Trevor L. McDonell</span><span>
+</span><a name="line-9"></a><span class="hs-comment">-- License     : BSD3</span><span>
+</span><a name="line-10"></a><span class="hs-comment">--</span><span>
+</span><a name="line-11"></a><span class="hs-comment">-- Maintainer  : Trevor L. McDonell &lt;tmcdonell@cse.unsw.edu.au&gt;</span><span>
+</span><a name="line-12"></a><span class="hs-comment">-- Stability   : experimental</span><span>
+</span><a name="line-13"></a><span class="hs-comment">-- Portability : non-portable (GHC extensions)</span><span>
+</span><a name="line-14"></a><span class="hs-comment">--</span><span>
+</span><a name="line-15"></a><span>
+</span><a name="line-16"></a><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">LLVM</span><span class="hs-operator">.</span><span class="hs-identifier">AST</span><span class="hs-operator">.</span><span class="hs-identifier">Type</span><span class="hs-operator">.</span><span class="hs-identifier">Global</span><span>
+</span><a name="line-17"></a><span>  </span><span class="hs-keyword">where</span><span>
+</span><a name="line-18"></a><span>
+</span><a name="line-19"></a><span class="hs-keyword">import</span><span> </span><a href="LLVM.AST.Type.Name.html"><span class="hs-identifier">LLVM</span><span class="hs-operator">.</span><span class="hs-identifier">AST</span><span class="hs-operator">.</span><span class="hs-identifier">Type</span><span class="hs-operator">.</span><span class="hs-identifier">Name</span></a><span>
+</span><a name="line-20"></a><span class="hs-keyword">import</span><span> </span><a href="LLVM.AST.Type.Operand.html"><span class="hs-identifier">LLVM</span><span class="hs-operator">.</span><span class="hs-identifier">AST</span><span class="hs-operator">.</span><span class="hs-identifier">Type</span><span class="hs-operator">.</span><span class="hs-identifier">Operand</span></a><span>
+</span><a name="line-21"></a><span class="hs-keyword">import</span><span> </span><a href="LLVM.AST.Type.Representation.html"><span class="hs-identifier">LLVM</span><span class="hs-operator">.</span><span class="hs-identifier">AST</span><span class="hs-operator">.</span><span class="hs-identifier">Type</span><span class="hs-operator">.</span><span class="hs-identifier">Representation</span></a><span>
+</span><a name="line-22"></a><span>
+</span><a name="line-23"></a><span>
+</span><a name="line-24"></a><span class="hs-comment">-- | Parameters for functions</span><span>
+</span><a name="line-25"></a><span class="hs-comment">--</span><span>
+</span><a name="line-26"></a><span class="hs-keyword">data</span><span> </span><a name="Parameter"><a href="LLVM.AST.Type.Global.html#Parameter"><span class="hs-identifier">Parameter</span></a></a><span> </span><a name="local-1627621463"><a href="#local-1627621463"><span class="hs-identifier">a</span></a></a><span> </span><span class="hs-keyword">where</span><span>
+</span><a name="line-27"></a><span>  </span><a name="Parameter"><a href="LLVM.AST.Type.Global.html#Parameter"><span class="hs-identifier">Parameter</span></a></a><span> </span><span class="hs-glyph">::</span><span> </span><a href="LLVM.AST.Type.Representation.html#PrimType"><span class="hs-identifier hs-type">PrimType</span></a><span> </span><a href="#local-1627621464"><span class="hs-identifier hs-type">a</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><a href="LLVM.AST.Type.Name.html#Name"><span class="hs-identifier hs-type">Name</span></a><span> </span><a href="#local-1627621464"><span class="hs-identifier hs-type">a</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><a href="LLVM.AST.Type.Global.html#Parameter"><span class="hs-identifier hs-type">Parameter</span></a><span> </span><a href="#local-1627621464"><span class="hs-identifier hs-type">a</span></a><span>
+</span><a name="line-28"></a><span>
+</span><a name="line-29"></a><span class="hs-comment">-- | Attributes for the function call instruction</span><span>
+</span><a name="line-30"></a><span class="hs-comment">--</span><span>
+</span><a name="line-31"></a><span class="hs-keyword">data</span><span> </span><a name="FunctionAttribute"><a href="LLVM.AST.Type.Global.html#FunctionAttribute"><span class="hs-identifier">FunctionAttribute</span></a></a><span>
+</span><a name="line-32"></a><span>  </span><span class="hs-glyph">=</span><span> </span><a name="NoReturn"><a href="LLVM.AST.Type.Global.html#NoReturn"><span class="hs-identifier">NoReturn</span></a></a><span>
+</span><a name="line-33"></a><span>  </span><span class="hs-glyph">|</span><span> </span><a name="NoUnwind"><a href="LLVM.AST.Type.Global.html#NoUnwind"><span class="hs-identifier">NoUnwind</span></a></a><span>
+</span><a name="line-34"></a><span>  </span><span class="hs-glyph">|</span><span> </span><a name="ReadOnly"><a href="LLVM.AST.Type.Global.html#ReadOnly"><span class="hs-identifier">ReadOnly</span></a></a><span>
+</span><a name="line-35"></a><span>  </span><span class="hs-glyph">|</span><span> </span><a name="ReadNone"><a href="LLVM.AST.Type.Global.html#ReadNone"><span class="hs-identifier">ReadNone</span></a></a><span>
+</span><a name="line-36"></a><span>  </span><span class="hs-glyph">|</span><span> </span><a name="AlwaysInline"><a href="LLVM.AST.Type.Global.html#AlwaysInline"><span class="hs-identifier">AlwaysInline</span></a></a><span>
+</span><a name="line-37"></a><span>  </span><span class="hs-glyph">|</span><span> </span><a name="NoDuplicate"><a href="LLVM.AST.Type.Global.html#NoDuplicate"><span class="hs-identifier">NoDuplicate</span></a></a><span>
+</span><a name="line-38"></a><span>  </span><span class="hs-glyph">|</span><span> </span><a name="Convergent"><a href="LLVM.AST.Type.Global.html#Convergent"><span class="hs-identifier">Convergent</span></a></a><span>
+</span><a name="line-39"></a><span>
+</span><a name="line-40"></a><span class="hs-comment">-- | Attribute groups are groups of attributes that are referenced by</span><span>
+</span><a name="line-41"></a><span class="hs-comment">-- objects within the IR. To use an attribute group, an object must</span><span>
+</span><a name="line-42"></a><span class="hs-comment">-- reference its GroupID.</span><span>
+</span><a name="line-43"></a><span class="hs-comment">--</span><span>
+</span><a name="line-44"></a><span class="hs-keyword">data</span><span> </span><a name="GroupID"><a href="LLVM.AST.Type.Global.html#GroupID"><span class="hs-identifier">GroupID</span></a></a><span> </span><span class="hs-glyph">=</span><span> </span><a name="GroupID"><a href="LLVM.AST.Type.Global.html#GroupID"><span class="hs-identifier">GroupID</span></a></a><span> </span><span class="hs-glyph">!</span><span class="hs-identifier hs-type">Word</span><span>
+</span><a name="line-45"></a><span>
+</span><a name="line-46"></a><span class="hs-comment">-- | A global function definition.</span><span>
+</span><a name="line-47"></a><span class="hs-comment">--</span><span>
+</span><a name="line-48"></a><span class="hs-keyword">data</span><span> </span><a name="GlobalFunction"><a href="LLVM.AST.Type.Global.html#GlobalFunction"><span class="hs-identifier">GlobalFunction</span></a></a><span> </span><a name="local-1627621457"><a href="#local-1627621457"><span class="hs-identifier">args</span></a></a><span> </span><a name="local-1627621458"><a href="#local-1627621458"><span class="hs-identifier">t</span></a></a><span> </span><span class="hs-keyword">where</span><span>
+</span><a name="line-49"></a><span>  </span><a name="Body"><a href="LLVM.AST.Type.Global.html#Body"><span class="hs-identifier">Body</span></a></a><span> </span><span class="hs-glyph">::</span><span> </span><a href="LLVM.AST.Type.Representation.html#Type"><span class="hs-identifier hs-type">Type</span></a><span> </span><a href="#local-1627621459"><span class="hs-identifier hs-type">r</span></a><span>     </span><span class="hs-glyph">-&gt;</span><span> </span><a href="LLVM.AST.Type.Name.html#Label"><span class="hs-identifier hs-type">Label</span></a><span>                              </span><span class="hs-glyph">-&gt;</span><span> </span><a href="LLVM.AST.Type.Global.html#GlobalFunction"><span class="hs-identifier hs-type">GlobalFunction</span></a><span> </span><span class="hs-char">'[]         r
+  Lam  :: PrimType a -&gt; Operand a -&gt; GlobalFunction args t -&gt; GlobalFunction (a ': args) t
+
+data HList (l :: [*]) where
+  HNil  ::                 HList '[]
+  HCons :: e -&gt; HList l -&gt; HList (e ': l)
+
+</span></pre></body></html>
