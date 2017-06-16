@@ -54,7 +54,7 @@ packages:
 
 - location:
     git:    https://github.com/tmcdonell/linear-accelerate.git
-    commit: 73a7755e0c6454c8b4f1c89b2e70d26fce197211
+    commit: 0d64b33be77db64245a51734d6eda3f17254279d
 
 - location:
     git:    https://github.com/tmcdonell/mwc-random-accelerate.git
