@@ -98,6 +98,14 @@ H :: Transpose
 --   
 --   &lt;math&gt;
 --   
+--   where:
+--   
+--   <ul>
+--   <li><a>shape</a> &lt;math&gt; <tt>= Z :. m :. n</tt></li>
+--   <li><a>shape</a> &lt;math&gt; <tt>= Z :. n</tt></li>
+--   <li><a>shape</a> &lt;math&gt; <tt>= Z :. m</tt></li>
+--   </ul>
+--   
 --   
 --   <a>https://software.intel.com/en-us/mkl-developer-reference-c-cblas-gemv</a>
 gemv :: forall e. Numeric e => Exp e -> Transpose -> Acc (Matrix e) -> Acc (Vector e) -> Acc (Vector e)
