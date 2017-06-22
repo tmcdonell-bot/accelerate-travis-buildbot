@@ -1,0 +1,105 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>Foreign.NVVM</title><link href="ocean.css" rel="stylesheet" type="text/css" title="Ocean" /><script src="haddock-util.js" type="text/javascript"></script><script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script><script type="text/javascript">//<![CDATA[
+window.onload = function () {pageLoad();setSynopsis("mini_Foreign-NVVM.html");};
+//]]>
+</script></head><body><div id="package-header"><ul class="links" id="page-menu"><li><a href="src/Foreign.NVVM.html">Source</a></li><li><a href="index.html">Contents</a></li><li><a href="doc-index.html">Index</a></li></ul><p class="caption">nvvm-0.7.5.2: FFI bindings to NVVM</p></div><div id="content"><div id="module-header"><table class="info"><tr><th valign="top">Copyright</th><td>[2016] Trevor L. McDonell</td></tr><tr><th>License</th><td>BSD</td></tr><tr><th>Safe Haskell</th><td>None</td></tr><tr><th>Language</th><td>Haskell2010</td></tr></table><p class="caption">Foreign.NVVM</p></div><div id="description"><p class="caption">Description</p><div class="doc"><p>This module defines an interface to the <em>libNVVM</em> library provided by NVIDIA as
+ part of the CUDA toolkit. It compiles NVVM IR, a compiler intermediate
+ representation based on LLVM IR, into PTX code suitable for execution on
+ NVIDIA GPUs. NVVM IR is a subset of LLVM IR, with a set of rules,
+ restrictions, conventions, and intrinsic functions.</p><p>NVIDIA's own <code>nvcc</code> compiler uses NVVM IR and <em>libNVVM</em> internally as part of
+ the CUDA C compilation process. In contrast to the (open-source) NVPTX target
+ included with the standard LLVM toolchain (which also compiles NVVM IR into
+ PTX code), <em>libNVVM</em> includes a set of proprietary optimisation passes, which
+ <em>may</em> result in faster GPU code. More information on NVVM IR can be found
+ here:</p><p><a href="http://docs.nvidia.com/cuda/nvvm-ir-spec/index.html">http://docs.nvidia.com/cuda/nvvm-ir-spec/index.html</a></p><p>The following is a short tutorial on using this library. The steps can be
+ copied into a file, or run directly in <code>ghci</code>, in which case <code>ghci</code> should be
+ launched with the option <code>-fno-ghci-sandbox</code>. This is because CUDA maintains
+ CPU-local state, so operations must be run from a bound thread.</p><p>Note that the focus of this library is the generation of executable PTX code
+ from NVVM IR, so we will additionally need to use the <code>cuda</code> package to
+ control and execute the compiled program. In this tutorial we will go over
+ those steps quickly, but see the <code>cuda</code> package for more information and
+ a similar tutorial:</p><p><a href="https://hackage.haskell.org/package/cuda">https://hackage.haskell.org/package/cuda</a></p><dl><dt><em>Initialise the CUDA environment</em></dt><dd></dd></dl><p>Before any operation can be performed, we must initialise the CUDA Driver
+ API.</p><pre class="screen"><code class="prompt">&gt;&gt;&gt; </code><strong class="userinput"><code>import Foreign.CUDA.Driver as CUDA
+</code></strong><code class="prompt">&gt;&gt;&gt; </code><strong class="userinput"><code>CUDA.initialise []
+</code></strong></pre><p>Select a GPU and create an execution context for that device. Each available
+ device is given a unique numeric identifier (beginning at zero). For this
+ example we just select the first device (the default).</p><pre class="screen"><code class="prompt">&gt;&gt;&gt; </code><strong class="userinput"><code>dev0 &lt;- CUDA.device 0
+</code></strong><code class="prompt">&gt;&gt;&gt; </code><strong class="userinput"><code>prp0 &lt;- CUDA.props dev0
+</code></strong><code class="prompt">&gt;&gt;&gt; </code><strong class="userinput"><code>ctx0 &lt;- CUDA.create dev0 []
+</code></strong></pre><p>Remember that once the context is no longer needed, it should be
+ <code><a href="../cuda-0.8.0.0/Foreign-CUDA-Driver-Context-Base.html#v:destroy">destroy</a></code>ed in order to free up any
+ resources that were allocated into it.</p><dl><dt><em>Compiling kernels with NVVM</em></dt><dd></dd></dl><p>For this example we will step through executing the equivalent of the
+ following Haskell function, which element-wise adds the elements of two
+ arrays:</p><pre class="screen"><code class="prompt">&gt;&gt;&gt; </code><strong class="userinput"><code>vecAdd xs ys = zipWith (+) xs ys
+</code></strong></pre><p>The following NVVM IR implements this for the GPU. Note that this example is
+ written using NVVM IR version 1.2 syntax (corresponding to CUDA toolkit 7.5),
+ which is based on LLVM IR version 3.4. The human readable representation of
+ LLVM IR (and by extension NVVM IR) is notorious for changing between
+ releases, whereas the bitcode representation is somewhat more stable. You may
+ wish to keep this in mind for your own programs.</p><pre>target datalayout = &quot;e-p:64:64:64-i1:8:8-i8:8:8-i16:16:16-i32:32:32-i64:64:64-f32:32:32-f64:64:64-v16:16:16-v32:32:32-v64:64:64-v128:128:128-n16:32:64&quot;
+target triple = &quot;nvptx64-nvidia-cuda&quot;
+
+define void @vecAdd(float* %A, float* %B, float* %C) {
+entry:
+  ; What is my ID?
+  %id = tail call i32 @llvm.nvvm.read.ptx.sreg.tid.x() readnone nounwind
+
+  ; Compute pointers into A, B, and C
+  %ptrA = getelementptr float* %A, i32 %id
+  %ptrB = getelementptr float* %B, i32 %id
+  %ptrC = getelementptr float* %C, i32 %id
+
+  ; Read A, B
+  %valA = load float* %ptrA, align 4
+  %valB = load float* %ptrB, align 4
+
+  ; Compute C = A + B
+  %valC = fadd float %valA, %valB
+
+  ; Store back to C
+  store float %valC, float* %ptrC, align 4
+
+  ret void
+}
+
+; Intrinsic to read threadIdx.x
+declare i32 @llvm.nvvm.read.ptx.sreg.tid.x() readnone nounwind
+
+!nvvm.annotations = !{!0}
+!0 = metadata !{void (float*, float*, float*)* @vecAdd, metadata !&quot;kernel&quot;, i64 1}</pre><p>For reference, in CUDA this kernel would have been written as:</p><pre>extern &quot;C&quot; __global__ void vecAdd(float *xs, float* ys, float *zs)
+{
+    int ix = threadIdx.x;
+
+    zs[ix] = xs[ix] + ys[ix];
+}</pre><p>The NVVM IR can be stored directly in the program as a <code>[Byte]String</code>, but
+ here I will assume that it is saved to a file <code>vector_add.ll</code>:</p><pre class="screen"><code class="prompt">&gt;&gt;&gt; </code><strong class="userinput"><code>import Data.ByteString as B
+</code></strong><code class="prompt">&gt;&gt;&gt; </code><strong class="userinput"><code>ll &lt;- B.readFile &quot;vector_add.ll&quot;
+</code></strong></pre><p>Now we can use NVVM to compile this into PTX code:</p><pre class="screen"><code class="prompt">&gt;&gt;&gt; </code><strong class="userinput"><code>import Foreign.NVVM as NVVM
+</code></strong><code class="prompt">&gt;&gt;&gt; </code><strong class="userinput"><code>ptx &lt;- NVVM.compileModule &quot;vecAdd&quot; ll [ NVVM.Target (CUDA.computeCapability prp0) ]
+</code></strong></pre><p>Notice that we asked NVVM to specialise the generated PTX code for our
+ current device. By default the code will be compiled for compute capability
+ 2.0 (the earliest supported target).</p><p>The generated PTX code can then be loaded into the current CUDA execution
+ context, from which we can extract a reference to the GPU kernel that we will
+ later execute.</p><pre class="screen"><code class="prompt">&gt;&gt;&gt; </code><strong class="userinput"><code>mdl    &lt;- CUDA.loadData (NVVM.compileResult ptx)
+</code></strong><code class="prompt">&gt;&gt;&gt; </code><strong class="userinput"><code>vecAdd &lt;- CUDA.getFun mdl &quot;vecAdd&quot;
+</code></strong></pre><p>After we are finished with the module, it is a good idea to
+ <code><a href="../cuda-0.8.0.0/Foreign-CUDA-Driver-Module-Base.html#v:unload">unload</a></code> it in order to free any resources it
+ used.</p><dl><dt><em>Executing the kernel</em></dt><dd></dd></dl><p>Executing the <code>vecAdd</code> kernel now proceeds exactly like executing any other
+ kernel function using the CUDA Driver API. The following is a quick overview;
+ see the tutorial in the <code>cuda</code> package for more information.</p><p>First, generate some data and copy it to the device. We also allocate an
+ (uninitialised) array on the device to store the results.</p><pre class="screen"><code class="prompt">&gt;&gt;&gt; </code><strong class="userinput"><code>let xs = [1..256]   :: [Float]
+</code></strong><code class="prompt">&gt;&gt;&gt; </code><strong class="userinput"><code>let ys = [2,4..512] :: [Float]
+</code></strong><code class="prompt">&gt;&gt;&gt; </code><strong class="userinput"><code>xs_dev &lt;- CUDA.newListArray xs
+</code></strong><code class="prompt">&gt;&gt;&gt; </code><strong class="userinput"><code>ys_dev &lt;- CUDA.newListArray ys
+</code></strong><code class="prompt">&gt;&gt;&gt; </code><strong class="userinput"><code>zs_dev &lt;- CUDA.mallocArray 256 :: IO (CUDA.DevicePtr Float)
+</code></strong></pre><p>For this simple kernel we execute it using a single (one dimensional) thread
+ block, with one thread computing each element of the output.</p><pre class="screen"><code class="prompt">&gt;&gt;&gt; </code><strong class="userinput"><code>CUDA.launchKernel vecAdd (1,1,1) (256,1,1) 0 Nothing [CUDA.VArg xs_dev, CUDA.VArg ys_dev, CUDA.VArg zs_dev]
+</code></strong></pre><p>Finally, we can copy the results back to the host, and deallocate the arrays
+ from the GPU.</p><pre class="screen"><code class="prompt">&gt;&gt;&gt; </code><strong class="userinput"><code>zs &lt;- CUDA.peekListArray 256 zs_dev
+</code></strong><code class="prompt">&gt;&gt;&gt; </code><strong class="userinput"><code>CUDA.free xs_dev
+</code></strong><code class="prompt">&gt;&gt;&gt; </code><strong class="userinput"><code>CUDA.free ys_dev
+</code></strong><code class="prompt">&gt;&gt;&gt; </code><strong class="userinput"><code>CUDA.free zs_dev
+</code></strong></pre><dl><dt><em>Next steps</em></dt><dd></dd></dl><p>The library also provides functions for compiling several NVVM IR sources
+ into a single module. In particular this is useful when linking against
+ <code>libdevice</code>, a standard library of functions in NVVM IR which implement, for
+ example, math primitives and bitwise operations. More information on
+ <code>libdevice</code> can be found here:</p><p><a href="http://docs.nvidia.com/cuda/libdevice-users-guide/index.html">http://docs.nvidia.com/cuda/libdevice-users-guide/index.html</a></p></div></div><div id="interface"><h1>Documentation</h1><div class="top"><p class="src">module <a href="Foreign-NVVM-Compile.html">Foreign.NVVM.Compile</a></p></div><div class="top"><p class="src">module <a href="Foreign-NVVM-Error.html">Foreign.NVVM.Error</a></p></div><div class="top"><p class="src">module <a href="Foreign-NVVM-Info.html">Foreign.NVVM.Info</a></p></div></div></div><div id="footer"><p>Produced by <a href="http://www.haskell.org/haddock/">Haddock</a> version 2.17.3</p></div></body></html>

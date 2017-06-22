@@ -1,0 +1,32 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-comment">-- |</span><span>
+</span><a name="line-2"></a><span class="hs-comment">-- Module      : Data.Array.Accelerate.Data.BigWord</span><span>
+</span><a name="line-3"></a><span class="hs-comment">-- Copyright   : [2016] Trevor L. McDonell</span><span>
+</span><a name="line-4"></a><span class="hs-comment">-- License     : BSD3</span><span>
+</span><a name="line-5"></a><span class="hs-comment">--</span><span>
+</span><a name="line-6"></a><span class="hs-comment">-- Maintainer  : Trevor L. McDonell &lt;tmcdonell@cse.unsw.edu.au&gt;</span><span>
+</span><a name="line-7"></a><span class="hs-comment">-- Stability   : experimental</span><span>
+</span><a name="line-8"></a><span class="hs-comment">-- Portability : non-portable (GHC extensions)</span><span>
+</span><a name="line-9"></a><span class="hs-comment">--</span><span>
+</span><a name="line-10"></a><span class="hs-comment">-- Fixed length unsigned word types</span><span>
+</span><a name="line-11"></a><span>
+</span><a name="line-12"></a><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">Data</span><span class="hs-operator">.</span><span class="hs-identifier">Array</span><span class="hs-operator">.</span><span class="hs-identifier">Accelerate</span><span class="hs-operator">.</span><span class="hs-identifier">Data</span><span class="hs-operator">.</span><span class="hs-identifier">BigWord</span><span> </span><span class="hs-special">(</span><span>
+</span><a name="line-13"></a><span>
+</span><a name="line-14"></a><span>  </span><a href="Data.Array.Accelerate.Internal.BigWord.html#Word96"><span class="hs-identifier hs-type">Word96</span></a><span class="hs-special">,</span><span>
+</span><a name="line-15"></a><span>  </span><a href="Data.Array.Accelerate.Internal.BigWord.html#Word128"><span class="hs-identifier hs-type">Word128</span></a><span class="hs-special">,</span><span>
+</span><a name="line-16"></a><span>  </span><a href="Data.Array.Accelerate.Internal.BigWord.html#Word160"><span class="hs-identifier hs-type">Word160</span></a><span class="hs-special">,</span><span>
+</span><a name="line-17"></a><span>  </span><a href="Data.Array.Accelerate.Internal.BigWord.html#Word192"><span class="hs-identifier hs-type">Word192</span></a><span class="hs-special">,</span><span>
+</span><a name="line-18"></a><span>  </span><a href="Data.Array.Accelerate.Internal.BigWord.html#Word224"><span class="hs-identifier hs-type">Word224</span></a><span class="hs-special">,</span><span>
+</span><a name="line-19"></a><span>  </span><a href="Data.Array.Accelerate.Internal.BigWord.html#Word256"><span class="hs-identifier hs-type">Word256</span></a><span class="hs-special">,</span><span>
+</span><a name="line-20"></a><span>  </span><a href="Data.Array.Accelerate.Internal.BigWord.html#Word512"><span class="hs-identifier hs-type">Word512</span></a><span class="hs-special">,</span><span>
+</span><a name="line-21"></a><span>
+</span><a name="line-22"></a><span>  </span><span class="hs-comment">-- ** Internals</span><span>
+</span><a name="line-23"></a><span>  </span><a href="Data.Array.Accelerate.Internal.BigWord.html#BigWord"><span class="hs-identifier hs-type">BigWord</span></a><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span class="hs-special">,</span><span>
+</span><a name="line-24"></a><span>  </span><a href="Data.Array.Accelerate.Internal.Num2.html#Num2"><span class="hs-identifier hs-type">Num2</span></a><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span class="hs-special">,</span><span>
+</span><a name="line-25"></a><span>
+</span><a name="line-26"></a><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><a name="line-27"></a><span>
+</span><a name="line-28"></a><span class="hs-keyword">import</span><span> </span><a href="Data.Array.Accelerate.Internal.Num2.html"><span class="hs-identifier">Data</span><span class="hs-operator">.</span><span class="hs-identifier">Array</span><span class="hs-operator">.</span><span class="hs-identifier">Accelerate</span><span class="hs-operator">.</span><span class="hs-identifier">Internal</span><span class="hs-operator">.</span><span class="hs-identifier">Num2</span></a><span>
+</span><a name="line-29"></a><span class="hs-keyword">import</span><span> </span><a href="Data.Array.Accelerate.Internal.BigWord.html"><span class="hs-identifier">Data</span><span class="hs-operator">.</span><span class="hs-identifier">Array</span><span class="hs-operator">.</span><span class="hs-identifier">Accelerate</span><span class="hs-operator">.</span><span class="hs-identifier">Internal</span><span class="hs-operator">.</span><span class="hs-identifier">BigWord</span></a><span>
+</span><a name="line-30"></a><span class="hs-keyword">import</span><span> </span><a href="Data.Array.Accelerate.Internal.Orphans.html"><span class="hs-identifier">Data</span><span class="hs-operator">.</span><span class="hs-identifier">Array</span><span class="hs-operator">.</span><span class="hs-identifier">Accelerate</span><span class="hs-operator">.</span><span class="hs-identifier">Internal</span><span class="hs-operator">.</span><span class="hs-identifier">Orphans</span></a><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span>
+</span><a name="line-31"></a><span>
+</span><a name="line-32"></a></pre></body></html>
