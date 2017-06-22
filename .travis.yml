@@ -71,22 +71,16 @@ matrix:
   exclude:
     - compiler: GHC-8.0.2
       env: TARGET=accelerate-cuda
-  exclude:
     - compiler: GHC-7.8.4
       env: TARGET=accelerate-io
-  exclude:
     - compiler: GHC-7.8.4
       env: TARGET=accelerate-bignum
-  exclude:
     - compiler: GHC-7.8.4
       env: TARGET=accelerate-examples
-  exclude:
     - compiler: GHC-7.8.4
       env: TARGET=linear-accelerate
-  exclude:
     - compiler: GHC-7.8.4
       env: TARGET=lens-accelerate
-  exclude:
     - compiler: GHC-7.8.4
       env: TARGET=lulesh-accelerate
 
