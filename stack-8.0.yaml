@@ -1,16 +1,12 @@
 # For more information, see: https://github.com/commercialhaskell/stack/blob/release/doc/yaml_configuration.md
 # vim: nospell filetype=yaml
 
-resolver: lts-7.8
+resolver: lts-8.0
 
 packages:
 - location:
     git:    https://github.com/tmcdonell/accelerate.git
     commit: be851212c1f5c26e948b85c5e428207c78bdae16
-
-- location:
-    git:    https://github.com/tmcdonell/accelerate-cuda.git
-    commit: 6285f87859788628ce68d1ff76ce7b348f585f9e
 
 - location:
     git:    https://github.com/tmcdonell/accelerate-llvm.git
@@ -105,7 +101,7 @@ flags:
   llvm-hs:
     shared-llvm: true
   accelerate-examples:
-    cuda:       true
+    cuda:       false
     llvm-cpu:   true
     llvm-ptx:   true
     gui:        true

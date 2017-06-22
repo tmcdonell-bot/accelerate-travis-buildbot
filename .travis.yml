@@ -38,7 +38,7 @@ addons:
       - llvm-4.0-dev
 
 compiler:
-  - GHC-8.0.1
+  - GHC-8.0.2
   - GHC-7.10.3
   - GHC-7.8.4
 
@@ -69,8 +69,27 @@ env:
 matrix:
   fast_finish: true
   exclude:
+    - compiler: GHC-8.0.2
+      env: TARGET=accelerate-cuda
+  exclude:
+    - compiler: GHC-7.8.4
+      env: TARGET=accelerate-io
+  exclude:
     - compiler: GHC-7.8.4
       env: TARGET=accelerate-bignum
+  exclude:
+    - compiler: GHC-7.8.4
+      env: TARGET=accelerate-examples
+  exclude:
+    - compiler: GHC-7.8.4
+      env: TARGET=linear-accelerate
+  exclude:
+    - compiler: GHC-7.8.4
+      env: TARGET=lens-accelerate
+  exclude:
+    - compiler: GHC-7.8.4
+      env: TARGET=lulesh-accelerate
+
 
 before_install:
   - export PATH=/opt/cabal/1.24/bin:/opt/happy/1.19.5/bin:$HOME/.cabal/bin:$PATH
