@@ -80,6 +80,10 @@ packages:
     git:    https://github.com/{REPO_cublas}.git
     commit: {SHA_cublas}
 
+- location:
+    git:    https://github.com/{REPO_nvvm}.git
+    commit: {SHA_nvvm}
+
 extra-deps:
 - 'atomic-primops-0.8.0.4'
 - 'attoparsec-0.13.1.0'

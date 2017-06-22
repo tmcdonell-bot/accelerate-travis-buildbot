@@ -27,4 +27,5 @@ Status of individual repositories:
  - [![Build Status](https://travis-ci.org/{REPO_cuda}.svg?branch=master)](https://travis-ci.org/{REPO_cuda}) [{REPO_cuda}](https://github.com/{REPO_cuda})
  - [![Build Status](https://travis-ci.org/{REPO_cufft}.svg?branch=master)](https://travis-ci.org/{REPO_cufft}) [{REPO_cufft}](https://github.com/{REPO_cufft})
  - [![Build Status](https://travis-ci.org/{REPO_cublas}.svg?branch=master)](https://travis-ci.org/{REPO_cublas}) [{REPO_cublas}](https://github.com/{REPO_cublas})
+ - [![Build Status](https://travis-ci.org/{REPO_nvvm}.svg?branch=master)](https://travis-ci.org/{REPO_nvvm}) [{REPO_nvvm}](https://github.com/{REPO_nvvm})
 

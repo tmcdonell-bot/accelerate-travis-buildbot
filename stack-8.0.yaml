@@ -84,6 +84,10 @@ packages:
     git:    https://github.com/tmcdonell/cublas.git
     commit: 37eb3367b7edaea0072b8c809e8ac1ef3353d769
 
+- location:
+    git:    https://github.com/tmcdonell/nvvm.git
+    commit: 7aef653595eb6653928262592718ba7a701123b2
+
 extra-deps:
 - 'cabal-doctest-1'
 - 'chaselev-deque-0.5.0.5'

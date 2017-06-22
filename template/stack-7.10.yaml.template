@@ -84,6 +84,10 @@ packages:
     git:    https://github.com/{REPO_cublas}.git
     commit: {SHA_cublas}
 
+- location:
+    git:    https://github.com/{REPO_nvvm}.git
+    commit: {SHA_nvvm}
+
 extra-deps:
 - 'cabal-doctest-1'
 - 'chaselev-deque-0.5.0.5'

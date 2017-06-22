@@ -26,6 +26,7 @@ s|{SHA_lulesh-accelerate}|819f7eb63a1dd34d309e41e919e6552d70e82b4e|
 s|{SHA_cuda}|1bff17152088384b71a439b01ec993a54e2618c9|
 s|{SHA_cufft}|84445f284b2f19b3de157d7025cdba5d839e0225|
 s|{SHA_cublas}|37eb3367b7edaea0072b8c809e8ac1ef3353d769|
+s|{SHA_nvvm}|7aef653595eb6653928262592718ba7a701123b2|
 
 # TRAVIS_REPO_SLUG
 s|{REPO_accelerate}|tmcdonell/accelerate|g
@@ -47,4 +48,5 @@ s|{REPO_lulesh-accelerate}|tmcdonell/lulesh-accelerate|g
 s|{REPO_cuda}|tmcdonell/cuda|g
 s|{REPO_cufft}|tmcdonell/cufft|g
 s|{REPO_cublas}|tmcdonell/cublas|g
+s|{REPO_nvvm}|tmcdonell/nvvm|g
 
