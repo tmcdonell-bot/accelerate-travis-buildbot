@@ -82,7 +82,7 @@ packages:
 
 - location:
     git:    https://github.com/tmcdonell/nvvm.git
-    commit: 7aef653595eb6653928262592718ba7a701123b2
+    commit: a720a7d568ff4e2d57fd5eb23e6c8b333315208d
 
 extra-deps:
 - 'atomic-primops-0.8.0.4'
