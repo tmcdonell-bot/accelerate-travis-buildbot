@@ -433,6 +433,8 @@ run1 :: (Arrays a, Arrays b) => (Acc a -> Acc b) -> a -> b
 --   and other formats (e.g. Repa, Vector).</li>
 --   <li><a>accelerate-fft</a>: Fast Fourier transform, with FFI bindings
 --   to optimised implementations.</li>
+--   <li><a>accelerate-blas</a>: BLAS and LAPACK operations, with FFI
+--   bindings to optimised implementations.</li>
 --   <li><a>accelerate-bignum</a>: Fixed-width large integer
 --   arithmetic.</li>
 --   <li><a>colour-accelerate</a>: Colour representations in Accelerate
