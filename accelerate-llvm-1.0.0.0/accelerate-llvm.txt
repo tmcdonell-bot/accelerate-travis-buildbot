@@ -80,23 +80,3 @@
 --   </pre>
 @package accelerate-llvm
 @version 1.0.0.0
-
-
-module Data.Array.Accelerate.LLVM.Link.Cache
-data LinkCache f o
-new :: IO (LinkCache f o)
-dlsym :: Int -> LinkCache f o -> IO (f, o) -> IO (Lifetime f)
-
-
-module Data.Array.Accelerate.LLVM.Embed
-class Embed arch
-
--- | Turn the compiled object into a TemplateHaskell expression, suitable
---   for use in a splice. The splice should evaluate into the
---   backend-specific executable representation.
-embedForTarget :: Embed arch => ObjectR arch -> Q (TExp (ExecutableR arch))
-
--- | Embed the compiled array function into a TemplateHaskell expression,
---   suitable for use in a splice.
-embedAfun :: Embed arch => CompiledAfun arch f -> Q (TExp (ExecAfun arch f))
-embedOpenAfun :: Embed arch => CompiledOpenAfun arch aenv f -> Q (TExp (ExecOpenAfun arch aenv f))
