@@ -29,14 +29,6 @@ packages:
     commit: {SHA_accelerate-blas}
 
 - location:
-    git:    https://github.com/{REPO_accelerate-io}.git
-    commit: {SHA_accelerate-io}
-
-- location:
-    git:    https://github.com/{REPO_accelerate-examples}.git
-    commit: {SHA_accelerate-examples}
-
-- location:
     git:    https://github.com/{REPO_colour-accelerate}.git
     commit: {SHA_colour-accelerate}
 
@@ -49,24 +41,12 @@ packages:
     commit: {SHA_gloss-raster-accelerate}
 
 - location:
-    git:    https://github.com/{REPO_lens-accelerate}.git
-    commit: {SHA_lens-accelerate}
-
-- location:
-    git:    https://github.com/{REPO_linear-accelerate}.git
-    commit: {SHA_linear-accelerate}
-
-- location:
     git:    https://github.com/{REPO_mwc-random-accelerate}.git
     commit: {SHA_mwc-random-accelerate}
 
 - location:
     git:    https://github.com/{REPO_numeric-prelude-accelerate}.git
     commit: {SHA_numeric-prelude-accelerate}
-
-- location:
-    git:    https://github.com/{REPO_lulesh-accelerate}.git
-    commit: {SHA_lulesh-accelerate}
 
 - location:
     git:    https://github.com/{REPO_cuda}.git
@@ -130,26 +110,6 @@ flags:
     semigroups:  true
   llvm-hs-pure:
     semigroups: true
-  accelerate-examples:
-    cuda:       true
-    llvm-cpu:   true
-    llvm-ptx:   true
-    gui:        true
-    ekg:        true
-    codespeed:  false
-    nofib:      true
-    smvm:       true
-    crystal:    true
-    canny:      true
-    mandelbrot: true
-    fluid:      true
-    nbody:      true
-    smoothlife: true
-    hashcat:    true
-    fft:        true
-    pagerank:   true
-    ray:        true
-    kmeans:     true
 
 # Extra package databases containing global packages
 extra-package-dbs: []

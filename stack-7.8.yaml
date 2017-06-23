@@ -29,14 +29,6 @@ packages:
     commit: 278e1379fc3ca13260f4499f8832fac4863d89fb
 
 - location:
-    git:    https://github.com/tmcdonell/accelerate-io.git
-    commit: 893ab10a7daadfc3050968a0eabc515770578b5a
-
-- location:
-    git:    https://github.com/tmcdonell/accelerate-examples.git
-    commit: 33f014bcb4d771f0193f302116d4141bc05f0592
-
-- location:
     git:    https://github.com/tmcdonell/colour-accelerate.git
     commit: cc44ab7ef1ad57ba0addbd01f1712022e293e41c
 
@@ -49,24 +41,12 @@ packages:
     commit: 93cd0da8bcc33efaaa59801f97a89d2311dcf48d
 
 - location:
-    git:    https://github.com/tmcdonell/lens-accelerate.git
-    commit: b19b89518f4e58f75a207f06112c75943ab1b998
-
-- location:
-    git:    https://github.com/tmcdonell/linear-accelerate.git
-    commit: a3515c64b085f80f1dc8f5cd3c8db483be2e9362
-
-- location:
     git:    https://github.com/tmcdonell/mwc-random-accelerate.git
     commit: e4c384c300e1faa36d74e3b34984e040b20ed66a
 
 - location:
     git:    https://github.com/tmcdonell/numeric-prelude-accelerate.git
     commit: 8adc16cf42bfc43ca3967b8bdc33d4d442026751
-
-- location:
-    git:    https://github.com/tmcdonell/lulesh-accelerate.git
-    commit: a288f7c025bc9ca7b8eecc9009bed54caa741c0b
 
 - location:
     git:    https://github.com/tmcdonell/cuda.git
@@ -130,26 +110,6 @@ flags:
     semigroups:  true
   llvm-hs-pure:
     semigroups: true
-  accelerate-examples:
-    cuda:       true
-    llvm-cpu:   true
-    llvm-ptx:   true
-    gui:        true
-    ekg:        true
-    codespeed:  false
-    nofib:      true
-    smvm:       true
-    crystal:    true
-    canny:      true
-    mandelbrot: true
-    fluid:      true
-    nbody:      true
-    smoothlife: true
-    hashcat:    true
-    fft:        true
-    pagerank:   true
-    ray:        true
-    kmeans:     true
 
 # Extra package databases containing global packages
 extra-package-dbs: []
