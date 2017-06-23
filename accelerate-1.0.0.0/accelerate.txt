@@ -2509,7 +2509,7 @@ divMod' :: (Floating a, RealFrac a, Num b, IsIntegral b, ToFloating b a) => Exp 
 
 -- | Efficient, machine-independent access to the components of a
 --   floating-point number
-class (RealFrac a, Floating a) => RealFloat a where floatRadix _ = fromInteger (floatRadix (undefined :: a)) floatDigits _ = constant (floatDigits (undefined :: a)) floatRange _ = let (m, n) = floatRange (undefined :: a) in (constant m, constant n) encodeFloat x e = let r = fromIntegral x in Exp $ Cond (r /= 0) (r * (2 ** fromIntegral e)) r exponent x = let (m, n) = decodeFloat x in Exp $ Cond (m == 0) 0 (n + floatDigits x) significand x = let (m, _) = decodeFloat x in encodeFloat m (negate (floatDigits x)) scaleFloat k x = Exp $ Cond (k == 0 || isFix) x $ encodeFloat m (n + clamp b) where isFix = x == 0 || isNaN x || isInfinite x (m, n) = decodeFloat x (l, h) = floatRange x d = floatDigits x b = h - l + 4 * d clamp bd = max (- bd) (min bd k) isIEEE _ = constant (isIEEE (undefined :: Float))
+class (RealFrac a, Floating a) => RealFloat a where floatRadix _ = fromInteger (floatRadix (undefined :: a)) floatDigits _ = constant (floatDigits (undefined :: a)) floatRange _ = let (m, n) = floatRange (undefined :: a) in (constant m, constant n) encodeFloat x e = fromIntegral x * (fromIntegral (floatRadix (undefined :: a)) ** fromIntegral e) exponent x = let (m, n) = decodeFloat x in Exp $ Cond (m == 0) 0 (n + floatDigits x) significand x = let (m, _) = decodeFloat x in encodeFloat m (negate (floatDigits x)) scaleFloat k x = Exp $ Cond (k == 0 || isFix) x $ encodeFloat m (n + clamp b) where isFix = x == 0 || isNaN x || isInfinite x (m, n) = decodeFloat x (l, h) = floatRange x d = floatDigits x b = h - l + 4 * d clamp bd = max (- bd) (min bd k) isIEEE _ = constant (isIEEE (undefined :: Float))
 
 -- | The radix of the representation (often 2) (constant)
 floatRadix :: RealFloat a => Exp a -> Exp Int64
@@ -2543,7 +2543,7 @@ decodeFloat :: RealFloat a => Exp a -> (Exp Int64, Exp Int)
 encodeFloat :: RealFloat a => Exp Int64 -> Exp Int -> Exp a
 
 -- | Inverse of <a>decodeFloat</a>
-encodeFloat :: (RealFloat a, FromIntegral Int a, FromIntegral Int64 a) => Exp Int64 -> Exp Int -> Exp a
+encodeFloat :: (RealFloat a, RealFloat a, FromIntegral Int a, FromIntegral Int64 a) => Exp Int64 -> Exp Int -> Exp a
 
 -- | Corresponds to the second component of <a>decodeFloat</a>
 exponent :: RealFloat a => Exp a -> Exp Int
