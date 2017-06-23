@@ -2509,7 +2509,7 @@ divMod' :: (Floating a, RealFrac a, Num b, IsIntegral b, ToFloating b a) => Exp 
 
 -- | Efficient, machine-independent access to the components of a
 --   floating-point number
-class (RealFrac a, Floating a) => RealFloat a where floatRadix _ = fromInteger (floatRadix (undefined :: a)) floatDigits _ = constant (floatDigits (undefined :: a)) floatRange _ = let (m, n) = floatRange (undefined :: a) in (constant m, constant n) isIEEE _ = constant (isIEEE (undefined :: Float)) decodeFloat = ((\ format_a9OOX kind_a9OOY fn_a9OOZ msg_a9OP0 -> error (format_a9OOX kind_a9OOY (call fn_a9OOZ msg_a9OP0))) (\ kind_a9OP1 msg_a9OP2 -> message kind_a9OP1 ("Data/Array/Accelerate/Classes/RealFloat.hs:99:21: " ++ msg_a9OP2)) Internal) "RealFloat.decodeFloat" "Not implemented yet" encodeFloat = ((\ format_a9OP6 kind_a9OP7 fn_a9OP8 msg_a9OP9 -> error (format_a9OP6 kind_a9OP7 (call fn_a9OP8 msg_a9OP9))) (\ kind_a9OPa msg_a9OPb -> message kind_a9OPa ("Data/Array/Accelerate/Classes/RealFloat.hs:100:21: " ++ msg_a9OPb)) Internal) "RealFloat.encodeFloat" "Not implemented yet" exponent = ((\ format_a9OPf kind_a9OPg fn_a9OPh msg_a9OPi -> error (format_a9OPf kind_a9OPg (call fn_a9OPh msg_a9OPi))) (\ kind_a9OPj msg_a9OPk -> message kind_a9OPj ("Data/Array/Accelerate/Classes/RealFloat.hs:101:21: " ++ msg_a9OPk)) Internal) "RealFloat.exponent" "Not implemented yet" significand = ((\ format_a9OPo kind_a9OPp fn_a9OPq msg_a9OPr -> error (format_a9OPo kind_a9OPp (call fn_a9OPq msg_a9OPr))) (\ kind_a9OPs msg_a9OPt -> message kind_a9OPs ("Data/Array/Accelerate/Classes/RealFloat.hs:102:21: " ++ msg_a9OPt)) Internal) "RealFloat.significand" "Not implemented yet" scaleFloat = ((\ format_a9OPx kind_a9OPy fn_a9OPz msg_a9OPA -> error (format_a9OPx kind_a9OPy (call fn_a9OPz msg_a9OPA))) (\ kind_a9OPB msg_a9OPC -> message kind_a9OPB ("Data/Array/Accelerate/Classes/RealFloat.hs:103:21: " ++ msg_a9OPC)) Internal) "RealFloat.scaleFloat" "Not implemented yet" isDenormalized = ((\ format_a9OPG kind_a9OPH fn_a9OPI msg_a9OPJ -> error (format_a9OPG kind_a9OPH (call fn_a9OPI msg_a9OPJ))) (\ kind_a9OPK msg_a9OPL -> message kind_a9OPK ("Data/Array/Accelerate/Classes/RealFloat.hs:104:21: " ++ msg_a9OPL)) Internal) "RealFloat.isDenormalized" "Not implemented yet" isNegativeZero = ((\ format_a9OPP kind_a9OPQ fn_a9OPR msg_a9OPS -> error (format_a9OPP kind_a9OPQ (call fn_a9OPR msg_a9OPS))) (\ kind_a9OPT msg_a9OPU -> message kind_a9OPT ("Data/Array/Accelerate/Classes/RealFloat.hs:105:21: " ++ msg_a9OPU)) Internal) "RealFloat.isNegativeZero" "Not implemented yet"
+class (RealFrac a, Floating a) => RealFloat a where floatRadix _ = fromInteger (floatRadix (undefined :: a)) floatDigits _ = constant (floatDigits (undefined :: a)) floatRange _ = let (m, n) = floatRange (undefined :: a) in (constant m, constant n) encodeFloat x e = let r = fromIntegral x in Exp $ Cond (r /= 0) (r * (2 ** fromIntegral e)) r exponent x = let (m, n) = decodeFloat x in Exp $ Cond (m == 0) 0 (n + floatDigits x) significand x = let (m, _) = decodeFloat x in encodeFloat m (negate (floatDigits x)) scaleFloat k x = Exp $ Cond (k == 0 || isFix) x $ encodeFloat m (n + clamp b) where isFix = x == 0 || isNaN x || isInfinite x (m, n) = decodeFloat x (l, h) = floatRange x d = floatDigits x b = h - l + 4 * d clamp bd = max (- bd) (min bd k) isIEEE _ = constant (isIEEE (undefined :: Float))
 
 -- | The radix of the representation (often 2) (constant)
 floatRadix :: RealFloat a => Exp a -> Exp Int64
@@ -2531,16 +2531,19 @@ floatRange :: RealFloat a => Exp a -> (Exp Int, Exp Int)
 -- | The lowest and highest values the exponent may assume (constant)
 floatRange :: (RealFloat a, RealFloat a) => Exp a -> (Exp Int, Exp Int)
 
--- | Return the significand and an appropriately scaled exponent. if
+-- | Return the significand and an appropriately scaled exponent. If
 --   <tt>(m,n) = <a>decodeFloat</a> x</tt> then <tt>x = m*b^^n</tt>, where
 --   <tt>b</tt> is the floating-point radix (<a>floatRadix</a>).
 --   Furthermore, either <tt>m</tt> and <tt>n</tt> are both zero, or
---   <tt>b^(d-1) &lt;= <tt>abs</tt> m &lt; b^d</tt>, where <tt>d =
+--   <tt>b^(d-1) &lt;= <a>abs</a> m &lt; b^d</tt>, where <tt>d =
 --   <a>floatDigits</a> x</tt>.
 decodeFloat :: RealFloat a => Exp a -> (Exp Int64, Exp Int)
 
 -- | Inverse of <a>decodeFloat</a>
 encodeFloat :: RealFloat a => Exp Int64 -> Exp Int -> Exp a
+
+-- | Inverse of <a>decodeFloat</a>
+encodeFloat :: (RealFloat a, FromIntegral Int a, FromIntegral Int64 a) => Exp Int64 -> Exp Int -> Exp a
 
 -- | Corresponds to the second component of <a>decodeFloat</a>
 exponent :: RealFloat a => Exp a -> Exp Int
