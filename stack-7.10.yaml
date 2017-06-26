@@ -78,7 +78,7 @@ packages:
 
 - location:
     git:    https://github.com/tmcdonell/cufft.git
-    commit: 84445f284b2f19b3de157d7025cdba5d839e0225
+    commit: cecc8bdfe857463773635010ac350b80d0fe99e3
 
 - location:
     git:    https://github.com/tmcdonell/cublas.git
