@@ -110,6 +110,9 @@ flags:
     semigroups:  true
   llvm-hs-pure:
     semigroups: true
+  accelerate-fft:
+    llvm-cpu: false   # https://github.com/cartazio/storable-complex/pull/1
+    llvm-ptx: false   # https://github.com/cartazio/storable-complex/pull/1
 
 # Extra package databases containing global packages
 extra-package-dbs: []
