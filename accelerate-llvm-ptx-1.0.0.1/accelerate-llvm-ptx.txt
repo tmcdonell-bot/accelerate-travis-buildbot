@@ -321,6 +321,13 @@ class (Typeable * a, Typeable * (ArrRepr a)) => Arrays a
 
 -- | Compile and run a complete embedded array program.
 --   
+--   The result is copied back to the host only once the arrays are
+--   demanded (or the result is forced to normal form). For results
+--   consisting of multiple components (a tuple of arrays or array of
+--   tuples) this applies per primitive array. Evaluating the result of
+--   <a>run</a> to WHNF will initiate the computation, but does not copy
+--   the results back from the device.
+--   
 --   Note that it is recommended that you use <a>run1</a> whenever
 --   possible.
 run :: Arrays a => Acc a -> a
@@ -384,6 +391,13 @@ run1With :: (Arrays a, Arrays b) => PTX -> (Acc a -> Acc b) -> a -> b
 --   the second and subsequent invocations of <tt>simulate</tt>. Note that
 --   this typically relies on GHC knowing that it can lift out the function
 --   returned by <a>runN</a> and reuse it.
+--   
+--   As with <a>run</a>, the resulting array(s) are only copied back to the
+--   host once they are actually demanded (forced to normal form). Thus,
+--   splitting a program into multiple <a>runN</a> steps does not imply
+--   transferring intermediate computations back and forth between host and
+--   device. However note that Accelerate is not able to optimise (fuse)
+--   across separate <a>runN</a> invocations.
 --   
 --   See the programs in the 'accelerate-examples' package for examples.
 runN :: Afunction f => f -> AfunctionR f

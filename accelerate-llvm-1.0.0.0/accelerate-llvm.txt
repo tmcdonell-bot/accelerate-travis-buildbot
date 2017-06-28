@@ -80,3 +80,48 @@
 --   </pre>
 @package accelerate-llvm
 @version 1.0.0.0
+
+
+module Data.ByteString.Short.Extra
+
+-- | A compact representation of a <a>Word8</a> vector.
+--   
+--   It has a lower memory overhead than a <a>ByteString</a> and and does
+--   not contribute to heap fragmentation. It can be converted to or from a
+--   <a>ByteString</a> (at the cost of copying the string data). It
+--   supports very few other operations.
+--   
+--   It is suitable for use as an internal representation for code that
+--   needs to keep many short strings in memory, but it <i>should not</i>
+--   be used as an interchange type. That is, it should not generally be
+--   used in public APIs. The <a>ByteString</a> type is usually more
+--   suitable for use in interfaces; it is more flexible and it supports a
+--   wide range of operations.
+data ShortByteString :: *
+
+-- | <i>O(n)</i> <tt><a>take</a> n</tt> applied to the ShortByteString
+--   <tt>xs</tt>, returns the prefix of <tt>xs</tt> of length <tt>n</tt> as
+--   a new ShortByteString, or <tt>xs</tt> itself if <tt>n &gt;
+--   <a>length</a> xs</tt>
+take :: Int -> ShortByteString -> ShortByteString
+
+
+module Data.ByteString.Short.Char8
+
+-- | A compact representation of a <a>Word8</a> vector.
+--   
+--   It has a lower memory overhead than a <a>ByteString</a> and and does
+--   not contribute to heap fragmentation. It can be converted to or from a
+--   <a>ByteString</a> (at the cost of copying the string data). It
+--   supports very few other operations.
+--   
+--   It is suitable for use as an internal representation for code that
+--   needs to keep many short strings in memory, but it <i>should not</i>
+--   be used as an interchange type. That is, it should not generally be
+--   used in public APIs. The <a>ByteString</a> type is usually more
+--   suitable for use in interfaces; it is more flexible and it supports a
+--   wide range of operations.
+data ShortByteString :: *
+
+-- | <i>O(n)</i> Convert a <a>ShortByteString</a> into a list.
+unpack :: ShortByteString -> [Char]
