@@ -934,6 +934,11 @@ unit :: Elt e => Exp e -> Acc (Scalar e)
 generate :: (Shape sh, Elt a) => Exp sh -> (Exp sh -> Exp a) -> Acc (Array sh a)
 
 -- | Create an array where all elements are the same value.
+--   
+--   <pre>
+--   &gt;&gt;&gt; let zeros = fill (Z:.10) 0
+--   Vector (Z :. 10) [0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]
+--   </pre>
 fill :: (Shape sh, Elt e) => Exp sh -> Exp e -> Acc (Array sh e)
 
 -- | Create an array of the given shape containing the values <tt>x</tt>,
@@ -1012,11 +1017,15 @@ infixr 5 ++
 --   <a>True</a>, the first component of the tuple is returned, else the
 --   second.
 --   
---   See also: <a>ifThenElse</a>.
+--   Enabling the <tt>RebindableSyntax</tt> extension will allow you to use
+--   the standard if-then-else syntax instead.
 (?|) :: Arrays a => Exp Bool -> (Acc a, Acc a) -> Acc a
 infix 0 ?|
 
 -- | An array-level if-then-else construct.
+--   
+--   Enabling the <tt>RebindableSyntax</tt> extension will allow you to use
+--   the standard if-then-else syntax instead.
 acond :: Arrays a => Exp Bool -> Acc a -> Acc a -> Acc a
 
 -- | An array-level <a>while</a> construct. Continue to apply the given
@@ -1042,6 +1051,8 @@ ifThenElse :: (IfThenElse t, EltT t a) => Exp Bool -> t a -> t a -> t a
 --   (acc1 &gt;-&gt; acc2) arrs = let tmp = acc1 arrs
 --                          in  tmp `seq` acc2 tmp
 --   </pre>
+--   
+--   For an example use of this operation see the <a>compute</a> function.
 (>->) :: (Arrays a, Arrays b, Arrays c) => (Acc a -> Acc b) -> (Acc b -> Acc c) -> (Acc a -> Acc c)
 infixl 1 >->
 
@@ -1081,12 +1092,42 @@ infixl 1 >->
 compute :: Arrays a => Acc a -> Acc a
 
 -- | Pair each element with its index
+--   
+--   <pre>
+--   &gt;&gt;&gt; let xs = fromList (Z:.5) [0..]
+--   
+--   &gt;&gt;&gt; indexed (use xs)
+--   Vector (Z :. 5) [(Z :. 0,0.0),(Z :. 1,1.0),(Z :. 2,2.0),(Z :. 3,3.0),(Z :. 4,4.0)]
+--   </pre>
+--   
+--   <pre>
+--   &gt;&gt;&gt; let mat = fromList (Z:.3:.4) [0..]
+--   
+--   &gt;&gt;&gt; indexed (use mat)
+--   Matrix (Z :. 3 :. 4)
+--     [(Z :. 0 :. 0,0.0),(Z :. 0 :. 1,1.0), (Z :. 0 :. 2,2.0), (Z :. 0 :. 3,3.0),
+--      (Z :. 1 :. 0,4.0),(Z :. 1 :. 1,5.0), (Z :. 1 :. 2,6.0), (Z :. 1 :. 3,7.0),
+--      (Z :. 2 :. 0,8.0),(Z :. 2 :. 1,9.0),(Z :. 2 :. 2,10.0),(Z :. 2 :. 3,11.0)]
+--   </pre>
 indexed :: (Shape sh, Elt a) => Acc (Array sh a) -> Acc (Array sh (sh, a))
 
--- | Apply the given function element-wise to an array.
+-- | Apply the given function element-wise to an array. Denotationally we
+--   have:
 --   
 --   <pre>
 --   map f [x1, x2, ... xn] = [f x1, f x2, ... f xn]
+--   </pre>
+--   
+--   <pre>
+--   &gt;&gt;&gt; let xs = fromList (Z:.10) [0..]
+--   
+--   &gt;&gt;&gt; xs
+--   Vector (Z :. 10) [0,1,2,3,4,5,6,7,8,9]
+--   </pre>
+--   
+--   <pre>
+--   &gt;&gt;&gt; map (+1) (use xs)
+--   Vector (Z :. 10) [1,2,3,4,5,6,7,8,9,10]
 --   </pre>
 map :: (Shape sh, Elt a, Elt b) => (Exp a -> Exp b) -> Acc (Array sh a) -> Acc (Array sh b)
 
@@ -1096,6 +1137,36 @@ imap :: (Shape sh, Elt a, Elt b) => (Exp sh -> Exp a -> Exp b) -> Acc (Array sh 
 -- | Apply the given binary function element-wise to the two arrays. The
 --   extent of the resulting array is the intersection of the extents of
 --   the two source arrays.
+--   
+--   <pre>
+--   &gt;&gt;&gt; let xs = fromList (Z:.3:.5) [0..]
+--   
+--   &gt;&gt;&gt; xs
+--   Matrix (Z :. 3 :. 5)
+--     [ 0, 1, 2, 3, 4,
+--       5, 6, 7, 8, 9,
+--      10,11,12,13,14]
+--   </pre>
+--   
+--   <pre>
+--   &gt;&gt;&gt; let ys = fromList (Z:.5:.10) [1..]
+--   
+--   &gt;&gt;&gt; ys
+--   Matrix (Z :. 5 :. 10)
+--     [ 1, 2, 3, 4, 5, 6, 7, 8, 9,10,
+--      11,12,13,14,15,16,17,18,19,20,
+--      21,22,23,24,25,26,27,28,29,30,
+--      31,32,33,34,35,36,37,38,39,40,
+--      41,42,43,44,45,46,47,48,49,50]
+--   </pre>
+--   
+--   <pre>
+--   &gt;&gt;&gt; zipWith (+) (use xs) (use ys)
+--   Matrix (Z :. 3 :. 5)
+--     [ 1, 3, 5, 7, 9,
+--      16,18,20,22,24,
+--      31,33,35,37,39]
+--   </pre>
 zipWith :: (Shape sh, Elt a, Elt b, Elt c) => (Exp a -> Exp b -> Exp c) -> Acc (Array sh a) -> Acc (Array sh b) -> Acc (Array sh c)
 
 -- | Zip three arrays with the given function, analogous to <a>zipWith</a>.
@@ -1181,29 +1252,35 @@ zip9 :: (Shape sh, Elt a, Elt b, Elt c, Elt d, Elt e, Elt f, Elt g, Elt h, Elt i
 -- | The converse of <a>zip</a>, but the shape of the two results is
 --   identical to the shape of the argument.
 --   
---   If the argument array is manifest in memory, <a>unzip</a> is a NOP.
+--   If the argument array is manifest in memory, <a>unzip</a> is a no-op.
 unzip :: (Shape sh, Elt a, Elt b) => Acc (Array sh (a, b)) -> (Acc (Array sh a), Acc (Array sh b))
 
--- | Take an array of triples and return three arrays, analogous to unzip.
+-- | Take an array of triples and return three arrays, analogous to
+--   <a>unzip</a>.
 unzip3 :: (Shape sh, Elt a, Elt b, Elt c) => Acc (Array sh (a, b, c)) -> (Acc (Array sh a), Acc (Array sh b), Acc (Array sh c))
 
 -- | Take an array of quadruples and return four arrays, analogous to
---   unzip.
+--   <a>unzip</a>.
 unzip4 :: (Shape sh, Elt a, Elt b, Elt c, Elt d) => Acc (Array sh (a, b, c, d)) -> (Acc (Array sh a), Acc (Array sh b), Acc (Array sh c), Acc (Array sh d))
 
--- | Take an array of 5-tuples and return five arrays, analogous to unzip.
+-- | Take an array of 5-tuples and return five arrays, analogous to
+--   <a>unzip</a>.
 unzip5 :: (Shape sh, Elt a, Elt b, Elt c, Elt d, Elt e) => Acc (Array sh (a, b, c, d, e)) -> (Acc (Array sh a), Acc (Array sh b), Acc (Array sh c), Acc (Array sh d), Acc (Array sh e))
 
--- | Take an array of 6-tuples and return six arrays, analogous to unzip.
+-- | Take an array of 6-tuples and return six arrays, analogous to
+--   <a>unzip</a>.
 unzip6 :: (Shape sh, Elt a, Elt b, Elt c, Elt d, Elt e, Elt f) => Acc (Array sh (a, b, c, d, e, f)) -> (Acc (Array sh a), Acc (Array sh b), Acc (Array sh c), Acc (Array sh d), Acc (Array sh e), Acc (Array sh f))
 
--- | Take an array of 7-tuples and return seven arrays, analogous to unzip.
+-- | Take an array of 7-tuples and return seven arrays, analogous to
+--   <a>unzip</a>.
 unzip7 :: (Shape sh, Elt a, Elt b, Elt c, Elt d, Elt e, Elt f, Elt g) => Acc (Array sh (a, b, c, d, e, f, g)) -> (Acc (Array sh a), Acc (Array sh b), Acc (Array sh c), Acc (Array sh d), Acc (Array sh e), Acc (Array sh f), Acc (Array sh g))
 
--- | Take an array of 8-tuples and return eight arrays, analogous to unzip.
+-- | Take an array of 8-tuples and return eight arrays, analogous to
+--   <a>unzip</a>.
 unzip8 :: (Shape sh, Elt a, Elt b, Elt c, Elt d, Elt e, Elt f, Elt g, Elt h) => Acc (Array sh (a, b, c, d, e, f, g, h)) -> (Acc (Array sh a), Acc (Array sh b), Acc (Array sh c), Acc (Array sh d), Acc (Array sh e), Acc (Array sh f), Acc (Array sh g), Acc (Array sh h))
 
--- | Take an array of 8-tuples and return eight arrays, analogous to unzip.
+-- | Take an array of 8-tuples and return eight arrays, analogous to
+--   <a>unzip</a>.
 unzip9 :: (Shape sh, Elt a, Elt b, Elt c, Elt d, Elt e, Elt f, Elt g, Elt h, Elt i) => Acc (Array sh (a, b, c, d, e, f, g, h, i)) -> (Acc (Array sh a), Acc (Array sh b), Acc (Array sh c), Acc (Array sh d), Acc (Array sh e), Acc (Array sh f), Acc (Array sh g), Acc (Array sh h), Acc (Array sh i))
 
 -- | Change the shape of an array without altering its contents. The
@@ -1213,8 +1290,8 @@ unzip9 :: (Shape sh, Elt a, Elt b, Elt c, Elt d, Elt e, Elt f, Elt g, Elt h, Elt
 --   precondition: shapeSize sh == shapeSize sh'
 --   </pre>
 --   
---   If the argument array is manifest in memory, <a>reshape</a> is a NOP.
---   If the argument is to be fused into a subsequent operation,
+--   If the argument array is manifest in memory, <a>reshape</a> is a
+--   no-op. If the argument is to be fused into a subsequent operation,
 --   <a>reshape</a> corresponds to an index transformation in the fused
 --   code.
 reshape :: (Shape sh, Shape sh', Elt e) => Exp sh -> Acc (Array sh' e) -> Acc (Array sh e)
@@ -1591,6 +1668,8 @@ slit :: forall sh e. (Slice sh, Shape sh, Elt e) => Exp Int -> Exp Int -> Acc (A
 --   into this.</li>
 --   <li>The array of source values can fuse into the permutation
 --   operation.</li>
+--   <li>If the array of default values is only used once, it will be
+--   updated in-place.</li>
 --   </ol>
 permute :: (Shape sh, Shape sh', Elt a) => (Exp a -> Exp a -> Exp a) -> Acc (Array sh' a) -> (Exp sh -> Exp sh') -> Acc (Array sh a) -> Acc (Array sh' a)
 
@@ -1805,7 +1884,7 @@ fold1 :: (Shape sh, Elt a) => (Exp a -> Exp a -> Exp a) -> Acc (Array (sh :. Int
 foldAll :: (Shape sh, Elt a) => (Exp a -> Exp a -> Exp a) -> Exp a -> Acc (Array sh a) -> Acc (Scalar a)
 
 -- | Variant of <a>foldAll</a> that requires the reduced array to be
---   non-empty and doesn't need an default value. The first argument must
+--   non-empty and does not need a default value. The first argument must
 --   be an <i>associative</i> function.
 fold1All :: (Shape sh, Elt a) => (Exp a -> Exp a -> Exp a) -> Acc (Array sh a) -> Acc (Scalar a)
 
@@ -1851,29 +1930,114 @@ foldSeg :: (Shape sh, Elt a, Elt i, IsIntegral i) => (Exp a -> Exp a -> Exp a) -
 --   sub-arrays.
 fold1Seg :: (Shape sh, Elt a, Elt i, IsIntegral i) => (Exp a -> Exp a -> Exp a) -> Acc (Array (sh :. Int) a) -> Acc (Segments i) -> Acc (Array (sh :. Int) a)
 
--- | Check if all elements satisfy a predicate
-all :: (Shape sh, Elt e) => (Exp e -> Exp Bool) -> Acc (Array sh e) -> Acc (Scalar Bool)
+-- | Check if all elements along the innermost dimension satisfy a
+--   predicate.
+--   
+--   <pre>
+--   &gt;&gt;&gt; let mat = fromList (Z :. 4 :. 10) [1,2,3,4,5,6,7,8,9,10,1,1,1,1,1,2,2,2,2,2,2,4,6,8,10,12,14,16,18,20,1,3,5,7,9,11,13,15,17,19] :: Array DIM2 Int
+--   
+--   &gt;&gt;&gt; mat
+--   Matrix (Z :. 4 :. 10)
+--     [ 1, 2, 3, 4,  5,  6,  7,  8,  9, 10,
+--       1, 1, 1, 1,  1,  2,  2,  2,  2,  2,
+--       2, 4, 6, 8, 10, 12, 14, 16, 18, 20,
+--       1, 3, 5, 7,  9, 11, 13, 15, 17, 19]
+--   </pre>
+--   
+--   <pre>
+--   &gt;&gt;&gt; all even (use mat)
+--   Vector (Z :. 4) [False,False,True,False]
+--   </pre>
+all :: (Shape sh, Elt e) => (Exp e -> Exp Bool) -> Acc (Array (sh :. Int) e) -> Acc (Array sh Bool)
 
--- | Check if any element satisfies the predicate
-any :: (Shape sh, Elt e) => (Exp e -> Exp Bool) -> Acc (Array sh e) -> Acc (Scalar Bool)
+-- | Check if any element along the innermost dimension satisfies the
+--   predicate.
+--   
+--   <pre>
+--   &gt;&gt;&gt; let mat = fromList (Z :. 4 :. 10) [1,2,3,4,5,6,7,8,9,10,1,1,1,1,1,2,2,2,2,2,2,4,6,8,10,12,14,16,18,20,1,3,5,7,9,11,13,15,17,19] :: Array DIM2 Int
+--   
+--   &gt;&gt;&gt; mat
+--   Matrix (Z :. 4 :. 10)
+--     [ 1, 2, 3, 4,  5,  6,  7,  8,  9, 10,
+--       1, 1, 1, 1,  1,  2,  2,  2,  2,  2,
+--       2, 4, 6, 8, 10, 12, 14, 16, 18, 20,
+--       1, 3, 5, 7,  9, 11, 13, 15, 17, 19]
+--   </pre>
+--   
+--   <pre>
+--   &gt;&gt;&gt; any even (use mat)
+--   Vector (Z :. 4) [True,True,True,False]
+--   </pre>
+any :: (Shape sh, Elt e) => (Exp e -> Exp Bool) -> Acc (Array (sh :. Int) e) -> Acc (Array sh Bool)
 
--- | Check if all elements are <a>True</a>
-and :: Shape sh => Acc (Array sh Bool) -> Acc (Scalar Bool)
+-- | Check if all elements along the innermost dimension are <a>True</a>.
+and :: Shape sh => Acc (Array (sh :. Int) Bool) -> Acc (Array sh Bool)
 
--- | Check if any element is <a>True</a>
-or :: Shape sh => Acc (Array sh Bool) -> Acc (Scalar Bool)
+-- | Check if any element along the innermost dimension is <a>True</a>.
+or :: Shape sh => Acc (Array (sh :. Int) Bool) -> Acc (Array sh Bool)
 
--- | Compute the sum of elements
-sum :: (Shape sh, Num e) => Acc (Array sh e) -> Acc (Scalar e)
+-- | Compute the sum of elements along the innermost dimension of the
+--   array. To find the sum of the entire array, <a>flatten</a> it first.
+--   
+--   <pre>
+--   &gt;&gt;&gt; let mat = fromList (Z:.2:.5) [0..]
+--   Vector (Z :. 2) [10,35]
+--   </pre>
+sum :: (Shape sh, Num e) => Acc (Array (sh :. Int) e) -> Acc (Array sh e)
 
--- | Compute the product of the elements
-product :: (Shape sh, Num e) => Acc (Array sh e) -> Acc (Scalar e)
+-- | Compute the product of the elements along the innermost dimension of
+--   the array. To find the product of the entire array, <a>flatten</a> it
+--   first.
+--   
+--   <pre>
+--   &gt;&gt;&gt; let mat = fromList (Z:.2:.5) [0..]
+--   Vector (Z :. 2) [0,15120]
+--   </pre>
+product :: (Shape sh, Num e) => Acc (Array (sh :. Int) e) -> Acc (Array sh e)
 
--- | Yield the minimum element of an array. The array must not be empty.
-minimum :: (Shape sh, Ord e) => Acc (Array sh e) -> Acc (Scalar e)
+-- | Yield the minimum element along the innermost dimension of the array.
+--   To find find the minimum element of the entire array, <a>flatten</a>
+--   it first.
+--   
+--   The array must not be empty. See also <a>fold1</a>.
+--   
+--   <pre>
+--   &gt;&gt;&gt; let mat = fromList (Z :. 3 :. 4) [1,4,3,8, 0,2,8,4, 7,9,8,8]
+--   
+--   &gt;&gt;&gt; mat
+--   Matrix (Z :. 3 :. 4)
+--     [ 1, 4, 3, 8,
+--       0, 2, 8, 4,
+--       7, 9, 8, 8]
+--   </pre>
+--   
+--   <pre>
+--   &gt;&gt;&gt; minimum (use mat)
+--   Vector (Z :. 3) [1,0,7]
+--   </pre>
+minimum :: (Shape sh, Ord e) => Acc (Array (sh :. Int) e) -> Acc (Array sh e)
 
--- | Yield the maximum element of an array. The array must not be empty.
-maximum :: (Shape sh, Ord e) => Acc (Array sh e) -> Acc (Scalar e)
+-- | Yield the maximum element along the innermost dimension of the array.
+--   To find the maximum element of the entire array, <a>flatten</a> it
+--   first.
+--   
+--   The array must not be empty. See also <a>fold1</a>.
+--   
+--   <pre>
+--   &gt;&gt;&gt; let mat = fromList (Z :. 3 :. 4) [1,4,3,8, 0,2,8,4, 7,9,8,8]
+--   
+--   &gt;&gt;&gt; mat
+--   Matrix (Z :. 3 :. 4)
+--     [ 1, 4, 3, 8,
+--       0, 2, 8, 4,
+--       7, 9, 8, 8]
+--   </pre>
+--   
+--   <pre>
+--   &gt;&gt;&gt; maximum (use mat)
+--   Vector (Z :. 3) [8,8,9]
+--   </pre>
+maximum :: (Shape sh, Ord e) => Acc (Array (sh :. Int) e) -> Acc (Array sh e)
 
 -- | Data.List style left-to-right scan along the innermost dimension of an
 --   arbitrary rank array. The first argument needs to be an
@@ -1905,7 +2069,9 @@ scanl :: (Shape sh, Elt a) => (Exp a -> Exp a -> Exp a) -> Exp a -> Acc (Array (
 --   </pre>
 --   
 --   <pre>
---   &gt;&gt;&gt; scanl (+) (use $ fromList (Z:.4:.10) [0..])
+--   &gt;&gt;&gt; let mat = fromList (Z:.4:.10) [0..]
+--   
+--   &gt;&gt;&gt; scanl (+) (use mat)
 --   Matrix (Z :. 4 :. 10)
 --     [  0,  1,  3,   6,  10,  15,  21,  28,  36,  45,
 --       10, 21, 33,  46,  60,  75,  91, 108, 126, 145,
@@ -1948,7 +2114,7 @@ scanl1 :: (Shape sh, Elt a) => (Exp a -> Exp a -> Exp a) -> Acc (Array (sh :. In
 --   &gt;&gt;&gt; sums
 --   Vector (Z :. 4) [45,145,245,345]
 --   </pre>
-scanl' :: (Shape sh, Elt a) => (Exp a -> Exp a -> Exp a) -> Exp a -> Acc (Array (sh :. Int) a) -> (Acc (Array (sh :. Int) a), Acc (Array sh a))
+scanl' :: (Shape sh, Elt a) => (Exp a -> Exp a -> Exp a) -> Exp a -> Acc (Array (sh :. Int) a) -> Acc (Array (sh :. Int) a, Array sh a)
 
 -- | Right-to-left variant of <a>scanl</a>.
 scanr :: (Shape sh, Elt a) => (Exp a -> Exp a -> Exp a) -> Exp a -> Acc (Array (sh :. Int) a) -> Acc (Array (sh :. Int) a)
@@ -1957,25 +2123,25 @@ scanr :: (Shape sh, Elt a) => (Exp a -> Exp a -> Exp a) -> Exp a -> Acc (Array (
 scanr1 :: (Shape sh, Elt a) => (Exp a -> Exp a -> Exp a) -> Acc (Array (sh :. Int) a) -> Acc (Array (sh :. Int) a)
 
 -- | Right-to-left variant of <a>scanl'</a>.
-scanr' :: (Shape sh, Elt a) => (Exp a -> Exp a -> Exp a) -> Exp a -> Acc (Array (sh :. Int) a) -> (Acc (Array (sh :. Int) a), Acc (Array sh a))
+scanr' :: (Shape sh, Elt a) => (Exp a -> Exp a -> Exp a) -> Exp a -> Acc (Array (sh :. Int) a) -> Acc (Array (sh :. Int) a, Array sh a)
 
--- | Left-to-right prescan (aka exclusive scan). As for <tt>scan</tt>, the
+-- | Left-to-right pre-scan (aka exclusive scan). As for <tt>scan</tt>, the
 --   first argument must be an <i>associative</i> function. Denotationally,
---   we have
+--   we have:
 --   
 --   <pre>
---   prescanl f e = Prelude.fst . scanl' f e
+--   prescanl f e = afst . scanl' f e
 --   </pre>
 --   
 --   <pre>
 --   &gt;&gt;&gt; let vec = fromList (Z:.10) [1..10]
 --   
 --   &gt;&gt;&gt; prescanl (+) 0 (use vec)
---   Vector (Z :. 10) [0,0,1,3,6,10,15,21,28,36]
+--   Vector (Z :. 10) [0,1,3,6,10,15,21,28,36,45]
 --   </pre>
 prescanl :: (Shape sh, Elt a) => (Exp a -> Exp a -> Exp a) -> Exp a -> Acc (Array (sh :. Int) a) -> Acc (Array (sh :. Int) a)
 
--- | Left-to-right postscan, a variant of <a>scanl1</a> with an initial
+-- | Left-to-right post-scan, a variant of <a>scanl1</a> with an initial
 --   value. As with <a>scanl1</a>, the array must not be empty.
 --   Denotationally, we have:
 --   
@@ -1987,21 +2153,21 @@ prescanl :: (Shape sh, Elt a) => (Exp a -> Exp a -> Exp a) -> Exp a -> Acc (Arra
 --   &gt;&gt;&gt; let vec = fromList (Z:.10) [1..10]
 --   
 --   &gt;&gt;&gt; postscanl (+) 42 (use vec)
---   Vector (Z :. 10) [42,43,45,48,52,57,63,70,78,87]
+--   Vector (Z :. 10) [43,45,48,52,57,63,70,78,87,97]
 --   </pre>
 postscanl :: (Shape sh, Elt a) => (Exp a -> Exp a -> Exp a) -> Exp a -> Acc (Array (sh :. Int) a) -> Acc (Array (sh :. Int) a)
 
--- | Right-to-left prescan (aka exclusive scan). As for <tt>scan</tt>, the
+-- | Right-to-left pre-scan (aka exclusive scan). As for <tt>scan</tt>, the
 --   first argument must be an <i>associative</i> function. Denotationally,
---   we have
+--   we have:
 --   
 --   <pre>
---   prescanr f e = Prelude.fst . scanr' f e
+--   prescanr f e = afst . scanr' f e
 --   </pre>
 prescanr :: (Shape sh, Elt a) => (Exp a -> Exp a -> Exp a) -> Exp a -> Acc (Array (sh :. Int) a) -> Acc (Array (sh :. Int) a)
 
 -- | Right-to-left postscan, a variant of <a>scanr1</a> with an initial
---   value. Denotationally, we have
+--   value. Denotationally, we have:
 --   
 --   <pre>
 --   postscanr f e = map (e `f`) . scanr1 f
@@ -2671,7 +2837,8 @@ uncurry :: Unlift f (f a, f b) => (f a -> f b -> f c) -> f (Plain (f a), Plain (
 --   <a>True</a>, the first component of the tuple is returned, else the
 --   second.
 --   
---   See also: <a>ifThenElse</a>.
+--   Enabling the <tt>RebindableSyntax</tt> extension will allow you to use
+--   the standard if-then-else syntax instead.
 (?) :: Elt t => Exp Bool -> (Exp t, Exp t) -> Exp t
 infix 0 ?
 
@@ -2679,6 +2846,9 @@ infix 0 ?
 caseof :: (Elt a, Elt b) => Exp a -> [(Exp a -> Exp Bool, Exp b)] -> Exp b -> Exp b
 
 -- | A scalar-level if-then-else construct.
+--   
+--   Enabling the <tt>RebindableSyntax</tt> extension will allow you to use
+--   the standard if-then-else syntax instead.
 cond :: Elt t => Exp Bool -> Exp t -> Exp t -> Exp t
 
 -- | While construct. Continue to apply the given function, starting with
@@ -2768,7 +2938,15 @@ index3 :: (Elt i, Slice (Z :. i), Slice ((Z :. i) :. i)) => Exp i -> Exp i -> Ex
 -- | Destruct a rank-3 index into an Exp tuple of Int`s
 unindex3 :: forall i. (Elt i, Slice (Z :. i), Slice ((Z :. i) :. i)) => Exp (((Z :. i) :. i) :. i) -> Exp (i, i, i)
 
--- | Get the innermost dimension of a shape
+-- | Get the innermost dimension of a shape.
+--   
+--   The innermost dimension (right-most component of the shape) is the
+--   index of the array which varies most rapidly, and corresponds to
+--   elements of the array which are adjacent in memory.
+--   
+--   Another way to think of this is, for example when writing nested loops
+--   over an array in C, this index corresponds to the index iterated over
+--   by the innermost nested loop.
 indexHead :: (Slice sh, Elt a) => Exp (sh :. a) -> Exp a
 
 -- | Get all but the innermost element of a shape
@@ -2807,7 +2985,7 @@ bitcast :: (Elt a, Elt b, IsScalar a, IsScalar b, BitSizeEq a b) => Exp a -> Exp
 --   In case the operation is being executed on a backend which does not
 --   support this foreign implementation, the fallback implementation is
 --   used instead, which itself could be a foreign implementation for a
---   (presumably) different backend, or an implementation of pure
+--   (presumably) different backend, or an implementation in pure
 --   Accelerate. In this way, multiple foreign implementations can be
 --   supplied, and will be tested for suitability against the target
 --   backend in sequence.

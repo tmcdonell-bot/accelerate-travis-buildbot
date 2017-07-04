@@ -14,6 +14,107 @@
 @version 0.1.0.0
 
 
+-- | Functions for summing floating point numbers more accurately than the
+--   straightforward <a>sum</a> operation.
+--   
+--   In the worst case, the <a>sum</a> function accumulates error at a rate
+--   proportional to the number of values being summed. The algorithms in
+--   this module implement different methods of <i>compensated
+--   summation</i>, which reduce the accumulation of numeric error so that
+--   it grows much more slowly than the number of inputs (e.g.
+--   logarithmically), or remains constant.
+module Data.Array.Accelerate.Numeric.Sum
+
+-- | A class for the summation of floating-point numbers
+class (Elt a, Elt (s a)) => Summation s a
+
+-- | Add a value to the sum
+add :: Summation s a => Exp (s a) -> Exp (s a) -> Exp (s a)
+
+-- | The identity of the summation
+zero :: Summation s a => Exp (s a)
+
+-- | Insert a value into the summation
+into :: Summation s a => Proxy s -> Exp a -> Exp (s a)
+
+-- | Summarise the result of summation
+from :: Summation s a => Proxy s -> Exp (s a) -> Exp a
+
+-- | Sum an array using a particular compensation scheme.
+--   
+--   <pre>
+--   &gt;&gt;&gt; let xs = [1.0, 1.0e100, 1.0, -1.0e100] :: [Double]
+--   
+--   &gt;&gt;&gt; Prelude.sum xs
+--   0.0
+--   </pre>
+--   
+--   <pre>
+--   &gt;&gt;&gt; let ys = fromList (Z:.4) [1.0, 1.0e100, 1.0, -1.0e100] :: Vector Double
+--   
+--   &gt;&gt;&gt; sum kbn (use ys)
+--   Scalar Z [2.0]
+--   </pre>
+sum :: (Summation s a, Shape sh) => Proxy s -> Acc (Array (sh :. Int) a) -> Acc (Array sh a)
+
+-- | Kahan-Babuška-Neumaier summation. This is a little more
+--   computationally costly than plain Kahan summation, but is
+--   <i>always</i> at least as accurate.
+data KBN a
+KBN :: a -> a -> KBN a
+
+-- | Return the result of a Kahan-Babuška-Neumaier sum.
+kbn :: Proxy KBN
+
+-- | Second-order Kahan-Babuška summation. This is more computationally
+--   costly than Kahan-Babuška-Neumaier summation. Its advantage is that it
+--   can lose less precision (in admittedly obscure cases).
+--   
+--   This method compensates for error in both the sum and the first-order
+--   compensation term, hence the use of "second order" in the name.
+data KB2 a
+KB2 :: a -> a -> a -> KB2 a
+
+-- | Return the result of a second-order Kahan-Babuška sum.
+kb2 :: Proxy KB2
+
+-- | Kahan summation. This is the least accurate of the compensated
+--   summation methods. This summation method is included only for
+--   completeness.
+data Kahan a
+Kahan :: a -> a -> Kahan a
+
+-- | Return the result of a Kahan sum.
+kahan :: Proxy Kahan
+instance GHC.Show.Show a => GHC.Show.Show (Data.Array.Accelerate.Numeric.Sum.Kahan a)
+instance GHC.Show.Show a => GHC.Show.Show (Data.Array.Accelerate.Numeric.Sum.KB2 a)
+instance GHC.Show.Show a => GHC.Show.Show (Data.Array.Accelerate.Numeric.Sum.KBN a)
+instance Data.Array.Accelerate.Numeric.Sum.Summation Data.Array.Accelerate.Numeric.Sum.KBN GHC.Types.Float
+instance Data.Array.Accelerate.Numeric.Sum.Summation Data.Array.Accelerate.Numeric.Sum.KBN GHC.Types.Double
+instance Data.Array.Accelerate.Numeric.Sum.Summation Data.Array.Accelerate.Numeric.Sum.KBN Foreign.C.Types.CFloat
+instance Data.Array.Accelerate.Numeric.Sum.Summation Data.Array.Accelerate.Numeric.Sum.KBN Foreign.C.Types.CDouble
+instance Data.Array.Accelerate.Array.Sugar.Elt a => Data.Array.Accelerate.Array.Sugar.Elt (Data.Array.Accelerate.Numeric.Sum.KBN a)
+instance Data.Array.Accelerate.Array.Sugar.Elt a => Data.Array.Accelerate.Product.IsProduct Data.Array.Accelerate.Array.Sugar.Elt (Data.Array.Accelerate.Numeric.Sum.KBN a)
+instance (Data.Array.Accelerate.Lift.Lift Data.Array.Accelerate.Smart.Exp a, Data.Array.Accelerate.Array.Sugar.Elt (Data.Array.Accelerate.Lift.Plain a)) => Data.Array.Accelerate.Lift.Lift Data.Array.Accelerate.Smart.Exp (Data.Array.Accelerate.Numeric.Sum.KBN a)
+instance Data.Array.Accelerate.Array.Sugar.Elt a => Data.Array.Accelerate.Lift.Unlift Data.Array.Accelerate.Smart.Exp (Data.Array.Accelerate.Numeric.Sum.KBN (Data.Array.Accelerate.Smart.Exp a))
+instance Data.Array.Accelerate.Numeric.Sum.Summation Data.Array.Accelerate.Numeric.Sum.KB2 GHC.Types.Float
+instance Data.Array.Accelerate.Numeric.Sum.Summation Data.Array.Accelerate.Numeric.Sum.KB2 GHC.Types.Double
+instance Data.Array.Accelerate.Numeric.Sum.Summation Data.Array.Accelerate.Numeric.Sum.KB2 Foreign.C.Types.CFloat
+instance Data.Array.Accelerate.Numeric.Sum.Summation Data.Array.Accelerate.Numeric.Sum.KB2 Foreign.C.Types.CDouble
+instance Data.Array.Accelerate.Array.Sugar.Elt a => Data.Array.Accelerate.Array.Sugar.Elt (Data.Array.Accelerate.Numeric.Sum.KB2 a)
+instance Data.Array.Accelerate.Array.Sugar.Elt a => Data.Array.Accelerate.Product.IsProduct Data.Array.Accelerate.Array.Sugar.Elt (Data.Array.Accelerate.Numeric.Sum.KB2 a)
+instance (Data.Array.Accelerate.Lift.Lift Data.Array.Accelerate.Smart.Exp a, Data.Array.Accelerate.Array.Sugar.Elt (Data.Array.Accelerate.Lift.Plain a)) => Data.Array.Accelerate.Lift.Lift Data.Array.Accelerate.Smart.Exp (Data.Array.Accelerate.Numeric.Sum.KB2 a)
+instance Data.Array.Accelerate.Array.Sugar.Elt a => Data.Array.Accelerate.Lift.Unlift Data.Array.Accelerate.Smart.Exp (Data.Array.Accelerate.Numeric.Sum.KB2 (Data.Array.Accelerate.Smart.Exp a))
+instance Data.Array.Accelerate.Numeric.Sum.Summation Data.Array.Accelerate.Numeric.Sum.Kahan GHC.Types.Float
+instance Data.Array.Accelerate.Numeric.Sum.Summation Data.Array.Accelerate.Numeric.Sum.Kahan GHC.Types.Double
+instance Data.Array.Accelerate.Numeric.Sum.Summation Data.Array.Accelerate.Numeric.Sum.Kahan Foreign.C.Types.CFloat
+instance Data.Array.Accelerate.Numeric.Sum.Summation Data.Array.Accelerate.Numeric.Sum.Kahan Foreign.C.Types.CDouble
+instance Data.Array.Accelerate.Array.Sugar.Elt a => Data.Array.Accelerate.Array.Sugar.Elt (Data.Array.Accelerate.Numeric.Sum.Kahan a)
+instance Data.Array.Accelerate.Array.Sugar.Elt a => Data.Array.Accelerate.Product.IsProduct Data.Array.Accelerate.Array.Sugar.Elt (Data.Array.Accelerate.Numeric.Sum.Kahan a)
+instance (Data.Array.Accelerate.Lift.Lift Data.Array.Accelerate.Smart.Exp a, Data.Array.Accelerate.Array.Sugar.Elt (Data.Array.Accelerate.Lift.Plain a)) => Data.Array.Accelerate.Lift.Lift Data.Array.Accelerate.Smart.Exp (Data.Array.Accelerate.Numeric.Sum.Kahan a)
+instance Data.Array.Accelerate.Array.Sugar.Elt a => Data.Array.Accelerate.Lift.Unlift Data.Array.Accelerate.Smart.Exp (Data.Array.Accelerate.Numeric.Sum.Kahan (Data.Array.Accelerate.Smart.Exp a))
+
+
 -- | Level 3 (matrix-matrix) BLAS operations.
 module Data.Array.Accelerate.Numeric.LinearAlgebra.BLAS.Level3
 class (Elt a, Num a) => Numeric a
@@ -289,7 +390,7 @@ infixr 8 <#
 infixr 8 <>
 
 -- | Create a square identity matrix of the given dimension
-ident :: Num e => Exp Int -> Acc (Matrix e)
+identity :: Num e => Exp Int -> Acc (Matrix e)
 
 -- | Create a square matrix with the given diagonal
-diag :: Num e => Acc (Vector e) -> Acc (Matrix e)
+diagonal :: Num e => Acc (Vector e) -> Acc (Matrix e)
