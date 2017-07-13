@@ -38,7 +38,7 @@ packages:
 
 - location:
     git:    https://github.com/tmcdonell/colour-accelerate.git
-    commit: cc44ab7ef1ad57ba0addbd01f1712022e293e41c
+    commit: ce9db6ab7c580ec3f692ffc7615a37e9d469e71b
 
 - location:
     git:    https://github.com/tmcdonell/gloss-accelerate.git
