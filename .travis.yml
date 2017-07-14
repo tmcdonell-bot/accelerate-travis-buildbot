@@ -40,7 +40,7 @@ addons:
 compiler:
   - GHC-8.0.2
   - GHC-7.10.3
-  - GHC-7.8.4
+  # - GHC-7.8.4
 
 env:
   global:
@@ -71,18 +71,6 @@ matrix:
   exclude:
     - compiler: GHC-8.0.2
       env: TARGET=accelerate-cuda
-    - compiler: GHC-7.8.4
-      env: TARGET=accelerate-io
-    - compiler: GHC-7.8.4
-      env: TARGET=accelerate-bignum
-    - compiler: GHC-7.8.4
-      env: TARGET=accelerate-examples
-    - compiler: GHC-7.8.4
-      env: TARGET=linear-accelerate
-    - compiler: GHC-7.8.4
-      env: TARGET=lens-accelerate
-    - compiler: GHC-7.8.4
-      env: TARGET=lulesh-accelerate
 
 
 before_install:
