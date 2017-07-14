@@ -1,12 +1,16 @@
 # For more information, see: https://github.com/commercialhaskell/stack/blob/release/doc/yaml_configuration.md
 # vim: nospell filetype=yaml
 
-resolver: lts-8.0
+resolver: lts-2.22
 
 packages:
 - location:
     git:    https://github.com/tmcdonell/accelerate.git
     commit: 75b48553724c9e48dacbde2ee693cde7d066a6db
+
+- location:
+    git:    https://github.com/{REPO_accelerate-cuda}.git
+    commit: {SHA_accelerate-cuda}
 
 - location:
     git:    https://github.com/tmcdonell/accelerate-llvm.git
@@ -25,18 +29,6 @@ packages:
     commit: 775a2daa9bafa050bf7328498e40a655541753a6
 
 - location:
-    git:    https://github.com/tmcdonell/accelerate-io.git
-    commit: 893ab10a7daadfc3050968a0eabc515770578b5a
-
-- location:
-    git:    https://github.com/tmcdonell/accelerate-bignum.git
-    commit: 249e1fe1dd91ca975c0623e20779cc0e1875956d
-
-- location:
-    git:    https://github.com/tmcdonell/accelerate-examples.git
-    commit: 20fcf207573ed888806ad57ec2bcea517b89568a
-
-- location:
     git:    https://github.com/tmcdonell/colour-accelerate.git
     commit: 2c7ce095282b2d0ef33cc1e73ca865cc3cc3211b
 
@@ -49,24 +41,12 @@ packages:
     commit: 93cd0da8bcc33efaaa59801f97a89d2311dcf48d
 
 - location:
-    git:    https://github.com/tmcdonell/lens-accelerate.git
-    commit: b19b89518f4e58f75a207f06112c75943ab1b998
-
-- location:
-    git:    https://github.com/tmcdonell/linear-accelerate.git
-    commit: a3515c64b085f80f1dc8f5cd3c8db483be2e9362
-
-- location:
     git:    https://github.com/tmcdonell/mwc-random-accelerate.git
     commit: e4c384c300e1faa36d74e3b34984e040b20ed66a
 
 - location:
     git:    https://github.com/tmcdonell/numeric-prelude-accelerate.git
     commit: 8adc16cf42bfc43ca3967b8bdc33d4d442026751
-
-- location:
-    git:    https://github.com/tmcdonell/lulesh-accelerate.git
-    commit: 0b6268ae9978955b5b3497adb347065b6f3b341e
 
 - location:
     git:    https://github.com/tmcdonell/cuda.git
@@ -85,40 +65,54 @@ packages:
     commit: 537d627d348f5e4be16f37739d9884208b21063e
 
 extra-deps:
+- 'atomic-primops-0.8.0.4'
+- 'attoparsec-0.13.1.0'
+- 'base-orphans-0.4.4'
+- 'bytestring-lexing-0.5.0.2'
+- 'Cabal-1.24.2.0'
 - 'cabal-doctest-1'
 - 'chaselev-deque-0.5.0.5'
+- 'ekg-0.4.0.10'
+- 'ekg-core-0.1.1.1'
+- 'ekg-json-0.1.0.2'
+- 'fail-4.9.0.0'
+- 'gloss-1.9.2.1'
+- 'gloss-rendering-1.9.2.1'
+- 'GLURaw-1.4.0.2'
+- 'GLUT-2.5.1.1'
 - 'libffi-0.1'
 - 'llvm-hs-4.1.0.0'
 - 'llvm-hs-pure-4.1.0.0'
 - 'matrix-market-attoparsec-0.1.0.5'
+- 'mtl-2.2.1'
 - 'non-negative-0.1.1'
 - 'normaldistribution-1.1.0.3'
 - 'numeric-prelude-0.4.2'
+- 'OpenGL-2.9.2.0'
+- 'OpenGLRaw-1.5.0.1'
+- 'process-1.4.3.0'
+- 'SafeSemaphore-0.10.1'
+- 'scientific-0.3.4.9'
+- 'semigroups-0.18.1'
+- 'storable-record-0.0.3.1'
+- 'th-lift-instances-0.1.11'
+- 'transformers-0.4.3.0'
+- 'transformers-compat-0.4.0.4'
 - 'unique-0'
+- 'utility-ht-0.0.11'
+- 'vector-0.11.0.0'
+- 'void-0.7.1'
 
 # Override default flag values for local packages and extra-deps
 flags:
   llvm-hs:
     shared-llvm: true
-  accelerate-examples:
-    llvm-cpu:   true
-    llvm-ptx:   true
-    gui:        true
-    ekg:        true
-    codespeed:  false
-    nofib:      true
-    smvm:       true
-    crystal:    true
-    canny:      true
-    mandelbrot: true
-    fluid:      true
-    nbody:      true
-    smoothlife: true
-    hashcat:    true
-    fft:        true
-    pagerank:   true
-    ray:        true
-    kmeans:     true
+    semigroups:  true
+  llvm-hs-pure:
+    semigroups: true
+  accelerate-fft:
+    llvm-cpu: false   # https://github.com/cartazio/storable-complex/pull/1
+    llvm-ptx: false   # https://github.com/cartazio/storable-complex/pull/1
 
 # Extra package databases containing global packages
 extra-package-dbs: []
