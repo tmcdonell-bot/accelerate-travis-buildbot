@@ -105,6 +105,11 @@ data ShortByteString :: *
 --   <a>length</a> xs</tt>
 take :: Int -> ShortByteString -> ShortByteString
 
+-- | <a>takeWhile</a>, applied to a predicate <tt>p</tt> and a
+--   ShortByteString <tt>xs</tt>, returns the longest prefix (possibly
+--   empty) of <tt>xs</tt> of elements that satisfy <tt>p</tt>.
+takeWhile :: (Word8 -> Bool) -> ShortByteString -> ShortByteString
+
 
 module Data.ByteString.Short.Char8
 
@@ -123,5 +128,13 @@ module Data.ByteString.Short.Char8
 --   wide range of operations.
 data ShortByteString :: *
 
+-- | <i>O(n)</i> Convert a <a>String</a> into a <a>ShortByteString</a>.
+pack :: String -> ShortByteString
+
 -- | <i>O(n)</i> Convert a <a>ShortByteString</a> into a list.
 unpack :: ShortByteString -> [Char]
+
+-- | <a>takeWhile</a>, applied to a predicate <tt>p</tt> and a
+--   ShortByteString <tt>xs</tt>, returns the longest prefix (possibly
+--   empty) of <tt>xs</tt> of elements that satisfy <tt>p</tt>.
+takeWhile :: (Char -> Bool) -> ShortByteString -> ShortByteString

@@ -755,7 +755,7 @@ type DIM8 = DIM7 :. Int
 type DIM9 = DIM8 :. Int
 
 -- | Shapes and indices of multi-dimensional arrays
-class (Elt sh, Elt (Any sh), Shape (EltRepr sh), FullShape sh ~ sh, CoSliceShape sh ~ sh, SliceShape sh ~ Z) => Shape sh where rank = rank . fromElt size = size . fromElt empty = toElt empty ignore = toElt ignore intersect sh1 sh2 = toElt (intersect (fromElt sh1) (fromElt sh2)) union sh1 sh2 = toElt (union (fromElt sh1) (fromElt sh2)) fromIndex sh ix = toElt (fromIndex (fromElt sh) ix) toIndex sh ix = toIndex (fromElt sh) (fromElt ix) bound sh ix bndy = case bound (fromElt sh) (fromElt ix) bndy of { Left v -> Left v Right ix' -> Right $ toElt ix' } iter sh f c r = iter (fromElt sh) (f . toElt) c r iter1 sh f r = iter1 (fromElt sh) (f . toElt) r rangeToShape (low, high) = toElt (rangeToShape (fromElt low, fromElt high)) shapeToRange ix = let (low, high) = shapeToRange (fromElt ix) in (toElt low, toElt high) shapeToList = shapeToList . fromElt listToShape = toElt . listToShape
+class (Elt sh, Elt (Any sh), Shape (EltRepr sh), FullShape sh ~ sh, CoSliceShape sh ~ sh, SliceShape sh ~ Z) => Shape sh where rank = rank . fromElt size = size . fromElt empty = toElt empty ignore = toElt ignore intersect sh1 sh2 = toElt (intersect (fromElt sh1) (fromElt sh2)) union sh1 sh2 = toElt (union (fromElt sh1) (fromElt sh2)) fromIndex sh ix = toElt (fromIndex (fromElt sh) ix) toIndex sh ix = toIndex (fromElt sh) (fromElt ix) iter sh f c r = iter (fromElt sh) (f . toElt) c r iter1 sh f r = iter1 (fromElt sh) (f . toElt) r rangeToShape (low, high) = toElt (rangeToShape (fromElt low, fromElt high)) shapeToRange ix = let (low, high) = shapeToRange (fromElt ix) in (toElt low, toElt high) shapeToList = shapeToList . fromElt listToShape = toElt . listToShape
 
 -- | Slices, aka generalised indices, as <i>n</i>-tuples and mappings of
 --   slice indices to slices, co-slices, and slice dimensions
@@ -2448,9 +2448,9 @@ postscanrSeg :: (Shape sh, Slice sh, Elt e, Integral i, Bits i, FromIntegral i I
 --   <pre>
 --   s33 :: Stencil3x3 a -&gt; Exp a
 --   s33 ((_,t,_)
+--       ,(l,c,r)
+--       ,(_,b,_)) = ...
 --   </pre>
---   
---   ,(l,c,r) ,(_,b,_)) = ...
 --   
 --   ...where <tt>c</tt> is again the focal point and <tt>t</tt>,
 --   <tt>b</tt>, <tt>l</tt> and <tt>r</tt> are the elements to the top,
@@ -2475,31 +2475,70 @@ postscanrSeg :: (Shape sh, Slice sh, Elt e, Integral i, Bits i, FromIntegral i I
 --   gaussian = [0.06136,0.24477,0.38774,0.24477,0.06136]
 --   
 --   blur :: Num a =&gt; Acc (Array DIM2 a) -&gt; Acc (Array DIM2 a)
---   blur = stencil (convolve5x1 gaussian) Clamp
---        . stencil (convolve1x5 gaussian) Clamp
+--   blur = stencil (convolve5x1 gaussian) clamp
+--        . stencil (convolve1x5 gaussian) clamp
 --   </pre>
-stencil :: (Stencil sh a stencil, Elt b) => (stencil -> Exp b) -> Boundary a -> Acc (Array sh a) -> Acc (Array sh b)
+stencil :: (Stencil sh a stencil, Elt b) => (stencil -> Exp b) -> Boundary (Array sh a) -> Acc (Array sh a) -> Acc (Array sh b)
 
 -- | Map a binary stencil of an array. The extent of the resulting array is
 --   the intersection of the extents of the two source arrays. This is the
 --   stencil equivalent of <a>zipWith</a>.
-stencil2 :: (Stencil sh a stencil1, Stencil sh b stencil2, Elt c) => (stencil1 -> stencil2 -> Exp c) -> Boundary a -> Acc (Array sh a) -> Boundary b -> Acc (Array sh b) -> Acc (Array sh c)
+stencil2 :: (Stencil sh a stencil1, Stencil sh b stencil2, Elt c) => (stencil1 -> stencil2 -> Exp c) -> Boundary (Array sh a) -> Acc (Array sh a) -> Boundary (Array sh b) -> Acc (Array sh b) -> Acc (Array sh c)
 class (Elt (StencilRepr sh stencil), Stencil sh a (StencilRepr sh stencil)) => Stencil sh a stencil
 
--- | Boundary condition specification for stencil operations.
-data Boundary a
+-- | Boundary condition specification for stencil operations
+data Boundary t
 
--- | clamp coordinates to the extent of the array
-Clamp :: Boundary a
+-- | Boundary condition where elements of the stencil which would be
+--   out-of-bounds are instead clamped to the edges of the array.
+--   
+--   In the following 3x3 stencil, the out-of-bounds element <tt>b</tt>
+--   will instead return the value at position <tt>c</tt>:
+--   
+--   <pre>
+--    +------------+
+--    |a           |
+--   b|cd          |
+--    |e           |
+--    +------------+
+--   </pre>
+clamp :: Boundary (Array sh e)
 
--- | mirror coordinates beyond the array extent
-Mirror :: Boundary a
+-- | Stencil boundary condition where coordinates beyond the array extent
+--   are instead mirrored
+--   
+--   In the following 5x3 stencil, the out-of-bounds element <tt>c</tt>
+--   will instead return the value at position <tt>d</tt>, and similarly
+--   the element at <tt>b</tt> will return the value at <tt>e</tt>:
+--   
+--   <pre>
+--     +------------+
+--     |a           |
+--   bc|def         |
+--     |g           |
+--     +------------+
+--   </pre>
+mirror :: Boundary (Array sh e)
 
--- | wrap coordinates around on each dimension
-Wrap :: Boundary a
+-- | Stencil boundary condition where coordinates beyond the array extent
+--   instead wrap around the array.
+--   
+--   In the following 3x3 stencil, the out of bounds elements will be read
+--   as in the pattern on the right.
+--   
+--   <pre>
+--   a bc
+--    +------------+      +------------+
+--   d|ef          |      |ef         d|
+--   g|hi          |  -&gt;  |hi         g|
+--    |            |      |bc         a|
+--    +------------+      +------------+
+--   </pre>
+wrap :: Boundary (Array sh e)
 
--- | use a constant value for outlying coordinates
-Constant :: a -> Boundary a
+-- | Stencil boundary condition where the given function is applied to any
+--   outlying coordinates.
+function :: (Shape sh, Elt e) => (Exp sh -> Exp e) -> Boundary (Array sh e)
 type Stencil3 a = (Exp a, Exp a, Exp a)
 type Stencil5 a = (Exp a, Exp a, Exp a, Exp a, Exp a)
 type Stencil7 a = (Exp a, Exp a, Exp a, Exp a, Exp a, Exp a, Exp a)

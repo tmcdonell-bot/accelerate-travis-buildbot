@@ -468,6 +468,48 @@ createTargetForDevice :: Device -> DeviceProperties -> [ContextFlag] -> IO PTX
 -- | Create a PTX execute target for the given device context
 createTargetFromContext :: Context -> IO PTX
 
+-- | Ahead-of-time compilation for an embedded array program.
+--   
+--   This function will generate, compile, and link into the final
+--   executable, code to execute the given Accelerate computation <i>at
+--   Haskell compile time</i>. This eliminates any runtime overhead
+--   associated with the other <tt>run*</tt> operations. The generated code
+--   will be compiled for the current (default) GPU architecture.
+--   
+--   Since the Accelerate program will be generated at Haskell compile
+--   time, construction of the Accelerate program, in particular via
+--   meta-programming, will be limited to operations available to that
+--   phase. Also note that any arrays which are embedded into the program
+--   via <a>use</a> will be stored as part of the final executable.
+--   
+--   <ul>
+--   <li><i><i>Note:</i></i></li>
+--   </ul>
+--   
+--   Due to <a>GHC#13587</a>, this currently must be as an <i>untyped</i>
+--   splice.
+--   
+--   The correct type of this function is similar to that of <a>runN</a>:
+--   
+--   <pre>
+--   runQ :: Afunction f =&gt; f -&gt; Q (TExp (AfunctionR f))
+--   </pre>
+--   
+--   Since 1.1.0.0.
+runQ :: Afunction f => f -> ExpQ
+
+-- | Ahead-of-time analogue of <a>runNAsync</a>. See <a>runQ</a> for more
+--   information.
+--   
+--   The correct type of this function is:
+--   
+--   <pre>
+--   runQAsync :: (Afunction f, RunAsync r, AfunctionR f ~ RunAsyncR r) =&gt; f -&gt; Q (TExp r)
+--   </pre>
+--   
+--   Since 1.1.0.0.
+runQAsync :: Afunction f => f -> ExpQ
+
 -- | Configure the default execution target to allocate all future
 --   host-side arrays using (CUDA) pinned memory. Any newly allocated
 --   arrays will be page-locked and directly accessible from the device,
