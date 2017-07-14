@@ -11,7 +11,6 @@ changes. The collected documentation can be found [here](http://tmcdonell-bot.gi
 Status of individual repositories:
 
  - [![Build Status](https://travis-ci.org/tmcdonell/accelerate.svg?branch=master)](https://travis-ci.org/tmcdonell/accelerate) [tmcdonell/accelerate](https://github.com/tmcdonell/accelerate)
- - [![Build Status](https://travis-ci.org/tmcdonell/accelerate-cuda.svg?branch=master)](https://travis-ci.org/tmcdonell/accelerate-cuda) [tmcdonell/accelerate-cuda](https://github.com/tmcdonell/accelerate-cuda)
  - [![Build Status](https://travis-ci.org/tmcdonell/accelerate-llvm.svg?branch=master)](https://travis-ci.org/tmcdonell/accelerate-llvm) [tmcdonell/accelerate-llvm](https://github.com/tmcdonell/accelerate-llvm)
  - [![Build Status](https://travis-ci.org/tmcdonell/accelerate-fft.svg?branch=master)](https://travis-ci.org/tmcdonell/accelerate-fft) [tmcdonell/accelerate-fft](https://github.com/tmcdonell/accelerate-fft)
  - [![Build Status](https://travis-ci.org/tmcdonell/accelerate-blas.svg?branch=master)](https://travis-ci.org/tmcdonell/accelerate-blas) [tmcdonell/accelerate-blas](https://github.com/tmcdonell/accelerate-blas)

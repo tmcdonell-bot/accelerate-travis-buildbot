@@ -48,7 +48,6 @@ env:
   matrix:
     - TARGET="" # all packages
     - TARGET=accelerate
-    - TARGET=accelerate-cuda
     - TARGET=accelerate-fft
     - TARGET=accelerate-blas
     - TARGET=accelerate-io
@@ -68,9 +67,9 @@ env:
 
 matrix:
   fast_finish: true
-  exclude:
-    - compiler: GHC-8.0.2
-      env: TARGET=accelerate-cuda
+  # exclude:
+  #   - compiler: GHC-8.0.2
+  #     env: TARGET=accelerate-cuda
 
 
 before_install:

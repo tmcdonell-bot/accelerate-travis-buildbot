@@ -8,7 +8,6 @@
 
 # TRAVIS_COMMIT
 s|{SHA_accelerate}|75b48553724c9e48dacbde2ee693cde7d066a6db|
-s|{SHA_accelerate-cuda}|6285f87859788628ce68d1ff76ce7b348f585f9e|
 s|{SHA_accelerate-llvm}|97af36d297a88ff3e80197b232121e8aeab35aef|
 s|{SHA_accelerate-fft}|cd125190605afa88833cb500027f8a451a5734fb|
 s|{SHA_accelerate-blas}|775a2daa9bafa050bf7328498e40a655541753a6|
@@ -30,7 +29,6 @@ s|{SHA_nvvm}|537d627d348f5e4be16f37739d9884208b21063e|
 
 # TRAVIS_REPO_SLUG
 s|{REPO_accelerate}|tmcdonell/accelerate|g
-s|{REPO_accelerate-cuda}|tmcdonell/accelerate-cuda|g
 s|{REPO_accelerate-llvm}|tmcdonell/accelerate-llvm|g
 s|{REPO_accelerate-fft}|tmcdonell/accelerate-fft|g
 s|{REPO_accelerate-blas}|tmcdonell/accelerate-blas|g

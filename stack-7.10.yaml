@@ -9,10 +9,6 @@ packages:
     commit: 75b48553724c9e48dacbde2ee693cde7d066a6db
 
 - location:
-    git:    https://github.com/tmcdonell/accelerate-cuda.git
-    commit: 6285f87859788628ce68d1ff76ce7b348f585f9e
-
-- location:
     git:    https://github.com/tmcdonell/accelerate-llvm.git
     commit: 97af36d297a88ff3e80197b232121e8aeab35aef
   subdirs:
@@ -113,7 +109,6 @@ flags:
   llvm-hs-pure:
     semigroups: true
   accelerate-examples:
-    cuda:       true
     llvm-cpu:   true
     llvm-ptx:   true
     gui:        true

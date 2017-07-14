@@ -101,7 +101,6 @@ flags:
   llvm-hs:
     shared-llvm: true
   accelerate-examples:
-    cuda:       false
     llvm-cpu:   true
     llvm-ptx:   true
     gui:        true

@@ -9,10 +9,6 @@ packages:
     commit: {SHA_accelerate}
 
 - location:
-    git:    https://github.com/{REPO_accelerate-cuda}.git
-    commit: {SHA_accelerate-cuda}
-
-- location:
     git:    https://github.com/{REPO_accelerate-llvm}.git
     commit: {SHA_accelerate-llvm}
   subdirs:
@@ -113,7 +109,6 @@ flags:
   llvm-hs-pure:
     semigroups: true
   accelerate-examples:
-    cuda:       true
     llvm-cpu:   true
     llvm-ptx:   true
     gui:        true
