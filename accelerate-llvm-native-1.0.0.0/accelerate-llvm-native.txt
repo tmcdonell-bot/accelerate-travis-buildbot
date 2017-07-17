@@ -395,26 +395,6 @@ runNAsync :: (Afunction f, RunAsync r, AfunctionR f ~ RunAsyncR r) => f -> r
 -- | As <a>runNWith</a>, but execute asynchronously.
 runNAsyncWith :: (Afunction f, RunAsync r, AfunctionR f ~ RunAsyncR r) => Native -> f -> r
 
--- | Native machine code JIT execution target
-data Native
-
--- | The strategy for balancing work amongst the available worker threads.
-type Strategy = Gang -> Executable
-
--- | Create a Native execution target by spawning a worker thread on each
---   of the given capabilities, and using the given strategy to load
---   balance the workers when executing parallel operations.
-createTarget :: [Int] -> Strategy -> IO Native
-
--- | Execute a computation where threads use work stealing (based on lazy
---   splitting of work stealing queues and exponential backoff) in order to
---   automatically balance the workload amongst themselves.
-balancedParIO :: Int -> Strategy
-
--- | Execute a computation without load balancing. Each thread computes an
---   equally sized chunk of the input. No work stealing occurs.
-unbalancedParIO :: Strategy
-
 -- | Ahead-of-time compilation for an embedded array program.
 --   
 --   This function will generate, compile, and link into the final
@@ -475,5 +455,25 @@ runQ :: Afunction f => f -> ExpQ
 --   
 --   Since 1.1.0.0. Requires GHC-8.0.
 runQAsync :: Afunction f => f -> ExpQ
+
+-- | Native machine code JIT execution target
+data Native
+
+-- | The strategy for balancing work amongst the available worker threads.
+type Strategy = Gang -> Executable
+
+-- | Create a Native execution target by spawning a worker thread on each
+--   of the given capabilities, and using the given strategy to load
+--   balance the workers when executing parallel operations.
+createTarget :: [Int] -> Strategy -> IO Native
+
+-- | Execute a computation where threads use work stealing (based on lazy
+--   splitting of work stealing queues and exponential backoff) in order to
+--   automatically balance the workload amongst themselves.
+balancedParIO :: Int -> Strategy
+
+-- | Execute a computation without load balancing. Each thread computes an
+--   equally sized chunk of the input. No work stealing occurs.
+unbalancedParIO :: Strategy
 instance Data.Array.Accelerate.LLVM.Native.RunAsync b => Data.Array.Accelerate.LLVM.Native.RunAsync (a -> b)
 instance Data.Array.Accelerate.LLVM.Native.RunAsync (GHC.Types.IO (Data.Array.Accelerate.Async.Async b))

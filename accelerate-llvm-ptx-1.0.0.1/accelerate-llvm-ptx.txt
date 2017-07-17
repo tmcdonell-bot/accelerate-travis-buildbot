@@ -451,23 +451,6 @@ runNAsync :: (Afunction f, RunAsync r, AfunctionR f ~ RunAsyncR r) => f -> r
 -- | As <a>runNWith</a>, but execute asynchronously.
 runNAsyncWith :: (Afunction f, RunAsync r, AfunctionR f ~ RunAsyncR r) => PTX -> f -> r
 
--- | The PTX execution target for NVIDIA GPUs.
---   
---   The execution target carries state specific for the current execution
---   context. The data here --- device memory and execution streams --- are
---   implicitly tied to this CUDA execution context.
---   
---   Don't store anything here that is independent of the context, for
---   example state related to [persistent] kernel caching should _not_ go
---   here.
-data PTX
-
--- | Create a new PTX execution target for the given device
-createTargetForDevice :: Device -> DeviceProperties -> [ContextFlag] -> IO PTX
-
--- | Create a PTX execute target for the given device context
-createTargetFromContext :: Context -> IO PTX
-
 -- | Ahead-of-time compilation for an embedded array program.
 --   
 --   This function will generate, compile, and link into the final
@@ -509,6 +492,23 @@ runQ :: Afunction f => f -> ExpQ
 --   
 --   Since 1.1.0.0.
 runQAsync :: Afunction f => f -> ExpQ
+
+-- | The PTX execution target for NVIDIA GPUs.
+--   
+--   The execution target carries state specific for the current execution
+--   context. The data here --- device memory and execution streams --- are
+--   implicitly tied to this CUDA execution context.
+--   
+--   Don't store anything here that is independent of the context, for
+--   example state related to [persistent] kernel caching should _not_ go
+--   here.
+data PTX
+
+-- | Create a new PTX execution target for the given device
+createTargetForDevice :: Device -> DeviceProperties -> [ContextFlag] -> IO PTX
+
+-- | Create a PTX execute target for the given device context
+createTargetFromContext :: Context -> IO PTX
 
 -- | Configure the default execution target to allocate all future
 --   host-side arrays using (CUDA) pinned memory. Any newly allocated
