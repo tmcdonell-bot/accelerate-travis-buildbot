@@ -26,7 +26,7 @@ packages:
 
 - location:
     git:    https://github.com/tmcdonell/accelerate-blas.git
-    commit: 775a2daa9bafa050bf7328498e40a655541753a6
+    commit: 2b66e3a704ca5776e35ce93bfe4cc0b71a96f675
 
 - location:
     git:    https://github.com/tmcdonell/colour-accelerate.git
