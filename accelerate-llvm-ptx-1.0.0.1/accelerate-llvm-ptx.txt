@@ -465,6 +465,31 @@ runNAsyncWith :: (Afunction f, RunAsync r, AfunctionR f ~ RunAsyncR r) => PTX ->
 --   phase. Also note that any arrays which are embedded into the program
 --   via <a>use</a> will be stored as part of the final executable.
 --   
+--   Usage of this function in your program is similar to that of
+--   <a>runN</a>. First, express your Accelerate program as a function of
+--   array terms:
+--   
+--   <pre>
+--   f :: (Arrays a, Arrays b, ... Arrays c) =&gt; Acc a -&gt; Acc b -&gt; ... -&gt; Acc c
+--   </pre>
+--   
+--   This function then returns a compiled version of <tt>f</tt> as a
+--   Template Haskell splice, to be added into your program at Haskell
+--   compile time:
+--   
+--   <pre>
+--   {-# LANGUAGE TemplateHaskell #-}
+--   
+--   f' :: a -&gt; b -&gt; ... -&gt; c
+--   f' = $( runQ f )
+--   </pre>
+--   
+--   Note that at the splice point the usage of <tt>f</tt> must
+--   monomorphic; i.e. the types <tt>a</tt>, <tt>b</tt> and <tt>c</tt> must
+--   be at some known concrete type.
+--   
+--   See the <a>lulesh-accelerate</a> project for an example.
+--   
 --   <ul>
 --   <li><i><i>Note:</i></i></li>
 --   </ul>
