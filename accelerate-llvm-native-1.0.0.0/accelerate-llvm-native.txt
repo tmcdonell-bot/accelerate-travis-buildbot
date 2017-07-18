@@ -83,10 +83,9 @@
 --   which must be linked into the final executable.
 module Data.Array.Accelerate.LLVM.Native.Plugin
 plugin :: Plugin
-data Object
-Object :: FilePath -> Object
-instance Data.Data.Data Data.Array.Accelerate.LLVM.Native.Plugin.Object
-instance GHC.Show.Show Data.Array.Accelerate.LLVM.Native.Plugin.Object
+instance Data.Serialize.Serialize Module.Module
+instance Data.Serialize.Serialize Module.UnitId
+instance Data.Serialize.Serialize Module.ModuleName
 
 
 module Data.Array.Accelerate.LLVM.Native.Foreign
@@ -410,23 +409,15 @@ runNAsyncWith :: (Afunction f, RunAsync r, AfunctionR f ~ RunAsyncR r) => Native
 --   via <a>use</a> will be stored as part of the final executable.
 --   
 --   In order to link the final program together, the included GHC plugin
---   must be run over any modules using this function, for example by
---   adding the following pragma to the top of the file:
+--   must be used when compiling and linking the program. Add the following
+--   option to your projects .cabal file:
 --   
 --   <pre>
---   {-# OPTIONS_GHC -fplugin=Data.Array.Accelerate.LLVM.Native.Plugin #-}
+--   ghc-options: -fplugin=Data.Array.Accelerate.LLVM.Native.Plugin
 --   </pre>
 --   
---   To load the file in interactive mode (ghci), you will also need to
---   specify the option:
---   
---   <pre>
---   -fplugin-opt=Data.Array.Accelerate.LLVM.Native.Plugin:interactive
---   </pre>
---   
---   The included wrapper script <tt>ghc-accelerate</tt> can be used in
---   place of the regular <tt>ghc</tt> program, and will insert the above
---   options for you as necessary.
+--   Similarly, the plugin must also run when loading modules in
+--   <tt>ghci</tt>.
 --   
 --   <ul>
 --   <li><i><i>Note:</i></i></li>
