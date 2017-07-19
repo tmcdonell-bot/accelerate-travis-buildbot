@@ -19,7 +19,7 @@ s|{SHA_gloss-accelerate}|b8d39aa995053addec0ee1765358eef9ff188290|
 s|{SHA_gloss-raster-accelerate}|fb21bb7d9b2a97b1182c8286ef0a4ca1ceef8024|
 s|{SHA_lens-accelerate}|1d5d90f9b906ba42a06d1f1784af387afd625259|
 s|{SHA_linear-accelerate}|7244933080cef27ea01ca0cae38050725d27ad65|
-s|{SHA_mwc-random-accelerate}|e4c384c300e1faa36d74e3b34984e040b20ed66a|
+s|{SHA_mwc-random-accelerate}|d1535021c95a736db7f51af273525a7bbfc7bf30|
 s|{SHA_numeric-prelude-accelerate}|8adc16cf42bfc43ca3967b8bdc33d4d442026751|
 s|{SHA_lulesh-accelerate}|7015142c19ac4878a54a88ea77ad59babf034cee|
 s|{SHA_cuda}|b6e62e26a4a62cb94961c4b9fd9eca97ad04652e|
