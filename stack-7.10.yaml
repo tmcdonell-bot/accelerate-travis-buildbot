@@ -108,6 +108,8 @@ flags:
     semigroups:  true
   llvm-hs-pure:
     semigroups: true
+  lulesh-accelerate:
+    llvm-gpu:   false
   accelerate-examples:
     llvm-cpu:   true
     llvm-ptx:   true

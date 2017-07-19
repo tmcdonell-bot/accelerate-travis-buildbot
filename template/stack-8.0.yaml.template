@@ -100,6 +100,8 @@ extra-deps:
 flags:
   llvm-hs:
     shared-llvm: true
+  lulesh-accelerate:
+    llvm-gpu:   false
   accelerate-examples:
     llvm-cpu:   true
     llvm-ptx:   true
