@@ -24,9 +24,9 @@
 --   transformed, and that this is a power-of-two in each dimension.
 --   
 --   For performance, compile against the foreign library bindings (using
---   any number of '-fcuda', '-fllvm-gpu', and '-fllvm-cpu' for the
---   accelerate-cuda, accelerate-llvm-ptx, and accelerate-llvm-native
---   backends respectively), which have none of the above restrictions.
+--   any number of '-fllvm-ptx', and '-fllvm-cpu' for the
+--   accelerate-llvm-ptx, and accelerate-llvm-native backends,
+--   respectively), which have none of the above restrictions.
 module Data.Array.Accelerate.Math.FFT
 data Mode
 
