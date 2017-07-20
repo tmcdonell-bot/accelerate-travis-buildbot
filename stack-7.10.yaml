@@ -18,7 +18,7 @@ packages:
 
 - location:
     git:    https://github.com/tmcdonell/accelerate-fft.git
-    commit: 79bfcc9e674383d3444426e27ad74c07dcdd177a
+    commit: d29f94a86c8dd786d0b665a2ed5f914e8a1818b6
 
 - location:
     git:    https://github.com/tmcdonell/accelerate-blas.git
