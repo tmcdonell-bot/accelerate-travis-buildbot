@@ -82,6 +82,28 @@
 @version 1.0.0.0
 
 
+-- | A mutable reference in the <a>IO</a> monad.
+module Data.IORef.Storable
+
+-- | A pointer to a mutable object. Unlike <a>IORef</a>, this is just a
+--   pointer to the value, rather than a reference containing a boxed
+--   object. This means that the value is stored strictly, and is only one
+--   pointer away.
+data IORef a
+
+-- | Build a new <a>IORef</a>
+newIORef :: Storable a => a -> IO (IORef a)
+
+-- | Read the value of the <a>IORef</a>
+readIORef :: Storable a => IORef a -> IO a
+
+-- | Write a new value into the <a>IORef</a>
+writeIORef :: Storable a => IORef a -> a -> IO ()
+
+-- | Mutate the contents of an <a>IORef</a>
+modifyIORef :: Storable a => IORef a -> (a -> a) -> IO ()
+
+
 module Data.ByteString.Short.Extra
 
 -- | A compact representation of a <a>Word8</a> vector.
