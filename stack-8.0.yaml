@@ -78,7 +78,7 @@ packages:
 
 - location:
     git:    https://github.com/tmcdonell/cublas.git
-    commit: 13a51a207064a93f24081dd5aca7520b78c73ac4
+    commit: ac07fc40e403ad5309b4c86f08c74511ddf15d74
 
 - location:
     git:    https://github.com/tmcdonell/nvvm.git
