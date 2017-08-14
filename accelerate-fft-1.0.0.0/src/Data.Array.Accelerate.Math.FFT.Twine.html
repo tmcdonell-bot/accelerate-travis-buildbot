@@ -18,7 +18,7 @@
 </span><a name="line-18"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">Data</span><span class="hs-operator">.</span><span class="hs-identifier">Array</span><span class="hs-operator">.</span><span class="hs-identifier">Accelerate</span><span>                                      </span><span class="hs-keyword">as</span><span> </span><span class="hs-identifier">A</span><span>
 </span><a name="line-19"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">Data</span><span class="hs-operator">.</span><span class="hs-identifier">Array</span><span class="hs-operator">.</span><span class="hs-identifier">Accelerate</span><span class="hs-operator">.</span><span class="hs-identifier">Data</span><span class="hs-operator">.</span><span class="hs-identifier">Complex</span><span>
 </span><a name="line-20"></a><span>
-</span><a name="line-21"></a><span class="hs-cpp">#if defined(ACCELERATE_CUDA_BACKEND) || defined(ACCELERATE_LLVM_PTX_BACKEND)</span><span>
+</span><a name="line-21"></a><span class="hs-cpp">#ifdef ACCELERATE_LLVM_PTX_BACKEND</span><span>
 </span><a name="line-22"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">Data</span><span class="hs-operator">.</span><span class="hs-identifier">FileEmbed</span><span>
 </span><a name="line-23"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">Data</span><span class="hs-operator">.</span><span class="hs-identifier">ByteString</span><span>                                            </span><span class="hs-special">(</span><span> </span><span class="hs-identifier hs-type">ByteString</span><span> </span><span class="hs-special">)</span><span>
 </span><a name="line-24"></a><span class="hs-cpp">#endif</span><span>
@@ -65,7 +65,7 @@
  #-}</span><span>
 </span><a name="line-66"></a><span>
 </span><a name="line-67"></a><span>
-</span><a name="line-68"></a><span class="hs-cpp">#if defined(ACCELERATE_CUDA_BACKEND) || defined(ACCELERATE_LLVM_PTX_BACKEND)</span><span>
+</span><a name="line-68"></a><span class="hs-cpp">#ifdef ACCELERATE_LLVM_PTX_BACKEND</span><span>
 </span><a name="line-69"></a><span>
 </span><a name="line-70"></a><span class="hs-comment">-- Embedded PTX code for interleave and deinterleave for 32- and 64-bit floating</span><span>
 </span><a name="line-71"></a><span class="hs-comment">-- point numbers respectively. These can be loaded and executed by the CUDA</span><span>
