@@ -82,7 +82,7 @@ packages:
 
 - location:
     git:    https://github.com/tmcdonell/nvvm.git
-    commit: 537d627d348f5e4be16f37739d9884208b21063e
+    commit: 9f1225801320c5b4e6a5e6dc656227d1c8522ab0
 
 extra-deps:
 - 'Cabal-1.24.2.0'
