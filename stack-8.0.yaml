@@ -26,7 +26,7 @@ packages:
 
 - location:
     git:    https://github.com/tmcdonell/accelerate-io.git
-    commit: eb8d6b93f7e6fd68110156a0da0985042b60990a
+    commit: 50962798ffbd09cea4b417aff65455da26def6b5
 
 - location:
     git:    https://github.com/tmcdonell/accelerate-bignum.git
