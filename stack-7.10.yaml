@@ -22,7 +22,7 @@ packages:
 
 - location:
     git:    https://github.com/tmcdonell/accelerate-blas.git
-    commit: ccfb5c6eb7b19a16d7a9fe49bcb240e5b2b22c3f
+    commit: 9e1c273d4c516bfe759133b6a75fb0840fba4e9f
 
 - location:
     git:    https://github.com/tmcdonell/accelerate-io.git
