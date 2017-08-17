@@ -26,5 +26,6 @@ Status of individual repositories:
  - [![Build Status](https://travis-ci.org/tmcdonell/cuda.svg?branch=master)](https://travis-ci.org/tmcdonell/cuda) [tmcdonell/cuda](https://github.com/tmcdonell/cuda)
  - [![Build Status](https://travis-ci.org/tmcdonell/cufft.svg?branch=master)](https://travis-ci.org/tmcdonell/cufft) [tmcdonell/cufft](https://github.com/tmcdonell/cufft)
  - [![Build Status](https://travis-ci.org/tmcdonell/cublas.svg?branch=master)](https://travis-ci.org/tmcdonell/cublas) [tmcdonell/cublas](https://github.com/tmcdonell/cublas)
+ - [![Build Status](https://travis-ci.org/tmcdonell/cusparse.svg?branch=master)](https://travis-ci.org/tmcdonell/cusparse) [tmcdonell/cusparse](https://github.com/tmcdonell/cusparse)
  - [![Build Status](https://travis-ci.org/tmcdonell/nvvm.svg?branch=master)](https://travis-ci.org/tmcdonell/nvvm) [tmcdonell/nvvm](https://github.com/tmcdonell/nvvm)
 

@@ -81,6 +81,10 @@ packages:
     commit: {SHA_cublas}
 
 - location:
+    git:    https://github.com/{REPO_cusparse}.git
+    commit: {SHA_cusparse}
+
+- location:
     git:    https://github.com/{REPO_nvvm}.git
     commit: {SHA_nvvm}
 

@@ -81,6 +81,10 @@ packages:
     commit: 46d06f15ad84ec424c138b61df4c332cb29702d8
 
 - location:
+    git:    https://github.com/tmcdonell/cusparse.git
+    commit: 3af4a4bef62e236eab5cb6c7b575f1e383f2d274
+
+- location:
     git:    https://github.com/tmcdonell/nvvm.git
     commit: 632323e2a7c3c75bb07a3edb35de47273dc4cd07
 
