@@ -85,6 +85,10 @@ packages:
     commit: {SHA_cusparse}
 
 - location:
+    git:    https://github.com/{REPO_cusolver}.git
+    commit: {SHA_cusolver}
+
+- location:
     git:    https://github.com/{REPO_nvvm}.git
     commit: {SHA_nvvm}
 

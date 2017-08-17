@@ -85,6 +85,10 @@ packages:
     commit: 3af4a4bef62e236eab5cb6c7b575f1e383f2d274
 
 - location:
+    git:    https://github.com/tmcdonell/cusolver.git
+    commit: 01b0417ad7b0afa738c22983f9bd31aac918d5b2
+
+- location:
     git:    https://github.com/tmcdonell/nvvm.git
     commit: 632323e2a7c3c75bb07a3edb35de47273dc4cd07
 
