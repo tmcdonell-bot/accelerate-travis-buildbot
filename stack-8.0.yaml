@@ -106,8 +106,6 @@ extra-deps:
 
 # Override default flag values for local packages and extra-deps
 flags:
-  llvm-hs:
-    shared-llvm: true
   lulesh-accelerate:
     llvm-gpu:   false
   accelerate-examples:
