@@ -46,7 +46,7 @@ packages:
 
 - location:
     git:    https://github.com/tmcdonell/gloss-raster-accelerate.git
-    commit: fb21bb7d9b2a97b1182c8286ef0a4ca1ceef8024
+    commit: a78fec5f7386a584726bec628323cde1f6da9c0c
 
 - location:
     git:    https://github.com/tmcdonell/lens-accelerate.git
