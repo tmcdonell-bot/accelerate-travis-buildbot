@@ -93,6 +93,7 @@ packages:
     commit: 632323e2a7c3c75bb07a3edb35de47273dc4cd07
 
 extra-deps:
+- 'blas-hs-0.1.1.0'
 - 'cabal-doctest-1'
 - 'chaselev-deque-0.5.0.5'
 - 'libffi-0.1'

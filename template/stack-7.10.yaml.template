@@ -93,6 +93,7 @@ packages:
     commit: {SHA_nvvm}
 
 extra-deps:
+- 'blas-hs-0.1.1.0'
 - 'Cabal-1.24.2.0'
 - 'cabal-doctest-1'
 - 'chaselev-deque-0.5.0.5'
