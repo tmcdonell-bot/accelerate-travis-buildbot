@@ -31,31 +31,73 @@
 @version 0.5.2.0
 
 
--- | The constant functor.
-module Data.Functor.Constant
+-- | Making functors with an <a>Applicative</a> instance that performs
+--   actions in the reverse order.
+module Control.Applicative.Backwards
 
--- | Constant functor.
-newtype Constant a b
-Constant :: a -> Constant a b
-[getConstant] :: Constant a b -> a
-instance forall a k (b :: k). GHC.Classes.Ord a => GHC.Classes.Ord (Data.Functor.Constant.Constant a b)
-instance forall a k (b :: k). GHC.Classes.Eq a => GHC.Classes.Eq (Data.Functor.Constant.Constant a b)
-instance forall k a (b :: k). GHC.Read.Read a => GHC.Read.Read (Data.Functor.Constant.Constant a b)
-instance forall k a (b :: k). GHC.Show.Show a => GHC.Show.Show (Data.Functor.Constant.Constant a b)
-instance Data.Functor.Classes.Eq2 Data.Functor.Constant.Constant
-instance Data.Functor.Classes.Ord2 Data.Functor.Constant.Constant
-instance Data.Functor.Classes.Read2 Data.Functor.Constant.Constant
-instance Data.Functor.Classes.Show2 Data.Functor.Constant.Constant
-instance GHC.Classes.Eq a => Data.Functor.Classes.Eq1 (Data.Functor.Constant.Constant a)
-instance GHC.Classes.Ord a => Data.Functor.Classes.Ord1 (Data.Functor.Constant.Constant a)
-instance GHC.Read.Read a => Data.Functor.Classes.Read1 (Data.Functor.Constant.Constant a)
-instance GHC.Show.Show a => Data.Functor.Classes.Show1 (Data.Functor.Constant.Constant a)
-instance GHC.Base.Functor (Data.Functor.Constant.Constant a)
-instance Data.Foldable.Foldable (Data.Functor.Constant.Constant a)
-instance Data.Traversable.Traversable (Data.Functor.Constant.Constant a)
-instance GHC.Base.Monoid a => GHC.Base.Applicative (Data.Functor.Constant.Constant a)
-instance forall k a (b :: k). GHC.Base.Monoid a => GHC.Base.Monoid (Data.Functor.Constant.Constant a b)
-instance Data.Bifunctor.Bifunctor Data.Functor.Constant.Constant
+-- | The same functor, but with an <a>Applicative</a> instance that
+--   performs actions in the reverse order.
+newtype Backwards f a
+Backwards :: f a -> Backwards f a
+[forwards] :: Backwards f a -> f a
+instance Data.Functor.Classes.Eq1 f => Data.Functor.Classes.Eq1 (Control.Applicative.Backwards.Backwards f)
+instance Data.Functor.Classes.Ord1 f => Data.Functor.Classes.Ord1 (Control.Applicative.Backwards.Backwards f)
+instance Data.Functor.Classes.Read1 f => Data.Functor.Classes.Read1 (Control.Applicative.Backwards.Backwards f)
+instance Data.Functor.Classes.Show1 f => Data.Functor.Classes.Show1 (Control.Applicative.Backwards.Backwards f)
+instance (Data.Functor.Classes.Eq1 f, GHC.Classes.Eq a) => GHC.Classes.Eq (Control.Applicative.Backwards.Backwards f a)
+instance (Data.Functor.Classes.Ord1 f, GHC.Classes.Ord a) => GHC.Classes.Ord (Control.Applicative.Backwards.Backwards f a)
+instance (Data.Functor.Classes.Read1 f, GHC.Read.Read a) => GHC.Read.Read (Control.Applicative.Backwards.Backwards f a)
+instance (Data.Functor.Classes.Show1 f, GHC.Show.Show a) => GHC.Show.Show (Control.Applicative.Backwards.Backwards f a)
+instance GHC.Base.Functor f => GHC.Base.Functor (Control.Applicative.Backwards.Backwards f)
+instance GHC.Base.Applicative f => GHC.Base.Applicative (Control.Applicative.Backwards.Backwards f)
+instance GHC.Base.Alternative f => GHC.Base.Alternative (Control.Applicative.Backwards.Backwards f)
+instance Data.Foldable.Foldable f => Data.Foldable.Foldable (Control.Applicative.Backwards.Backwards f)
+instance Data.Traversable.Traversable f => Data.Traversable.Traversable (Control.Applicative.Backwards.Backwards f)
+
+
+-- | Signatures for monad operations that require specialized lifting. Each
+--   signature has a uniformity property that the lifting should satisfy.
+module Control.Monad.Signatures
+
+-- | Signature of the <tt>callCC</tt> operation, introduced in
+--   <a>Control.Monad.Trans.Cont</a>. Any lifting function
+--   <tt>liftCallCC</tt> should satisfy
+--   
+--   <ul>
+--   <li><pre><tt>lift</tt> (f k) = f' (<tt>lift</tt> . k) =&gt;
+--   <tt>lift</tt> (cf f) = liftCallCC cf f'</pre></li>
+--   </ul>
+type CallCC m a b = ((a -> m b) -> m a) -> m a
+
+-- | Signature of the <tt>catchE</tt> operation, introduced in
+--   <a>Control.Monad.Trans.Except</a>. Any lifting function
+--   <tt>liftCatch</tt> should satisfy
+--   
+--   <ul>
+--   <li><pre><tt>lift</tt> (cf m f) = liftCatch (<tt>lift</tt> . cf)
+--   (<tt>lift</tt> f)</pre></li>
+--   </ul>
+type Catch e m a = m a -> (e -> m a) -> m a
+
+-- | Signature of the <tt>listen</tt> operation, introduced in
+--   <a>Control.Monad.Trans.Writer</a>. Any lifting function
+--   <tt>liftListen</tt> should satisfy
+--   
+--   <ul>
+--   <li><pre><tt>lift</tt> . liftListen = liftListen .
+--   <tt>lift</tt></pre></li>
+--   </ul>
+type Listen w m a = m a -> m (a, w)
+
+-- | Signature of the <tt>pass</tt> operation, introduced in
+--   <a>Control.Monad.Trans.Writer</a>. Any lifting function
+--   <tt>liftPass</tt> should satisfy
+--   
+--   <ul>
+--   <li><pre><tt>lift</tt> . liftPass = liftPass .
+--   <tt>lift</tt></pre></li>
+--   </ul>
+type Pass w m a = m (a, w -> w) -> m a
 
 
 -- | The class of monad transformers.
@@ -79,7 +121,7 @@ module Control.Monad.Trans.Class
 class MonadTrans t
 
 -- | Lift a computation from the argument monad to the constructed monad.
-lift :: (MonadTrans t, Monad m) => m a -> t m a
+lift :: (MonadTrans t, (Monad m)) => m a -> t m a
 
 
 -- | Continuation monads.
@@ -234,51 +276,6 @@ instance Control.Monad.Trans.Class.MonadTrans (Control.Monad.Trans.Cont.ContT r)
 instance Control.Monad.IO.Class.MonadIO m => Control.Monad.IO.Class.MonadIO (Control.Monad.Trans.Cont.ContT r m)
 
 
--- | Signatures for monad operations that require specialized lifting. Each
---   signature has a uniformity property that the lifting should satisfy.
-module Control.Monad.Signatures
-
--- | Signature of the <tt>callCC</tt> operation, introduced in
---   <a>Control.Monad.Trans.Cont</a>. Any lifting function
---   <tt>liftCallCC</tt> should satisfy
---   
---   <ul>
---   <li><pre><tt>lift</tt> (f k) = f' (<tt>lift</tt> . k) =&gt;
---   <tt>lift</tt> (cf f) = liftCallCC cf f'</pre></li>
---   </ul>
-type CallCC m a b = ((a -> m b) -> m a) -> m a
-
--- | Signature of the <tt>catchE</tt> operation, introduced in
---   <a>Control.Monad.Trans.Except</a>. Any lifting function
---   <tt>liftCatch</tt> should satisfy
---   
---   <ul>
---   <li><pre><tt>lift</tt> (cf m f) = liftCatch (<tt>lift</tt> . cf)
---   (<tt>lift</tt> f)</pre></li>
---   </ul>
-type Catch e m a = m a -> (e -> m a) -> m a
-
--- | Signature of the <tt>listen</tt> operation, introduced in
---   <a>Control.Monad.Trans.Writer</a>. Any lifting function
---   <tt>liftListen</tt> should satisfy
---   
---   <ul>
---   <li><pre><tt>lift</tt> . liftListen = liftListen .
---   <tt>lift</tt></pre></li>
---   </ul>
-type Listen w m a = m a -> m (a, w)
-
--- | Signature of the <tt>pass</tt> operation, introduced in
---   <a>Control.Monad.Trans.Writer</a>. Any lifting function
---   <tt>liftPass</tt> should satisfy
---   
---   <ul>
---   <li><pre><tt>lift</tt> . liftPass = liftPass .
---   <tt>lift</tt></pre></li>
---   </ul>
-type Pass w m a = m (a, w -> w) -> m a
-
-
 -- | This monad transformer adds the ability to fail or throw exceptions to
 --   a monad.
 --   
@@ -300,7 +297,7 @@ module Control.Monad.Trans.Error
 -- | An exception to be thrown.
 --   
 --   Minimal complete definition: <a>noMsg</a> or <a>strMsg</a>.
-class Error a where noMsg = strMsg "" strMsg _ = noMsg
+class Error a
 
 -- | Creates an exception without a message. The default implementation is
 --   <tt><a>strMsg</a> ""</tt>.
@@ -367,11 +364,6 @@ liftListen :: (Monad m) => Listen w m (Either e a) -> Listen w (ErrorT e m) a
 
 -- | Lift a <tt>pass</tt> operation to the new monad.
 liftPass :: (Monad m) => Pass w m (Either e a) -> Pass w (ErrorT e m) a
-instance Control.Monad.Trans.Error.Error e => GHC.Base.Alternative (Data.Either.Either e)
-instance Control.Monad.Trans.Error.Error e => GHC.Base.MonadPlus (Data.Either.Either e)
-instance Control.Monad.Trans.Error.Error GHC.IO.Exception.IOException
-instance Control.Monad.Trans.Error.ErrorList a => Control.Monad.Trans.Error.Error [a]
-instance Control.Monad.Trans.Error.ErrorList GHC.Types.Char
 instance (GHC.Classes.Eq e, Data.Functor.Classes.Eq1 m) => Data.Functor.Classes.Eq1 (Control.Monad.Trans.Error.ErrorT e m)
 instance (GHC.Classes.Ord e, Data.Functor.Classes.Ord1 m) => Data.Functor.Classes.Ord1 (Control.Monad.Trans.Error.ErrorT e m)
 instance (GHC.Read.Read e, Data.Functor.Classes.Read1 m) => Data.Functor.Classes.Read1 (Control.Monad.Trans.Error.ErrorT e m)
@@ -391,6 +383,11 @@ instance (GHC.Base.Monad m, Control.Monad.Trans.Error.Error e) => GHC.Base.Monad
 instance (Control.Monad.Fix.MonadFix m, Control.Monad.Trans.Error.Error e) => Control.Monad.Fix.MonadFix (Control.Monad.Trans.Error.ErrorT e m)
 instance Control.Monad.Trans.Class.MonadTrans (Control.Monad.Trans.Error.ErrorT e)
 instance (Control.Monad.Trans.Error.Error e, Control.Monad.IO.Class.MonadIO m) => Control.Monad.IO.Class.MonadIO (Control.Monad.Trans.Error.ErrorT e m)
+instance Control.Monad.Trans.Error.ErrorList a => Control.Monad.Trans.Error.Error [a]
+instance Control.Monad.Trans.Error.ErrorList GHC.Types.Char
+instance Control.Monad.Trans.Error.Error e => GHC.Base.Alternative (Data.Either.Either e)
+instance Control.Monad.Trans.Error.Error e => GHC.Base.MonadPlus (Data.Either.Either e)
+instance Control.Monad.Trans.Error.Error GHC.IO.Exception.IOException
 
 
 -- | This monad transformer extends a monad with the ability throw
@@ -1853,6 +1850,33 @@ instance (GHC.Base.Monoid w, Control.Monad.IO.Class.MonadIO m) => Control.Monad.
 instance (GHC.Base.Monoid w, Control.Monad.Zip.MonadZip m) => Control.Monad.Zip.MonadZip (Control.Monad.Trans.Writer.Strict.WriterT w m)
 
 
+-- | The constant functor.
+module Data.Functor.Constant
+
+-- | Constant functor.
+newtype Constant a b
+Constant :: a -> Constant a b
+[getConstant] :: Constant a b -> a
+instance forall a k (b :: k). GHC.Classes.Ord a => GHC.Classes.Ord (Data.Functor.Constant.Constant a b)
+instance forall a k (b :: k). GHC.Classes.Eq a => GHC.Classes.Eq (Data.Functor.Constant.Constant a b)
+instance forall k a (b :: k). GHC.Read.Read a => GHC.Read.Read (Data.Functor.Constant.Constant a b)
+instance forall k a (b :: k). GHC.Show.Show a => GHC.Show.Show (Data.Functor.Constant.Constant a b)
+instance Data.Functor.Classes.Eq2 Data.Functor.Constant.Constant
+instance Data.Functor.Classes.Ord2 Data.Functor.Constant.Constant
+instance Data.Functor.Classes.Read2 Data.Functor.Constant.Constant
+instance Data.Functor.Classes.Show2 Data.Functor.Constant.Constant
+instance GHC.Classes.Eq a => Data.Functor.Classes.Eq1 (Data.Functor.Constant.Constant a)
+instance GHC.Classes.Ord a => Data.Functor.Classes.Ord1 (Data.Functor.Constant.Constant a)
+instance GHC.Read.Read a => Data.Functor.Classes.Read1 (Data.Functor.Constant.Constant a)
+instance GHC.Show.Show a => Data.Functor.Classes.Show1 (Data.Functor.Constant.Constant a)
+instance GHC.Base.Functor (Data.Functor.Constant.Constant a)
+instance Data.Foldable.Foldable (Data.Functor.Constant.Constant a)
+instance Data.Traversable.Traversable (Data.Functor.Constant.Constant a)
+instance GHC.Base.Monoid a => GHC.Base.Applicative (Data.Functor.Constant.Constant a)
+instance forall k a (b :: k). GHC.Base.Monoid a => GHC.Base.Monoid (Data.Functor.Constant.Constant a b)
+instance Data.Bifunctor.Bifunctor Data.Functor.Constant.Constant
+
+
 -- | Adding a new kind of pure computation to an applicative functor.
 module Control.Applicative.Lift
 
@@ -1910,30 +1934,6 @@ instance Data.Foldable.Foldable f => Data.Foldable.Foldable (Control.Applicative
 instance Data.Traversable.Traversable f => Data.Traversable.Traversable (Control.Applicative.Lift.Lift f)
 instance GHC.Base.Applicative f => GHC.Base.Applicative (Control.Applicative.Lift.Lift f)
 instance GHC.Base.Alternative f => GHC.Base.Alternative (Control.Applicative.Lift.Lift f)
-
-
--- | Making functors with an <a>Applicative</a> instance that performs
---   actions in the reverse order.
-module Control.Applicative.Backwards
-
--- | The same functor, but with an <a>Applicative</a> instance that
---   performs actions in the reverse order.
-newtype Backwards f a
-Backwards :: f a -> Backwards f a
-[forwards] :: Backwards f a -> f a
-instance Data.Functor.Classes.Eq1 f => Data.Functor.Classes.Eq1 (Control.Applicative.Backwards.Backwards f)
-instance Data.Functor.Classes.Ord1 f => Data.Functor.Classes.Ord1 (Control.Applicative.Backwards.Backwards f)
-instance Data.Functor.Classes.Read1 f => Data.Functor.Classes.Read1 (Control.Applicative.Backwards.Backwards f)
-instance Data.Functor.Classes.Show1 f => Data.Functor.Classes.Show1 (Control.Applicative.Backwards.Backwards f)
-instance (Data.Functor.Classes.Eq1 f, GHC.Classes.Eq a) => GHC.Classes.Eq (Control.Applicative.Backwards.Backwards f a)
-instance (Data.Functor.Classes.Ord1 f, GHC.Classes.Ord a) => GHC.Classes.Ord (Control.Applicative.Backwards.Backwards f a)
-instance (Data.Functor.Classes.Read1 f, GHC.Read.Read a) => GHC.Read.Read (Control.Applicative.Backwards.Backwards f a)
-instance (Data.Functor.Classes.Show1 f, GHC.Show.Show a) => GHC.Show.Show (Control.Applicative.Backwards.Backwards f a)
-instance GHC.Base.Functor f => GHC.Base.Functor (Control.Applicative.Backwards.Backwards f)
-instance GHC.Base.Applicative f => GHC.Base.Applicative (Control.Applicative.Backwards.Backwards f)
-instance GHC.Base.Alternative f => GHC.Base.Alternative (Control.Applicative.Backwards.Backwards f)
-instance Data.Foldable.Foldable f => Data.Foldable.Foldable (Control.Applicative.Backwards.Backwards f)
-instance Data.Traversable.Traversable f => Data.Traversable.Traversable (Control.Applicative.Backwards.Backwards f)
 
 
 -- | Making functors whose elements are notionally in the reverse order

@@ -36,11 +36,6 @@ catchIO :: IO a -> (IOException -> IO a) -> IO a
 instance GHC.Classes.Eq Trace.Hpc.Util.Hash
 instance GHC.Classes.Ord Trace.Hpc.Util.HpcPos
 instance GHC.Classes.Eq Trace.Hpc.Util.HpcPos
-instance GHC.Show.Show Trace.Hpc.Util.HpcPos
-instance GHC.Read.Read Trace.Hpc.Util.HpcPos
-instance GHC.Read.Read Trace.Hpc.Util.Hash
-instance GHC.Show.Show Trace.Hpc.Util.Hash
-instance GHC.Num.Num Trace.Hpc.Util.Hash
 instance Trace.Hpc.Util.HpcHash GHC.Types.Int
 instance Trace.Hpc.Util.HpcHash GHC.Integer.Type.Integer
 instance Trace.Hpc.Util.HpcHash GHC.Types.Char
@@ -48,6 +43,11 @@ instance Trace.Hpc.Util.HpcHash GHC.Types.Bool
 instance Trace.Hpc.Util.HpcHash a => Trace.Hpc.Util.HpcHash [a]
 instance (Trace.Hpc.Util.HpcHash a, Trace.Hpc.Util.HpcHash b) => Trace.Hpc.Util.HpcHash (a, b)
 instance Trace.Hpc.Util.HpcHash Trace.Hpc.Util.HpcPos
+instance GHC.Read.Read Trace.Hpc.Util.Hash
+instance GHC.Show.Show Trace.Hpc.Util.Hash
+instance GHC.Num.Num Trace.Hpc.Util.Hash
+instance GHC.Show.Show Trace.Hpc.Util.HpcPos
+instance GHC.Read.Read Trace.Hpc.Util.HpcPos
 
 
 -- | Datatypes and file-access routines for the tick data file
