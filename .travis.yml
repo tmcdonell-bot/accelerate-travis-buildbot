@@ -16,8 +16,8 @@ cache:
   directories:
     - $HOME/.stack
     - $HOME/llvm
-    # - .stack-work/downloaded
-    # - .stack-work/install
+    - .stack-work/downloaded
+    - .stack-work/install
 
 addons:
   apt:
@@ -41,6 +41,7 @@ addons:
       - liblapack-dev
 
 compiler:
+  - GHC-8.2.1
   - GHC-8.0.2
   - GHC-7.10.3
   # - GHC-7.8.4
@@ -98,14 +99,14 @@ install:
   - stack --version
   - llc --version; true
   - opt --version; true
-  - travis_retry stack build --fast --only-dependencies --no-terminal --no-haddock-deps ${TARGET}
+  - travis_retry stack build --fast --only-dependencies --no-terminal --no-haddock-deps --ghc-options="-j +RTS -A128M -n4m -RTS" ${TARGET}
 
 script:
-  - travis_retry stack build --fast --no-terminal --haddock --no-haddock-deps ${TARGET}
+  - travis_retry stack build --fast --no-terminal --haddock --no-haddock-deps --ghc-options="-j +RTS -A128M -n4m -RTS" ${TARGET}
 
 after_success:
   - |
-      if [ ${GHC%.*} == 8.0 ] && [ -z ${TARGET} ]; then
+      if [ ${GHC%.*} == 8.2 ] && [ -z ${TARGET} ]; then
         source .travis/update-docs.sh
       fi
 
