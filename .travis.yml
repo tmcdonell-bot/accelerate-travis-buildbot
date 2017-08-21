@@ -19,6 +19,9 @@ cache:
     # - .stack-work/downloaded
     - .stack-work/install
 
+before_cache:
+  - rm -vrf $(stack path --local-install-root)/bin
+
 addons:
   apt:
     sources:
