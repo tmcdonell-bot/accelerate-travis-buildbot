@@ -107,8 +107,6 @@ install:
 
 script:
   - travis_retry stack build --fast --no-terminal --haddock --no-haddock-deps --ghc-options="-j +RTS -A128M -n4m -RTS" ${TARGET}
-
-after_success:
   - |
       if [ ${GHC%.*} == 8.2 ] && [ -z ${TARGET} ]; then
         source .travis/update-docs.sh
