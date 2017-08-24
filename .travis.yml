@@ -56,23 +56,23 @@ env:
     - CUDA=8.0.61-1
   matrix:
     - TARGET="" # all packages
-    - TARGET=accelerate
-    - TARGET=accelerate-llvm
-    - TARGET=accelerate-llvm-native
-    - TARGET=accelerate-llvm-ptx
-    - TARGET=accelerate-fft
-    - TARGET=accelerate-blas
-    - TARGET=accelerate-io
-    - TARGET=accelerate-bignum
-    - TARGET=accelerate-examples
-    - TARGET=colour-accelerate
-    - TARGET=gloss-accelerate
-    - TARGET=gloss-raster-accelerate
-    - TARGET=lens-accelerate
-    - TARGET=linear-accelerate
-    - TARGET=mwc-random-accelerate
-    - TARGET=numeric-prelude-accelerate
-    - TARGET=lulesh-accelerate
+    # - TARGET=accelerate
+    # - TARGET=accelerate-llvm
+    # - TARGET=accelerate-llvm-native
+    # - TARGET=accelerate-llvm-ptx
+    # - TARGET=accelerate-fft
+    # - TARGET=accelerate-blas
+    # - TARGET=accelerate-io
+    # - TARGET=accelerate-bignum
+    # - TARGET=accelerate-examples
+    # - TARGET=colour-accelerate
+    # - TARGET=gloss-accelerate
+    # - TARGET=gloss-raster-accelerate
+    # - TARGET=lens-accelerate
+    # - TARGET=linear-accelerate
+    # - TARGET=mwc-random-accelerate
+    # - TARGET=numeric-prelude-accelerate
+    # - TARGET=lulesh-accelerate
 
 matrix:
   fast_finish: true
@@ -107,9 +107,10 @@ install:
   - travis_retry stack build --fast --only-dependencies --no-terminal --no-haddock-deps --ghc-options="-j +RTS -A128M -n4m -RTS" ${TARGET}
 
 script:
-  - travis_retry stack build --fast --no-terminal --haddock --no-haddock-deps --ghc-options="-j +RTS -A128M -n4m -RTS" ${TARGET}
-  - |
-      if [ ${GHC%.*} == 8.2 ] && [ -z ${TARGET} ]; then
-        source .travis/update-docs.sh
-      fi
+  - true
+  # - travis_retry stack build --fast --no-terminal --haddock --no-haddock-deps --ghc-options="-j +RTS -A128M -n4m -RTS" ${TARGET}
+  # - |
+  #     if [ ${GHC%.*} == 8.2 ] && [ -z ${TARGET} ]; then
+  #       source .travis/update-docs.sh
+  #     fi
 
