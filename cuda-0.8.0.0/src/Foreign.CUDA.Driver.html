@@ -1,0 +1,241 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-comment">--------------------------------------------------------------------------------</span><span>
+</span><a name="line-2"></a><span class="hs-comment">-- |</span><span>
+</span><a name="line-3"></a><span class="hs-comment">-- Module    : Foreign.CUDA.Driver</span><span>
+</span><a name="line-4"></a><span class="hs-comment">-- Copyright : [2009..2017] Trevor L. McDonell</span><span>
+</span><a name="line-5"></a><span class="hs-comment">-- License   : BSD</span><span>
+</span><a name="line-6"></a><span class="hs-comment">--</span><span>
+</span><a name="line-7"></a><span class="hs-comment">-- This module defines an interface to the CUDA driver API. The Driver API</span><span>
+</span><a name="line-8"></a><span class="hs-comment">-- is a lower-level interface to CUDA devices than that provided by the</span><span>
+</span><a name="line-9"></a><span class="hs-comment">-- Runtime API. Using the Driver API, the programmer must deal explicitly</span><span>
+</span><a name="line-10"></a><span class="hs-comment">-- with operations such as initialisation, context management, and loading</span><span>
+</span><a name="line-11"></a><span class="hs-comment">-- (kernel) modules. Although more difficult to use initially, the Driver</span><span>
+</span><a name="line-12"></a><span class="hs-comment">-- API provides more control over how CUDA is used. Furthermore, since it</span><span>
+</span><a name="line-13"></a><span class="hs-comment">-- does not require compiling and linking the program with 'nvcc', the</span><span>
+</span><a name="line-14"></a><span class="hs-comment">-- Driver API provides better inter-language compatibility.</span><span>
+</span><a name="line-15"></a><span class="hs-comment">--</span><span>
+</span><a name="line-16"></a><span class="hs-comment">-- The following is a short tutorial on using the Driver API. The steps can</span><span>
+</span><a name="line-17"></a><span class="hs-comment">-- be copied into a file, or run directly in @ghci@, in which case @ghci@</span><span>
+</span><a name="line-18"></a><span class="hs-comment">-- should be launched with the option @-fno-ghci-sandbox@. This is because</span><span>
+</span><a name="line-19"></a><span class="hs-comment">-- CUDA maintains CPU-local state, so operations should always be run from</span><span>
+</span><a name="line-20"></a><span class="hs-comment">-- a bound thread.</span><span>
+</span><a name="line-21"></a><span class="hs-comment">--</span><span>
+</span><a name="line-22"></a><span class="hs-comment">--</span><span>
+</span><a name="line-23"></a><span class="hs-comment">-- [/Using the Driver API/]</span><span>
+</span><a name="line-24"></a><span class="hs-comment">--</span><span>
+</span><a name="line-25"></a><span class="hs-comment">-- Before any operation can be performed, the Driver API must be</span><span>
+</span><a name="line-26"></a><span class="hs-comment">-- initialised:</span><span>
+</span><a name="line-27"></a><span class="hs-comment">--</span><span>
+</span><a name="line-28"></a><span class="hs-comment">-- &gt;&gt;&gt; import Foreign.CUDA.Driver</span><span>
+</span><a name="line-29"></a><span class="hs-comment">-- &gt;&gt;&gt; initialise []</span><span>
+</span><a name="line-30"></a><span class="hs-comment">--</span><span>
+</span><a name="line-31"></a><span class="hs-comment">-- Next, we must select a GPU that we will execute operations on. Each GPU</span><span>
+</span><a name="line-32"></a><span class="hs-comment">-- is assigned a unique identifier (beginning at zero). We can get a handle</span><span>
+</span><a name="line-33"></a><span class="hs-comment">-- to a compute device at a given ordinal using the 'device' operation.</span><span>
+</span><a name="line-34"></a><span class="hs-comment">-- Given a device handle, we can query the properties of that device using</span><span>
+</span><a name="line-35"></a><span class="hs-comment">-- 'props'. The number of available CUDA-capable devices is given via</span><span>
+</span><a name="line-36"></a><span class="hs-comment">-- 'count'. For example:</span><span>
+</span><a name="line-37"></a><span class="hs-comment">--</span><span>
+</span><a name="line-38"></a><span class="hs-comment">-- &gt;&gt;&gt; count</span><span>
+</span><a name="line-39"></a><span class="hs-comment">-- 1</span><span>
+</span><a name="line-40"></a><span class="hs-comment">-- &gt;&gt;&gt; dev0 &lt;- device 0</span><span>
+</span><a name="line-41"></a><span class="hs-comment">-- &gt;&gt;&gt; props dev0</span><span>
+</span><a name="line-42"></a><span class="hs-comment">-- DeviceProperties {deviceName = &quot;GeForce GT 650M&quot;, computeCapability = 3.0, ...}</span><span>
+</span><a name="line-43"></a><span class="hs-comment">--</span><span>
+</span><a name="line-44"></a><span class="hs-comment">-- This package also includes the executable 'nvidia-device-query', which when</span><span>
+</span><a name="line-45"></a><span class="hs-comment">-- executed displays the key properties of all available devices. See</span><span>
+</span><a name="line-46"></a><span class="hs-comment">-- &quot;Foreign.CUDA.Driver.Device&quot; for additional operations to query the</span><span>
+</span><a name="line-47"></a><span class="hs-comment">-- capabilities or status of a device.</span><span>
+</span><a name="line-48"></a><span class="hs-comment">--</span><span>
+</span><a name="line-49"></a><span class="hs-comment">-- Once you have chosen a device to use, the next step is to create a CUDA</span><span>
+</span><a name="line-50"></a><span class="hs-comment">-- context. A context is associated with a particular device, and all</span><span>
+</span><a name="line-51"></a><span class="hs-comment">-- operations, such as memory allocation and kernel execution, take place</span><span>
+</span><a name="line-52"></a><span class="hs-comment">-- with respect to that context. For example, to 'create' a new execution</span><span>
+</span><a name="line-53"></a><span class="hs-comment">-- context on CUDA device 0:</span><span>
+</span><a name="line-54"></a><span class="hs-comment">--</span><span>
+</span><a name="line-55"></a><span class="hs-comment">-- &gt;&gt;&gt; ctx &lt;- create dev0 []</span><span>
+</span><a name="line-56"></a><span class="hs-comment">--</span><span>
+</span><a name="line-57"></a><span class="hs-comment">-- The second argument is a set of 'ContextFlag's which control how the</span><span>
+</span><a name="line-58"></a><span class="hs-comment">-- context behaves in various situations, for example, whether or not the</span><span>
+</span><a name="line-59"></a><span class="hs-comment">-- CPU should actively spin when waiting for results from the GPU</span><span>
+</span><a name="line-60"></a><span class="hs-comment">-- ('SchedSpin'), or to yield control to other threads instead</span><span>
+</span><a name="line-61"></a><span class="hs-comment">-- ('SchedYield').</span><span>
+</span><a name="line-62"></a><span class="hs-comment">--</span><span>
+</span><a name="line-63"></a><span class="hs-comment">-- The newly created context is now the /active/ context, and all</span><span>
+</span><a name="line-64"></a><span class="hs-comment">-- subsequent operations take place within that context. More than one</span><span>
+</span><a name="line-65"></a><span class="hs-comment">-- context can be created per device, but resources, such as memory</span><span>
+</span><a name="line-66"></a><span class="hs-comment">-- allocated in the GPU, are unique to each context. The module</span><span>
+</span><a name="line-67"></a><span class="hs-comment">-- &quot;Foreign.CUDA.Driver.Context&quot; contains operations for managing multiple</span><span>
+</span><a name="line-68"></a><span class="hs-comment">-- contexts. Some devices allow data to be shared between contexts without</span><span>
+</span><a name="line-69"></a><span class="hs-comment">-- copying, see &quot;Foreign.CUDA.Driver.Context.Peer&quot; for more information.</span><span>
+</span><a name="line-70"></a><span class="hs-comment">--</span><span>
+</span><a name="line-71"></a><span class="hs-comment">-- Once the context is no longer needed, it should be 'destroy'ed in order</span><span>
+</span><a name="line-72"></a><span class="hs-comment">-- to free up any resources that were allocated to it.</span><span>
+</span><a name="line-73"></a><span class="hs-comment">--</span><span>
+</span><a name="line-74"></a><span class="hs-comment">-- &gt;&gt;&gt; destroy ctx</span><span>
+</span><a name="line-75"></a><span class="hs-comment">--</span><span>
+</span><a name="line-76"></a><span class="hs-comment">-- Each device also has a unique context which is used by the Runtime API.</span><span>
+</span><a name="line-77"></a><span class="hs-comment">-- This context can be accessed with the module</span><span>
+</span><a name="line-78"></a><span class="hs-comment">-- &quot;Foreign.CUDA.Driver.Context.Primary&quot;.</span><span>
+</span><a name="line-79"></a><span class="hs-comment">--</span><span>
+</span><a name="line-80"></a><span class="hs-comment">--</span><span>
+</span><a name="line-81"></a><span class="hs-comment">-- [/Executing kernels onto the GPU/]</span><span>
+</span><a name="line-82"></a><span class="hs-comment">--</span><span>
+</span><a name="line-83"></a><span class="hs-comment">-- Once the Driver API is initialised and an execution context is created</span><span>
+</span><a name="line-84"></a><span class="hs-comment">-- on the GPU, we can begin to interact with it.</span><span>
+</span><a name="line-85"></a><span class="hs-comment">--</span><span>
+</span><a name="line-86"></a><span class="hs-comment">-- At an example, we'll step through executing the CUDA equivalent of the</span><span>
+</span><a name="line-87"></a><span class="hs-comment">-- following Haskell function, which element-wise adds the elements of two</span><span>
+</span><a name="line-88"></a><span class="hs-comment">-- arrays:</span><span>
+</span><a name="line-89"></a><span class="hs-comment">--</span><span>
+</span><a name="line-90"></a><span class="hs-comment">-- &gt;&gt;&gt; vecAdd xs ys = zipWith (+) xs ys</span><span>
+</span><a name="line-91"></a><span class="hs-comment">--</span><span>
+</span><a name="line-92"></a><span class="hs-comment">-- The following CUDA kernel can be used to implement this on the GPU:</span><span>
+</span><a name="line-93"></a><span class="hs-comment">--</span><span>
+</span><a name="line-94"></a><span class="hs-comment">-- &gt; extern &quot;C&quot; __global__ void vecAdd(float *xs, float *ys, float *zs, int N)</span><span>
+</span><a name="line-95"></a><span class="hs-comment">-- &gt; {</span><span>
+</span><a name="line-96"></a><span class="hs-comment">-- &gt;     int ix = blockIdx.x * blockDim.x + threadIdx.x;</span><span>
+</span><a name="line-97"></a><span class="hs-comment">-- &gt;</span><span>
+</span><a name="line-98"></a><span class="hs-comment">-- &gt;     if ( ix &lt; N ) {</span><span>
+</span><a name="line-99"></a><span class="hs-comment">-- &gt;         zs[ix] = xs[ix] + ys[ix];</span><span>
+</span><a name="line-100"></a><span class="hs-comment">-- &gt;     }</span><span>
+</span><a name="line-101"></a><span class="hs-comment">-- &gt; }</span><span>
+</span><a name="line-102"></a><span class="hs-comment">--</span><span>
+</span><a name="line-103"></a><span class="hs-comment">-- Here, the @__global__@ keyword marks the function as a kernel that</span><span>
+</span><a name="line-104"></a><span class="hs-comment">-- should be computed on the GPU in data parallel. When we execute this</span><span>
+</span><a name="line-105"></a><span class="hs-comment">-- function on the GPU, (at least) /N/ threads will execute /N/ individual</span><span>
+</span><a name="line-106"></a><span class="hs-comment">-- instances of the kernel function @vecAdd@. Each thread will operate on</span><span>
+</span><a name="line-107"></a><span class="hs-comment">-- a single element of each input array to create a single value in the</span><span>
+</span><a name="line-108"></a><span class="hs-comment">-- result. See the CUDA programming guide for more details.</span><span>
+</span><a name="line-109"></a><span class="hs-comment">--</span><span>
+</span><a name="line-110"></a><span class="hs-comment">-- We can save this to a file @vector_add.cu@, and compile it using @nvcc@</span><span>
+</span><a name="line-111"></a><span class="hs-comment">-- into a form that we can then load onto the GPU and execute:</span><span>
+</span><a name="line-112"></a><span class="hs-comment">--</span><span>
+</span><a name="line-113"></a><span class="hs-comment">-- &gt; $ nvcc --ptx vector_add.cu</span><span>
+</span><a name="line-114"></a><span class="hs-comment">--</span><span>
+</span><a name="line-115"></a><span class="hs-comment">-- The module &quot;Foreign.CUDA.Driver.Module&quot; contains functions for loading</span><span>
+</span><a name="line-116"></a><span class="hs-comment">-- the resulting .ptx file (or .cubin files) into the running program.</span><span>
+</span><a name="line-117"></a><span class="hs-comment">--</span><span>
+</span><a name="line-118"></a><span class="hs-comment">-- &gt;&gt;&gt; mdl &lt;- loadFile &quot;vector_add.ptx&quot;</span><span>
+</span><a name="line-119"></a><span class="hs-comment">--</span><span>
+</span><a name="line-120"></a><span class="hs-comment">-- Once finished with the module, it is also a good idea to 'unload' it.</span><span>
+</span><a name="line-121"></a><span class="hs-comment">--</span><span>
+</span><a name="line-122"></a><span class="hs-comment">-- Modules may export kernel functions, global variables, and texture</span><span>
+</span><a name="line-123"></a><span class="hs-comment">-- references. Before we can execute our function, we need to look it up in</span><span>
+</span><a name="line-124"></a><span class="hs-comment">-- the module by name.</span><span>
+</span><a name="line-125"></a><span class="hs-comment">--</span><span>
+</span><a name="line-126"></a><span class="hs-comment">-- &gt;&gt;&gt; vecAdd &lt;- getFun mdl &quot;vecAdd&quot;</span><span>
+</span><a name="line-127"></a><span class="hs-comment">--</span><span>
+</span><a name="line-128"></a><span class="hs-comment">-- Given this reference to our kernel function, we are almost ready to</span><span>
+</span><a name="line-129"></a><span class="hs-comment">-- execute it on the device using 'launchKernel', but first, we must create</span><span>
+</span><a name="line-130"></a><span class="hs-comment">-- some data that we can execute the function on.</span><span>
+</span><a name="line-131"></a><span class="hs-comment">--</span><span>
+</span><a name="line-132"></a><span class="hs-comment">--</span><span>
+</span><a name="line-133"></a><span class="hs-comment">-- [/Transferring data to and from the GPU/]</span><span>
+</span><a name="line-134"></a><span class="hs-comment">--</span><span>
+</span><a name="line-135"></a><span class="hs-comment">-- GPUs typically have their own memory which is separate from the CPU's</span><span>
+</span><a name="line-136"></a><span class="hs-comment">-- memory, and we need to explicitly copy data back and forth between these</span><span>
+</span><a name="line-137"></a><span class="hs-comment">-- two regions. The module &quot;Foreign.CUDA.Driver.Marshal&quot; provides functions</span><span>
+</span><a name="line-138"></a><span class="hs-comment">-- for allocating memory on the GPU, and copying data between the CPU and</span><span>
+</span><a name="line-139"></a><span class="hs-comment">-- GPU, as well as directly between multiple GPUs.</span><span>
+</span><a name="line-140"></a><span class="hs-comment">--</span><span>
+</span><a name="line-141"></a><span class="hs-comment">-- For simplicity, we'll use standard Haskell lists for our input and</span><span>
+</span><a name="line-142"></a><span class="hs-comment">-- output data structure. Note however that this will have significantly</span><span>
+</span><a name="line-143"></a><span class="hs-comment">-- lower effective bandwidth than reading a single contiguous region of</span><span>
+</span><a name="line-144"></a><span class="hs-comment">-- memory, so for most practical purposes you will want to use some kind of</span><span>
+</span><a name="line-145"></a><span class="hs-comment">-- unboxed array.</span><span>
+</span><a name="line-146"></a><span class="hs-comment">--</span><span>
+</span><a name="line-147"></a><span class="hs-comment">-- &gt;&gt;&gt; let xs = [1..1024]   :: [Float]</span><span>
+</span><a name="line-148"></a><span class="hs-comment">-- &gt;&gt;&gt; let ys = [2,4..2048] :: [Float]</span><span>
+</span><a name="line-149"></a><span class="hs-comment">--</span><span>
+</span><a name="line-150"></a><span class="hs-comment">-- In CUDA, like C, all memory management is explicit, and arrays on the</span><span>
+</span><a name="line-151"></a><span class="hs-comment">-- device must be explicitly allocated and freed. As mentioned previously,</span><span>
+</span><a name="line-152"></a><span class="hs-comment">-- data transfer is also explicit. However, we do provide convenience</span><span>
+</span><a name="line-153"></a><span class="hs-comment">-- functions for combined allocation and marshalling, as well as bracketed</span><span>
+</span><a name="line-154"></a><span class="hs-comment">-- operations.</span><span>
+</span><a name="line-155"></a><span class="hs-comment">--</span><span>
+</span><a name="line-156"></a><span class="hs-comment">-- &gt;&gt;&gt; xs_dev &lt;- newListArray xs</span><span>
+</span><a name="line-157"></a><span class="hs-comment">-- &gt;&gt;&gt; ys_dev &lt;- newListArray ys</span><span>
+</span><a name="line-158"></a><span class="hs-comment">-- &gt;&gt;&gt; zs_dev &lt;- mallocArray 1024 :: IO (DevicePtr Float)</span><span>
+</span><a name="line-159"></a><span class="hs-comment">--</span><span>
+</span><a name="line-160"></a><span class="hs-comment">-- After executing the kernel (see next section), we transfer the result</span><span>
+</span><a name="line-161"></a><span class="hs-comment">-- back to the host, and free the memory that was allocated on the GPU.</span><span>
+</span><a name="line-162"></a><span class="hs-comment">--</span><span>
+</span><a name="line-163"></a><span class="hs-comment">-- &gt;&gt;&gt; zs &lt;- peekListArray 1024 zs_dev</span><span>
+</span><a name="line-164"></a><span class="hs-comment">-- &gt;&gt;&gt; free xs_dev</span><span>
+</span><a name="line-165"></a><span class="hs-comment">-- &gt;&gt;&gt; free ys_dev</span><span>
+</span><a name="line-166"></a><span class="hs-comment">-- &gt;&gt;&gt; free zs_dev</span><span>
+</span><a name="line-167"></a><span class="hs-comment">--</span><span>
+</span><a name="line-168"></a><span class="hs-comment">--</span><span>
+</span><a name="line-169"></a><span class="hs-comment">-- [/Piecing it all together/]</span><span>
+</span><a name="line-170"></a><span class="hs-comment">--</span><span>
+</span><a name="line-171"></a><span class="hs-comment">-- Finally, we have everything in place to execute our operation on the</span><span>
+</span><a name="line-172"></a><span class="hs-comment">-- GPU. Launching a kernel on the GPU consists of creating many threads on</span><span>
+</span><a name="line-173"></a><span class="hs-comment">-- the GPU which all execute the same function, and each thread has</span><span>
+</span><a name="line-174"></a><span class="hs-comment">-- a unique identifier in the grid/block hierarchy which can be used to</span><span>
+</span><a name="line-175"></a><span class="hs-comment">-- identify exactly which element this thread should process (the</span><span>
+</span><a name="line-176"></a><span class="hs-comment">-- @blockIdx@ and @threadIdx@ parameters that we saw earlier,</span><span>
+</span><a name="line-177"></a><span class="hs-comment">-- respectively).</span><span>
+</span><a name="line-178"></a><span class="hs-comment">--</span><span>
+</span><a name="line-179"></a><span class="hs-comment">-- To execute our function, we will use a grid of 4 blocks, each containing</span><span>
+</span><a name="line-180"></a><span class="hs-comment">-- 256 threads. Thus, a total of 1024 threads will be launched, which will</span><span>
+</span><a name="line-181"></a><span class="hs-comment">-- each compute a single element of the output array (recall that our input</span><span>
+</span><a name="line-182"></a><span class="hs-comment">-- arrays each have 1024 elements). The module</span><span>
+</span><a name="line-183"></a><span class="hs-comment">-- &quot;Foreign.CUDA.Analysis.Occupancy&quot; contains functions to help determine</span><span>
+</span><a name="line-184"></a><span class="hs-comment">-- the ideal thread block size for a given kernel and GPU combination.</span><span>
+</span><a name="line-185"></a><span class="hs-comment">--</span><span>
+</span><a name="line-186"></a><span class="hs-comment">-- &gt;&gt;&gt; launchKernel vecAdd (4,1,1) (256,1,1) 0 Nothing [VArg xs_dev, VArg ys_dev, VArg zs_dev, IArg 1024]</span><span>
+</span><a name="line-187"></a><span class="hs-comment">--</span><span>
+</span><a name="line-188"></a><span class="hs-comment">-- Note that kernel execution is asynchronous, so we should also wait for</span><span>
+</span><a name="line-189"></a><span class="hs-comment">-- the operation to complete before attempting to read the results back.</span><span>
+</span><a name="line-190"></a><span class="hs-comment">--</span><span>
+</span><a name="line-191"></a><span class="hs-comment">-- &gt;&gt;&gt; sync</span><span>
+</span><a name="line-192"></a><span class="hs-comment">--</span><span>
+</span><a name="line-193"></a><span class="hs-comment">-- And that's it!</span><span>
+</span><a name="line-194"></a><span class="hs-comment">--</span><span>
+</span><a name="line-195"></a><span class="hs-comment">--</span><span>
+</span><a name="line-196"></a><span class="hs-comment">-- [/Next steps/]</span><span>
+</span><a name="line-197"></a><span class="hs-comment">--</span><span>
+</span><a name="line-198"></a><span class="hs-comment">-- As mentioned at the end of the previous section, kernels on the GPU are</span><span>
+</span><a name="line-199"></a><span class="hs-comment">-- executed asynchronously with respect to the host, and other operations</span><span>
+</span><a name="line-200"></a><span class="hs-comment">-- such as data transfers can also be executed asynchronously. This allows</span><span>
+</span><a name="line-201"></a><span class="hs-comment">-- the CPU to continue doing other work while the GPU is busy.</span><span>
+</span><a name="line-202"></a><span class="hs-comment">-- 'Foreign.CUDA.Driver.Event.Event's can be used to check whether an</span><span>
+</span><a name="line-203"></a><span class="hs-comment">-- operation has completed yet.</span><span>
+</span><a name="line-204"></a><span class="hs-comment">--</span><span>
+</span><a name="line-205"></a><span class="hs-comment">-- It is also possible to execute multiple kernels or data transfers</span><span>
+</span><a name="line-206"></a><span class="hs-comment">-- concurrently with each other, by assigning those operations to different</span><span>
+</span><a name="line-207"></a><span class="hs-comment">-- execution 'Foreign.CUDA.Driver.Stream.Stream's. Used in conjunction with</span><span>
+</span><a name="line-208"></a><span class="hs-comment">-- 'Foreign.CUDA.Driver.Event.Event's, operations will be scheduled</span><span>
+</span><a name="line-209"></a><span class="hs-comment">-- efficiently only once all dependencies (in the form of</span><span>
+</span><a name="line-210"></a><span class="hs-comment">-- 'Foreign.CUDA.Driver.Event.Event's) have been cleared.</span><span>
+</span><a name="line-211"></a><span class="hs-comment">--</span><span>
+</span><a name="line-212"></a><span class="hs-comment">-- See &quot;Foreign.CUDA.Driver.Event&quot; and &quot;Foreign.CUDA.Driver.Stream&quot; for</span><span>
+</span><a name="line-213"></a><span class="hs-comment">-- more information on this topic.</span><span>
+</span><a name="line-214"></a><span class="hs-comment">--</span><span>
+</span><a name="line-215"></a><span class="hs-comment">--------------------------------------------------------------------------------</span><span>
+</span><a name="line-216"></a><span>
+</span><a name="line-217"></a><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">Foreign</span><span class="hs-operator">.</span><span class="hs-identifier">CUDA</span><span class="hs-operator">.</span><span class="hs-identifier">Driver</span><span> </span><span class="hs-special">(</span><span>
+</span><a name="line-218"></a><span>
+</span><a name="line-219"></a><span>  </span><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">Foreign</span><span class="hs-operator">.</span><span class="hs-identifier">CUDA</span><span class="hs-operator">.</span><span class="hs-identifier">Ptr</span><span class="hs-special">,</span><span>
+</span><a name="line-220"></a><span>  </span><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">Foreign</span><span class="hs-operator">.</span><span class="hs-identifier">CUDA</span><span class="hs-operator">.</span><span class="hs-identifier">Driver</span><span class="hs-operator">.</span><span class="hs-identifier">Context</span><span class="hs-special">,</span><span>
+</span><a name="line-221"></a><span>  </span><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">Foreign</span><span class="hs-operator">.</span><span class="hs-identifier">CUDA</span><span class="hs-operator">.</span><span class="hs-identifier">Driver</span><span class="hs-operator">.</span><span class="hs-identifier">Device</span><span class="hs-special">,</span><span>
+</span><a name="line-222"></a><span>  </span><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">Foreign</span><span class="hs-operator">.</span><span class="hs-identifier">CUDA</span><span class="hs-operator">.</span><span class="hs-identifier">Driver</span><span class="hs-operator">.</span><span class="hs-identifier">Error</span><span class="hs-special">,</span><span>
+</span><a name="line-223"></a><span>  </span><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">Foreign</span><span class="hs-operator">.</span><span class="hs-identifier">CUDA</span><span class="hs-operator">.</span><span class="hs-identifier">Driver</span><span class="hs-operator">.</span><span class="hs-identifier">Exec</span><span class="hs-special">,</span><span>
+</span><a name="line-224"></a><span>  </span><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">Foreign</span><span class="hs-operator">.</span><span class="hs-identifier">CUDA</span><span class="hs-operator">.</span><span class="hs-identifier">Driver</span><span class="hs-operator">.</span><span class="hs-identifier">Marshal</span><span class="hs-special">,</span><span>
+</span><a name="line-225"></a><span>  </span><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">Foreign</span><span class="hs-operator">.</span><span class="hs-identifier">CUDA</span><span class="hs-operator">.</span><span class="hs-identifier">Driver</span><span class="hs-operator">.</span><span class="hs-identifier">Module</span><span class="hs-special">,</span><span>
+</span><a name="line-226"></a><span>  </span><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">Foreign</span><span class="hs-operator">.</span><span class="hs-identifier">CUDA</span><span class="hs-operator">.</span><span class="hs-identifier">Driver</span><span class="hs-operator">.</span><span class="hs-identifier">Unified</span><span class="hs-special">,</span><span>
+</span><a name="line-227"></a><span>  </span><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">Foreign</span><span class="hs-operator">.</span><span class="hs-identifier">CUDA</span><span class="hs-operator">.</span><span class="hs-identifier">Driver</span><span class="hs-operator">.</span><span class="hs-identifier">Utils</span><span>
+</span><a name="line-228"></a><span>
+</span><a name="line-229"></a><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><a name="line-230"></a><span>
+</span><a name="line-231"></a><span class="hs-keyword">import</span><span> </span><a href="Foreign.CUDA.Ptr.html"><span class="hs-identifier">Foreign</span><span class="hs-operator">.</span><span class="hs-identifier">CUDA</span><span class="hs-operator">.</span><span class="hs-identifier">Ptr</span></a><span>
+</span><a name="line-232"></a><span class="hs-keyword">import</span><span> </span><a href="Foreign.CUDA.Driver.Context.html"><span class="hs-identifier">Foreign</span><span class="hs-operator">.</span><span class="hs-identifier">CUDA</span><span class="hs-operator">.</span><span class="hs-identifier">Driver</span><span class="hs-operator">.</span><span class="hs-identifier">Context</span></a><span>      </span><span class="hs-keyword">hiding</span><span> </span><span class="hs-special">(</span><span> </span><a href="Foreign.CUDA.Driver.Context.Base.html#useContext"><span class="hs-identifier hs-var">useContext</span></a><span class="hs-special">,</span><span> </span><a href="Foreign.CUDA.Driver.Context.Base.html#device"><span class="hs-identifier hs-var">device</span></a><span> </span><span class="hs-special">)</span><span>
+</span><a name="line-233"></a><span class="hs-keyword">import</span><span> </span><a href="Foreign.CUDA.Driver.Device.html"><span class="hs-identifier">Foreign</span><span class="hs-operator">.</span><span class="hs-identifier">CUDA</span><span class="hs-operator">.</span><span class="hs-identifier">Driver</span><span class="hs-operator">.</span><span class="hs-identifier">Device</span></a><span>       </span><span class="hs-keyword">hiding</span><span> </span><span class="hs-special">(</span><span> </span><a href="Foreign.CUDA.Driver.Device.html#useDevice"><span class="hs-identifier hs-var">useDevice</span></a><span> </span><span class="hs-special">)</span><span>
+</span><a name="line-234"></a><span class="hs-keyword">import</span><span> </span><a href="Foreign.CUDA.Driver.Error.html"><span class="hs-identifier">Foreign</span><span class="hs-operator">.</span><span class="hs-identifier">CUDA</span><span class="hs-operator">.</span><span class="hs-identifier">Driver</span><span class="hs-operator">.</span><span class="hs-identifier">Error</span></a><span>
+</span><a name="line-235"></a><span class="hs-keyword">import</span><span> </span><a href="Foreign.CUDA.Driver.Exec.html"><span class="hs-identifier">Foreign</span><span class="hs-operator">.</span><span class="hs-identifier">CUDA</span><span class="hs-operator">.</span><span class="hs-identifier">Driver</span><span class="hs-operator">.</span><span class="hs-identifier">Exec</span></a><span>
+</span><a name="line-236"></a><span class="hs-keyword">import</span><span> </span><a href="Foreign.CUDA.Driver.Marshal.html"><span class="hs-identifier">Foreign</span><span class="hs-operator">.</span><span class="hs-identifier">CUDA</span><span class="hs-operator">.</span><span class="hs-identifier">Driver</span><span class="hs-operator">.</span><span class="hs-identifier">Marshal</span></a><span>      </span><span class="hs-keyword">hiding</span><span> </span><span class="hs-special">(</span><span> </span><a href="Foreign.CUDA.Driver.Marshal.html#useDeviceHandle"><span class="hs-identifier hs-var">useDeviceHandle</span></a><span class="hs-special">,</span><span> </span><a href="Foreign.CUDA.Driver.Marshal.html#peekDeviceHandle"><span class="hs-identifier hs-var">peekDeviceHandle</span></a><span> </span><span class="hs-special">)</span><span>
+</span><a name="line-237"></a><span class="hs-keyword">import</span><span> </span><a href="Foreign.CUDA.Driver.Module.html"><span class="hs-identifier">Foreign</span><span class="hs-operator">.</span><span class="hs-identifier">CUDA</span><span class="hs-operator">.</span><span class="hs-identifier">Driver</span><span class="hs-operator">.</span><span class="hs-identifier">Module</span></a><span>
+</span><a name="line-238"></a><span class="hs-keyword">import</span><span> </span><a href="Foreign.CUDA.Driver.Unified.html"><span class="hs-identifier">Foreign</span><span class="hs-operator">.</span><span class="hs-identifier">CUDA</span><span class="hs-operator">.</span><span class="hs-identifier">Driver</span><span class="hs-operator">.</span><span class="hs-identifier">Unified</span></a><span>
+</span><a name="line-239"></a><span class="hs-keyword">import</span><span> </span><a href="Foreign.CUDA.Driver.Utils.html"><span class="hs-identifier">Foreign</span><span class="hs-operator">.</span><span class="hs-identifier">CUDA</span><span class="hs-operator">.</span><span class="hs-identifier">Driver</span><span class="hs-operator">.</span><span class="hs-identifier">Utils</span></a><span>
+</span><a name="line-240"></a><span>
+</span><a name="line-241"></a></pre></body></html>
