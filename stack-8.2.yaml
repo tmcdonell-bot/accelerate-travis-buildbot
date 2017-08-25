@@ -82,7 +82,7 @@ packages:
 
 - location:
     git:    https://github.com/tmcdonell/cusparse.git
-    commit: 3af4a4bef62e236eab5cb6c7b575f1e383f2d274
+    commit: 90c9f068968ac4ac41d4def3d8b87713b4ba68e4
 
 - location:
     git:    https://github.com/tmcdonell/cusolver.git
