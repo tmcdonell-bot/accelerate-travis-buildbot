@@ -78,7 +78,7 @@ packages:
 
 - location:
     git:    https://github.com/tmcdonell/cublas.git
-    commit: 46d06f15ad84ec424c138b61df4c332cb29702d8
+    commit: 456b2fb646932fb28cc12339ca7a1e461fa0c57a
 
 - location:
     git:    https://github.com/tmcdonell/cusparse.git
