@@ -6,7 +6,7 @@ resolver: ghc-8.2
 packages:
 - location:
     git:    https://github.com/tmcdonell/accelerate.git
-    commit: da1ec28f4cfd62e7e7472d294b91ba31e350fc73
+    commit: e32de3e328b9ea401ae1f9823bfb67671aac6444
 
 - location:
     git:    https://github.com/tmcdonell/accelerate-llvm.git
