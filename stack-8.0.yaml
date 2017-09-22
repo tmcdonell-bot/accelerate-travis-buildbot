@@ -6,7 +6,7 @@ resolver: lts-9.0
 packages:
 - location:
     git:    https://github.com/tmcdonell/accelerate.git
-    commit: e32de3e328b9ea401ae1f9823bfb67671aac6444
+    commit: 635cd2fac831420ce12ea84f554ab90eecf4b493
 
 - location:
     git:    https://github.com/tmcdonell/accelerate-llvm.git
