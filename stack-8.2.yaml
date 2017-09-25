@@ -30,7 +30,7 @@ packages:
 
 - location:
     git:    https://github.com/tmcdonell/accelerate-bignum.git
-    commit: 80ac92e4ff9eaad23a09f1e7934fbea1414b3822
+    commit: 03bad32c584a2954a39fe832917af74869926fe5
 
 - location:
     git:    https://github.com/tmcdonell/accelerate-examples.git
