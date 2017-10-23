@@ -32,6 +32,8 @@ addons:
       - llvm-toolchain-trusty
       - sourceline: 'deb http://apt.llvm.org/trusty/ llvm-toolchain-trusty-4.0 main'
         key_url: 'http://apt.llvm.org/llvm-snapshot.gpg.key'
+      - sourceline: 'deb http://apt.llvm.org/trusty/ llvm-toolchain-trusty-5.0 main'
+        key_url: 'http://apt.llvm.org/llvm-snapshot.gpg.key'
 
     packages:
       - cabal-install-1.24
@@ -40,6 +42,7 @@ addons:
       - happy-1.19.5
       - alex-3.1.7
       - llvm-4.0-dev
+      - llvm-5.0-dev
       - libfftw3-dev
       - libgmp-dev
       - libblas-dev
@@ -102,8 +105,6 @@ install:
   - echo "$(stack exec ghc -- --version) [$(stack exec ghc -- --print-project-git-commit-id 2> /dev/null || echo '?')]"
   - cabal --version
   - stack --version
-  - llc --version; true
-  - opt --version; true
   - travis_retry stack build --fast --only-dependencies --no-terminal --no-haddock-deps --ghc-options="-j +RTS -A128M -n4m -RTS" ${TARGET}
 
 script:
