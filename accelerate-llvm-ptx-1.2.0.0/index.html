@@ -1,0 +1,23 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>accelerate-llvm-ptx-1.2.0.0: Accelerate backend for NVIDIA GPUs</title><link href="ocean.css" rel="stylesheet" type="text/css" title="Ocean" /><script src="haddock-util.js" type="text/javascript"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script><script type="text/javascript">//<![CDATA[
+window.onload = function () {pageLoad();};
+//]]>
+</script></head><body><div id="package-header"><ul class="links" id="page-menu"><li><a href="index.html">Contents</a></li><li><a href="doc-index.html">Index</a></li></ul><p class="caption">accelerate-llvm-ptx-1.2.0.0: Accelerate backend for NVIDIA GPUs</p></div><div id="content"><div id="description"><h1>accelerate-llvm-ptx-1.2.0.0: Accelerate backend for NVIDIA GPUs</h1><div class="doc"><p>This library implements a backend for the <em>Accelerate</em> language which
+generates LLVM-IR targeting CUDA capable GPUs. For further information,
+refer to the main <a href="http://hackage.haskell.org/package/accelerate">accelerate</a>
+package.</p><dl><dt><em>Dependencies</em></dt><dd></dd></dl><p>Haskell dependencies are available from Hackage. The following external
+libraries are alse required:</p><ul><li><a href="http://llvm.org">LLVM</a></li><li><a href="https://developer.nvidia.com/cuda-downloads">CUDA</a></li></ul><dl><dt><em>Installing LLVM</em></dt><dd></dd></dl><p><em>Homebrew</em></p><p>Example using Homebrew on macOS:</p><pre>brew install llvm-hs/homebrew-llvm/llvm-5.0</pre><p><em>Debian &amp; Ubuntu</em></p><p>For Debian/Ubuntu based Linux distributions, the LLVM.org website provides
+binary distribution packages. Check <a href="http://apt.llvm.org">apt.llvm.org</a> for
+instructions for adding the correct package database for your OS version,
+and then:</p><pre>apt-get install llvm-5.0-dev</pre><p><em>Building from source</em></p><p>If your OS does not have an appropriate LLVM distribution available, you can
+also build from source. Detailed build instructions are available on
+<a href="http://releases.llvm.org/5.0.0/docs/CMake.html">LLVM.org</a>. Make sure to
+include the cmake build options
+<code>-DLLVM_BUILD_LLVM_DYLIB=ON -DLLVM_LINK_LLVM_DYLIB=ON</code> so that the <code>libLLVM</code>
+shared library will be built. Also ensure that the <code>LLVM_TARGETS_TO_BUILD</code>
+option includes the <code>NVPTX</code> target (if not specified all targets are built).</p><dl><dt><em>Installing accelerate-llvm</em></dt><dd></dd></dl><p>To use <code>accelerate-llvm</code> it is important that the <code>llvm-hs</code> package is
+installed against the <code>libLLVM</code> shared library, rather than statically
+linked, so that we can use LLVM from GHCi and Template Haskell. This is the
+default configuration, but you can also enforce this explicitly by adding
+the following to your <code>stack.yaml</code> file:</p><pre>flags:
+  llvm-hs:
+    shared-llvm: true</pre><p>Or by specifying the <code>shared-llvm</code> flag to cabal:</p><pre>cabal install llvm-hs -fshared-llvm</pre></div></div><div id="module-list"><p class="caption">Signatures</p></div><div id="module-list"><p class="caption">Modules</p><ul><li><span id="control.n.1" class="module collapser" onclick="toggleSection('n.1')">Data</span><ul id="section.n.1" class="show"><li><span id="control.n.1.1" class="module collapser" onclick="toggleSection('n.1.1')">Array</span><ul id="section.n.1.1" class="show"><li><span id="control.n.1.1.1" class="module collapser" onclick="toggleSection('n.1.1.1')">Accelerate</span><ul id="section.n.1.1.1" class="show"><li><span id="control.n.1.1.1.1" class="module collapser" onclick="toggleSection('n.1.1.1.1')">LLVM</span><ul id="section.n.1.1.1.1" class="show"><li><span class="module"><span id="control.n.1.1.1.1.1" class="collapser" onclick="toggleSection('n.1.1.1.1.1')">&nbsp;</span><a href="Data-Array-Accelerate-LLVM-PTX.html">Data.Array.Accelerate.LLVM.PTX</a></span><ul id="section.n.1.1.1.1.1" class="show"><li><span class="module"><a href="Data-Array-Accelerate-LLVM-PTX-Foreign.html">Data.Array.Accelerate.LLVM.PTX.Foreign</a></span></li></ul></li></ul></li></ul></li></ul></li></ul></li></ul></div></div><div id="footer"><p>Produced by <a href="http://www.haskell.org/haddock/">Haddock</a> version 2.18.1</p></div></body></html>
