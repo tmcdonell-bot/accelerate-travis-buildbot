@@ -66,7 +66,7 @@ packages:
 
 - location:
     git:    https://github.com/tmcdonell/lulesh-accelerate.git
-    commit: dfeaa948655229ac135625469526e6879a6c1548
+    commit: a1fb8468351be6e249be89c90d01dc0e75df8106
 
 - location:
     git:    https://github.com/tmcdonell/cuda.git
