@@ -95,9 +95,12 @@ before_install:
   #       8.0)  export LLVM="3.8.1" ;;
   #     esac
   # - source .travis/install-llvm-trusty.sh
-  - source .travis/install-cuda-trusty.sh
   - source .travis/install-stack.sh
   - source .travis/update-ghc-settings.sh
+  - |
+      if [ $( stack list-dependencies ${TARGET} | grep cuda | wc -l ) -gt 0 ]; then
+        source .travis/install-cuda-trusty.sh
+      fi
   - travis_retry stack install hscolour --fast --no-terminal
   - travis_retry stack install c2hs --fast --no-terminal
 
