@@ -97,9 +97,9 @@ before_install:
   # - source .travis/install-llvm-trusty.sh
   - source .travis/install-stack.sh
   - source .travis/update-ghc-settings.sh
-  - DEPENDENCIES=$( stack list-dependencies ${TARGET} )
+  - DEPENDENCIES=$( stack list-dependencies ${TARGET} ); DEPENDENCIES_STATUS=$? # travis-ci#3771
   - |
-      if [ $? -ne 0 ] ||  [ $( echo ${DEPENDENCIES} | grep cuda | wc -l ) -gt 0 ]; then
+      if [ ${DEPENDENCIES_STATUS} -ne 0 ] || [ $( echo ${DEPENDENCIES} | grep cuda | wc -l ) -gt 0 ]; then
         source .travis/install-cuda-trusty.sh
       fi
   - travis_retry stack install hscolour --fast --no-terminal
