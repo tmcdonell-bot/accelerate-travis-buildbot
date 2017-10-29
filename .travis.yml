@@ -108,10 +108,9 @@ install:
   - travis_retry stack build --fast --jobs=2 --only-dependencies --no-terminal --no-haddock-deps ${TARGET}
 
 script:
-  - true
-  # - travis_retry stack build --fast --jobs=2 --no-terminal --haddock --no-haddock-deps ${TARGET}
-  # - |
-  #     if [ ${GHC%.*} == 8.2 ] && [ -z ${TARGET} ]; then
-  #       source .travis/update-docs.sh
-  #     fi
+  - travis_retry stack build --fast --jobs=2 --no-terminal --haddock --no-haddock-deps ${TARGET}
+  - |
+      if [ ${GHC%.*} == 8.2 ] && [ -z ${TARGET} ]; then
+        source .travis/update-docs.sh
+      fi
 
