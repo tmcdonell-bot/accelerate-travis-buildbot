@@ -42,9 +42,7 @@ library
     , cusparse
     , cusolver
     , nvvm
-
-  build-tools:
-      lulesh-accelerate
+    -- , lulesh-accelerate
 
 source-repository head
   type:     git
