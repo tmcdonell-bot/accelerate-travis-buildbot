@@ -4,13 +4,17 @@
 resolver: lts-9.0
 
 packages:
+- '.'
+
 - location:
     git:    https://github.com/{REPO_accelerate}.git
     commit: {SHA_accelerate}
+  extra-dep: true
 
 - location:
     git:    https://github.com/{REPO_accelerate-llvm}.git
     commit: {SHA_accelerate-llvm}
+  extra-dep: true
   subdirs:
     - 'accelerate-llvm'
     - 'accelerate-llvm-native'
@@ -19,78 +23,97 @@ packages:
 - location:
     git:    https://github.com/{REPO_accelerate-fft}.git
     commit: {SHA_accelerate-fft}
+  extra-dep: true
 
 - location:
     git:    https://github.com/{REPO_accelerate-blas}.git
     commit: {SHA_accelerate-blas}
+  extra-dep: true
 
 - location:
     git:    https://github.com/{REPO_accelerate-io}.git
     commit: {SHA_accelerate-io}
+  extra-dep: true
 
 - location:
     git:    https://github.com/{REPO_accelerate-bignum}.git
     commit: {SHA_accelerate-bignum}
+  extra-dep: true
 
 - location:
     git:    https://github.com/{REPO_accelerate-examples}.git
     commit: {SHA_accelerate-examples}
+  extra-dep: true
 
 - location:
     git:    https://github.com/{REPO_colour-accelerate}.git
     commit: {SHA_colour-accelerate}
+  extra-dep: true
 
 - location:
     git:    https://github.com/{REPO_gloss-accelerate}.git
     commit: {SHA_gloss-accelerate}
+  extra-dep: true
 
 - location:
     git:    https://github.com/{REPO_gloss-raster-accelerate}.git
     commit: {SHA_gloss-raster-accelerate}
+  extra-dep: true
 
 - location:
     git:    https://github.com/{REPO_lens-accelerate}.git
     commit: {SHA_lens-accelerate}
+  extra-dep: true
 
 - location:
     git:    https://github.com/{REPO_linear-accelerate}.git
     commit: {SHA_linear-accelerate}
+  extra-dep: true
 
 - location:
     git:    https://github.com/{REPO_mwc-random-accelerate}.git
     commit: {SHA_mwc-random-accelerate}
+  extra-dep: true
 
 - location:
     git:    https://github.com/{REPO_numeric-prelude-accelerate}.git
     commit: {SHA_numeric-prelude-accelerate}
+  extra-dep: true
 
 - location:
     git:    https://github.com/{REPO_lulesh-accelerate}.git
     commit: {SHA_lulesh-accelerate}
+  extra-dep: true
 
 - location:
     git:    https://github.com/{REPO_cuda}.git
     commit: {SHA_cuda}
+  extra-dep: true
 
 - location:
     git:    https://github.com/{REPO_cufft}.git
     commit: {SHA_cufft}
+  extra-dep: true
 
 - location:
     git:    https://github.com/{REPO_cublas}.git
     commit: {SHA_cublas}
+  extra-dep: true
 
 - location:
     git:    https://github.com/{REPO_cusparse}.git
     commit: {SHA_cusparse}
+  extra-dep: true
 
 - location:
     git:    https://github.com/{REPO_cusolver}.git
     commit: {SHA_cusolver}
+  extra-dep: true
 
 - location:
     git:    https://github.com/{REPO_nvvm}.git
     commit: {SHA_nvvm}
+  extra-dep: true
 
 extra-deps:
 - 'blas-hs-0.1.1.0'

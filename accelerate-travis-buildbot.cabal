@@ -1,0 +1,52 @@
+name:                accelerate-travis-buildbot
+version:             0.0.0.0
+-- synopsis:
+-- description:
+homepage:             https://github.com/tmcdonell-bot/accelerate-travis-buildbot#readme
+license:              BSD3
+-- license-file:         LICENSE
+author:               Trevor L. McDonell
+maintainer:           Trevor L. McDonell <tmcdonell@cse.unsw.edu.au>
+copyright:            BSD3
+category:             Other
+build-type:           Simple
+-- extra-source-files:   README.md
+cabal-version:        >=1.10
+
+library
+  exposed-modules:      Answer
+  build-depends:        base >= 4.7 && < 5
+  default-language:     Haskell2010
+
+  -- everything
+  build-depends:
+      base                      >= 4.7 && < 5
+    , accelerate
+    , accelerate-llvm
+    , accelerate-llvm-native
+    , accelerate-llvm-ptx
+    , accelerate-fft
+    , accelerate-blas
+    , accelerate-io
+    , accelerate-bignum
+    , accelerate-examples
+    , colour-accelerate
+    , gloss-accelerate
+    , gloss-raster-accelerate
+    , lens-accelerate
+    , linear-accelerate
+    , mwc-random-accelerate
+    , numeric-prelude-accelerate
+    , lulesh-accelerate
+    , cuda
+    , cufft
+    , cublas
+    , cusparse
+    , cusolver
+    , nvvm
+
+source-repository head
+  type:     git
+  location: https://github.com/tmcdonell-bot/accelerate-travis-buildbot
+
+-- vim: nospell
