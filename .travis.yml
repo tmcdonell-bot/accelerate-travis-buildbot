@@ -113,6 +113,8 @@ install:
 
 script:
   - travis_retry stack build --fast --jobs=2 --no-terminal --haddock --no-haddock-deps ${TARGET}
+
+after_success:
   - |
       if [ ${GHC%.*} == 8.2 ] && [ -z ${TARGET} ]; then
         source .travis/update-docs.sh
