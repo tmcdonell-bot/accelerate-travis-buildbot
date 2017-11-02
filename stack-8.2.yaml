@@ -16,9 +16,9 @@ packages:
     commit: ed24942cdebfdab34c8214296d85cc08f3111e43
   extra-dep: true
   subdirs:
-    - 'accelerate-llvm'
-    - 'accelerate-llvm-native'
-    - 'accelerate-llvm-ptx'
+    - accelerate-llvm
+    - accelerate-llvm-native
+    - accelerate-llvm-ptx
 
 - location:
     git:    https://github.com/tmcdonell/accelerate-fft.git

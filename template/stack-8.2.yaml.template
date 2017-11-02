@@ -16,9 +16,9 @@ packages:
     commit: {SHA_accelerate-llvm}
   extra-dep: true
   subdirs:
-    - 'accelerate-llvm'
-    - 'accelerate-llvm-native'
-    - 'accelerate-llvm-ptx'
+    - accelerate-llvm
+    - accelerate-llvm-native
+    - accelerate-llvm-ptx
 
 - location:
     git:    https://github.com/{REPO_accelerate-fft}.git

@@ -1,7 +1,7 @@
 # For more information, see: https://github.com/commercialhaskell/stack/blob/release/doc/yaml_configuration.md
 # vim: nospell filetype=yaml
 
-resolver: lts-6.30
+resolver: lts-6.35
 
 packages:
 - '.'
@@ -16,9 +16,9 @@ packages:
     commit: ed24942cdebfdab34c8214296d85cc08f3111e43
   extra-dep: true
   subdirs:
-    - 'accelerate-llvm'
-    - 'accelerate-llvm-native'
-    - 'accelerate-llvm-ptx'
+    - accelerate-llvm
+    - accelerate-llvm-native
+    - accelerate-llvm-ptx
 
 - location:
     git:    https://github.com/tmcdonell/accelerate-fft.git
@@ -116,22 +116,32 @@ packages:
   extra-dep: true
 
 extra-deps:
-- 'blas-hs-0.1.1.0'
-- 'Cabal-2.0.0.2'
-- 'cabal-doctest-1.0.2'
-- 'chaselev-deque-0.5.0.5'
-- 'gloss-1.10.1.1'
-- 'gloss-rendering-1.10.1.1'
-- 'libffi-0.1'
-- 'llvm-hs-4.1.0.0'
-- 'llvm-hs-pure-4.1.0.0'
-- 'matrix-market-attoparsec-0.1.0.5'
-- 'non-negative-0.1.1'
-- 'normaldistribution-1.1.0.3'
-- 'numeric-prelude-0.4.2'
-- 'process-1.4.3.0'
-- 'storable-record-0.0.3.1'
-- 'unique-0'
+- blas-hs-0.1.1.0
+- Cabal-2.0.0.2
+- cabal-doctest-1.0.2
+- chaselev-deque-0.5.0.5
+- comonad-5.0.2
+- gloss-1.10.1.1
+- gloss-rendering-1.10.1.1
+- hedgehog-0.5
+- kan-extensions-5.0.2
+- lens-4.15.4
+- libffi-0.1
+- llvm-hs-4.1.0.0
+- llvm-hs-pure-4.1.0.0
+- matrix-market-attoparsec-0.1.0.5
+- non-negative-0.1.1
+- normaldistribution-1.1.0.3
+- numeric-prelude-0.4.2
+- process-1.4.3.0
+- profunctors-5.2.1
+- storable-record-0.0.3.1
+- test-framework-quickcheck2-0.3.0.4
+- th-abstraction-0.2.6.0
+- transformers-0.5.5.0
+- transformers-compat-0.5.1.4
+- unique-0
+- wl-pprint-annotated-0.1.0.0
 
 # Override default flag values for local packages and extra-deps
 flags:
@@ -142,25 +152,6 @@ flags:
     semigroups: true
   lulesh-accelerate:
     llvm-gpu:   false
-  accelerate-examples:
-    llvm-cpu:   true
-    llvm-ptx:   true
-    gui:        true
-    ekg:        true
-    codespeed:  false
-    nofib:      true
-    smvm:       true
-    crystal:    true
-    canny:      true
-    mandelbrot: true
-    fluid:      true
-    nbody:      true
-    smoothlife: true
-    hashcat:    true
-    fft:        true
-    pagerank:   true
-    ray:        true
-    kmeans:     true
 
 # Extra package databases containing global packages
 extra-package-dbs: []
