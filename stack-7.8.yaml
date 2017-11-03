@@ -4,17 +4,22 @@
 resolver: lts-2.22
 
 packages:
+- '.'
+
 - location:
     git:    https://github.com/tmcdonell/accelerate.git
-    commit: da1ec28f4cfd62e7e7472d294b91ba31e350fc73
+    commit: b73188966e43c4279cf7522d9309f2d90f86eb12
+  extra-dep: true
 
 - location:
     git:    https://github.com/{REPO_accelerate-cuda}.git
     commit: {SHA_accelerate-cuda}
+  extra-dep: true
 
 - location:
     git:    https://github.com/tmcdonell/accelerate-llvm.git
-    commit: f6dcbea295f9f8d72eae2adcf8b7f41da11ce594
+    commit: 6f423e6b9379feab174297d3cc558e5210db8068
+  extra-dep: true
   subdirs:
     - 'accelerate-llvm'
     - 'accelerate-llvm-native'
@@ -22,55 +27,68 @@ packages:
 
 - location:
     git:    https://github.com/tmcdonell/accelerate-fft.git
-    commit: 47e0ff710530617735d43ef73e121a2bca9f7e10
+    commit: 07e8c4edf76641c585ec2eb58b04817d50cfcaf0
+  extra-dep: true
 
 - location:
     git:    https://github.com/tmcdonell/accelerate-blas.git
-    commit: fcbdb2c2e511f001f08e5e325da91fcf649a9675
+    commit: 676ab38780a53eee1ec34ae8e9361b8055b9a2f6
+  extra-dep: true
 
 - location:
     git:    https://github.com/tmcdonell/colour-accelerate.git
-    commit: d36d7b524817a682c51f0f3046c538a21826c5de
+    commit: 6dbbac4d54fcb13db59b3b04ae092bbdda67eda1
+  extra-dep: true
 
 - location:
     git:    https://github.com/tmcdonell/gloss-accelerate.git
     commit: ca82c8e805a440bad8e7f7f238fac228de6175dd
+  extra-dep: true
 
 - location:
     git:    https://github.com/tmcdonell/gloss-raster-accelerate.git
     commit: a78fec5f7386a584726bec628323cde1f6da9c0c
+  extra-dep: true
 
 - location:
     git:    https://github.com/tmcdonell/mwc-random-accelerate.git
     commit: 6b43b357516b71ef4b7ed33260c975447d01bccc
+  extra-dep: true
 
 - location:
     git:    https://github.com/tmcdonell/numeric-prelude-accelerate.git
     commit: 88aeb033e92e98baf238f8c7e5611bb58a200479
+  extra-dep: true
 
 - location:
     git:    https://github.com/tmcdonell/cuda.git
-    commit: 75e6732aacca2e87313397d4b64a621eefd92b4b
+    commit: dbd02c4137e615769ae59ab908948c3b47b6a1b3
+  extra-dep: true
 
 - location:
     git:    https://github.com/tmcdonell/cufft.git
-    commit: 3b48501f2bb732eae8262454d53b5870bf2ce640
+    commit: fdea2b78e9e1558419db9089e92d05f98da1383c
+  extra-dep: true
 
 - location:
     git:    https://github.com/tmcdonell/cublas.git
-    commit: 46d06f15ad84ec424c138b61df4c332cb29702d8
+    commit: a858aa5dae80e6cf289673d461f3b6d64a95136c
+  extra-dep: true
 
 - location:
     git:    https://github.com/tmcdonell/cusparse.git
-    commit: 3af4a4bef62e236eab5cb6c7b575f1e383f2d274
+    commit: 90c9f068968ac4ac41d4def3d8b87713b4ba68e4
+  extra-dep: true
 
 - location:
     git:    https://github.com/tmcdonell/cusolver.git
-    commit: 01b0417ad7b0afa738c22983f9bd31aac918d5b2
+    commit: fcdcf0cdbc20271531f582464e72a51e59c3ed2c
+  extra-dep: true
 
 - location:
     git:    https://github.com/tmcdonell/nvvm.git
-    commit: 638f4111e2cd1e6fc965132a5d88223627a0910c
+    commit: 68cf2482acbc0bf62b1b8d65e7e86061475d8abb
+  extra-dep: true
 
 extra-deps:
 - 'atomic-primops-0.8.0.4'

@@ -112,7 +112,7 @@ packages:
 
 - location:
     git:    https://github.com/tmcdonell/nvvm.git
-    commit: 638f4111e2cd1e6fc965132a5d88223627a0910c
+    commit: 68cf2482acbc0bf62b1b8d65e7e86061475d8abb
   extra-dep: true
 
 extra-deps:
