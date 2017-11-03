@@ -32,7 +32,7 @@ packages:
 
 - location:
     git:    https://github.com/tmcdonell/accelerate-io.git
-    commit: e7f7d6c4b5fe6d5d30878dd22c7ade2071ffc99e
+    commit: c982e0dc2bc1cd130657caf0a03b92adaa9c1f7b
   extra-dep: true
 
 - location:
