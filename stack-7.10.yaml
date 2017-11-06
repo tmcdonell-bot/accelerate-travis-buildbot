@@ -42,7 +42,7 @@ packages:
 
 - location:
     git:    https://github.com/tmcdonell/accelerate-examples.git
-    commit: a74707809e5afcc237ccab1f7de9969316a2279a
+    commit: a78f3c001e2375e0cb49d8a8a86d0af0b388b95d
   extra-dep: true
 
 - location:

@@ -13,7 +13,7 @@ s|{SHA_accelerate-fft}|07e8c4edf76641c585ec2eb58b04817d50cfcaf0|
 s|{SHA_accelerate-blas}|676ab38780a53eee1ec34ae8e9361b8055b9a2f6|
 s|{SHA_accelerate-io}|47b22f0ba03520e4c72ec6c0360d0e33b3ff0404|
 s|{SHA_accelerate-bignum}|03bad32c584a2954a39fe832917af74869926fe5|
-s|{SHA_accelerate-examples}|a74707809e5afcc237ccab1f7de9969316a2279a|
+s|{SHA_accelerate-examples}|a78f3c001e2375e0cb49d8a8a86d0af0b388b95d|
 s|{SHA_colour-accelerate}|6dbbac4d54fcb13db59b3b04ae092bbdda67eda1|
 s|{SHA_gloss-accelerate}|ca82c8e805a440bad8e7f7f238fac228de6175dd|
 s|{SHA_gloss-raster-accelerate}|a78fec5f7386a584726bec628323cde1f6da9c0c|
