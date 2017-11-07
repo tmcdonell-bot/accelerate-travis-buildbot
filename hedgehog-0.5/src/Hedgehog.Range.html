@@ -1,0 +1,35 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-pragma">{-# LANGUAGE GeneralizedNewtypeDeriving #-}</span><span>
+</span><a name="line-2"></a><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">Hedgehog</span><span class="hs-operator">.</span><span class="hs-identifier">Range</span><span> </span><span class="hs-special">(</span><span>
+</span><a name="line-3"></a><span>  </span><span class="hs-comment">-- * Size</span><span>
+</span><a name="line-4"></a><span>    </span><a href="Hedgehog.Internal.Range.html#Size"><span class="hs-identifier hs-type">Size</span></a><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span>
+</span><a name="line-5"></a><span>
+</span><a name="line-6"></a><span>  </span><span class="hs-comment">-- * Range</span><span>
+</span><a name="line-7"></a><span>  </span><span class="hs-special">,</span><span> </span><a href="Hedgehog.Internal.Range.html#Range"><span class="hs-identifier hs-type">Range</span></a><span>
+</span><a name="line-8"></a><span>  </span><span class="hs-special">,</span><span> </span><a href="Hedgehog.Internal.Range.html#origin"><span class="hs-identifier hs-var">origin</span></a><span>
+</span><a name="line-9"></a><span>  </span><span class="hs-special">,</span><span> </span><a href="Hedgehog.Internal.Range.html#bounds"><span class="hs-identifier hs-var">bounds</span></a><span>
+</span><a name="line-10"></a><span>  </span><span class="hs-special">,</span><span> </span><a href="Hedgehog.Internal.Range.html#lowerBound"><span class="hs-identifier hs-var">lowerBound</span></a><span>
+</span><a name="line-11"></a><span>  </span><span class="hs-special">,</span><span> </span><a href="Hedgehog.Internal.Range.html#upperBound"><span class="hs-identifier hs-var">upperBound</span></a><span>
+</span><a name="line-12"></a><span>
+</span><a name="line-13"></a><span>  </span><span class="hs-comment">-- * Constant</span><span>
+</span><a name="line-14"></a><span>  </span><span class="hs-special">,</span><span> </span><a href="Hedgehog.Internal.Range.html#singleton"><span class="hs-identifier hs-var">singleton</span></a><span>
+</span><a name="line-15"></a><span>  </span><span class="hs-special">,</span><span> </span><a href="Hedgehog.Internal.Range.html#constant"><span class="hs-identifier hs-var">constant</span></a><span>
+</span><a name="line-16"></a><span>  </span><span class="hs-special">,</span><span> </span><a href="Hedgehog.Internal.Range.html#constantFrom"><span class="hs-identifier hs-var">constantFrom</span></a><span>
+</span><a name="line-17"></a><span>  </span><span class="hs-special">,</span><span> </span><a href="Hedgehog.Internal.Range.html#constantBounded"><span class="hs-identifier hs-var">constantBounded</span></a><span>
+</span><a name="line-18"></a><span>
+</span><a name="line-19"></a><span>  </span><span class="hs-comment">-- * Linear</span><span>
+</span><a name="line-20"></a><span>  </span><span class="hs-special">,</span><span> </span><a href="Hedgehog.Internal.Range.html#linear"><span class="hs-identifier hs-var">linear</span></a><span>
+</span><a name="line-21"></a><span>  </span><span class="hs-special">,</span><span> </span><a href="Hedgehog.Internal.Range.html#linearFrom"><span class="hs-identifier hs-var">linearFrom</span></a><span>
+</span><a name="line-22"></a><span>  </span><span class="hs-special">,</span><span> </span><a href="Hedgehog.Internal.Range.html#linearFrac"><span class="hs-identifier hs-var">linearFrac</span></a><span>
+</span><a name="line-23"></a><span>  </span><span class="hs-special">,</span><span> </span><a href="Hedgehog.Internal.Range.html#linearFracFrom"><span class="hs-identifier hs-var">linearFracFrom</span></a><span>
+</span><a name="line-24"></a><span>  </span><span class="hs-special">,</span><span> </span><a href="Hedgehog.Internal.Range.html#linearBounded"><span class="hs-identifier hs-var">linearBounded</span></a><span>
+</span><a name="line-25"></a><span>
+</span><a name="line-26"></a><span>  </span><span class="hs-comment">-- * Exponential</span><span>
+</span><a name="line-27"></a><span>  </span><span class="hs-special">,</span><span> </span><a href="Hedgehog.Internal.Range.html#exponential"><span class="hs-identifier hs-var">exponential</span></a><span>
+</span><a name="line-28"></a><span>  </span><span class="hs-special">,</span><span> </span><a href="Hedgehog.Internal.Range.html#exponentialFrom"><span class="hs-identifier hs-var">exponentialFrom</span></a><span>
+</span><a name="line-29"></a><span>  </span><span class="hs-special">,</span><span> </span><a href="Hedgehog.Internal.Range.html#exponentialBounded"><span class="hs-identifier hs-var">exponentialBounded</span></a><span>
+</span><a name="line-30"></a><span>  </span><span class="hs-special">,</span><span> </span><a href="Hedgehog.Internal.Range.html#exponentialFloat"><span class="hs-identifier hs-var">exponentialFloat</span></a><span>
+</span><a name="line-31"></a><span>  </span><span class="hs-special">,</span><span> </span><a href="Hedgehog.Internal.Range.html#exponentialFloatFrom"><span class="hs-identifier hs-var">exponentialFloatFrom</span></a><span>
+</span><a name="line-32"></a><span>  </span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><a name="line-33"></a><span>
+</span><a name="line-34"></a><span class="hs-keyword">import</span><span>           </span><a href="Hedgehog.Internal.Range.html"><span class="hs-identifier">Hedgehog</span><span class="hs-operator">.</span><span class="hs-identifier">Internal</span><span class="hs-operator">.</span><span class="hs-identifier">Range</span></a><span>
+</span><a name="line-35"></a></pre></body></html>

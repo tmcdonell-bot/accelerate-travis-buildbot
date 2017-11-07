@@ -350,196 +350,209 @@
 </span><a name="line-350"></a><span>  </span><span class="hs-comment">-- ---------------------------------------------------------------------------</span><span>
 </span><a name="line-351"></a><span>  </span><span class="hs-comment">-- * Plain arrays</span><span>
 </span><a name="line-352"></a><span>  </span><span class="hs-comment">-- ** Operations</span><span>
-</span><a name="line-353"></a><span>  </span><a href="Data.Array.Accelerate.html#arrayRank"><span class="hs-identifier hs-var">arrayRank</span></a><span class="hs-special">,</span><span> </span><a href="Data.Array.Accelerate.html#arrayShape"><span class="hs-identifier hs-var">arrayShape</span></a><span class="hs-special">,</span><span> </span><a href="Data.Array.Accelerate.html#arraySize"><span class="hs-identifier hs-var">arraySize</span></a><span class="hs-special">,</span><span> </span><a href="Data.Array.Accelerate.html#indexArray"><span class="hs-identifier hs-var">indexArray</span></a><span class="hs-special">,</span><span>
-</span><a name="line-354"></a><span>
-</span><a name="line-355"></a><span>  </span><span class="hs-comment">-- ** Getting data in</span><span>
-</span><a name="line-356"></a><span>  </span><span class="hs-comment">-- $getting_data_in</span><span>
-</span><a name="line-357"></a><span>
-</span><a name="line-358"></a><span>  </span><span class="hs-comment">-- *** Function</span><span>
-</span><a name="line-359"></a><span>  </span><a href="Data.Array.Accelerate.Array.Sugar.html#fromFunction"><span class="hs-identifier hs-var">fromFunction</span></a><span class="hs-special">,</span><span>
-</span><a name="line-360"></a><span>  </span><a href="Data.Array.Accelerate.Array.Sugar.html#fromFunctionM"><span class="hs-identifier hs-var">fromFunctionM</span></a><span class="hs-special">,</span><span>
-</span><a name="line-361"></a><span>
-</span><a name="line-362"></a><span>  </span><span class="hs-comment">-- *** Lists</span><span>
-</span><a name="line-363"></a><span>  </span><a href="Data.Array.Accelerate.Array.Sugar.html#fromList"><span class="hs-identifier hs-var">fromList</span></a><span class="hs-special">,</span><span> </span><a href="Data.Array.Accelerate.Array.Sugar.html#toList"><span class="hs-identifier hs-var">toList</span></a><span class="hs-special">,</span><span>
-</span><a name="line-364"></a><span>
-</span><a name="line-365"></a><span>  </span><span class="hs-comment">-- ---------------------------------------------------------------------------</span><span>
-</span><a name="line-366"></a><span>  </span><span class="hs-comment">-- * Prelude re-exports</span><span>
-</span><a name="line-367"></a><span>  </span><span class="hs-special">(</span><span class="hs-operator hs-var">.</span><span class="hs-special">)</span><span class="hs-special">,</span><span> </span><span class="hs-special">(</span><span class="hs-operator hs-var">$</span><span class="hs-special">)</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-var">error</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-var">undefined</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-var">const</span><span class="hs-special">,</span><span>
-</span><a name="line-368"></a><span>
-</span><a name="line-369"></a><span>  </span><span class="hs-comment">-- ---------------------------------------------------------------------------</span><span>
-</span><a name="line-370"></a><span>  </span><span class="hs-comment">-- Types</span><span>
-</span><a name="line-371"></a><span>  </span><span class="hs-identifier hs-type">Int</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-type">Int8</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-type">Int16</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-type">Int32</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-type">Int64</span><span class="hs-special">,</span><span>
-</span><a name="line-372"></a><span>  </span><span class="hs-identifier hs-type">Word</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-type">Word8</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-type">Word16</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-type">Word32</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-type">Word64</span><span class="hs-special">,</span><span>
-</span><a name="line-373"></a><span>  </span><span class="hs-identifier hs-type">Float</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-type">Double</span><span class="hs-special">,</span><span>
-</span><a name="line-374"></a><span>  </span><span class="hs-identifier hs-type">Bool</span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-type">Char</span><span class="hs-special">,</span><span>
-</span><a name="line-375"></a><span>
-</span><a name="line-376"></a><span>  </span><span class="hs-identifier hs-type">CFloat</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-type">CDouble</span><span class="hs-special">,</span><span>
-</span><a name="line-377"></a><span>  </span><span class="hs-identifier hs-type">CShort</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-type">CUShort</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-type">CInt</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-type">CUInt</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-type">CLong</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-type">CULong</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-type">CLLong</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-type">CULLong</span><span class="hs-special">,</span><span>
-</span><a name="line-378"></a><span>  </span><span class="hs-identifier hs-type">CChar</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-type">CSChar</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-type">CUChar</span><span class="hs-special">,</span><span>
-</span><a name="line-379"></a><span>
-</span><a name="line-380"></a><span>  </span><span class="hs-comment">-- | Avoid using these in your own functions wherever possible.</span><span>
-</span><a name="line-381"></a><span>  </span><a href="Data.Array.Accelerate.Type.html#IsScalar"><span class="hs-identifier hs-type">IsScalar</span></a><span class="hs-special">,</span><span> </span><a href="Data.Array.Accelerate.Type.html#IsNum"><span class="hs-identifier hs-type">IsNum</span></a><span class="hs-special">,</span><span> </span><a href="Data.Array.Accelerate.Type.html#IsBounded"><span class="hs-identifier hs-type">IsBounded</span></a><span class="hs-special">,</span><span> </span><a href="Data.Array.Accelerate.Type.html#IsIntegral"><span class="hs-identifier hs-type">IsIntegral</span></a><span class="hs-special">,</span><span> </span><a href="Data.Array.Accelerate.Type.html#IsFloating"><span class="hs-identifier hs-type">IsFloating</span></a><span class="hs-special">,</span><span> </span><a href="Data.Array.Accelerate.Type.html#IsNonNum"><span class="hs-identifier hs-type">IsNonNum</span></a><span class="hs-special">,</span><span>
-</span><a name="line-382"></a><span>
-</span><a name="line-383"></a><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
-</span><a name="line-384"></a><span>
-</span><a name="line-385"></a><span class="hs-comment">-- friends</span><span>
-</span><a name="line-386"></a><span class="hs-keyword">import</span><span> </span><a href="Data.Array.Accelerate.Array.Sugar.html"><span class="hs-identifier">Data</span><span class="hs-operator">.</span><span class="hs-identifier">Array</span><span class="hs-operator">.</span><span class="hs-identifier">Accelerate</span><span class="hs-operator">.</span><span class="hs-identifier">Array</span><span class="hs-operator">.</span><span class="hs-identifier">Sugar</span></a><span>                            </span><span class="hs-keyword">hiding</span><span> </span><span class="hs-special">(</span><span> </span><span class="hs-special">(</span><span class="hs-glyph">!</span><span class="hs-special">)</span><span class="hs-special">,</span><span> </span><a href="Data.Array.Accelerate.Array.Sugar.html#rank"><span class="hs-identifier hs-var">rank</span></a><span class="hs-special">,</span><span> </span><a href="Data.Array.Accelerate.Array.Sugar.html#shape"><span class="hs-identifier hs-var">shape</span></a><span class="hs-special">,</span><span> </span><a href="Data.Array.Accelerate.Array.Sugar.html#size"><span class="hs-identifier hs-var">size</span></a><span class="hs-special">,</span><span> </span><a href="Data.Array.Accelerate.Array.Sugar.html#toIndex"><span class="hs-identifier hs-var">toIndex</span></a><span class="hs-special">,</span><span> </span><a href="Data.Array.Accelerate.Array.Sugar.html#fromIndex"><span class="hs-identifier hs-var">fromIndex</span></a><span class="hs-special">,</span><span> </span><a href="Data.Array.Accelerate.Array.Sugar.html#intersect"><span class="hs-identifier hs-var">intersect</span></a><span class="hs-special">,</span><span> </span><a href="Data.Array.Accelerate.Array.Sugar.html#ignore"><span class="hs-identifier hs-var">ignore</span></a><span> </span><span class="hs-special">)</span><span>
-</span><a name="line-387"></a><span class="hs-keyword">import</span><span> </span><a href="Data.Array.Accelerate.Classes.html"><span class="hs-identifier">Data</span><span class="hs-operator">.</span><span class="hs-identifier">Array</span><span class="hs-operator">.</span><span class="hs-identifier">Accelerate</span><span class="hs-operator">.</span><span class="hs-identifier">Classes</span></a><span>
-</span><a name="line-388"></a><span class="hs-keyword">import</span><span> </span><a href="Data.Array.Accelerate.Language.html"><span class="hs-identifier">Data</span><span class="hs-operator">.</span><span class="hs-identifier">Array</span><span class="hs-operator">.</span><span class="hs-identifier">Accelerate</span><span class="hs-operator">.</span><span class="hs-identifier">Language</span></a><span>
-</span><a name="line-389"></a><span class="hs-keyword">import</span><span> </span><a href="Data.Array.Accelerate.Prelude.html"><span class="hs-identifier">Data</span><span class="hs-operator">.</span><span class="hs-identifier">Array</span><span class="hs-operator">.</span><span class="hs-identifier">Accelerate</span><span class="hs-operator">.</span><span class="hs-identifier">Prelude</span></a><span>
-</span><a name="line-390"></a><span class="hs-keyword">import</span><span> </span><a href="Data.Array.Accelerate.Trafo.html"><span class="hs-identifier">Data</span><span class="hs-operator">.</span><span class="hs-identifier">Array</span><span class="hs-operator">.</span><span class="hs-identifier">Accelerate</span><span class="hs-operator">.</span><span class="hs-identifier">Trafo</span></a><span>                                  </span><span class="hs-special">(</span><span class="hs-special">)</span><span> </span><span class="hs-comment">-- show instances</span><span>
-</span><a name="line-391"></a><span class="hs-keyword">import</span><span> </span><a href="Data.Array.Accelerate.Type.html"><span class="hs-identifier">Data</span><span class="hs-operator">.</span><span class="hs-identifier">Array</span><span class="hs-operator">.</span><span class="hs-identifier">Accelerate</span><span class="hs-operator">.</span><span class="hs-identifier">Type</span></a><span>
-</span><a name="line-392"></a><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><a href="Data.Array.Accelerate.Array.Sugar.html"><span class="hs-identifier">Data</span><span class="hs-operator">.</span><span class="hs-identifier">Array</span><span class="hs-operator">.</span><span class="hs-identifier">Accelerate</span><span class="hs-operator">.</span><span class="hs-identifier">Array</span><span class="hs-operator">.</span><span class="hs-identifier">Sugar</span></a><span>                  </span><span class="hs-keyword">as</span><span> </span><span class="hs-identifier">S</span><span>
-</span><a name="line-393"></a><span>
-</span><a name="line-394"></a><span class="hs-comment">-- re-exported from D.A.A.Classes.Num but not found (GHC&lt;8 bug)</span><span>
-</span><a name="line-395"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">Prelude</span><span>                                                      </span><span class="hs-special">(</span><span> </span><span class="hs-special">(</span><span class="hs-operator hs-var">.</span><span class="hs-special">)</span><span class="hs-special">,</span><span> </span><span class="hs-special">(</span><span class="hs-operator hs-var">$</span><span class="hs-special">)</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-var">undefined</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-var">error</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-var">const</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-var">fromInteger</span><span> </span><span class="hs-special">)</span><span>
-</span><a name="line-396"></a><span>
-</span><a name="line-397"></a><span class="hs-comment">-- $setup</span><span>
-</span><a name="line-398"></a><span class="hs-comment">-- &gt;&gt;&gt; :seti -XTypeOperators</span><span>
-</span><a name="line-399"></a><span class="hs-comment">-- &gt;&gt;&gt; import Data.Array.Accelerate.Interpreter</span><span>
-</span><a name="line-400"></a><span class="hs-comment">-- &gt;&gt;&gt; :{</span><span>
-</span><a name="line-401"></a><span class="hs-comment">--   let runExp :: Elt e =&gt; Exp e -&gt; e</span><span>
-</span><a name="line-402"></a><span class="hs-comment">--       runExp e = indexArray (run (unit e)) Z</span><span>
-</span><a name="line-403"></a><span class="hs-comment">-- :}</span><span>
-</span><a name="line-404"></a><span>
-</span><a name="line-405"></a><span class="hs-comment">-- Renamings</span><span>
-</span><a name="line-406"></a><span class="hs-comment">-- ---------</span><span>
-</span><a name="line-407"></a><span class="hs-comment">--</span><span>
-</span><a name="line-408"></a><span class="hs-comment">-- FIXME: these all need to go into a separate module for separate importing!</span><span>
-</span><a name="line-409"></a><span>
-</span><a name="line-410"></a><span class="hs-comment">-- rename as '(!)' is already used by the EDSL for indexing</span><span>
-</span><a name="line-411"></a><span>
-</span><a name="line-412"></a><span class="hs-comment">-- | Array indexing in plain Haskell code.</span><span>
-</span><a name="line-413"></a><span class="hs-comment">--</span><span>
-</span><a name="line-414"></a><span class="hs-identifier">indexArray</span><span> </span><span class="hs-glyph">::</span><span> </span><a href="Data.Array.Accelerate.Array.Sugar.html#Array"><span class="hs-identifier hs-type">Array</span></a><span> </span><a href="#local-6989586621682403646"><span class="hs-identifier hs-type">sh</span></a><span> </span><a href="#local-6989586621682403647"><span class="hs-identifier hs-type">e</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><a href="#local-6989586621682403646"><span class="hs-identifier hs-type">sh</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><a href="#local-6989586621682403647"><span class="hs-identifier hs-type">e</span></a><span>
-</span><a name="line-415"></a><a name="indexArray"><a href="Data.Array.Accelerate.html#indexArray"><span class="hs-identifier">indexArray</span></a></a><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">(</span><a href="Data.Array.Accelerate.Array.Sugar.html#%21"><span class="hs-identifier hs-var">S</span><span class="hs-operator hs-var">.!</span></a><span class="hs-special">)</span><span>
-</span><a name="line-416"></a><span>
-</span><a name="line-417"></a><span class="hs-comment">-- | Rank of an array.</span><span>
-</span><a name="line-418"></a><span class="hs-comment">--</span><span>
-</span><a name="line-419"></a><span class="hs-identifier">arrayRank</span><span> </span><span class="hs-glyph">::</span><span> </span><a href="Data.Array.Accelerate.Array.Sugar.html#Shape"><span class="hs-identifier hs-type">Shape</span></a><span> </span><a href="#local-6989586621682403645"><span class="hs-identifier hs-type">sh</span></a><span> </span><span class="hs-glyph">=&gt;</span><span> </span><a href="#local-6989586621682403645"><span class="hs-identifier hs-type">sh</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier hs-type">Int</span><span>
-</span><a name="line-420"></a><a name="arrayRank"><a href="Data.Array.Accelerate.html#arrayRank"><span class="hs-identifier">arrayRank</span></a></a><span> </span><span class="hs-glyph">=</span><span> </span><a href="Data.Array.Accelerate.Array.Sugar.html#rank"><span class="hs-identifier hs-var">S</span><span class="hs-operator hs-var">.</span><span class="hs-identifier hs-var">rank</span></a><span>
-</span><a name="line-421"></a><span>
-</span><a name="line-422"></a><span class="hs-comment">-- |Array shape in plain Haskell code.</span><span>
-</span><a name="line-423"></a><span class="hs-comment">--</span><span>
-</span><a name="line-424"></a><span class="hs-identifier">arrayShape</span><span> </span><span class="hs-glyph">::</span><span> </span><a href="Data.Array.Accelerate.Array.Sugar.html#Shape"><span class="hs-identifier hs-type">Shape</span></a><span> </span><a href="#local-6989586621682403643"><span class="hs-identifier hs-type">sh</span></a><span> </span><span class="hs-glyph">=&gt;</span><span> </span><a href="Data.Array.Accelerate.Array.Sugar.html#Array"><span class="hs-identifier hs-type">Array</span></a><span> </span><a href="#local-6989586621682403643"><span class="hs-identifier hs-type">sh</span></a><span> </span><a href="#local-6989586621682403644"><span class="hs-identifier hs-type">e</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><a href="#local-6989586621682403643"><span class="hs-identifier hs-type">sh</span></a><span>
-</span><a name="line-425"></a><a name="arrayShape"><a href="Data.Array.Accelerate.html#arrayShape"><span class="hs-identifier">arrayShape</span></a></a><span> </span><span class="hs-glyph">=</span><span> </span><a href="Data.Array.Accelerate.Array.Sugar.html#shape"><span class="hs-identifier hs-var">S</span><span class="hs-operator hs-var">.</span><span class="hs-identifier hs-var">shape</span></a><span>
-</span><a name="line-426"></a><span class="hs-comment">-- rename as 'shape' is already used by the EDSL to query an array's shape</span><span>
+</span><a name="line-353"></a><span>  </span><a href="Data.Array.Accelerate.html#arrayRank"><span class="hs-identifier hs-var">arrayRank</span></a><span class="hs-special">,</span><span> </span><a href="Data.Array.Accelerate.html#arrayShape"><span class="hs-identifier hs-var">arrayShape</span></a><span class="hs-special">,</span><span> </span><a href="Data.Array.Accelerate.html#arraySize"><span class="hs-identifier hs-var">arraySize</span></a><span class="hs-special">,</span><span> </span><a href="Data.Array.Accelerate.html#arrayReshape"><span class="hs-identifier hs-var">arrayReshape</span></a><span class="hs-special">,</span><span>
+</span><a name="line-354"></a><span>  </span><a href="Data.Array.Accelerate.html#indexArray"><span class="hs-identifier hs-var">indexArray</span></a><span class="hs-special">,</span><span> </span><a href="Data.Array.Accelerate.html#linearIndexArray"><span class="hs-identifier hs-var">linearIndexArray</span></a><span class="hs-special">,</span><span>
+</span><a name="line-355"></a><span>
+</span><a name="line-356"></a><span>  </span><span class="hs-comment">-- ** Getting data in</span><span>
+</span><a name="line-357"></a><span>  </span><span class="hs-comment">-- $getting_data_in</span><span>
+</span><a name="line-358"></a><span>
+</span><a name="line-359"></a><span>  </span><span class="hs-comment">-- *** Function</span><span>
+</span><a name="line-360"></a><span>  </span><a href="Data.Array.Accelerate.Array.Sugar.html#fromFunction"><span class="hs-identifier hs-var">fromFunction</span></a><span class="hs-special">,</span><span>
+</span><a name="line-361"></a><span>  </span><a href="Data.Array.Accelerate.Array.Sugar.html#fromFunctionM"><span class="hs-identifier hs-var">fromFunctionM</span></a><span class="hs-special">,</span><span>
+</span><a name="line-362"></a><span>
+</span><a name="line-363"></a><span>  </span><span class="hs-comment">-- *** Lists</span><span>
+</span><a name="line-364"></a><span>  </span><a href="Data.Array.Accelerate.Array.Sugar.html#fromList"><span class="hs-identifier hs-var">fromList</span></a><span class="hs-special">,</span><span> </span><a href="Data.Array.Accelerate.Array.Sugar.html#toList"><span class="hs-identifier hs-var">toList</span></a><span class="hs-special">,</span><span>
+</span><a name="line-365"></a><span>
+</span><a name="line-366"></a><span>  </span><span class="hs-comment">-- ---------------------------------------------------------------------------</span><span>
+</span><a name="line-367"></a><span>  </span><span class="hs-comment">-- * Prelude re-exports</span><span>
+</span><a name="line-368"></a><span>  </span><span class="hs-special">(</span><span class="hs-operator hs-var">.</span><span class="hs-special">)</span><span class="hs-special">,</span><span> </span><span class="hs-special">(</span><span class="hs-operator hs-var">$</span><span class="hs-special">)</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-var">error</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-var">undefined</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-var">const</span><span class="hs-special">,</span><span>
+</span><a name="line-369"></a><span>
+</span><a name="line-370"></a><span>  </span><span class="hs-comment">-- ---------------------------------------------------------------------------</span><span>
+</span><a name="line-371"></a><span>  </span><span class="hs-comment">-- Types</span><span>
+</span><a name="line-372"></a><span>  </span><span class="hs-identifier hs-type">Int</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-type">Int8</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-type">Int16</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-type">Int32</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-type">Int64</span><span class="hs-special">,</span><span>
+</span><a name="line-373"></a><span>  </span><span class="hs-identifier hs-type">Word</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-type">Word8</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-type">Word16</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-type">Word32</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-type">Word64</span><span class="hs-special">,</span><span>
+</span><a name="line-374"></a><span>  </span><span class="hs-identifier hs-type">Float</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-type">Double</span><span class="hs-special">,</span><span>
+</span><a name="line-375"></a><span>  </span><span class="hs-identifier hs-type">Bool</span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-type">Char</span><span class="hs-special">,</span><span>
+</span><a name="line-376"></a><span>
+</span><a name="line-377"></a><span>  </span><span class="hs-identifier hs-type">CFloat</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-type">CDouble</span><span class="hs-special">,</span><span>
+</span><a name="line-378"></a><span>  </span><span class="hs-identifier hs-type">CShort</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-type">CUShort</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-type">CInt</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-type">CUInt</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-type">CLong</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-type">CULong</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-type">CLLong</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-type">CULLong</span><span class="hs-special">,</span><span>
+</span><a name="line-379"></a><span>  </span><span class="hs-identifier hs-type">CChar</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-type">CSChar</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-type">CUChar</span><span class="hs-special">,</span><span>
+</span><a name="line-380"></a><span>
+</span><a name="line-381"></a><span>  </span><span class="hs-comment">-- | Avoid using these in your own functions wherever possible.</span><span>
+</span><a name="line-382"></a><span>  </span><a href="Data.Array.Accelerate.Type.html#IsScalar"><span class="hs-identifier hs-type">IsScalar</span></a><span class="hs-special">,</span><span> </span><a href="Data.Array.Accelerate.Type.html#IsNum"><span class="hs-identifier hs-type">IsNum</span></a><span class="hs-special">,</span><span> </span><a href="Data.Array.Accelerate.Type.html#IsBounded"><span class="hs-identifier hs-type">IsBounded</span></a><span class="hs-special">,</span><span> </span><a href="Data.Array.Accelerate.Type.html#IsIntegral"><span class="hs-identifier hs-type">IsIntegral</span></a><span class="hs-special">,</span><span> </span><a href="Data.Array.Accelerate.Type.html#IsFloating"><span class="hs-identifier hs-type">IsFloating</span></a><span class="hs-special">,</span><span> </span><a href="Data.Array.Accelerate.Type.html#IsNonNum"><span class="hs-identifier hs-type">IsNonNum</span></a><span class="hs-special">,</span><span>
+</span><a name="line-383"></a><span>
+</span><a name="line-384"></a><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><a name="line-385"></a><span>
+</span><a name="line-386"></a><span class="hs-comment">-- friends</span><span>
+</span><a name="line-387"></a><span class="hs-keyword">import</span><span> </span><a href="Data.Array.Accelerate.Array.Sugar.html"><span class="hs-identifier">Data</span><span class="hs-operator">.</span><span class="hs-identifier">Array</span><span class="hs-operator">.</span><span class="hs-identifier">Accelerate</span><span class="hs-operator">.</span><span class="hs-identifier">Array</span><span class="hs-operator">.</span><span class="hs-identifier">Sugar</span></a><span>                            </span><span class="hs-keyword">hiding</span><span> </span><span class="hs-special">(</span><span> </span><span class="hs-special">(</span><span class="hs-glyph">!</span><span class="hs-special">)</span><span class="hs-special">,</span><span> </span><span class="hs-special">(</span><a href="Data.Array.Accelerate.Array.Sugar.html#%21%21"><span class="hs-operator hs-var">!!</span></a><span class="hs-special">)</span><span class="hs-special">,</span><span> </span><a href="Data.Array.Accelerate.Array.Sugar.html#rank"><span class="hs-identifier hs-var">rank</span></a><span class="hs-special">,</span><span> </span><a href="Data.Array.Accelerate.Array.Sugar.html#shape"><span class="hs-identifier hs-var">shape</span></a><span class="hs-special">,</span><span> </span><a href="Data.Array.Accelerate.Array.Sugar.html#reshape"><span class="hs-identifier hs-var">reshape</span></a><span class="hs-special">,</span><span> </span><a href="Data.Array.Accelerate.Array.Sugar.html#size"><span class="hs-identifier hs-var">size</span></a><span class="hs-special">,</span><span> </span><a href="Data.Array.Accelerate.Array.Sugar.html#toIndex"><span class="hs-identifier hs-var">toIndex</span></a><span class="hs-special">,</span><span> </span><a href="Data.Array.Accelerate.Array.Sugar.html#fromIndex"><span class="hs-identifier hs-var">fromIndex</span></a><span class="hs-special">,</span><span> </span><a href="Data.Array.Accelerate.Array.Sugar.html#intersect"><span class="hs-identifier hs-var">intersect</span></a><span class="hs-special">,</span><span> </span><a href="Data.Array.Accelerate.Array.Sugar.html#ignore"><span class="hs-identifier hs-var">ignore</span></a><span> </span><span class="hs-special">)</span><span>
+</span><a name="line-388"></a><span class="hs-keyword">import</span><span> </span><a href="Data.Array.Accelerate.Classes.html"><span class="hs-identifier">Data</span><span class="hs-operator">.</span><span class="hs-identifier">Array</span><span class="hs-operator">.</span><span class="hs-identifier">Accelerate</span><span class="hs-operator">.</span><span class="hs-identifier">Classes</span></a><span>
+</span><a name="line-389"></a><span class="hs-keyword">import</span><span> </span><a href="Data.Array.Accelerate.Language.html"><span class="hs-identifier">Data</span><span class="hs-operator">.</span><span class="hs-identifier">Array</span><span class="hs-operator">.</span><span class="hs-identifier">Accelerate</span><span class="hs-operator">.</span><span class="hs-identifier">Language</span></a><span>
+</span><a name="line-390"></a><span class="hs-keyword">import</span><span> </span><a href="Data.Array.Accelerate.Prelude.html"><span class="hs-identifier">Data</span><span class="hs-operator">.</span><span class="hs-identifier">Array</span><span class="hs-operator">.</span><span class="hs-identifier">Accelerate</span><span class="hs-operator">.</span><span class="hs-identifier">Prelude</span></a><span>
+</span><a name="line-391"></a><span class="hs-keyword">import</span><span> </span><a href="Data.Array.Accelerate.Trafo.html"><span class="hs-identifier">Data</span><span class="hs-operator">.</span><span class="hs-identifier">Array</span><span class="hs-operator">.</span><span class="hs-identifier">Accelerate</span><span class="hs-operator">.</span><span class="hs-identifier">Trafo</span></a><span>                                  </span><span class="hs-special">(</span><span class="hs-special">)</span><span> </span><span class="hs-comment">-- show instances</span><span>
+</span><a name="line-392"></a><span class="hs-keyword">import</span><span> </span><a href="Data.Array.Accelerate.Type.html"><span class="hs-identifier">Data</span><span class="hs-operator">.</span><span class="hs-identifier">Array</span><span class="hs-operator">.</span><span class="hs-identifier">Accelerate</span><span class="hs-operator">.</span><span class="hs-identifier">Type</span></a><span>
+</span><a name="line-393"></a><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><a href="Data.Array.Accelerate.Array.Sugar.html"><span class="hs-identifier">Data</span><span class="hs-operator">.</span><span class="hs-identifier">Array</span><span class="hs-operator">.</span><span class="hs-identifier">Accelerate</span><span class="hs-operator">.</span><span class="hs-identifier">Array</span><span class="hs-operator">.</span><span class="hs-identifier">Sugar</span></a><span>                  </span><span class="hs-keyword">as</span><span> </span><span class="hs-identifier">S</span><span>
+</span><a name="line-394"></a><span>
+</span><a name="line-395"></a><span class="hs-comment">-- re-exported from D.A.A.Classes.Num but not found (GHC&lt;8 bug)</span><span>
+</span><a name="line-396"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">Prelude</span><span>                                                      </span><span class="hs-special">(</span><span> </span><span class="hs-special">(</span><span class="hs-operator hs-var">.</span><span class="hs-special">)</span><span class="hs-special">,</span><span> </span><span class="hs-special">(</span><span class="hs-operator hs-var">$</span><span class="hs-special">)</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-var">undefined</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-var">error</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-var">const</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-var">fromInteger</span><span> </span><span class="hs-special">)</span><span>
+</span><a name="line-397"></a><span>
+</span><a name="line-398"></a><span class="hs-comment">-- $setup</span><span>
+</span><a name="line-399"></a><span class="hs-comment">-- &gt;&gt;&gt; :seti -XTypeOperators</span><span>
+</span><a name="line-400"></a><span class="hs-comment">-- &gt;&gt;&gt; import Data.Array.Accelerate.Interpreter</span><span>
+</span><a name="line-401"></a><span class="hs-comment">-- &gt;&gt;&gt; :{</span><span>
+</span><a name="line-402"></a><span class="hs-comment">--   let runExp :: Elt e =&gt; Exp e -&gt; e</span><span>
+</span><a name="line-403"></a><span class="hs-comment">--       runExp e = indexArray (run (unit e)) Z</span><span>
+</span><a name="line-404"></a><span class="hs-comment">-- :}</span><span>
+</span><a name="line-405"></a><span>
+</span><a name="line-406"></a><span class="hs-comment">-- Renamings</span><span>
+</span><a name="line-407"></a><span class="hs-comment">-- ---------</span><span>
+</span><a name="line-408"></a><span class="hs-comment">--</span><span>
+</span><a name="line-409"></a><span class="hs-comment">-- FIXME: these all need to go into a separate module for separate importing!</span><span>
+</span><a name="line-410"></a><span>
+</span><a name="line-411"></a><span class="hs-comment">-- rename as '(!)' is already used by the EDSL for indexing</span><span>
+</span><a name="line-412"></a><span>
+</span><a name="line-413"></a><span class="hs-comment">-- | Array indexing in plain Haskell code.</span><span>
+</span><a name="line-414"></a><span class="hs-comment">--</span><span>
+</span><a name="line-415"></a><span class="hs-identifier">indexArray</span><span> </span><span class="hs-glyph">::</span><span> </span><a href="Data.Array.Accelerate.Array.Sugar.html#Array"><span class="hs-identifier hs-type">Array</span></a><span> </span><a href="#local-6989586621682430993"><span class="hs-identifier hs-type">sh</span></a><span> </span><a href="#local-6989586621682430994"><span class="hs-identifier hs-type">e</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><a href="#local-6989586621682430993"><span class="hs-identifier hs-type">sh</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><a href="#local-6989586621682430994"><span class="hs-identifier hs-type">e</span></a><span>
+</span><a name="line-416"></a><a name="indexArray"><a href="Data.Array.Accelerate.html#indexArray"><span class="hs-identifier">indexArray</span></a></a><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">(</span><a href="Data.Array.Accelerate.Array.Sugar.html#%21"><span class="hs-identifier hs-var">S</span><span class="hs-operator hs-var">.!</span></a><span class="hs-special">)</span><span>
+</span><a name="line-417"></a><span>
+</span><a name="line-418"></a><span class="hs-comment">-- | Linear array indexing in plain Haskell code.</span><span>
+</span><a name="line-419"></a><span class="hs-comment">--</span><span>
+</span><a name="line-420"></a><span class="hs-identifier">linearIndexArray</span><span> </span><span class="hs-glyph">::</span><span> </span><a href="Data.Array.Accelerate.Array.Sugar.html#Array"><span class="hs-identifier hs-type">Array</span></a><span> </span><a href="#local-6989586621682430991"><span class="hs-identifier hs-type">sh</span></a><span> </span><a href="#local-6989586621682430992"><span class="hs-identifier hs-type">e</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier hs-type">Int</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><a href="#local-6989586621682430992"><span class="hs-identifier hs-type">e</span></a><span>
+</span><a name="line-421"></a><a name="linearIndexArray"><a href="Data.Array.Accelerate.html#linearIndexArray"><span class="hs-identifier">linearIndexArray</span></a></a><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">(</span><a href="Data.Array.Accelerate.Array.Sugar.html#%21%21"><span class="hs-identifier hs-var">S</span><span class="hs-operator hs-var">.!!</span></a><span class="hs-special">)</span><span>
+</span><a name="line-422"></a><span>
+</span><a name="line-423"></a><span class="hs-comment">-- | Rank of an array.</span><span>
+</span><a name="line-424"></a><span class="hs-comment">--</span><span>
+</span><a name="line-425"></a><span class="hs-identifier">arrayRank</span><span> </span><span class="hs-glyph">::</span><span> </span><a href="Data.Array.Accelerate.Array.Sugar.html#Shape"><span class="hs-identifier hs-type">Shape</span></a><span> </span><a href="#local-6989586621682430990"><span class="hs-identifier hs-type">sh</span></a><span> </span><span class="hs-glyph">=&gt;</span><span> </span><a href="#local-6989586621682430990"><span class="hs-identifier hs-type">sh</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier hs-type">Int</span><span>
+</span><a name="line-426"></a><a name="arrayRank"><a href="Data.Array.Accelerate.html#arrayRank"><span class="hs-identifier">arrayRank</span></a></a><span> </span><span class="hs-glyph">=</span><span> </span><a href="Data.Array.Accelerate.Array.Sugar.html#rank"><span class="hs-identifier hs-var">S</span><span class="hs-operator hs-var">.</span><span class="hs-identifier hs-var">rank</span></a><span>
 </span><a name="line-427"></a><span>
-</span><a name="line-428"></a><span class="hs-comment">-- | Total number of elements in an array of the given 'Shape'.</span><span>
+</span><a name="line-428"></a><span class="hs-comment">-- |Array shape in plain Haskell code.</span><span>
 </span><a name="line-429"></a><span class="hs-comment">--</span><span>
-</span><a name="line-430"></a><span class="hs-identifier">arraySize</span><span> </span><span class="hs-glyph">::</span><span> </span><a href="Data.Array.Accelerate.Array.Sugar.html#Shape"><span class="hs-identifier hs-type">Shape</span></a><span> </span><a href="#local-6989586621682403642"><span class="hs-identifier hs-type">sh</span></a><span> </span><span class="hs-glyph">=&gt;</span><span> </span><a href="#local-6989586621682403642"><span class="hs-identifier hs-type">sh</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier hs-type">Int</span><span>
-</span><a name="line-431"></a><a name="arraySize"><a href="Data.Array.Accelerate.html#arraySize"><span class="hs-identifier">arraySize</span></a></a><span> </span><span class="hs-glyph">=</span><span> </span><a href="Data.Array.Accelerate.Array.Sugar.html#size"><span class="hs-identifier hs-var">S</span><span class="hs-operator hs-var">.</span><span class="hs-identifier hs-var">size</span></a><span>
-</span><a name="line-432"></a><span>
-</span><a name="line-433"></a><span class="hs-comment">-- Named documentation chunks</span><span>
-</span><a name="line-434"></a><span class="hs-comment">-- --------------------------</span><span>
-</span><a name="line-435"></a><span>
-</span><a name="line-436"></a><span class="hs-comment">-- $shapes_and_indices</span><span>
-</span><a name="line-437"></a><span class="hs-comment">--</span><span>
-</span><a name="line-438"></a><span class="hs-comment">-- Operations in Accelerate take the form of collective operations over arrays</span><span>
-</span><a name="line-439"></a><span class="hs-comment">-- of the type @'Array' sh e@. Much like the</span><span>
-</span><a name="line-440"></a><span class="hs-comment">-- &lt;https://hackage.haskell.org/package/repa repa&gt; library, arrays in Accelerate</span><span>
-</span><a name="line-441"></a><span class="hs-comment">-- are parameterised by a type /sh/ which determines the dimensionality of the</span><span>
-</span><a name="line-442"></a><span class="hs-comment">-- array and the type of each index, as well as the type of each element of the</span><span>
-</span><a name="line-443"></a><span class="hs-comment">-- array /e/.</span><span>
-</span><a name="line-444"></a><span class="hs-comment">--</span><span>
-</span><a name="line-445"></a><span class="hs-comment">-- Shape types, and multidimensional array indices, are built like lists</span><span>
-</span><a name="line-446"></a><span class="hs-comment">-- (technically; a heterogeneous snoc-list) using 'Z' and (':.'):</span><span>
-</span><a name="line-447"></a><span class="hs-comment">--</span><span>
-</span><a name="line-448"></a><span class="hs-comment">-- &gt; data Z = Z</span><span>
-</span><a name="line-449"></a><span class="hs-comment">-- &gt; data tail :. head = tail :. head</span><span>
+</span><a name="line-430"></a><span class="hs-identifier">arrayShape</span><span> </span><span class="hs-glyph">::</span><span> </span><a href="Data.Array.Accelerate.Array.Sugar.html#Shape"><span class="hs-identifier hs-type">Shape</span></a><span> </span><a href="#local-6989586621682430988"><span class="hs-identifier hs-type">sh</span></a><span> </span><span class="hs-glyph">=&gt;</span><span> </span><a href="Data.Array.Accelerate.Array.Sugar.html#Array"><span class="hs-identifier hs-type">Array</span></a><span> </span><a href="#local-6989586621682430988"><span class="hs-identifier hs-type">sh</span></a><span> </span><a href="#local-6989586621682430989"><span class="hs-identifier hs-type">e</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><a href="#local-6989586621682430988"><span class="hs-identifier hs-type">sh</span></a><span>
+</span><a name="line-431"></a><a name="arrayShape"><a href="Data.Array.Accelerate.html#arrayShape"><span class="hs-identifier">arrayShape</span></a></a><span> </span><span class="hs-glyph">=</span><span> </span><a href="Data.Array.Accelerate.Array.Sugar.html#shape"><span class="hs-identifier hs-var">S</span><span class="hs-operator hs-var">.</span><span class="hs-identifier hs-var">shape</span></a><span>
+</span><a name="line-432"></a><span class="hs-comment">-- rename as 'shape' is already used by the EDSL to query an array's shape</span><span>
+</span><a name="line-433"></a><span>
+</span><a name="line-434"></a><span class="hs-comment">-- | Total number of elements in an array of the given 'Shape'.</span><span>
+</span><a name="line-435"></a><span class="hs-comment">--</span><span>
+</span><a name="line-436"></a><span class="hs-identifier">arraySize</span><span> </span><span class="hs-glyph">::</span><span> </span><a href="Data.Array.Accelerate.Array.Sugar.html#Shape"><span class="hs-identifier hs-type">Shape</span></a><span> </span><a href="#local-6989586621682430987"><span class="hs-identifier hs-type">sh</span></a><span> </span><span class="hs-glyph">=&gt;</span><span> </span><a href="#local-6989586621682430987"><span class="hs-identifier hs-type">sh</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier hs-type">Int</span><span>
+</span><a name="line-437"></a><a name="arraySize"><a href="Data.Array.Accelerate.html#arraySize"><span class="hs-identifier">arraySize</span></a></a><span> </span><span class="hs-glyph">=</span><span> </span><a href="Data.Array.Accelerate.Array.Sugar.html#size"><span class="hs-identifier hs-var">S</span><span class="hs-operator hs-var">.</span><span class="hs-identifier hs-var">size</span></a><span>
+</span><a name="line-438"></a><span>
+</span><a name="line-439"></a><span class="hs-comment">-- | Change the shape of an array without altering its contents. The 'arraySize'</span><span>
+</span><a name="line-440"></a><span class="hs-comment">-- of the source and result arrays must be identical.</span><span>
+</span><a name="line-441"></a><span class="hs-comment">--</span><span>
+</span><a name="line-442"></a><span class="hs-identifier">arrayReshape</span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><a href="Data.Array.Accelerate.Array.Sugar.html#Shape"><span class="hs-identifier hs-type">Shape</span></a><span> </span><a href="#local-6989586621682430984"><span class="hs-identifier hs-type">sh</span></a><span class="hs-special">,</span><span> </span><a href="Data.Array.Accelerate.Array.Sugar.html#Shape"><span class="hs-identifier hs-type">Shape</span></a><span> </span><a href="#local-6989586621682430985"><span class="hs-identifier hs-type">sh'</span></a><span class="hs-special">,</span><span> </span><a href="Data.Array.Accelerate.Array.Sugar.html#Elt"><span class="hs-identifier hs-type">Elt</span></a><span> </span><a href="#local-6989586621682430986"><span class="hs-identifier hs-type">e</span></a><span class="hs-special">)</span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><a href="#local-6989586621682430984"><span class="hs-identifier hs-type">sh</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><a href="Data.Array.Accelerate.Array.Sugar.html#Array"><span class="hs-identifier hs-type">Array</span></a><span> </span><a href="#local-6989586621682430985"><span class="hs-identifier hs-type">sh'</span></a><span> </span><a href="#local-6989586621682430986"><span class="hs-identifier hs-type">e</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><a href="Data.Array.Accelerate.Array.Sugar.html#Array"><span class="hs-identifier hs-type">Array</span></a><span> </span><a href="#local-6989586621682430984"><span class="hs-identifier hs-type">sh</span></a><span> </span><a href="#local-6989586621682430986"><span class="hs-identifier hs-type">e</span></a><span>
+</span><a name="line-443"></a><a name="arrayReshape"><a href="Data.Array.Accelerate.html#arrayReshape"><span class="hs-identifier">arrayReshape</span></a></a><span> </span><span class="hs-glyph">=</span><span> </span><a href="Data.Array.Accelerate.Array.Sugar.html#reshape"><span class="hs-identifier hs-var">S</span><span class="hs-operator hs-var">.</span><span class="hs-identifier hs-var">reshape</span></a><span>
+</span><a name="line-444"></a><span>
+</span><a name="line-445"></a><span>
+</span><a name="line-446"></a><span class="hs-comment">-- Named documentation chunks</span><span>
+</span><a name="line-447"></a><span class="hs-comment">-- --------------------------</span><span>
+</span><a name="line-448"></a><span>
+</span><a name="line-449"></a><span class="hs-comment">-- $shapes_and_indices</span><span>
 </span><a name="line-450"></a><span class="hs-comment">--</span><span>
-</span><a name="line-451"></a><span class="hs-comment">-- Here, the constructor 'Z' corresponds to a shape with zero dimension (or</span><span>
-</span><a name="line-452"></a><span class="hs-comment">-- a 'Scalar' array, with one element) and is used to mark the end of the list.</span><span>
-</span><a name="line-453"></a><span class="hs-comment">-- The constructor (':.') adds additional dimensions to the shape on the</span><span>
-</span><a name="line-454"></a><span class="hs-comment">-- /right/. For example:</span><span>
-</span><a name="line-455"></a><span class="hs-comment">--</span><span>
-</span><a name="line-456"></a><span class="hs-comment">-- &gt; Z :. Int</span><span>
+</span><a name="line-451"></a><span class="hs-comment">-- Operations in Accelerate take the form of collective operations over arrays</span><span>
+</span><a name="line-452"></a><span class="hs-comment">-- of the type @'Array' sh e@. Much like the</span><span>
+</span><a name="line-453"></a><span class="hs-comment">-- &lt;https://hackage.haskell.org/package/repa repa&gt; library, arrays in Accelerate</span><span>
+</span><a name="line-454"></a><span class="hs-comment">-- are parameterised by a type /sh/ which determines the dimensionality of the</span><span>
+</span><a name="line-455"></a><span class="hs-comment">-- array and the type of each index, as well as the type of each element of the</span><span>
+</span><a name="line-456"></a><span class="hs-comment">-- array /e/.</span><span>
 </span><a name="line-457"></a><span class="hs-comment">--</span><span>
-</span><a name="line-458"></a><span class="hs-comment">-- is the type of the shape of a one-dimensional array ('Vector') indexed by an</span><span>
-</span><a name="line-459"></a><span class="hs-comment">-- 'Int', while:</span><span>
+</span><a name="line-458"></a><span class="hs-comment">-- Shape types, and multidimensional array indices, are built like lists</span><span>
+</span><a name="line-459"></a><span class="hs-comment">-- (technically; a heterogeneous snoc-list) using 'Z' and (':.'):</span><span>
 </span><a name="line-460"></a><span class="hs-comment">--</span><span>
-</span><a name="line-461"></a><span class="hs-comment">-- &gt; Z :. Int :. Int</span><span>
-</span><a name="line-462"></a><span class="hs-comment">--</span><span>
-</span><a name="line-463"></a><span class="hs-comment">-- is the type of the shape of a two-dimensional array (a matrix) indexed by an</span><span>
-</span><a name="line-464"></a><span class="hs-comment">-- 'Int' in each dimension.</span><span>
-</span><a name="line-465"></a><span class="hs-comment">--</span><span>
-</span><a name="line-466"></a><span class="hs-comment">-- This style is used to construct both the /type/ and /value/ of the shape. For</span><span>
-</span><a name="line-467"></a><span class="hs-comment">-- example, to define the shape of a vector of ten elements:</span><span>
+</span><a name="line-461"></a><span class="hs-comment">-- &gt; data Z = Z</span><span>
+</span><a name="line-462"></a><span class="hs-comment">-- &gt; data tail :. head = tail :. head</span><span>
+</span><a name="line-463"></a><span class="hs-comment">--</span><span>
+</span><a name="line-464"></a><span class="hs-comment">-- Here, the constructor 'Z' corresponds to a shape with zero dimension (or</span><span>
+</span><a name="line-465"></a><span class="hs-comment">-- a 'Scalar' array, with one element) and is used to mark the end of the list.</span><span>
+</span><a name="line-466"></a><span class="hs-comment">-- The constructor (':.') adds additional dimensions to the shape on the</span><span>
+</span><a name="line-467"></a><span class="hs-comment">-- /right/. For example:</span><span>
 </span><a name="line-468"></a><span class="hs-comment">--</span><span>
-</span><a name="line-469"></a><span class="hs-comment">-- &gt; sh :: Z :. Int</span><span>
-</span><a name="line-470"></a><span class="hs-comment">-- &gt; sh = Z :. 10</span><span>
-</span><a name="line-471"></a><span class="hs-comment">--</span><span>
-</span><a name="line-472"></a><span class="hs-comment">-- Note that the right-most index is the /innermost/ dimension. This is the</span><span>
-</span><a name="line-473"></a><span class="hs-comment">-- fastest-varying index, and corresponds to the elements of the array which are</span><span>
-</span><a name="line-474"></a><span class="hs-comment">-- adjacent in memory.</span><span>
+</span><a name="line-469"></a><span class="hs-comment">-- &gt; Z :. Int</span><span>
+</span><a name="line-470"></a><span class="hs-comment">--</span><span>
+</span><a name="line-471"></a><span class="hs-comment">-- is the type of the shape of a one-dimensional array ('Vector') indexed by an</span><span>
+</span><a name="line-472"></a><span class="hs-comment">-- 'Int', while:</span><span>
+</span><a name="line-473"></a><span class="hs-comment">--</span><span>
+</span><a name="line-474"></a><span class="hs-comment">-- &gt; Z :. Int :. Int</span><span>
 </span><a name="line-475"></a><span class="hs-comment">--</span><span>
-</span><a name="line-476"></a><span>
-</span><a name="line-477"></a><span class="hs-comment">-- $lifting_and_unlifting</span><span>
+</span><a name="line-476"></a><span class="hs-comment">-- is the type of the shape of a two-dimensional array (a matrix) indexed by an</span><span>
+</span><a name="line-477"></a><span class="hs-comment">-- 'Int' in each dimension.</span><span>
 </span><a name="line-478"></a><span class="hs-comment">--</span><span>
-</span><a name="line-479"></a><span class="hs-comment">-- A value of type 'Int' is a plain Haskell value (unlifted), whereas an @Exp</span><span>
-</span><a name="line-480"></a><span class="hs-comment">-- Int@ is a /lifted/ value, that is, an integer lifted into the domain of</span><span>
-</span><a name="line-481"></a><span class="hs-comment">-- embedded expressions (an abstract syntax tree in disguise). Both 'Acc' and</span><span>
-</span><a name="line-482"></a><span class="hs-comment">-- 'Exp' are /surface types/ into which values may be lifted. Lifting plain</span><span>
-</span><a name="line-483"></a><span class="hs-comment">-- array and scalar surface types is equivalent to 'use' and 'constant'</span><span>
-</span><a name="line-484"></a><span class="hs-comment">-- respectively.</span><span>
-</span><a name="line-485"></a><span class="hs-comment">--</span><span>
-</span><a name="line-486"></a><span class="hs-comment">-- In general an @Exp Int@ cannot be unlifted into an 'Int', because the actual</span><span>
-</span><a name="line-487"></a><span class="hs-comment">-- number will not be available until a later stage of execution (e.g. during</span><span>
-</span><a name="line-488"></a><span class="hs-comment">-- GPU execution, when 'run' is called). Similarly an @Acc array@ can not be</span><span>
-</span><a name="line-489"></a><span class="hs-comment">-- unlifted to a vanilla 'array'; you should instead 'run' the expression with</span><span>
-</span><a name="line-490"></a><span class="hs-comment">-- a specific backend to evaluate it.</span><span>
+</span><a name="line-479"></a><span class="hs-comment">-- This style is used to construct both the /type/ and /value/ of the shape. For</span><span>
+</span><a name="line-480"></a><span class="hs-comment">-- example, to define the shape of a vector of ten elements:</span><span>
+</span><a name="line-481"></a><span class="hs-comment">--</span><span>
+</span><a name="line-482"></a><span class="hs-comment">-- &gt; sh :: Z :. Int</span><span>
+</span><a name="line-483"></a><span class="hs-comment">-- &gt; sh = Z :. 10</span><span>
+</span><a name="line-484"></a><span class="hs-comment">--</span><span>
+</span><a name="line-485"></a><span class="hs-comment">-- Note that the right-most index is the /innermost/ dimension. This is the</span><span>
+</span><a name="line-486"></a><span class="hs-comment">-- fastest-varying index, and corresponds to the elements of the array which are</span><span>
+</span><a name="line-487"></a><span class="hs-comment">-- adjacent in memory.</span><span>
+</span><a name="line-488"></a><span class="hs-comment">--</span><span>
+</span><a name="line-489"></a><span>
+</span><a name="line-490"></a><span class="hs-comment">-- $lifting_and_unlifting</span><span>
 </span><a name="line-491"></a><span class="hs-comment">--</span><span>
-</span><a name="line-492"></a><span class="hs-comment">-- Lifting and unlifting are also used to pack and unpack an expression into and</span><span>
-</span><a name="line-493"></a><span class="hs-comment">-- out of constructors such as tuples, respectively. Those expressions, at</span><span>
-</span><a name="line-494"></a><span class="hs-comment">-- runtime, will become tuple dereferences. For example:</span><span>
-</span><a name="line-495"></a><span class="hs-comment">--</span><span>
-</span><a name="line-496"></a><span class="hs-comment">-- &gt;&gt;&gt; let sh = constant (Z :. 4 :. 10)   :: Exp DIM2</span><span>
-</span><a name="line-497"></a><span class="hs-comment">-- &gt;&gt;&gt; let Z :. x :. y = unlift sh        :: Z :. Exp Int :. Exp Int</span><span>
-</span><a name="line-498"></a><span class="hs-comment">-- &gt;&gt;&gt; let t = lift (x,y)                 :: Exp (Int, Int)</span><span>
-</span><a name="line-499"></a><span class="hs-comment">--</span><span>
-</span><a name="line-500"></a><span class="hs-comment">-- &gt;&gt;&gt; let xs = use $ fromList (Z:.10) [0..]   :: Acc (Vector Int)</span><span>
-</span><a name="line-501"></a><span class="hs-comment">-- &gt;&gt;&gt; let ys = use $ fromList (Z:.3:.4) [0..] :: Acc (Matrix Int)</span><span>
-</span><a name="line-502"></a><span class="hs-comment">-- &gt;&gt;&gt; let r  = (xs,ys)                        :: (Acc (Vector Int), Acc (Matrix Int))</span><span>
-</span><a name="line-503"></a><span class="hs-comment">-- &gt;&gt;&gt; let r' = lift r                         :: Acc (Vector Int, Matrix Int)</span><span>
+</span><a name="line-492"></a><span class="hs-comment">-- A value of type 'Int' is a plain Haskell value (unlifted), whereas an @Exp</span><span>
+</span><a name="line-493"></a><span class="hs-comment">-- Int@ is a /lifted/ value, that is, an integer lifted into the domain of</span><span>
+</span><a name="line-494"></a><span class="hs-comment">-- embedded expressions (an abstract syntax tree in disguise). Both 'Acc' and</span><span>
+</span><a name="line-495"></a><span class="hs-comment">-- 'Exp' are /surface types/ into which values may be lifted. Lifting plain</span><span>
+</span><a name="line-496"></a><span class="hs-comment">-- array and scalar surface types is equivalent to 'use' and 'constant'</span><span>
+</span><a name="line-497"></a><span class="hs-comment">-- respectively.</span><span>
+</span><a name="line-498"></a><span class="hs-comment">--</span><span>
+</span><a name="line-499"></a><span class="hs-comment">-- In general an @Exp Int@ cannot be unlifted into an 'Int', because the actual</span><span>
+</span><a name="line-500"></a><span class="hs-comment">-- number will not be available until a later stage of execution (e.g. during</span><span>
+</span><a name="line-501"></a><span class="hs-comment">-- GPU execution, when 'run' is called). Similarly an @Acc array@ can not be</span><span>
+</span><a name="line-502"></a><span class="hs-comment">-- unlifted to a vanilla 'array'; you should instead 'run' the expression with</span><span>
+</span><a name="line-503"></a><span class="hs-comment">-- a specific backend to evaluate it.</span><span>
 </span><a name="line-504"></a><span class="hs-comment">--</span><span>
-</span><a name="line-505"></a><span class="hs-comment">-- [/Note:/]</span><span>
-</span><a name="line-506"></a><span class="hs-comment">--</span><span>
-</span><a name="line-507"></a><span class="hs-comment">-- Use of 'lift' and 'unlift' is probably the most common source of type errors</span><span>
-</span><a name="line-508"></a><span class="hs-comment">-- when using Accelerate. GHC is not very good at determining the type the</span><span>
-</span><a name="line-509"></a><span class="hs-comment">-- [un]lifted expression should have, so it is often necessary to add an</span><span>
-</span><a name="line-510"></a><span class="hs-comment">-- explicit type signature.</span><span>
-</span><a name="line-511"></a><span class="hs-comment">--</span><span>
-</span><a name="line-512"></a><span class="hs-comment">-- For example, in the following GHC will complain that it can not determine the</span><span>
-</span><a name="line-513"></a><span class="hs-comment">-- type of 'y', even though we might expect that to be obvious (or for it to not</span><span>
-</span><a name="line-514"></a><span class="hs-comment">-- care):</span><span>
-</span><a name="line-515"></a><span class="hs-comment">--</span><span>
-</span><a name="line-516"></a><span class="hs-comment">-- &gt; fst :: (Elt a, Elt b) =&gt; Exp (a,b) -&gt; Exp a</span><span>
-</span><a name="line-517"></a><span class="hs-comment">-- &gt; fst t = let (x,y) = unlift t in x</span><span>
-</span><a name="line-518"></a><span class="hs-comment">--</span><span>
-</span><a name="line-519"></a><span class="hs-comment">-- The fix is to instead add an explicit type signature. Note that this requires</span><span>
-</span><a name="line-520"></a><span class="hs-comment">-- the @ScopedTypeVariables@ extension and to bring the type variables @a@ and</span><span>
-</span><a name="line-521"></a><span class="hs-comment">-- @b@ into scope with @forall@:</span><span>
-</span><a name="line-522"></a><span class="hs-comment">--</span><span>
-</span><a name="line-523"></a><span class="hs-comment">-- &gt; fst :: forall a b. (Elt a, Elt b) =&gt; Exp (a,b) -&gt; Exp a</span><span>
-</span><a name="line-524"></a><span class="hs-comment">-- &gt; fst t = let (x,y) = unlift t  :: (Exp a, Exp b)</span><span>
-</span><a name="line-525"></a><span class="hs-comment">-- &gt;         in x</span><span>
-</span><a name="line-526"></a><span class="hs-comment">--</span><span>
-</span><a name="line-527"></a><span>
-</span><a name="line-528"></a><span class="hs-comment">-- $getting_data_in</span><span>
-</span><a name="line-529"></a><span class="hs-comment">-- #getting_data_in#</span><span>
-</span><a name="line-530"></a><span class="hs-comment">--</span><span>
-</span><a name="line-531"></a><span class="hs-comment">-- We often need to generate or read data into an 'Array' so that it can be used</span><span>
-</span><a name="line-532"></a><span class="hs-comment">-- in Accelerate. The base @accelerate@ library includes basic conversions</span><span>
-</span><a name="line-533"></a><span class="hs-comment">-- routines, but for additional functionality see the</span><span>
-</span><a name="line-534"></a><span class="hs-comment">-- &lt;http://hackage.haskell.org/package/accelerate-io accelerate-io&gt; package,</span><span>
-</span><a name="line-535"></a><span class="hs-comment">-- which includes conversions between:</span><span>
-</span><a name="line-536"></a><span class="hs-comment">--</span><span>
-</span><a name="line-537"></a><span class="hs-comment">--  * &lt;https://hackage.haskell.org/package/repa repa&gt;: another Haskell library for high-performance parallel arrays</span><span>
-</span><a name="line-538"></a><span class="hs-comment">--  * &lt;https://hackage.haskell.org/package/vector vector&gt;: efficient boxed and unboxed one-dimensional arrays</span><span>
-</span><a name="line-539"></a><span class="hs-comment">--  * &lt;https://hackage.haskell.org/package/array array&gt;: immutable arrays</span><span>
-</span><a name="line-540"></a><span class="hs-comment">--  * &lt;https://hackage.haskell.org/package/bmp BMP&gt;: uncompressed BMP image files</span><span>
-</span><a name="line-541"></a><span class="hs-comment">--  * &lt;https://hackage.haskell.org/package/bytestring bytestring&gt; compact, immutable binary data</span><span>
-</span><a name="line-542"></a><span class="hs-comment">--  * As well as copying data directly from raw 'Foreign.Ptr.Ptr's</span><span>
+</span><a name="line-505"></a><span class="hs-comment">-- Lifting and unlifting are also used to pack and unpack an expression into and</span><span>
+</span><a name="line-506"></a><span class="hs-comment">-- out of constructors such as tuples, respectively. Those expressions, at</span><span>
+</span><a name="line-507"></a><span class="hs-comment">-- runtime, will become tuple dereferences. For example:</span><span>
+</span><a name="line-508"></a><span class="hs-comment">--</span><span>
+</span><a name="line-509"></a><span class="hs-comment">-- &gt;&gt;&gt; let sh = constant (Z :. 4 :. 10)   :: Exp DIM2</span><span>
+</span><a name="line-510"></a><span class="hs-comment">-- &gt;&gt;&gt; let Z :. x :. y = unlift sh        :: Z :. Exp Int :. Exp Int</span><span>
+</span><a name="line-511"></a><span class="hs-comment">-- &gt;&gt;&gt; let t = lift (x,y)                 :: Exp (Int, Int)</span><span>
+</span><a name="line-512"></a><span class="hs-comment">--</span><span>
+</span><a name="line-513"></a><span class="hs-comment">-- &gt;&gt;&gt; let xs = use $ fromList (Z:.10) [0..]   :: Acc (Vector Int)</span><span>
+</span><a name="line-514"></a><span class="hs-comment">-- &gt;&gt;&gt; let ys = use $ fromList (Z:.3:.4) [0..] :: Acc (Matrix Int)</span><span>
+</span><a name="line-515"></a><span class="hs-comment">-- &gt;&gt;&gt; let r  = (xs,ys)                        :: (Acc (Vector Int), Acc (Matrix Int))</span><span>
+</span><a name="line-516"></a><span class="hs-comment">-- &gt;&gt;&gt; let r' = lift r                         :: Acc (Vector Int, Matrix Int)</span><span>
+</span><a name="line-517"></a><span class="hs-comment">--</span><span>
+</span><a name="line-518"></a><span class="hs-comment">-- [/Note:/]</span><span>
+</span><a name="line-519"></a><span class="hs-comment">--</span><span>
+</span><a name="line-520"></a><span class="hs-comment">-- Use of 'lift' and 'unlift' is probably the most common source of type errors</span><span>
+</span><a name="line-521"></a><span class="hs-comment">-- when using Accelerate. GHC is not very good at determining the type the</span><span>
+</span><a name="line-522"></a><span class="hs-comment">-- [un]lifted expression should have, so it is often necessary to add an</span><span>
+</span><a name="line-523"></a><span class="hs-comment">-- explicit type signature.</span><span>
+</span><a name="line-524"></a><span class="hs-comment">--</span><span>
+</span><a name="line-525"></a><span class="hs-comment">-- For example, in the following GHC will complain that it can not determine the</span><span>
+</span><a name="line-526"></a><span class="hs-comment">-- type of 'y', even though we might expect that to be obvious (or for it to not</span><span>
+</span><a name="line-527"></a><span class="hs-comment">-- care):</span><span>
+</span><a name="line-528"></a><span class="hs-comment">--</span><span>
+</span><a name="line-529"></a><span class="hs-comment">-- &gt; fst :: (Elt a, Elt b) =&gt; Exp (a,b) -&gt; Exp a</span><span>
+</span><a name="line-530"></a><span class="hs-comment">-- &gt; fst t = let (x,y) = unlift t in x</span><span>
+</span><a name="line-531"></a><span class="hs-comment">--</span><span>
+</span><a name="line-532"></a><span class="hs-comment">-- The fix is to instead add an explicit type signature. Note that this requires</span><span>
+</span><a name="line-533"></a><span class="hs-comment">-- the @ScopedTypeVariables@ extension and to bring the type variables @a@ and</span><span>
+</span><a name="line-534"></a><span class="hs-comment">-- @b@ into scope with @forall@:</span><span>
+</span><a name="line-535"></a><span class="hs-comment">--</span><span>
+</span><a name="line-536"></a><span class="hs-comment">-- &gt; fst :: forall a b. (Elt a, Elt b) =&gt; Exp (a,b) -&gt; Exp a</span><span>
+</span><a name="line-537"></a><span class="hs-comment">-- &gt; fst t = let (x,y) = unlift t  :: (Exp a, Exp b)</span><span>
+</span><a name="line-538"></a><span class="hs-comment">-- &gt;         in x</span><span>
+</span><a name="line-539"></a><span class="hs-comment">--</span><span>
+</span><a name="line-540"></a><span>
+</span><a name="line-541"></a><span class="hs-comment">-- $getting_data_in</span><span>
+</span><a name="line-542"></a><span class="hs-comment">-- #getting_data_in#</span><span>
 </span><a name="line-543"></a><span class="hs-comment">--</span><span>
-</span><a name="line-544"></a><span>
-</span><a name="line-545"></a></pre></body></html>
+</span><a name="line-544"></a><span class="hs-comment">-- We often need to generate or read data into an 'Array' so that it can be used</span><span>
+</span><a name="line-545"></a><span class="hs-comment">-- in Accelerate. The base @accelerate@ library includes basic conversions</span><span>
+</span><a name="line-546"></a><span class="hs-comment">-- routines, but for additional functionality see the</span><span>
+</span><a name="line-547"></a><span class="hs-comment">-- &lt;http://hackage.haskell.org/package/accelerate-io accelerate-io&gt; package,</span><span>
+</span><a name="line-548"></a><span class="hs-comment">-- which includes conversions between:</span><span>
+</span><a name="line-549"></a><span class="hs-comment">--</span><span>
+</span><a name="line-550"></a><span class="hs-comment">--  * &lt;https://hackage.haskell.org/package/repa repa&gt;: another Haskell library for high-performance parallel arrays</span><span>
+</span><a name="line-551"></a><span class="hs-comment">--  * &lt;https://hackage.haskell.org/package/vector vector&gt;: efficient boxed and unboxed one-dimensional arrays</span><span>
+</span><a name="line-552"></a><span class="hs-comment">--  * &lt;https://hackage.haskell.org/package/array array&gt;: immutable arrays</span><span>
+</span><a name="line-553"></a><span class="hs-comment">--  * &lt;https://hackage.haskell.org/package/bmp BMP&gt;: uncompressed BMP image files</span><span>
+</span><a name="line-554"></a><span class="hs-comment">--  * &lt;https://hackage.haskell.org/package/bytestring bytestring&gt; compact, immutable binary data</span><span>
+</span><a name="line-555"></a><span class="hs-comment">--  * As well as copying data directly from raw 'Foreign.Ptr.Ptr's</span><span>
+</span><a name="line-556"></a><span class="hs-comment">--</span><span>
+</span><a name="line-557"></a><span>
+</span><a name="line-558"></a></pre></body></html>

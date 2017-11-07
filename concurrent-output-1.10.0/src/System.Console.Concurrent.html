@@ -1,0 +1,41 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-comment">-- | </span><span>
+</span><a name="line-2"></a><span class="hs-comment">-- Copyright: 2015 Joey Hess &lt;id@joeyh.name&gt;</span><span>
+</span><a name="line-3"></a><span class="hs-comment">-- License: BSD-2-clause</span><span>
+</span><a name="line-4"></a><span class="hs-comment">-- </span><span>
+</span><a name="line-5"></a><span class="hs-comment">-- Concurrent output handling.</span><span>
+</span><a name="line-6"></a><span class="hs-comment">--</span><span>
+</span><a name="line-7"></a><span class="hs-comment">-- &gt; import Control.Concurrent.Async</span><span>
+</span><a name="line-8"></a><span class="hs-comment">-- &gt; import System.Console.Concurrent</span><span>
+</span><a name="line-9"></a><span class="hs-comment">-- &gt;</span><span>
+</span><a name="line-10"></a><span class="hs-comment">-- &gt; main = withConcurrentOutput $</span><span>
+</span><a name="line-11"></a><span class="hs-comment">-- &gt; 	outputConcurrent &quot;washed the car\n&quot;</span><span>
+</span><a name="line-12"></a><span class="hs-comment">-- &gt; 		`concurrently`</span><span>
+</span><a name="line-13"></a><span class="hs-comment">-- &gt;	outputConcurrent &quot;walked the dog\n&quot;</span><span>
+</span><a name="line-14"></a><span class="hs-comment">-- &gt;		`concurrently`</span><span>
+</span><a name="line-15"></a><span class="hs-comment">-- &gt; 	createProcessConcurrent (proc &quot;ls&quot; [])</span><span>
+</span><a name="line-16"></a><span>
+</span><a name="line-17"></a><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">System</span><span class="hs-operator">.</span><span class="hs-identifier">Console</span><span class="hs-operator">.</span><span class="hs-identifier">Concurrent</span><span> </span><span class="hs-special">(</span><span>
+</span><a name="line-18"></a><span>	</span><span class="hs-comment">-- * Concurrent output</span><span>
+</span><a name="line-19"></a><span>	</span><span class="hs-identifier">withConcurrentOutput</span><span class="hs-special">,</span><span>
+</span><a name="line-20"></a><span>	</span><span class="hs-identifier">Outputable</span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span class="hs-special">,</span><span>
+</span><a name="line-21"></a><span>	</span><span class="hs-identifier">outputConcurrent</span><span class="hs-special">,</span><span>
+</span><a name="line-22"></a><span>	</span><span class="hs-identifier">errorConcurrent</span><span class="hs-special">,</span><span>
+</span><a name="line-23"></a><span>	</span><span class="hs-identifier">createProcessConcurrent</span><span class="hs-special">,</span><span>
+</span><a name="line-24"></a><span>	</span><span class="hs-identifier">createProcessForeground</span><span class="hs-special">,</span><span>
+</span><a name="line-25"></a><span>	</span><span class="hs-identifier">flushConcurrentOutput</span><span class="hs-special">,</span><span>
+</span><a name="line-26"></a><span>	</span><span class="hs-identifier">lockOutput</span><span class="hs-special">,</span><span>
+</span><a name="line-27"></a><span>	</span><span class="hs-identifier">ConcurrentProcessHandle</span><span class="hs-special">,</span><span>
+</span><a name="line-28"></a><span>	</span><span class="hs-identifier">waitForProcessConcurrent</span><span class="hs-special">,</span><span>
+</span><a name="line-29"></a><span>	</span><span class="hs-comment">-- * Low level access to the output buffer</span><span>
+</span><a name="line-30"></a><span>	</span><span class="hs-identifier">OutputBuffer</span><span class="hs-special">,</span><span>
+</span><a name="line-31"></a><span>	</span><span class="hs-identifier">StdHandle</span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span class="hs-special">,</span><span>
+</span><a name="line-32"></a><span>	</span><span class="hs-identifier">bufferOutputSTM</span><span class="hs-special">,</span><span>
+</span><a name="line-33"></a><span>	</span><span class="hs-identifier">outputBufferWaiterSTM</span><span class="hs-special">,</span><span>
+</span><a name="line-34"></a><span>	</span><span class="hs-identifier">waitAnyBuffer</span><span class="hs-special">,</span><span>
+</span><a name="line-35"></a><span>	</span><span class="hs-identifier">waitCompleteLines</span><span class="hs-special">,</span><span>
+</span><a name="line-36"></a><span>	</span><span class="hs-identifier">emitOutputBuffer</span><span class="hs-special">,</span><span>
+</span><a name="line-37"></a><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><a name="line-38"></a><span>
+</span><a name="line-39"></a><span class="hs-keyword">import</span><span> </span><a href="System.Console.Concurrent.Internal.html"><span class="hs-identifier">System</span><span class="hs-operator">.</span><span class="hs-identifier">Console</span><span class="hs-operator">.</span><span class="hs-identifier">Concurrent</span><span class="hs-operator">.</span><span class="hs-identifier">Internal</span></a><span>
+</span><a name="line-40"></a><span>
+</span><a name="line-41"></a></pre></body></html>

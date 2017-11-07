@@ -1,0 +1,171 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-comment">-- |</span><span>
+</span><a name="line-2"></a><span class="hs-comment">-- Module      : Math.FFT</span><span>
+</span><a name="line-3"></a><span class="hs-comment">-- Copyright   : (c) 2008 Jed Brown</span><span>
+</span><a name="line-4"></a><span class="hs-comment">-- License     : BSD-style</span><span>
+</span><a name="line-5"></a><span class="hs-comment">-- </span><span>
+</span><a name="line-6"></a><span class="hs-comment">-- Maintainer  : jed@59A2.org</span><span>
+</span><a name="line-7"></a><span class="hs-comment">-- Stability   : experimental</span><span>
+</span><a name="line-8"></a><span class="hs-comment">-- Portability : non-portable</span><span>
+</span><a name="line-9"></a><span class="hs-comment">--</span><span>
+</span><a name="line-10"></a><span class="hs-comment">-- This module exposes an interface to FFTW, the Fastest Fourier Transform in</span><span>
+</span><a name="line-11"></a><span class="hs-comment">-- the West.</span><span>
+</span><a name="line-12"></a><span class="hs-comment">--</span><span>
+</span><a name="line-13"></a><span class="hs-comment">-- These bindings present several levels of interface.  All the higher level</span><span>
+</span><a name="line-14"></a><span class="hs-comment">-- functions ('dft', 'idft', 'dftN', ...) are easily derived from the general</span><span>
+</span><a name="line-15"></a><span class="hs-comment">-- functions ('dftG', 'dftRCG', ...).  Only the general functions let you</span><span>
+</span><a name="line-16"></a><span class="hs-comment">-- specify planner flags.  The higher levels all set 'estimate' so you should</span><span>
+</span><a name="line-17"></a><span class="hs-comment">-- not have to wait through time consuming planning (see below for more).</span><span>
+</span><a name="line-18"></a><span class="hs-comment">--</span><span>
+</span><a name="line-19"></a><span class="hs-comment">-- The simplest interface is the one-dimensional transforms.  If you supply a</span><span>
+</span><a name="line-20"></a><span class="hs-comment">-- multi-dimensional array, these will only transform the first dimension.</span><span>
+</span><a name="line-21"></a><span class="hs-comment">-- These functions only take one argument, the array to be transformed.</span><span>
+</span><a name="line-22"></a><span class="hs-comment">--</span><span>
+</span><a name="line-23"></a><span class="hs-comment">-- At the next level, we have multi-dimensional transforms where you specify</span><span>
+</span><a name="line-24"></a><span class="hs-comment">-- which dimensions to transform in and the array to transform.  For instance</span><span>
+</span><a name="line-25"></a><span class="hs-comment">--</span><span>
+</span><a name="line-26"></a><span class="hs-comment">-- &gt; b = dftRCN [0,2] a</span><span>
+</span><a name="line-27"></a><span class="hs-comment">--</span><span>
+</span><a name="line-28"></a><span class="hs-comment">-- is the real to complex transform in dimensions 0 and 2 of the array @a@ which</span><span>
+</span><a name="line-29"></a><span class="hs-comment">-- must be at least rank 3.  The array @b@ will be complex valued with the same</span><span>
+</span><a name="line-30"></a><span class="hs-comment">-- extent as @a@ in every dimension except @2@.  If @a@ had extent @n@ in</span><span>
+</span><a name="line-31"></a><span class="hs-comment">-- dimension @2@ then the @b@ will have extent @a `div` 2 + 1@ which consists of</span><span>
+</span><a name="line-32"></a><span class="hs-comment">-- all non-negative frequency components in this dimension (the negative</span><span>
+</span><a name="line-33"></a><span class="hs-comment">-- frequencies are conjugate to the positive frequencies because of symmetry</span><span>
+</span><a name="line-34"></a><span class="hs-comment">-- since @a@ is real valued).</span><span>
+</span><a name="line-35"></a><span class="hs-comment">--</span><span>
+</span><a name="line-36"></a><span class="hs-comment">-- The real to real transforms allow different transform kinds in each</span><span>
+</span><a name="line-37"></a><span class="hs-comment">-- transformed dimension.  For example,</span><span>
+</span><a name="line-38"></a><span class="hs-comment">--</span><span>
+</span><a name="line-39"></a><span class="hs-comment">-- &gt; b = dftRRN [(0,DHT), (1,REDFT10), (2,RODFT11)] a</span><span>
+</span><a name="line-40"></a><span class="hs-comment">--</span><span>
+</span><a name="line-41"></a><span class="hs-comment">-- is a Discrete Hartley Transform in dimension 0, a discrete cosine transform</span><span>
+</span><a name="line-42"></a><span class="hs-comment">-- (DCT-2) in dimension 1, and distrete sine transform (DST-4) in dimension 2</span><span>
+</span><a name="line-43"></a><span class="hs-comment">-- where the array @a@ must have rank at least 3.</span><span>
+</span><a name="line-44"></a><span class="hs-comment">--</span><span>
+</span><a name="line-45"></a><span class="hs-comment">-- The general interface is similar to the multi-dimensional interface, takes as</span><span>
+</span><a name="line-46"></a><span class="hs-comment">-- its first argument, a bitwise '.|.' of planning 'Flag's.  (In the complex</span><span>
+</span><a name="line-47"></a><span class="hs-comment">-- version, the sign of the transform is first.)  For example,</span><span>
+</span><a name="line-48"></a><span class="hs-comment">--</span><span>
+</span><a name="line-49"></a><span class="hs-comment">-- &gt; b = dftG DFTBackward (patient .|. destroy_input) [1,2] a</span><span>
+</span><a name="line-50"></a><span class="hs-comment">--</span><span>
+</span><a name="line-51"></a><span class="hs-comment">-- is an inverse DFT in dimensions 1 and 2 of the complex array @a@ which has</span><span>
+</span><a name="line-52"></a><span class="hs-comment">-- rank at least 3.  It will use the patient planner to generate a (near)</span><span>
+</span><a name="line-53"></a><span class="hs-comment">-- optimal transform.  If you compute the same type of transform again, it</span><span>
+</span><a name="line-54"></a><span class="hs-comment">-- should be very fast since the plan is cached.</span><span>
+</span><a name="line-55"></a><span class="hs-comment">--</span><span>
+</span><a name="line-56"></a><span class="hs-comment">-- Inverse transforms are typically normalized.  The un-normalized inverse</span><span>
+</span><a name="line-57"></a><span class="hs-comment">-- transforms are 'dftGU', 'dftCRGU' and 'dftCROGU'.  For example</span><span>
+</span><a name="line-58"></a><span class="hs-comment">--</span><span>
+</span><a name="line-59"></a><span class="hs-comment">-- &gt; b = dftCROGU measure [0,1] a</span><span>
+</span><a name="line-60"></a><span class="hs-comment">--</span><span>
+</span><a name="line-61"></a><span class="hs-comment">-- is an un-normalized inverse DFT in dimensions 0 and 1 of the complex array</span><span>
+</span><a name="line-62"></a><span class="hs-comment">-- @a@ (representing the non-negative frequencies, where the negative</span><span>
+</span><a name="line-63"></a><span class="hs-comment">-- frequencies are conjugate) which has rank at least 2.  Here, dimension 1 is</span><span>
+</span><a name="line-64"></a><span class="hs-comment">-- logically odd so if @a@ has extent @n@ in dimension 1, then @b@ will have</span><span>
+</span><a name="line-65"></a><span class="hs-comment">-- extent @(n - 1) * 2 + 1@ in dimension 1.  It is more common that the logical</span><span>
+</span><a name="line-66"></a><span class="hs-comment">-- dimension is even, in which case we would use 'dftCRGU' in which case @b@</span><span>
+</span><a name="line-67"></a><span class="hs-comment">-- would have extent @(n - 1) * 2@ in dimension @1@.</span><span>
+</span><a name="line-68"></a><span class="hs-comment">--</span><span>
+</span><a name="line-69"></a><span class="hs-comment">--</span><span>
+</span><a name="line-70"></a><span class="hs-comment">-- The FFTW library separates transforms into two steps.  First you compute a</span><span>
+</span><a name="line-71"></a><span class="hs-comment">-- plan for a given transform, then you execute it.  Often the planning stage is</span><span>
+</span><a name="line-72"></a><span class="hs-comment">-- quite time-consuming, but subsequent transforms of the same size and type</span><span>
+</span><a name="line-73"></a><span class="hs-comment">-- will be extremely fast.  The planning phase actually computes transforms, so</span><span>
+</span><a name="line-74"></a><span class="hs-comment">-- it overwrites its input array.  For many C codes, it is reasonable to re-use</span><span>
+</span><a name="line-75"></a><span class="hs-comment">-- the same arrays to compute a given transform on different data.  This is not</span><span>
+</span><a name="line-76"></a><span class="hs-comment">-- a very useful paradigm from Haskell.  Fortunately, FFTW caches its plans so</span><span>
+</span><a name="line-77"></a><span class="hs-comment">-- if try to generate a new plan for a transform size which has already been</span><span>
+</span><a name="line-78"></a><span class="hs-comment">-- planned, the planner will return immediately.  Unfortunately, it is not</span><span>
+</span><a name="line-79"></a><span class="hs-comment">-- possible to consult the cache, so if a plan is cached, we may use more memory</span><span>
+</span><a name="line-80"></a><span class="hs-comment">-- than is strictly necessary since we must allocate a work array which we</span><span>
+</span><a name="line-81"></a><span class="hs-comment">-- expect to be overwritten during planning.  FFTW can export its cached plans</span><span>
+</span><a name="line-82"></a><span class="hs-comment">-- to a string.  This is known as wisdom.  For high performance work, it is a</span><span>
+</span><a name="line-83"></a><span class="hs-comment">-- good idea to compute plans of the sizes you are interested in, using</span><span>
+</span><a name="line-84"></a><span class="hs-comment">-- aggressive options (i.e. 'patient'), use 'exportWisdomString' to get a string</span><span>
+</span><a name="line-85"></a><span class="hs-comment">-- representing these plans, and write this to a file.  Then for production</span><span>
+</span><a name="line-86"></a><span class="hs-comment">-- runs, you can read this in, then add it to the cache with</span><span>
+</span><a name="line-87"></a><span class="hs-comment">-- 'importWisdomString'.  Now you can use the 'estimate' planner so the Haskell</span><span>
+</span><a name="line-88"></a><span class="hs-comment">-- bindings know that FFTW will not overwrite the input array, and you will</span><span>
+</span><a name="line-89"></a><span class="hs-comment">-- still get a high quality transform (because it has wisdom).</span><span>
+</span><a name="line-90"></a><span>
+</span><a name="line-91"></a><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">Math</span><span class="hs-operator">.</span><span class="hs-identifier">FFT</span><span> </span><span class="hs-special">(</span><span>
+</span><a name="line-92"></a><span>    </span><span class="hs-comment">-- * Data types</span><span>
+</span><a name="line-93"></a><span>    </span><a href="Math.FFT.Base.html#Sign"><span class="hs-identifier hs-type">Sign</span></a><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span class="hs-special">,</span><span>
+</span><a name="line-94"></a><span>    </span><a href="Math.FFT.Base.html#Kind"><span class="hs-identifier hs-type">Kind</span></a><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span class="hs-special">,</span><span>
+</span><a name="line-95"></a><span>    </span><span class="hs-comment">-- * Planner flags</span><span>
+</span><a name="line-96"></a><span>    </span><span class="hs-comment">-- ** Algorithm restriction flags</span><span>
+</span><a name="line-97"></a><span>    </span><a href="Math.FFT.Base.html#destroyInput"><span class="hs-identifier hs-var">destroyInput</span></a><span class="hs-special">,</span><span>
+</span><a name="line-98"></a><span>    </span><a href="Math.FFT.Base.html#preserveInput"><span class="hs-identifier hs-var">preserveInput</span></a><span class="hs-special">,</span><span>
+</span><a name="line-99"></a><span>    </span><span class="hs-comment">-- ** Planning rigor flags</span><span>
+</span><a name="line-100"></a><span>    </span><a href="Math.FFT.Base.html#estimate"><span class="hs-identifier hs-var">estimate</span></a><span class="hs-special">,</span><span>
+</span><a name="line-101"></a><span>    </span><a href="Math.FFT.Base.html#measure"><span class="hs-identifier hs-var">measure</span></a><span class="hs-special">,</span><span>
+</span><a name="line-102"></a><span>    </span><a href="Math.FFT.Base.html#patient"><span class="hs-identifier hs-var">patient</span></a><span class="hs-special">,</span><span>
+</span><a name="line-103"></a><span>    </span><a href="Math.FFT.Base.html#exhaustive"><span class="hs-identifier hs-var">exhaustive</span></a><span class="hs-special">,</span><span>
+</span><a name="line-104"></a><span>
+</span><a name="line-105"></a><span>    </span><span class="hs-comment">-- * DFT of complex data</span><span>
+</span><a name="line-106"></a><span>    </span><span class="hs-comment">-- ** DFT in first dimension only</span><span>
+</span><a name="line-107"></a><span>    </span><a href="Math.FFT.Base.html#dft"><span class="hs-identifier hs-var">dft</span></a><span class="hs-special">,</span><span>
+</span><a name="line-108"></a><span>    </span><a href="Math.FFT.Base.html#idft"><span class="hs-identifier hs-var">idft</span></a><span class="hs-special">,</span><span>
+</span><a name="line-109"></a><span>    </span><span class="hs-comment">-- ** Multi-dimensional transforms</span><span>
+</span><a name="line-110"></a><span>    </span><a href="Math.FFT.Base.html#dftN"><span class="hs-identifier hs-var">dftN</span></a><span class="hs-special">,</span><span>
+</span><a name="line-111"></a><span>    </span><a href="Math.FFT.Base.html#idftN"><span class="hs-identifier hs-var">idftN</span></a><span class="hs-special">,</span><span>
+</span><a name="line-112"></a><span>    </span><span class="hs-comment">-- ** General transform</span><span>
+</span><a name="line-113"></a><span>    </span><a href="Math.FFT.Base.html#dftG"><span class="hs-identifier hs-var">dftG</span></a><span class="hs-special">,</span><span>
+</span><a name="line-114"></a><span>    </span><span class="hs-comment">-- ** Un-normalized general transform</span><span>
+</span><a name="line-115"></a><span>    </span><a href="Math.FFT.Base.html#dftGU"><span class="hs-identifier hs-var">dftGU</span></a><span class="hs-special">,</span><span>
+</span><a name="line-116"></a><span>
+</span><a name="line-117"></a><span>    </span><span class="hs-comment">-- * DFT of real data</span><span>
+</span><a name="line-118"></a><span>    </span><span class="hs-comment">-- ** DFT in first dimension only</span><span>
+</span><a name="line-119"></a><span>    </span><a href="Math.FFT.Base.html#dftRC"><span class="hs-identifier hs-var">dftRC</span></a><span class="hs-special">,</span><span>
+</span><a name="line-120"></a><span>    </span><a href="Math.FFT.Base.html#dftCR"><span class="hs-identifier hs-var">dftCR</span></a><span class="hs-special">,</span><span>
+</span><a name="line-121"></a><span>    </span><a href="Math.FFT.Base.html#dftCRO"><span class="hs-identifier hs-var">dftCRO</span></a><span class="hs-special">,</span><span>
+</span><a name="line-122"></a><span>    </span><span class="hs-comment">-- ** Multi-dimensional transforms</span><span>
+</span><a name="line-123"></a><span>    </span><a href="Math.FFT.Base.html#dftRCN"><span class="hs-identifier hs-var">dftRCN</span></a><span class="hs-special">,</span><span>
+</span><a name="line-124"></a><span>    </span><a href="Math.FFT.Base.html#dftCRN"><span class="hs-identifier hs-var">dftCRN</span></a><span class="hs-special">,</span><span>
+</span><a name="line-125"></a><span>    </span><a href="Math.FFT.Base.html#dftCRON"><span class="hs-identifier hs-var">dftCRON</span></a><span class="hs-special">,</span><span>
+</span><a name="line-126"></a><span>    </span><span class="hs-comment">-- ** General transform</span><span>
+</span><a name="line-127"></a><span>    </span><a href="Math.FFT.Base.html#dftRCG"><span class="hs-identifier hs-var">dftRCG</span></a><span class="hs-special">,</span><span>
+</span><a name="line-128"></a><span>    </span><a href="Math.FFT.Base.html#dftCRG"><span class="hs-identifier hs-var">dftCRG</span></a><span class="hs-special">,</span><span>
+</span><a name="line-129"></a><span>    </span><a href="Math.FFT.Base.html#dftCROG"><span class="hs-identifier hs-var">dftCROG</span></a><span class="hs-special">,</span><span>
+</span><a name="line-130"></a><span>    </span><span class="hs-comment">-- ** Un-normalized general transform</span><span>
+</span><a name="line-131"></a><span>    </span><a href="Math.FFT.Base.html#dftCRGU"><span class="hs-identifier hs-var">dftCRGU</span></a><span class="hs-special">,</span><span>
+</span><a name="line-132"></a><span>    </span><a href="Math.FFT.Base.html#dftCROGU"><span class="hs-identifier hs-var">dftCROGU</span></a><span class="hs-special">,</span><span>
+</span><a name="line-133"></a><span>
+</span><a name="line-134"></a><span>    </span><span class="hs-comment">-- * Real to real transforms (all un-normalized)</span><span>
+</span><a name="line-135"></a><span>    </span><span class="hs-comment">-- ** Transforms in first dimension only</span><span>
+</span><a name="line-136"></a><span>    </span><a href="Math.FFT.Base.html#dftRH"><span class="hs-identifier hs-var">dftRH</span></a><span class="hs-special">,</span><span>
+</span><a name="line-137"></a><span>    </span><a href="Math.FFT.Base.html#dftHR"><span class="hs-identifier hs-var">dftHR</span></a><span class="hs-special">,</span><span>
+</span><a name="line-138"></a><span>    </span><a href="Math.FFT.Base.html#dht"><span class="hs-identifier hs-var">dht</span></a><span class="hs-special">,</span><span>
+</span><a name="line-139"></a><span>    </span><a href="Math.FFT.Base.html#dct1"><span class="hs-identifier hs-var">dct1</span></a><span class="hs-special">,</span><span>
+</span><a name="line-140"></a><span>    </span><a href="Math.FFT.Base.html#dct2"><span class="hs-identifier hs-var">dct2</span></a><span class="hs-special">,</span><span>
+</span><a name="line-141"></a><span>    </span><a href="Math.FFT.Base.html#dct3"><span class="hs-identifier hs-var">dct3</span></a><span class="hs-special">,</span><span>
+</span><a name="line-142"></a><span>    </span><a href="Math.FFT.Base.html#dct4"><span class="hs-identifier hs-var">dct4</span></a><span class="hs-special">,</span><span>
+</span><a name="line-143"></a><span>    </span><a href="Math.FFT.Base.html#dst1"><span class="hs-identifier hs-var">dst1</span></a><span class="hs-special">,</span><span>
+</span><a name="line-144"></a><span>    </span><a href="Math.FFT.Base.html#dst2"><span class="hs-identifier hs-var">dst2</span></a><span class="hs-special">,</span><span>
+</span><a name="line-145"></a><span>    </span><a href="Math.FFT.Base.html#dst3"><span class="hs-identifier hs-var">dst3</span></a><span class="hs-special">,</span><span>
+</span><a name="line-146"></a><span>    </span><a href="Math.FFT.Base.html#dst4"><span class="hs-identifier hs-var">dst4</span></a><span class="hs-special">,</span><span>
+</span><a name="line-147"></a><span>    </span><span class="hs-comment">-- ** Multi-dimensional transforms with the same transform type in each dimension</span><span>
+</span><a name="line-148"></a><span>    </span><a href="Math.FFT.Base.html#dftRHN"><span class="hs-identifier hs-var">dftRHN</span></a><span class="hs-special">,</span><span>
+</span><a name="line-149"></a><span>    </span><a href="Math.FFT.Base.html#dftHRN"><span class="hs-identifier hs-var">dftHRN</span></a><span class="hs-special">,</span><span>
+</span><a name="line-150"></a><span>    </span><a href="Math.FFT.Base.html#dhtN"><span class="hs-identifier hs-var">dhtN</span></a><span class="hs-special">,</span><span>
+</span><a name="line-151"></a><span>    </span><a href="Math.FFT.Base.html#dct1N"><span class="hs-identifier hs-var">dct1N</span></a><span class="hs-special">,</span><span>
+</span><a name="line-152"></a><span>    </span><a href="Math.FFT.Base.html#dct2N"><span class="hs-identifier hs-var">dct2N</span></a><span class="hs-special">,</span><span>
+</span><a name="line-153"></a><span>    </span><a href="Math.FFT.Base.html#dct3N"><span class="hs-identifier hs-var">dct3N</span></a><span class="hs-special">,</span><span>
+</span><a name="line-154"></a><span>    </span><a href="Math.FFT.Base.html#dct4N"><span class="hs-identifier hs-var">dct4N</span></a><span class="hs-special">,</span><span>
+</span><a name="line-155"></a><span>    </span><a href="Math.FFT.Base.html#dst1N"><span class="hs-identifier hs-var">dst1N</span></a><span class="hs-special">,</span><span>
+</span><a name="line-156"></a><span>    </span><a href="Math.FFT.Base.html#dst2N"><span class="hs-identifier hs-var">dst2N</span></a><span class="hs-special">,</span><span>
+</span><a name="line-157"></a><span>    </span><a href="Math.FFT.Base.html#dst3N"><span class="hs-identifier hs-var">dst3N</span></a><span class="hs-special">,</span><span>
+</span><a name="line-158"></a><span>    </span><a href="Math.FFT.Base.html#dst4N"><span class="hs-identifier hs-var">dst4N</span></a><span class="hs-special">,</span><span>
+</span><a name="line-159"></a><span>    </span><span class="hs-comment">-- ** Multi-dimensional transforms with possibly different transforms in each dimension</span><span>
+</span><a name="line-160"></a><span>    </span><a href="Math.FFT.Base.html#dftRRN"><span class="hs-identifier hs-var">dftRRN</span></a><span class="hs-special">,</span><span>
+</span><a name="line-161"></a><span>    </span><span class="hs-comment">-- ** General transforms</span><span>
+</span><a name="line-162"></a><span>    </span><a href="Math.FFT.Base.html#dftRRG"><span class="hs-identifier hs-var">dftRRG</span></a><span class="hs-special">,</span><span>
+</span><a name="line-163"></a><span>
+</span><a name="line-164"></a><span>    </span><span class="hs-comment">-- * Wisdom</span><span>
+</span><a name="line-165"></a><span>    </span><a href="Math.FFT.Base.html#importWisdomString"><span class="hs-identifier hs-var">importWisdomString</span></a><span class="hs-special">,</span><span>
+</span><a name="line-166"></a><span>    </span><a href="Math.FFT.Base.html#importWisdomSystem"><span class="hs-identifier hs-var">importWisdomSystem</span></a><span class="hs-special">,</span><span>
+</span><a name="line-167"></a><span>    </span><a href="Math.FFT.Base.html#exportWisdomString"><span class="hs-identifier hs-var">exportWisdomString</span></a><span class="hs-special">,</span><span>
+</span><a name="line-168"></a><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><a name="line-169"></a><span>
+</span><a name="line-170"></a><span class="hs-keyword">import</span><span> </span><a href="Math.FFT.Base.html"><span class="hs-identifier">Math</span><span class="hs-operator">.</span><span class="hs-identifier">FFT</span><span class="hs-operator">.</span><span class="hs-identifier">Base</span></a><span>
+</span><a name="line-171"></a></pre></body></html>
