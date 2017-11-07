@@ -17,7 +17,7 @@ cache:
     - $HOME/.stack/snapshots
     # - $HOME/llvm
     # - .stack-work/downloaded
-    - .stack-work/install
+    # - .stack-work/install
 
 # before_cache:
 #   - rm -rf $(stack path --local-install-root)/bin/accelerate-*
