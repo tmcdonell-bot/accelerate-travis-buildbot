@@ -35,7 +35,7 @@ library
     , lens-accelerate
     , linear-accelerate
     , mwc-random-accelerate
-    , numeric-prelude-accelerate
+    -- , numeric-prelude-accelerate
     , cuda
     , cufft
     , cublas

@@ -74,7 +74,7 @@ env:
     - TARGET=lens-accelerate
     - TARGET=linear-accelerate
     - TARGET=mwc-random-accelerate
-    - TARGET=numeric-prelude-accelerate
+    # - TARGET=numeric-prelude-accelerate
     - TARGET=lulesh-accelerate
 
 matrix:
