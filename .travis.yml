@@ -109,10 +109,10 @@ install:
   - echo "$(stack exec ghc -- --version) [$(stack exec ghc -- --print-project-git-commit-id 2> /dev/null || echo '?')]"
   - cabal --version
   - stack --version
-  - travis_retry stack build --fast --jobs=2 --only-dependencies --no-terminal --no-haddock-deps ${TARGET}
+  - travis_retry stack build --fast --jobs=2 --only-dependencies --no-terminal --haddock ${TARGET}
 
 script:
-  - travis_retry stack build --fast --jobs=2 --no-terminal --haddock --no-haddock-deps ${TARGET}
+  - travis_retry stack build --fast --jobs=2 --no-terminal --haddock ${TARGET}
 
 after_success:
   - |
