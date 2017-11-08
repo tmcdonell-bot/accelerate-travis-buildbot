@@ -102,6 +102,10 @@ before_install:
       if [ ${DEPENDENCIES_STATUS} -ne 0 ] || [ $( echo ${DEPENDENCIES} | grep cuda | wc -l ) -gt 0 ]; then
         source .travis/install-cuda-trusty.sh
       fi
+  - |
+      if [ ${GHC%.*} == 8.2 ]; then
+        HADDOCK="--haddock"
+      fi
   - travis_retry stack install hscolour --fast --no-terminal
   - travis_retry stack install c2hs --fast --no-terminal
 
@@ -109,11 +113,11 @@ install:
   - echo "$(stack exec ghc -- --version) [$(stack exec ghc -- --print-project-git-commit-id 2> /dev/null || echo '?')]"
   - cabal --version
   - stack --version
-  - travis_retry stack build --fast --jobs=2 --only-dependencies --no-terminal --haddock ${TARGET}
+  - travis_retry stack build --fast --jobs=2 --only-dependencies --no-terminal ${HADDOCK} ${TARGET}
 
 script:
   - true
-  # - travis_retry stack build --fast --jobs=2 --no-terminal --haddock ${TARGET}
+  # - travis_retry stack build --fast --jobs=2 --no-terminal ${HADDOCK} ${TARGET}
 
 after_success:
   - |
