@@ -116,8 +116,7 @@ install:
   - travis_retry stack build --fast --jobs=2 --only-dependencies --no-terminal ${HADDOCK} ${TARGET}
 
 script:
-  - true
-  # - travis_retry stack build --fast --jobs=2 --no-terminal ${HADDOCK} ${TARGET}
+  - travis_retry stack build --fast --jobs=2 --no-terminal ${HADDOCK} ${TARGET}
 
 after_success:
   - |
