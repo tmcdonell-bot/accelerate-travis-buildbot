@@ -17,12 +17,10 @@ cache:
     - $HOME/.stack/snapshots
     # - $HOME/llvm
     # - .stack-work/downloaded
-    # - .stack-work/install
+    - .stack-work/install
 
-# before_cache:
-#   - rm -rf $(stack path --local-install-root)/bin/accelerate-*
-#   - rm -rf $(stack path --local-install-root)/bin/lulesh-accelerate
-#   - rm -rf $(stack path --local-install-root)/doc
+before_cache:
+  - rm -rf $(stack path --local-install-root)/doc
 
 addons:
   apt:
@@ -113,14 +111,13 @@ install:
   - echo "$(stack exec ghc -- --version) [$(stack exec ghc -- --print-project-git-commit-id 2> /dev/null || echo '?')]"
   - cabal --version
   - stack --version
-  - travis_retry stack build --fast --jobs=2 --only-dependencies --no-terminal ${HADDOCK} ${TARGET}
+  - travis_retry stack build --fast --jobs=2 --only-dependencies --no-terminal --no-copy-bins ${HADDOCK} ${TARGET}
 
 script:
-  - travis_retry stack build --fast --jobs=2 --no-terminal ${HADDOCK} ${TARGET}
-
-after_success:
-  - |
-      if [ ${GHC%.*} == 8.2 ] && [ -z ${TARGET} ]; then
-        source .travis/update-docs.sh
-      fi
+  - true
+  # - travis_retry stack build --fast --jobs=2 --no-terminal --no-copy-bins ${HADDOCK} ${TARGET}
+  # - |
+  #     if [ ${GHC%.*} == 8.2 ] && [ -z ${TARGET} ]; then
+  #       source .travis/update-docs.sh
+  #     fi
 
