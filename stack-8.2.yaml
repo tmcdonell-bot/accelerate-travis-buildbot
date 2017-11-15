@@ -97,7 +97,7 @@ packages:
 
 - location:
     git:    https://github.com/tmcdonell/cublas.git
-    commit: a858aa5dae80e6cf289673d461f3b6d64a95136c
+    commit: 90ca58e30439b54e3a6093db6cdc632ca73b1710
   extra-dep: true
 
 - location:
@@ -112,7 +112,7 @@ packages:
 
 - location:
     git:    https://github.com/tmcdonell/nvvm.git
-    commit: 5044814ed8fa93f329d12d70de0106f014957023
+    commit: df81034a2224bee2288dc55b8dce9076327f2900
   extra-dep: true
 
 extra-deps: []
