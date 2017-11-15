@@ -87,7 +87,7 @@ packages:
 
 - location:
     git:    https://github.com/tmcdonell/cuda.git
-    commit: 4272d6e2fdcfefdd6798d81c7af8aff6dc050b1a
+    commit: 272ffe7168e00e042237bd01a5ca1cc31ce3acad
   extra-dep: true
 
 - location:
