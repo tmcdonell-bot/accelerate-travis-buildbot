@@ -8,7 +8,7 @@ packages:
 
 - location:
     git:    https://github.com/tmcdonell/accelerate.git
-    commit: 0b720becf60f369283b9f275b920388640468ce0
+    commit: 0b683b29deb8ee83065093b72693f50a6793fac4
   extra-dep: true
 
 - location:
