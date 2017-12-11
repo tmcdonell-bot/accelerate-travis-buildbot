@@ -22,7 +22,7 @@ packages:
 
 - location:
     git:    https://github.com/tmcdonell/accelerate-fft.git
-    commit: 7bbc3cdb40bcc8d2e726d6775e53f7eebecc5a07
+    commit: 1f3f34212ded1846bf789261255a80db9cadb694
   extra-dep: true
 
 - location:
