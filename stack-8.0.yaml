@@ -97,7 +97,7 @@ packages:
 
 - location:
     git:    https://github.com/tmcdonell/cublas.git
-    commit: 90ca58e30439b54e3a6093db6cdc632ca73b1710
+    commit: 9b7e1ce0686036b5e7edecff7240ab781d21fe58
   extra-dep: true
 
 - location:
