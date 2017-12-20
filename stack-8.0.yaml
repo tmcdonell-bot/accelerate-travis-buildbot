@@ -102,7 +102,7 @@ packages:
 
 - location:
     git:    https://github.com/tmcdonell/cusparse.git
-    commit: 90c9f068968ac4ac41d4def3d8b87713b4ba68e4
+    commit: d64f297281441e8b6e90bd97768c5d9849ba608e
   extra-dep: true
 
 - location:
