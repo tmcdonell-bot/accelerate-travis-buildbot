@@ -107,7 +107,7 @@ packages:
 
 - location:
     git:    https://github.com/tmcdonell/cusolver.git
-    commit: fcdcf0cdbc20271531f582464e72a51e59c3ed2c
+    commit: 5e7edaadf96a5c415efbb4d3a3b120d32611841c
   extra-dep: true
 
 - location:
