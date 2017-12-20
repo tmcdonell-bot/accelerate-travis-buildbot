@@ -57,7 +57,7 @@ packages:
 
 - location:
     git:    https://github.com/tmcdonell/gloss-raster-accelerate.git
-    commit: a78fec5f7386a584726bec628323cde1f6da9c0c
+    commit: a363e59299304cfd48981109f980b35c6141d1b4
   extra-dep: true
 
 - location:
