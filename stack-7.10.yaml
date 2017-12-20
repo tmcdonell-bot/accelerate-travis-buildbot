@@ -82,7 +82,7 @@ packages:
 
 - location:
     git:    https://github.com/tmcdonell/lulesh-accelerate.git
-    commit: a1fb8468351be6e249be89c90d01dc0e75df8106
+    commit: 6ed733b55cd78a10bf3901ac1d5ffd582cc6ac6f
   extra-dep: true
 
 - location:
