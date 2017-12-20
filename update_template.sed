@@ -10,7 +10,7 @@
 s|{SHA_accelerate}|c6d87eeec0974b6cb39ecba60628a8dd52331812|
 s|{SHA_accelerate-llvm}|62f2f658a4ae1f71e8046bbf883b7dad35401824|
 s|{SHA_accelerate-fft}|84e415015e63eb575e88d4cf01e556eb3a5021e1|
-s|{SHA_accelerate-blas}|f867e8fedf20a0083dc68e3de95c14bd427d2759|
+s|{SHA_accelerate-blas}|d5e0ac3f7c84a34423235feeb3c8765bcf892b06|
 s|{SHA_accelerate-io}|0b47ae0f239efd30527f42988f9b8284dd407817|
 s|{SHA_accelerate-bignum}|89ad487b135409f6bb5abd34ab6951496bd8b5c2|
 s|{SHA_accelerate-examples}|31fa03ff51df324f037172006cb554e05e91e59b|
