@@ -8,7 +8,7 @@ packages:
 
 - location:
     git:    https://github.com/tmcdonell/accelerate.git
-    commit: 3299df187a3b0d0400cde40002d343dd558ece18
+    commit: c6d87eeec0974b6cb39ecba60628a8dd52331812
   extra-dep: true
 
 - location:
@@ -18,7 +18,7 @@ packages:
 
 - location:
     git:    https://github.com/tmcdonell/accelerate-llvm.git
-    commit: a329e73cf0ba8413ecb961c3eda9e0c07aee2650
+    commit: 62f2f658a4ae1f71e8046bbf883b7dad35401824
   extra-dep: true
   subdirs:
     - 'accelerate-llvm'
@@ -27,27 +27,27 @@ packages:
 
 - location:
     git:    https://github.com/tmcdonell/accelerate-fft.git
-    commit: 7bbc3cdb40bcc8d2e726d6775e53f7eebecc5a07
+    commit: e1c73891e473a6e3a361fe8837859dce94ec3871
   extra-dep: true
 
 - location:
     git:    https://github.com/tmcdonell/accelerate-blas.git
-    commit: 676ab38780a53eee1ec34ae8e9361b8055b9a2f6
+    commit: d5e0ac3f7c84a34423235feeb3c8765bcf892b06
   extra-dep: true
 
 - location:
     git:    https://github.com/tmcdonell/colour-accelerate.git
-    commit: 6dbbac4d54fcb13db59b3b04ae092bbdda67eda1
+    commit: 1f633b892b366e6794f43e23b6755907c1a7bf8b
   extra-dep: true
 
 - location:
     git:    https://github.com/tmcdonell/gloss-accelerate.git
-    commit: ca82c8e805a440bad8e7f7f238fac228de6175dd
+    commit: 1e774cfcbc919a37be98ec8ab333a20f4ef37873
   extra-dep: true
 
 - location:
     git:    https://github.com/tmcdonell/gloss-raster-accelerate.git
-    commit: a78fec5f7386a584726bec628323cde1f6da9c0c
+    commit: a363e59299304cfd48981109f980b35c6141d1b4
   extra-dep: true
 
 - location:
@@ -62,7 +62,7 @@ packages:
 
 - location:
     git:    https://github.com/tmcdonell/cuda.git
-    commit: 272ffe7168e00e042237bd01a5ca1cc31ce3acad
+    commit: 11f2107ad89c6a2ac17907697871cbab5d0cd598
   extra-dep: true
 
 - location:
@@ -72,7 +72,7 @@ packages:
 
 - location:
     git:    https://github.com/tmcdonell/cublas.git
-    commit: a858aa5dae80e6cf289673d461f3b6d64a95136c
+    commit: 90ca58e30439b54e3a6093db6cdc632ca73b1710
   extra-dep: true
 
 - location:
@@ -87,7 +87,7 @@ packages:
 
 - location:
     git:    https://github.com/tmcdonell/nvvm.git
-    commit: df81034a2224bee2288dc55b8dce9076327f2900
+    commit: e56769202f97e44e129d452e98e2b876c13f1de6
   extra-dep: true
 
 extra-deps:
