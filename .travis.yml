@@ -112,7 +112,8 @@ install:
   - echo "$(stack exec ghc -- --version) [$(stack exec ghc -- --print-project-git-commit-id 2> /dev/null || echo '?')]"
   - cabal --version
   - stack --version
-  - travis_retry travis_wait 60 stack build --test --fast --jobs=2 --only-dependencies --no-terminal --no-copy-bins --no-run-tests ${HADDOCK} ${TARGET}
+  - travis_retry travis_wait 60 stack build --test --fast --jobs=2 --only-dependencies --no-terminal --no-copy-bins --no-run-tests accelerate-llvm-native accelerate-llvm-ptx
+  # - travis_retry travis_wait 60 stack build --test --fast --jobs=2 --only-dependencies --no-terminal --no-copy-bins --no-run-tests ${HADDOCK} ${TARGET}
 
 script:
   - true
