@@ -48,8 +48,8 @@ addons:
 
 compiler:
   - GHC-8.2.1
-  # - GHC-8.0.2
-  # - GHC-7.10.3
+  - GHC-8.0.2
+  - GHC-7.10.3
   # - GHC-7.8.4
 
 env:
@@ -115,10 +115,9 @@ install:
   - travis_retry travis_wait 60 stack build --test --fast --jobs=2 --only-dependencies --no-terminal --no-copy-bins --no-run-tests ${HADDOCK} ${TARGET}
 
 script:
-  - true
-  # - travis_retry travis_wait 60 stack build --test --fast --jobs=2 --no-terminal --no-copy-bins --no-run-tests ${HADDOCK} ${TARGET}
-  # - |
-  #     if [ ${GHC%.*} == 8.2 ] && [ -z ${TARGET} ]; then
-  #       source .travis/update-docs.sh
-  #     fi
+  - travis_retry travis_wait 60 stack build --test --fast --jobs=2 --no-terminal --no-copy-bins --no-run-tests ${HADDOCK} ${TARGET}
+  - |
+      if [ ${GHC%.*} == 8.2 ] && [ -z ${TARGET} ]; then
+        source .travis/update-docs.sh
+      fi
 
