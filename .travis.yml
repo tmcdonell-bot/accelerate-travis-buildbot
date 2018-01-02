@@ -103,7 +103,7 @@ before_install:
   #     fi
   - |
       if [ ${GHC%.*} == 8.2 ]; then
-        HADDOCK="--haddock --no-haddock-deps"
+        HADDOCK="--haddock"
       fi
   - travis_retry stack install hscolour --fast --no-terminal
   - travis_retry stack install c2hs --fast --no-terminal
