@@ -48,8 +48,8 @@ addons:
 
 compiler:
   - GHC-8.2.1
-  - GHC-8.0.2
-  - GHC-7.10.3
+  # - GHC-8.0.2
+  # - GHC-7.10.3
   # - GHC-7.8.4
 
 env:
@@ -57,23 +57,23 @@ env:
     - CUDA=8.0.61-1
   matrix:
     - TARGET="" # all packages
-    - TARGET=accelerate
-    - TARGET=accelerate-llvm
-    - TARGET=accelerate-llvm-native
-    - TARGET=accelerate-llvm-ptx
-    - TARGET=accelerate-fft
-    - TARGET=accelerate-blas
-    - TARGET=accelerate-io
-    - TARGET=accelerate-bignum
+    # - TARGET=accelerate
+    # - TARGET=accelerate-llvm
+    # - TARGET=accelerate-llvm-native
+    # - TARGET=accelerate-llvm-ptx
+    # - TARGET=accelerate-fft
+    # - TARGET=accelerate-blas
+    # - TARGET=accelerate-io
+    # - TARGET=accelerate-bignum
     - TARGET=accelerate-examples
-    - TARGET=colour-accelerate
-    - TARGET=gloss-accelerate
-    - TARGET=gloss-raster-accelerate
-    - TARGET=lens-accelerate
-    - TARGET=linear-accelerate
-    - TARGET=mwc-random-accelerate
+    # - TARGET=colour-accelerate
+    # - TARGET=gloss-accelerate
+    # - TARGET=gloss-raster-accelerate
+    # - TARGET=lens-accelerate
+    # - TARGET=linear-accelerate
+    # - TARGET=mwc-random-accelerate
     # - TARGET=numeric-prelude-accelerate
-    - TARGET=lulesh-accelerate
+    # - TARGET=lulesh-accelerate
 
 matrix:
   fast_finish: true
@@ -112,12 +112,15 @@ install:
   - echo "$(stack exec ghc -- --version) [$(stack exec ghc -- --print-project-git-commit-id 2> /dev/null || echo '?')]"
   - cabal --version
   - stack --version
-  - travis_retry travis_wait 60 stack build --test --fast --jobs=2 --only-dependencies --no-terminal --no-copy-bins --no-run-tests ${HADDOCK} ${TARGET}
+  # - travis_retry travis_wait 60 stack build --test --fast --jobs=2 --only-dependencies --no-terminal --no-copy-bins --no-run-tests ${HADDOCK} ${TARGET}
+
+  - travis_retry travis_wait 60 stack build --test --fast --jobs=2 --only-dependencies --no-terminal --no-copy-bins --no-run-tests ${HADDOCK} accelerate-llvm-native accelerate-llvm-ptx
 
 script:
-  - travis_retry travis_wait 60 stack build --test --fast --jobs=2 --no-terminal --no-copy-bins --no-run-tests ${HADDOCK} ${TARGET}
-  - |
-      if [ ${GHC%.*} == 8.2 ] && [ -z ${TARGET} ]; then
-        source .travis/update-docs.sh
-      fi
+  - true
+  # - travis_retry travis_wait 60 stack build --test --fast --jobs=2 --no-terminal --no-copy-bins --no-run-tests ${HADDOCK} ${TARGET}
+  # - |
+  #     if [ ${GHC%.*} == 8.2 ] && [ -z ${TARGET} ]; then
+  #       source .travis/update-docs.sh
+  #     fi
 
