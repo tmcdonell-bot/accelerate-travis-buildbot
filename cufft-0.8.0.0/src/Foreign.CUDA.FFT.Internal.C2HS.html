@@ -1,0 +1,63 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span>
+</span><a name="line-2"></a><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">Foreign</span><span class="hs-operator">.</span><span class="hs-identifier">CUDA</span><span class="hs-operator">.</span><span class="hs-identifier">FFT</span><span class="hs-operator">.</span><span class="hs-identifier">Internal</span><span class="hs-operator">.</span><span class="hs-identifier">C2HS</span><span> </span><span class="hs-special">(</span><span>
+</span><a name="line-3"></a><span>
+</span><a name="line-4"></a><span>  </span><span class="hs-comment">-- * Conversion between C and Haskell types</span><span>
+</span><a name="line-5"></a><span>  </span><a href="Foreign.CUDA.FFT.Internal.C2HS.html#cIntConv"><span class="hs-identifier hs-var">cIntConv</span></a><span class="hs-special">,</span><span> </span><a href="Foreign.CUDA.FFT.Internal.C2HS.html#cFloatConv"><span class="hs-identifier hs-var">cFloatConv</span></a><span class="hs-special">,</span><span> </span><a href="Foreign.CUDA.FFT.Internal.C2HS.html#cToBool"><span class="hs-identifier hs-var">cToBool</span></a><span class="hs-special">,</span><span> </span><a href="Foreign.CUDA.FFT.Internal.C2HS.html#cFromBool"><span class="hs-identifier hs-var">cFromBool</span></a><span class="hs-special">,</span><span> </span><a href="Foreign.CUDA.FFT.Internal.C2HS.html#cToEnum"><span class="hs-identifier hs-var">cToEnum</span></a><span class="hs-special">,</span><span> </span><a href="Foreign.CUDA.FFT.Internal.C2HS.html#cFromEnum"><span class="hs-identifier hs-var">cFromEnum</span></a><span>
+</span><a name="line-6"></a><span>
+</span><a name="line-7"></a><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><a name="line-8"></a><span>
+</span><a name="line-9"></a><span class="hs-comment">-- System</span><span>
+</span><a name="line-10"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">Foreign</span><span>
+</span><a name="line-11"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">Foreign</span><span class="hs-operator">.</span><span class="hs-identifier">C</span><span>
+</span><a name="line-12"></a><span>
+</span><a name="line-13"></a><span>
+</span><a name="line-14"></a><span class="hs-comment">-- Conversions -----------------------------------------------------------------</span><span>
+</span><a name="line-15"></a><span class="hs-comment">--</span><span>
+</span><a name="line-16"></a><span>
+</span><a name="line-17"></a><span class="hs-comment">-- | Integral conversion</span><span>
+</span><a name="line-18"></a><span class="hs-comment">--</span><span>
+</span><a name="line-19"></a><span class="hs-pragma">{-# INLINE [1] cIntConv #-}</span><span>
+</span><a name="line-20"></a><span class="hs-identifier">cIntConv</span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><span class="hs-identifier hs-type">Integral</span><span> </span><a href="#local-6989586621679031053"><span class="hs-identifier hs-type">a</span></a><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-type">Integral</span><span> </span><a href="#local-6989586621679031054"><span class="hs-identifier hs-type">b</span></a><span class="hs-special">)</span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><a href="#local-6989586621679031053"><span class="hs-identifier hs-type">a</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><a href="#local-6989586621679031054"><span class="hs-identifier hs-type">b</span></a><span>
+</span><a name="line-21"></a><a name="cIntConv"><a href="Foreign.CUDA.FFT.Internal.C2HS.html#cIntConv"><span class="hs-identifier">cIntConv</span></a></a><span>  </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier hs-var">fromIntegral</span><span>
+</span><a name="line-22"></a><span>
+</span><a name="line-23"></a><span class="hs-comment">-- | Floating conversion</span><span>
+</span><a name="line-24"></a><span class="hs-comment">--</span><span>
+</span><a name="line-25"></a><span class="hs-pragma">{-# INLINE [1] cFloatConv #-}</span><span>
+</span><a name="line-26"></a><span class="hs-identifier">cFloatConv</span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><span class="hs-identifier hs-type">RealFloat</span><span> </span><a href="#local-6989586621679031051"><span class="hs-identifier hs-type">a</span></a><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-type">RealFloat</span><span> </span><a href="#local-6989586621679031052"><span class="hs-identifier hs-type">b</span></a><span class="hs-special">)</span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><a href="#local-6989586621679031051"><span class="hs-identifier hs-type">a</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><a href="#local-6989586621679031052"><span class="hs-identifier hs-type">b</span></a><span>
+</span><a name="line-27"></a><a name="cFloatConv"><a href="Foreign.CUDA.FFT.Internal.C2HS.html#cFloatConv"><span class="hs-identifier">cFloatConv</span></a></a><span>  </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier hs-var">realToFrac</span><span>
+</span><a name="line-28"></a><span class="hs-comment">-- As this conversion by default goes via `Rational', it can be very slow...</span><span>
+</span><a name="line-29"></a><span class="hs-pragma">{-# RULES
+  &quot;cFloatConv/Float-&gt;Float&quot;    forall (x::Float).  cFloatConv x = x;
+  &quot;cFloatConv/Double-&gt;Double&quot;  forall (x::Double). cFloatConv x = x;
+  &quot;cFloatConv/Float-&gt;CFloat&quot;   forall (x::Float).  cFloatConv x = CFloat x;
+  &quot;cFloatConv/CFloat-&gt;Float&quot;   forall (x::Float).  cFloatConv CFloat x = x;
+  &quot;cFloatConv/Double-&gt;CDouble&quot; forall (x::Double). cFloatConv x = CDouble x;
+  &quot;cFloatConv/CDouble-&gt;Double&quot; forall (x::Double). cFloatConv CDouble x = x
+ #-}</span><span>
+</span><a name="line-37"></a><span>
+</span><a name="line-38"></a><span class="hs-comment">-- | Obtain C value from Haskell 'Bool'.</span><span>
+</span><a name="line-39"></a><span class="hs-comment">--</span><span>
+</span><a name="line-40"></a><span class="hs-pragma">{-# INLINE [1] cFromBool #-}</span><span>
+</span><a name="line-41"></a><span class="hs-identifier">cFromBool</span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-identifier hs-type">Num</span><span> </span><a href="#local-6989586621679031050"><span class="hs-identifier hs-type">a</span></a><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="hs-identifier hs-type">Bool</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><a href="#local-6989586621679031050"><span class="hs-identifier hs-type">a</span></a><span>
+</span><a name="line-42"></a><a name="cFromBool"><a href="Foreign.CUDA.FFT.Internal.C2HS.html#cFromBool"><span class="hs-identifier">cFromBool</span></a></a><span>  </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier hs-var">fromBool</span><span>
+</span><a name="line-43"></a><span>
+</span><a name="line-44"></a><span class="hs-comment">-- | Obtain Haskell 'Bool' from C value.</span><span>
+</span><a name="line-45"></a><span class="hs-comment">--</span><span>
+</span><a name="line-46"></a><span class="hs-pragma">{-# INLINE [1] cToBool #-}</span><span>
+</span><a name="line-47"></a><span class="hs-identifier">cToBool</span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><span class="hs-identifier hs-type">Eq</span><span> </span><a href="#local-6989586621679031049"><span class="hs-identifier hs-type">a</span></a><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-type">Num</span><span> </span><a href="#local-6989586621679031049"><span class="hs-identifier hs-type">a</span></a><span class="hs-special">)</span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><a href="#local-6989586621679031049"><span class="hs-identifier hs-type">a</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier hs-type">Bool</span><span>
+</span><a name="line-48"></a><a name="cToBool"><a href="Foreign.CUDA.FFT.Internal.C2HS.html#cToBool"><span class="hs-identifier">cToBool</span></a></a><span>  </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier hs-var">toBool</span><span>
+</span><a name="line-49"></a><span>
+</span><a name="line-50"></a><span class="hs-comment">-- | Convert a C enumeration to Haskell.</span><span>
+</span><a name="line-51"></a><span class="hs-comment">--</span><span>
+</span><a name="line-52"></a><span class="hs-pragma">{-# INLINE [1] cToEnum #-}</span><span>
+</span><a name="line-53"></a><span class="hs-identifier">cToEnum</span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><span class="hs-identifier hs-type">Integral</span><span> </span><a href="#local-6989586621679031047"><span class="hs-identifier hs-type">i</span></a><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-type">Enum</span><span> </span><a href="#local-6989586621679031048"><span class="hs-identifier hs-type">e</span></a><span class="hs-special">)</span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><a href="#local-6989586621679031047"><span class="hs-identifier hs-type">i</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><a href="#local-6989586621679031048"><span class="hs-identifier hs-type">e</span></a><span>
+</span><a name="line-54"></a><a name="cToEnum"><a href="Foreign.CUDA.FFT.Internal.C2HS.html#cToEnum"><span class="hs-identifier">cToEnum</span></a></a><span>  </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier hs-var">toEnum</span><span> </span><span class="hs-operator hs-var">.</span><span> </span><a href="Foreign.CUDA.FFT.Internal.C2HS.html#cIntConv"><span class="hs-identifier hs-var">cIntConv</span></a><span>
+</span><a name="line-55"></a><span>
+</span><a name="line-56"></a><span class="hs-comment">-- | Convert a Haskell enumeration to C.</span><span>
+</span><a name="line-57"></a><span class="hs-comment">--</span><span>
+</span><a name="line-58"></a><span class="hs-pragma">{-# INLINE [1] cFromEnum #-}</span><span>
+</span><a name="line-59"></a><span class="hs-identifier">cFromEnum</span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><span class="hs-identifier hs-type">Enum</span><span> </span><a href="#local-6989586621679030543"><span class="hs-identifier hs-type">e</span></a><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-type">Integral</span><span> </span><a href="#local-6989586621679030544"><span class="hs-identifier hs-type">i</span></a><span class="hs-special">)</span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><a href="#local-6989586621679030543"><span class="hs-identifier hs-type">e</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><a href="#local-6989586621679030544"><span class="hs-identifier hs-type">i</span></a><span>
+</span><a name="line-60"></a><a name="cFromEnum"><a href="Foreign.CUDA.FFT.Internal.C2HS.html#cFromEnum"><span class="hs-identifier">cFromEnum</span></a></a><span>  </span><span class="hs-glyph">=</span><span> </span><a href="Foreign.CUDA.FFT.Internal.C2HS.html#cIntConv"><span class="hs-identifier hs-var">cIntConv</span></a><span> </span><span class="hs-operator hs-var">.</span><span> </span><span class="hs-identifier hs-var">fromEnum</span><span>
+</span><a name="line-61"></a><span>
+</span><a name="line-62"></a><span>
+</span><a name="line-63"></a></pre></body></html>

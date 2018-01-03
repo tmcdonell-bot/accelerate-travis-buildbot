@@ -1,0 +1,78 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-pragma">{-# LANGUAGE DeriveDataTypeable #-}</span><span>
+</span><a name="line-2"></a><span class="hs-pragma">{-# LANGUAGE RoleAnnotations    #-}</span><span>
+</span><a name="line-3"></a><span class="hs-pragma">{-# OPTIONS_HADDOCK hide #-}</span><span>
+</span><a name="line-4"></a><span class="hs-comment">-- |</span><span>
+</span><a name="line-5"></a><span class="hs-comment">-- Module      : LLVM.AST.Type.Name</span><span>
+</span><a name="line-6"></a><span class="hs-comment">-- Copyright   : [2015..2017] Trevor L. McDonell</span><span>
+</span><a name="line-7"></a><span class="hs-comment">-- License     : BSD3</span><span>
+</span><a name="line-8"></a><span class="hs-comment">--</span><span>
+</span><a name="line-9"></a><span class="hs-comment">-- Maintainer  : Trevor L. McDonell &lt;tmcdonell@cse.unsw.edu.au&gt;</span><span>
+</span><a name="line-10"></a><span class="hs-comment">-- Stability   : experimental</span><span>
+</span><a name="line-11"></a><span class="hs-comment">-- Portability : non-portable (GHC extensions)</span><span>
+</span><a name="line-12"></a><span class="hs-comment">--</span><span>
+</span><a name="line-13"></a><span>
+</span><a name="line-14"></a><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">LLVM</span><span class="hs-operator">.</span><span class="hs-identifier">AST</span><span class="hs-operator">.</span><span class="hs-identifier">Type</span><span class="hs-operator">.</span><span class="hs-identifier">Name</span><span>
+</span><a name="line-15"></a><span>  </span><span class="hs-keyword">where</span><span>
+</span><a name="line-16"></a><span>
+</span><a name="line-17"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">Data</span><span class="hs-operator">.</span><span class="hs-identifier">ByteString</span><span class="hs-operator">.</span><span class="hs-identifier">Short</span><span>                                        </span><span class="hs-special">(</span><span> </span><span class="hs-identifier hs-type">ShortByteString</span><span> </span><span class="hs-special">)</span><span>
+</span><a name="line-18"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">Data</span><span class="hs-operator">.</span><span class="hs-identifier">Data</span><span>
+</span><a name="line-19"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">Data</span><span class="hs-operator">.</span><span class="hs-identifier">String</span><span>
+</span><a name="line-20"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">Data</span><span class="hs-operator">.</span><span class="hs-identifier">Word</span><span>
+</span><a name="line-21"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">Prelude</span><span>
+</span><a name="line-22"></a><span>
+</span><a name="line-23"></a><span>
+</span><a name="line-24"></a><span class="hs-comment">-- | Objects of various sorts in LLVM IR are identified by address in the LLVM</span><span>
+</span><a name="line-25"></a><span class="hs-comment">-- C++ API, and may be given a string name. When printed to (resp. read from)</span><span>
+</span><a name="line-26"></a><span class="hs-comment">-- human-readable LLVM assembly, objects without string names are numbered</span><span>
+</span><a name="line-27"></a><span class="hs-comment">-- sequentially (resp. must be numbered sequentially). String names may be</span><span>
+</span><a name="line-28"></a><span class="hs-comment">-- quoted, and are quoted when printed if they would otherwise be misread - e.g.</span><span>
+</span><a name="line-29"></a><span class="hs-comment">-- when containing special characters.</span><span>
+</span><a name="line-30"></a><span class="hs-comment">--</span><span>
+</span><a name="line-31"></a><span class="hs-comment">-- &gt; 7</span><span>
+</span><a name="line-32"></a><span class="hs-comment">--</span><span>
+</span><a name="line-33"></a><span class="hs-comment">-- means the seventh unnamed object, while</span><span>
+</span><a name="line-34"></a><span class="hs-comment">--</span><span>
+</span><a name="line-35"></a><span class="hs-comment">-- &gt; &quot;7&quot;</span><span>
+</span><a name="line-36"></a><span class="hs-comment">--</span><span>
+</span><a name="line-37"></a><span class="hs-comment">-- means the object named with the string &quot;7&quot;.</span><span>
+</span><a name="line-38"></a><span class="hs-comment">--</span><span>
+</span><a name="line-39"></a><span class="hs-comment">-- This libraries handling of 'UnName's during translation of the AST down into</span><span>
+</span><a name="line-40"></a><span class="hs-comment">-- C++ IR is somewhat more forgiving than the LLVM assembly parser: it does not</span><span>
+</span><a name="line-41"></a><span class="hs-comment">-- require that unnamed values be numbered sequentially; however, the numbers of</span><span>
+</span><a name="line-42"></a><span class="hs-comment">-- 'UnName's passed into C++ cannot be preserved in the C++ objects. If the C++</span><span>
+</span><a name="line-43"></a><span class="hs-comment">-- IR is printed as assembly or translated into a Haskell AST, unnamed nodes</span><span>
+</span><a name="line-44"></a><span class="hs-comment">-- will be renumbered sequentially. Thus unnamed node numbers should be thought</span><span>
+</span><a name="line-45"></a><span class="hs-comment">-- of as having any scope limited to the 'LLVM.AST.Module' in which they</span><span>
+</span><a name="line-46"></a><span class="hs-comment">-- are used.</span><span>
+</span><a name="line-47"></a><span class="hs-comment">--</span><span>
+</span><a name="line-48"></a><span class="hs-keyword">type</span><span> </span><span class="hs-identifier">role</span><span> </span><span class="hs-identifier">Name</span><span> </span><span class="hs-identifier">representational</span><span>
+</span><a name="line-49"></a><span class="hs-keyword">data</span><span> </span><a name="Name"><a href="LLVM.AST.Type.Name.html#Name"><span class="hs-identifier">Name</span></a></a><span> </span><a name="local-6989586621679179824"><a href="#local-6989586621679179824"><span class="hs-identifier">a</span></a></a><span>
+</span><a name="line-50"></a><span>  </span><span class="hs-glyph">=</span><span> </span><a name="Name"><a href="LLVM.AST.Type.Name.html#Name"><span class="hs-identifier">Name</span></a></a><span>   </span><span class="hs-pragma">{-# UNPACK #-}</span><span> </span><span class="hs-glyph">!</span><span class="hs-identifier hs-type">ShortByteString</span><span>    </span><span class="hs-comment">-- ^ a string name</span><span>
+</span><a name="line-51"></a><span>  </span><span class="hs-glyph">|</span><span> </span><a name="UnName"><a href="LLVM.AST.Type.Name.html#UnName"><span class="hs-identifier">UnName</span></a></a><span> </span><span class="hs-pragma">{-# UNPACK #-}</span><span> </span><span class="hs-glyph">!</span><span class="hs-identifier hs-type">Word</span><span>               </span><span class="hs-comment">-- ^ a number for a nameless thing</span><span>
+</span><a name="line-52"></a><span>  </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span class="hs-identifier hs-type">Eq</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-type">Ord</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-type">Read</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-type">Show</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-type">Typeable</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-type">Data</span><span class="hs-special">)</span><span>
+</span><a name="line-53"></a><span>
+</span><a name="line-54"></a><span class="hs-keyword">instance</span><span> </span><span class="hs-identifier hs-type">IsString</span><span> </span><span class="hs-special">(</span><a href="LLVM.AST.Type.Name.html#Name"><span class="hs-identifier hs-type">Name</span></a><span> </span><a href="#local-6989586621679179827"><span class="hs-identifier hs-type">a</span></a><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><a name="line-55"></a><span>  </span><a name="local-3458764513820541114"><span class="hs-identifier">fromString</span></a><span> </span><span class="hs-glyph">=</span><span> </span><a href="LLVM.AST.Type.Name.html#Name"><span class="hs-identifier hs-var">Name</span></a><span> </span><span class="hs-operator hs-var">.</span><span> </span><span class="hs-identifier hs-var">fromString</span><span>
+</span><a name="line-56"></a><span>
+</span><a name="line-57"></a><span>
+</span><a name="line-58"></a><span class="hs-comment">-- TLM: 'Name' is used a lot over the place, to refer to things like variables</span><span>
+</span><a name="line-59"></a><span class="hs-comment">--      as well as basic block labels. In the first case the type makes sense,</span><span>
+</span><a name="line-60"></a><span class="hs-comment">--      but what about the latter? Should basic blocks have type '()', or 'IO</span><span>
+</span><a name="line-61"></a><span class="hs-comment">--      ()', or the type of the thing that they &quot;return&quot; (although, from memory</span><span>
+</span><a name="line-62"></a><span class="hs-comment">--      BBs don't really return anything, they just compute a bunch of stuff</span><span>
+</span><a name="line-63"></a><span class="hs-comment">--      which is now in scope. Hmm... the only types that we can truly know are</span><span>
+</span><a name="line-64"></a><span class="hs-comment">--      the inputs to the basic block bound via phi nodes, but this is</span><span>
+</span><a name="line-65"></a><span class="hs-comment">--      unsatisfactory... )</span><span>
+</span><a name="line-66"></a><span class="hs-comment">--</span><span>
+</span><a name="line-67"></a><span>
+</span><a name="line-68"></a><span class="hs-keyword">data</span><span> </span><a name="Label"><a href="LLVM.AST.Type.Name.html#Label"><span class="hs-identifier">Label</span></a></a><span> </span><span class="hs-glyph">=</span><span> </span><a name="Label"><a href="LLVM.AST.Type.Name.html#Label"><span class="hs-identifier">Label</span></a></a><span> </span><span class="hs-pragma">{-# UNPACK #-}</span><span> </span><span class="hs-glyph">!</span><span class="hs-identifier hs-type">ShortByteString</span><span>
+</span><a name="line-69"></a><span>  </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span class="hs-identifier hs-type">Eq</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-type">Ord</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-type">Read</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-type">Show</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-type">Typeable</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-type">Data</span><span class="hs-special">)</span><span>
+</span><a name="line-70"></a><span>
+</span><a name="line-71"></a><span class="hs-keyword">instance</span><span> </span><span class="hs-identifier hs-type">IsString</span><span> </span><a href="LLVM.AST.Type.Name.html#Label"><span class="hs-identifier hs-type">Label</span></a><span> </span><span class="hs-keyword">where</span><span>
+</span><a name="line-72"></a><span>  </span><a name="local-3458764513820541114"><span class="hs-identifier">fromString</span></a><span> </span><span class="hs-glyph">=</span><span> </span><a href="LLVM.AST.Type.Name.html#Label"><span class="hs-identifier hs-var">Label</span></a><span> </span><span class="hs-operator hs-var">.</span><span> </span><span class="hs-identifier hs-var">fromString</span><span>
+</span><a name="line-73"></a><span>
+</span><a name="line-74"></a><span class="hs-keyword">instance</span><span> </span><span class="hs-identifier hs-type">Monoid</span><span> </span><a href="LLVM.AST.Type.Name.html#Label"><span class="hs-identifier hs-type">Label</span></a><span> </span><span class="hs-keyword">where</span><span>
+</span><a name="line-75"></a><span>  </span><a name="local-3458764513820541483"><span class="hs-identifier">mempty</span></a><span>                      </span><span class="hs-glyph">=</span><span> </span><a href="LLVM.AST.Type.Name.html#Label"><span class="hs-identifier hs-var">Label</span></a><span> </span><span class="hs-identifier hs-var">mempty</span><span>
+</span><a name="line-76"></a><span>  </span><a name="local-3458764513820541484"><span class="hs-identifier">mappend</span></a><span> </span><span class="hs-special">(</span><a href="LLVM.AST.Type.Name.html#Label"><span class="hs-identifier hs-var">Label</span></a><span> </span><a name="local-6989586621679179825"><a href="#local-6989586621679179825"><span class="hs-identifier">x</span></a></a><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><a href="LLVM.AST.Type.Name.html#Label"><span class="hs-identifier hs-var">Label</span></a><span> </span><a name="local-6989586621679179826"><a href="#local-6989586621679179826"><span class="hs-identifier">y</span></a></a><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><a href="LLVM.AST.Type.Name.html#Label"><span class="hs-identifier hs-var">Label</span></a><span> </span><span class="hs-special">(</span><span class="hs-identifier hs-var">mappend</span><span> </span><a href="#local-6989586621679179825"><span class="hs-identifier hs-var">x</span></a><span> </span><a href="#local-6989586621679179826"><span class="hs-identifier hs-var">y</span></a><span class="hs-special">)</span><span>
+</span><a name="line-77"></a><span>
+</span><a name="line-78"></a></pre></body></html>

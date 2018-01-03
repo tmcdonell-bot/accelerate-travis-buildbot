@@ -1,0 +1,24 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-pragma">{-# LANGUAGE ConstraintKinds  #-}</span><span>
+</span><a name="line-2"></a><span class="hs-pragma">{-# LANGUAGE FlexibleContexts #-}</span><span>
+</span><a name="line-3"></a><span class="hs-comment">-- |</span><span>
+</span><a name="line-4"></a><span class="hs-comment">-- Module      : Data.Array.Accelerate.Math.FFT.Elt</span><span>
+</span><a name="line-5"></a><span class="hs-comment">-- Copyright   : [2017] Trevor L. McDonell</span><span>
+</span><a name="line-6"></a><span class="hs-comment">-- License     : BSD3</span><span>
+</span><a name="line-7"></a><span class="hs-comment">--</span><span>
+</span><a name="line-8"></a><span class="hs-comment">-- Maintainer  : Trevor L. McDonell &lt;tmcdonell@cse.unsw.edu.au&gt;</span><span>
+</span><a name="line-9"></a><span class="hs-comment">-- Stability   : experimental</span><span>
+</span><a name="line-10"></a><span class="hs-comment">-- Portability : non-portable (GHC extensions)</span><span>
+</span><a name="line-11"></a><span class="hs-comment">--</span><span>
+</span><a name="line-12"></a><span>
+</span><a name="line-13"></a><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">Data</span><span class="hs-operator">.</span><span class="hs-identifier">Array</span><span class="hs-operator">.</span><span class="hs-identifier">Accelerate</span><span class="hs-operator">.</span><span class="hs-identifier">Math</span><span class="hs-operator">.</span><span class="hs-identifier">FFT</span><span class="hs-operator">.</span><span class="hs-identifier">Elt</span><span>
+</span><a name="line-14"></a><span>  </span><span class="hs-keyword">where</span><span>
+</span><a name="line-15"></a><span>
+</span><a name="line-16"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">Data</span><span class="hs-operator">.</span><span class="hs-identifier">Array</span><span class="hs-operator">.</span><span class="hs-identifier">Accelerate</span><span>                                        </span><span class="hs-keyword">as</span><span> </span><span class="hs-identifier">A</span><span>
+</span><a name="line-17"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">Prelude</span><span>                                                      </span><span class="hs-keyword">as</span><span> </span><span class="hs-identifier">P</span><span>
+</span><a name="line-18"></a><span>
+</span><a name="line-19"></a><span>
+</span><a name="line-20"></a><span class="hs-comment">-- | The type of supported FFT elements; namely 'Float' and 'Double'.</span><span>
+</span><a name="line-21"></a><span class="hs-comment">--</span><span>
+</span><a name="line-22"></a><span class="hs-keyword">type</span><span> </span><a name="FFTElt"><a href="Data.Array.Accelerate.Math.FFT.Elt.html#FFTElt"><span class="hs-identifier">FFTElt</span></a></a><span> </span><a name="local-6989586621679137760"><a href="#local-6989586621679137760"><span class="hs-identifier">e</span></a></a><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">(</span><span class="hs-identifier hs-type">P</span><span class="hs-operator hs-type">.</span><span class="hs-identifier hs-type">Num</span><span> </span><a href="#local-6989586621679137760"><span class="hs-identifier hs-type">e</span></a><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-type">A</span><span class="hs-operator hs-type">.</span><span class="hs-identifier hs-type">RealFloat</span><span> </span><a href="#local-6989586621679137760"><span class="hs-identifier hs-type">e</span></a><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-type">A</span><span class="hs-operator hs-type">.</span><span class="hs-identifier hs-type">FromIntegral</span><span> </span><span class="hs-identifier hs-type">Int</span><span> </span><a href="#local-6989586621679137760"><span class="hs-identifier hs-type">e</span></a><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-type">A</span><span class="hs-operator hs-type">.</span><span class="hs-identifier hs-type">IsFloating</span><span> </span><a href="#local-6989586621679137760"><span class="hs-identifier hs-type">e</span></a><span class="hs-special">)</span><span>
+</span><a name="line-23"></a><span>
+</span><a name="line-24"></a></pre></body></html>

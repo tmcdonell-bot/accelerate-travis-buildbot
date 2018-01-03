@@ -1,0 +1,29 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-comment">-- |</span><span>
+</span><a name="line-2"></a><span class="hs-comment">-- Module      : Data.Array.Accelerate.Math.FFT.Mode</span><span>
+</span><a name="line-3"></a><span class="hs-comment">-- Copyright   : [2012..2017] Manuel M T Chakravarty, Gabriele Keller, Trevor L. McDonell</span><span>
+</span><a name="line-4"></a><span class="hs-comment">--               [2013..2017] Robert Clifton-Everest</span><span>
+</span><a name="line-5"></a><span class="hs-comment">-- License     : BSD3</span><span>
+</span><a name="line-6"></a><span class="hs-comment">--</span><span>
+</span><a name="line-7"></a><span class="hs-comment">-- Maintainer  : Trevor L. McDonell &lt;tmcdonell@cse.unsw.edu.au&gt;</span><span>
+</span><a name="line-8"></a><span class="hs-comment">-- Stability   : experimental</span><span>
+</span><a name="line-9"></a><span class="hs-comment">-- Portability : non-portable (GHC extensions)</span><span>
+</span><a name="line-10"></a><span class="hs-comment">--</span><span>
+</span><a name="line-11"></a><span>
+</span><a name="line-12"></a><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">Data</span><span class="hs-operator">.</span><span class="hs-identifier">Array</span><span class="hs-operator">.</span><span class="hs-identifier">Accelerate</span><span class="hs-operator">.</span><span class="hs-identifier">Math</span><span class="hs-operator">.</span><span class="hs-identifier">FFT</span><span class="hs-operator">.</span><span class="hs-identifier">Mode</span><span>
+</span><a name="line-13"></a><span>  </span><span class="hs-keyword">where</span><span>
+</span><a name="line-14"></a><span>
+</span><a name="line-15"></a><span>
+</span><a name="line-16"></a><span class="hs-keyword">data</span><span> </span><a name="Mode"><a href="Data.Array.Accelerate.Math.FFT.Mode.html#Mode"><span class="hs-identifier">Mode</span></a></a><span>
+</span><a name="line-17"></a><span>  </span><span class="hs-glyph">=</span><span> </span><a name="Forward"><a href="Data.Array.Accelerate.Math.FFT.Mode.html#Forward"><span class="hs-identifier">Forward</span></a></a><span>         </span><span class="hs-comment">-- ^ Forward DFT</span><span>
+</span><a name="line-18"></a><span>  </span><span class="hs-glyph">|</span><span> </span><a name="Reverse"><a href="Data.Array.Accelerate.Math.FFT.Mode.html#Reverse"><span class="hs-identifier">Reverse</span></a></a><span>         </span><span class="hs-comment">-- ^ Inverse DFT, un-normalised</span><span>
+</span><a name="line-19"></a><span>  </span><span class="hs-glyph">|</span><span> </span><a name="Inverse"><a href="Data.Array.Accelerate.Math.FFT.Mode.html#Inverse"><span class="hs-identifier">Inverse</span></a></a><span>         </span><span class="hs-comment">-- ^ Inverse DFT, normalised</span><span>
+</span><a name="line-20"></a><span>  </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span class="hs-identifier hs-type">Eq</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-type">Show</span><span class="hs-special">)</span><span>
+</span><a name="line-21"></a><span>
+</span><a name="line-22"></a><span class="hs-identifier">signOfMode</span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-identifier hs-type">Num</span><span> </span><a href="#local-6989586621679219474"><span class="hs-identifier hs-type">a</span></a><span> </span><span class="hs-glyph">=&gt;</span><span> </span><a href="Data.Array.Accelerate.Math.FFT.Mode.html#Mode"><span class="hs-identifier hs-type">Mode</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><a href="#local-6989586621679219474"><span class="hs-identifier hs-type">a</span></a><span>
+</span><a name="line-23"></a><a name="signOfMode"><a href="Data.Array.Accelerate.Math.FFT.Mode.html#signOfMode"><span class="hs-identifier">signOfMode</span></a></a><span> </span><a name="local-6989586621679219475"><a href="#local-6989586621679219475"><span class="hs-identifier">m</span></a></a><span>
+</span><a name="line-24"></a><span>  </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">case</span><span> </span><a href="#local-6989586621679219475"><span class="hs-identifier hs-var">m</span></a><span> </span><span class="hs-keyword">of</span><span>
+</span><a name="line-25"></a><span>      </span><a href="Data.Array.Accelerate.Math.FFT.Mode.html#Forward"><span class="hs-identifier hs-var">Forward</span></a><span>   </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-glyph">-</span><span class="hs-number">1</span><span>
+</span><a name="line-26"></a><span>      </span><a href="Data.Array.Accelerate.Math.FFT.Mode.html#Reverse"><span class="hs-identifier hs-var">Reverse</span></a><span>   </span><span class="hs-glyph">-&gt;</span><span>  </span><span class="hs-number">1</span><span>
+</span><a name="line-27"></a><span>      </span><a href="Data.Array.Accelerate.Math.FFT.Mode.html#Inverse"><span class="hs-identifier hs-var">Inverse</span></a><span>   </span><span class="hs-glyph">-&gt;</span><span>  </span><span class="hs-number">1</span><span>
+</span><a name="line-28"></a><span>
+</span><a name="line-29"></a></pre></body></html>

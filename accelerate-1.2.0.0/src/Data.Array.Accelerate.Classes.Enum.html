@@ -1,0 +1,72 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-pragma">{-# LANGUAGE ConstraintKinds   #-}</span><span>
+</span><a name="line-2"></a><span class="hs-pragma">{-# LANGUAGE FlexibleContexts  #-}</span><span>
+</span><a name="line-3"></a><span class="hs-pragma">{-# LANGUAGE FlexibleInstances #-}</span><span>
+</span><a name="line-4"></a><span class="hs-pragma">{-# LANGUAGE MonoLocalBinds    #-}</span><span>
+</span><a name="line-5"></a><span class="hs-pragma">{-# OPTIONS_GHC -fno-warn-missing-methods #-}</span><span>
+</span><a name="line-6"></a><span class="hs-pragma">{-# OPTIONS_GHC -fno-warn-orphans         #-}</span><span>
+</span><a name="line-7"></a><span class="hs-comment">-- |</span><span>
+</span><a name="line-8"></a><span class="hs-comment">-- Module      : Data.Array.Accelerate.Classes.Enum</span><span>
+</span><a name="line-9"></a><span class="hs-comment">-- Copyright   : [2016..2017] Manuel M T Chakravarty, Gabriele Keller, Trevor L. McDonell</span><span>
+</span><a name="line-10"></a><span class="hs-comment">-- License     : BSD3</span><span>
+</span><a name="line-11"></a><span class="hs-comment">--</span><span>
+</span><a name="line-12"></a><span class="hs-comment">-- Maintainer  : Trevor L. McDonell &lt;tmcdonell@cse.unsw.edu.au&gt;</span><span>
+</span><a name="line-13"></a><span class="hs-comment">-- Stability   : experimental</span><span>
+</span><a name="line-14"></a><span class="hs-comment">-- Portability : non-portable (GHC extensions)</span><span>
+</span><a name="line-15"></a><span class="hs-comment">--</span><span>
+</span><a name="line-16"></a><span>
+</span><a name="line-17"></a><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">Data</span><span class="hs-operator">.</span><span class="hs-identifier">Array</span><span class="hs-operator">.</span><span class="hs-identifier">Accelerate</span><span class="hs-operator">.</span><span class="hs-identifier">Classes</span><span class="hs-operator">.</span><span class="hs-identifier">Enum</span><span> </span><span class="hs-special">(</span><span>
+</span><a name="line-18"></a><span>
+</span><a name="line-19"></a><span>  </span><a href="Data.Array.Accelerate.Classes.Enum.html#Enum"><span class="hs-identifier hs-type">Enum</span></a><span class="hs-special">,</span><span>
+</span><a name="line-20"></a><span>
+</span><a name="line-21"></a><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><a name="line-22"></a><span>
+</span><a name="line-23"></a><span class="hs-keyword">import</span><span> </span><a href="Data.Array.Accelerate.Smart.html"><span class="hs-identifier">Data</span><span class="hs-operator">.</span><span class="hs-identifier">Array</span><span class="hs-operator">.</span><span class="hs-identifier">Accelerate</span><span class="hs-operator">.</span><span class="hs-identifier">Smart</span></a><span>
+</span><a name="line-24"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">Text</span><span class="hs-operator">.</span><span class="hs-identifier">Printf</span><span>
+</span><a name="line-25"></a><span>
+</span><a name="line-26"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">Prelude</span><span>                                                      </span><span class="hs-special">(</span><span> </span><span class="hs-identifier hs-type">String</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-var">error</span><span> </span><span class="hs-special">)</span><span>
+</span><a name="line-27"></a><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="hs-identifier">Prelude</span><span>                                            </span><span class="hs-keyword">as</span><span> </span><span class="hs-identifier">P</span><span>
+</span><a name="line-28"></a><span>
+</span><a name="line-29"></a><span>
+</span><a name="line-30"></a><span class="hs-comment">-- | Operations over sequentially ordered types</span><span>
+</span><a name="line-31"></a><span class="hs-comment">--</span><span>
+</span><a name="line-32"></a><span class="hs-keyword">type</span><span> </span><a name="Enum"><a href="Data.Array.Accelerate.Classes.Enum.html#Enum"><span class="hs-identifier">Enum</span></a></a><span> </span><a name="local-6989586621680151044"><a href="#local-6989586621680151044"><span class="hs-identifier">a</span></a></a><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier hs-type">P</span><span class="hs-operator hs-type">.</span><span class="hs-identifier hs-type">Enum</span><span> </span><span class="hs-special">(</span><a href="Data.Array.Accelerate.Smart.html#Exp"><span class="hs-identifier hs-type">Exp</span></a><span> </span><a href="#local-6989586621680151044"><span class="hs-identifier hs-type">a</span></a><span class="hs-special">)</span><span>
+</span><a name="line-33"></a><span>
+</span><a name="line-34"></a><span>
+</span><a name="line-35"></a><span class="hs-comment">-- Instances of 'Enum' don't make sense in Accelerate at the moment. These are</span><span>
+</span><a name="line-36"></a><span class="hs-comment">-- only provided to fulfil superclass constraints; e.g. Integral.</span><span>
+</span><a name="line-37"></a><span class="hs-comment">--</span><span>
+</span><a name="line-38"></a><span class="hs-keyword">instance</span><span> </span><span class="hs-identifier hs-type">P</span><span class="hs-operator hs-type">.</span><span class="hs-identifier hs-type">Enum</span><span> </span><span class="hs-special">(</span><a href="Data.Array.Accelerate.Smart.html#Exp"><span class="hs-identifier hs-type">Exp</span></a><span> </span><a href="#local-6989586621680151045"><span class="hs-identifier hs-type">a</span></a><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><a name="line-39"></a><span>  </span><a name="local-8214565720323790609"><span class="hs-identifier">toEnum</span></a><span>   </span><span class="hs-glyph">=</span><span> </span><a href="Data.Array.Accelerate.Classes.Enum.html#preludeError"><span class="hs-identifier hs-var">preludeError</span></a><span> </span><span class="hs-string">&quot;toEnum&quot;</span><span>
+</span><a name="line-40"></a><span>  </span><a name="local-8214565720323790608"><span class="hs-identifier">fromEnum</span></a><span> </span><span class="hs-glyph">=</span><span> </span><a href="Data.Array.Accelerate.Classes.Enum.html#preludeError"><span class="hs-identifier hs-var">preludeError</span></a><span> </span><span class="hs-string">&quot;fromEnum&quot;</span><span>
+</span><a name="line-41"></a><span>
+</span><a name="line-42"></a><span class="hs-identifier">preludeError</span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-identifier hs-type">String</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><a href="#local-6989586621680151046"><span class="hs-identifier hs-type">a</span></a><span>
+</span><a name="line-43"></a><a name="preludeError"><a href="Data.Array.Accelerate.Classes.Enum.html#preludeError"><span class="hs-identifier">preludeError</span></a></a><span> </span><a name="local-6989586621680151047"><a href="#local-6989586621680151047"><span class="hs-identifier">x</span></a></a><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier hs-var">error</span><span> </span><span class="hs-special">(</span><span class="hs-identifier hs-var">printf</span><span> </span><span class="hs-string">&quot;Prelude.%s not supported for Accelerate types&quot;</span><span> </span><a href="#local-6989586621680151047"><span class="hs-identifier hs-var">x</span></a><span class="hs-special">)</span><span>
+</span><a name="line-44"></a><span>
+</span><a name="line-45"></a><span class="hs-comment">-- instance Enum (Exp Int8)</span><span>
+</span><a name="line-46"></a><span class="hs-comment">-- instance Enum (Exp Int16)</span><span>
+</span><a name="line-47"></a><span class="hs-comment">-- instance Enum (Exp Int32)</span><span>
+</span><a name="line-48"></a><span class="hs-comment">-- instance Enum (Exp Int64)</span><span>
+</span><a name="line-49"></a><span class="hs-comment">-- instance Enum (Exp Word)</span><span>
+</span><a name="line-50"></a><span class="hs-comment">-- instance Enum (Exp Word8)</span><span>
+</span><a name="line-51"></a><span class="hs-comment">-- instance Enum (Exp Word16)</span><span>
+</span><a name="line-52"></a><span class="hs-comment">-- instance Enum (Exp Word32)</span><span>
+</span><a name="line-53"></a><span class="hs-comment">-- instance Enum (Exp Word64)</span><span>
+</span><a name="line-54"></a><span class="hs-comment">-- instance Enum (Exp CInt)</span><span>
+</span><a name="line-55"></a><span class="hs-comment">-- instance Enum (Exp CUInt)</span><span>
+</span><a name="line-56"></a><span class="hs-comment">-- instance Enum (Exp CLong)</span><span>
+</span><a name="line-57"></a><span class="hs-comment">-- instance Enum (Exp CULong)</span><span>
+</span><a name="line-58"></a><span class="hs-comment">-- instance Enum (Exp CLLong)</span><span>
+</span><a name="line-59"></a><span class="hs-comment">-- instance Enum (Exp CULLong)</span><span>
+</span><a name="line-60"></a><span class="hs-comment">-- instance Enum (Exp CShort)</span><span>
+</span><a name="line-61"></a><span class="hs-comment">-- instance Enum (Exp CUShort)</span><span>
+</span><a name="line-62"></a><span class="hs-comment">-- instance Enum (Exp Bool)</span><span>
+</span><a name="line-63"></a><span class="hs-comment">-- instance Enum (Exp Char)</span><span>
+</span><a name="line-64"></a><span class="hs-comment">-- instance Enum (Exp CChar)</span><span>
+</span><a name="line-65"></a><span class="hs-comment">-- instance Enum (Exp CUChar)</span><span>
+</span><a name="line-66"></a><span class="hs-comment">-- instance Enum (Exp CSChar)</span><span>
+</span><a name="line-67"></a><span class="hs-comment">-- instance Enum (Exp Float)</span><span>
+</span><a name="line-68"></a><span class="hs-comment">-- instance Enum (Exp Double)</span><span>
+</span><a name="line-69"></a><span class="hs-comment">-- instance Enum (Exp CFloat)</span><span>
+</span><a name="line-70"></a><span class="hs-comment">-- instance Enum (Exp CDouble)</span><span>
+</span><a name="line-71"></a><span>
+</span><a name="line-72"></a></pre></body></html>

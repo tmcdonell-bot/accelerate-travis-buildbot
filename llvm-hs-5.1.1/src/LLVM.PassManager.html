@@ -1,0 +1,15 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-comment">-- | A 'PassManager' holds collection of passes, to be run on 'Module's.</span><span>
+</span><a name="line-2"></a><span class="hs-comment">-- Build one with 'withPassManager':</span><span>
+</span><a name="line-3"></a><span class="hs-comment">-- </span><span>
+</span><a name="line-4"></a><span class="hs-comment">--  * using 'CuratedPassSetSpec' if you want optimization but not to play with your compiler</span><span>
+</span><a name="line-5"></a><span class="hs-comment">--</span><span>
+</span><a name="line-6"></a><span class="hs-comment">--  * using 'PassSetSpec' if you do want to play with your compiler</span><span>
+</span><a name="line-7"></a><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">LLVM</span><span class="hs-operator">.</span><span class="hs-identifier">PassManager</span><span> </span><span class="hs-special">(</span><span>
+</span><a name="line-8"></a><span>  </span><a href="LLVM.Internal.PassManager.html#PassManager"><span class="hs-identifier hs-type">PassManager</span></a><span class="hs-special">,</span><span>
+</span><a name="line-9"></a><span>  </span><a href="LLVM.Internal.PassManager.html#PassSetSpec"><span class="hs-identifier hs-type">PassSetSpec</span></a><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span class="hs-special">,</span><span> </span><a href="LLVM.Internal.PassManager.html#defaultPassSetSpec"><span class="hs-identifier hs-var">defaultPassSetSpec</span></a><span class="hs-special">,</span><span> </span><a href="LLVM.Internal.PassManager.html#defaultCuratedPassSetSpec"><span class="hs-identifier hs-var">defaultCuratedPassSetSpec</span></a><span class="hs-special">,</span><span>
+</span><a name="line-10"></a><span>  </span><a href="LLVM.Internal.PassManager.html#withPassManager"><span class="hs-identifier hs-var">withPassManager</span></a><span class="hs-special">,</span><span>
+</span><a name="line-11"></a><span>  </span><a href="LLVM.Internal.PassManager.html#runPassManager"><span class="hs-identifier hs-var">runPassManager</span></a><span>
+</span><a name="line-12"></a><span>  </span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><a name="line-13"></a><span>
+</span><a name="line-14"></a><span class="hs-keyword">import</span><span> </span><a href="LLVM.Internal.PassManager.html"><span class="hs-identifier">LLVM</span><span class="hs-operator">.</span><span class="hs-identifier">Internal</span><span class="hs-operator">.</span><span class="hs-identifier">PassManager</span></a><span>
+</span><a name="line-15"></a></pre></body></html>
