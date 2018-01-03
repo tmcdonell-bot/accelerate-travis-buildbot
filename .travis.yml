@@ -114,7 +114,7 @@ install:
   - stack --version
   # - travis_retry travis_wait 60 stack build --test --fast --jobs=2 --only-dependencies --no-terminal --no-copy-bins --no-run-tests ${HADDOCK} ${TARGET}
 
-  - travis_retry travis_wait 60 stack build --test --fast --jobs=2 --only-dependencies --no-terminal --no-copy-bins --no-run-tests ${HADDOCK} accelerate-examples
+  - travis_retry travis_wait 60 stack build --test --fast --jobs=2 --only-dependencies --no-terminal --no-copy-bins --no-run-tests ${HADDOCK} accelerate-fft accelerate-blas gloss-raster-accelerate
 
 script:
   - true
