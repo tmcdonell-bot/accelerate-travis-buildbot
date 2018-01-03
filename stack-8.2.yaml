@@ -8,7 +8,7 @@ packages:
 
 extra-deps:
 - git:    https://github.com/tmcdonell/accelerate.git
-  commit: 4c7240aa84bced5e2c9393ed6dd281097d0f0722
+  commit: dc308dc08b6371a8f35b4b373ee99a7a6dc9d828
 
 - git:    https://github.com/tmcdonell/accelerate-llvm.git
   commit: 80aef0c0eccc5a2b551f2e07e243973baf7560cf
@@ -72,7 +72,7 @@ extra-deps:
   commit: 5e7edaadf96a5c415efbb4d3a3b120d32611841c
 
 - git:    https://github.com/tmcdonell/nvvm.git
-  commit: e56769202f97e44e129d452e98e2b876c13f1de6
+  commit: cc4d1eec1977b9c43697a02c20f9165a72668e1d
 
 # Override default flag values for local packages and extra-deps
 flags:
