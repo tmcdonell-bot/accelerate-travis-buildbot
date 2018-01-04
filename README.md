@@ -6,7 +6,7 @@ accelerate-travis-buildbot
 
 This is a meta-repository for the entire Accelerate family of packages. Its goal
 is to automatically attempt to rebuild all packages once any one of them
-changes. The collected documentation can be found [here](http://tmcdonell-bot.github.io/accelerate-travis-buildbot/all/).
+changes. The collected documentation can be found [here](http://tmcdonell-bot.github.io/accelerate-travis-buildbot/).
 
 Status of individual repositories:
 
