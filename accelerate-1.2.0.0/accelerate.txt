@@ -3172,13 +3172,9 @@ linearIndexArray :: Array sh e -> Int -> e
 
 -- | Create an array from its representation function, applied at each
 --   index of the array.
---   
---   {--}
 fromFunction :: (Shape sh, Elt e) => sh -> (sh -> e) -> Array sh e
 
 -- | Create an array using a monadic function applied at each index.
---   
---   {--}
 fromFunctionM :: (Shape sh, Elt e) => sh -> (sh -> IO e) -> IO (Array sh e)
 
 -- | Convert elements of a list into an Accelerate <a>Array</a>.
@@ -3217,8 +3213,6 @@ fromFunctionM :: (Shape sh, Elt e) => sh -> (sh -> IO e) -> IO (Array sh e)
 --   length, and then traversing it a second time to collect the elements
 --   into the array, thus forcing the spine of the list to be manifest on
 --   the heap.
---   
---   {--}
 fromList :: (Shape sh, Elt e) => sh -> [e] -> Array sh e
 
 -- | Convert an accelerated <a>Array</a> to a list in row-major order.
