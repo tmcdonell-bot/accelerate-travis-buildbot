@@ -23,7 +23,7 @@
 --   See the <a>travis-ci.org</a> build matrix for tested CUDA library
 --   versions.
 @package nvvm
-@version 0.8.0.1
+@version 0.8.0.2
 
 
 -- | Error handling
