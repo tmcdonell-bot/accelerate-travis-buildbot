@@ -1,0 +1,61 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>Crypto.Tutorial</title><link href="ocean.css" rel="stylesheet" type="text/css" title="Ocean" /><script src="haddock-util.js" type="text/javascript"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script><script type="text/javascript">//<![CDATA[
+window.onload = function () {pageLoad();};
+//]]>
+</script></head><body><div id="package-header"><ul class="links" id="page-menu"><li><a href="src/Crypto.Tutorial.html">Source</a></li><li><a href="index.html">Contents</a></li><li><a href="doc-index.html">Index</a></li></ul><p class="caption">cryptonite-0.24: Cryptography Primitives sink</p></div><div id="content"><div id="module-header"><table class="info"><tr><th>Safe Haskell</th><td>Safe</td></tr><tr><th>Language</th><td>Haskell2010</td></tr></table><p class="caption">Crypto.Tutorial</p></div><div id="table-of-contents"><p class="caption">Contents</p><ul><li><a href="#g:1">Symmetric block ciphers</a></li></ul></div><div id="description"><p class="caption">Description</p><div class="doc"><p>Examples of how to use <code>cryptonite</code>.</p></div></div><div id="synopsis"><p id="control.syn" class="caption expander" onclick="toggleSection('syn')">Synopsis</p><ul id="section.syn" class="hide" onclick="toggleSection('syn')"></ul></div><div id="interface"><h1 id="g:1">Symmetric block ciphers</h1><div class="doc"><pre>{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE GADTs #-}
+
+import           Crypto.Cipher.AES (AES256)
+import           Crypto.Cipher.Types (BlockCipher(..), Cipher(..), nullIV, KeySizeSpecifier(..), IV, makeIV)
+import           Crypto.Error (CryptoFailable(..), CryptoError(..))
+
+import qualified Crypto.Random.Types as CRT
+
+import           Data.ByteArray (ByteArray)
+import           Data.ByteString (ByteString)
+
+-- | Not required, but most general implementation
+data Key c a where
+  Key :: (BlockCipher c, ByteArray a) =&gt; a -&gt; Key c a
+
+-- | Generates a string of bytes (key) of a specific length for a given block cipher
+genSecretKey :: forall m c a. (CRT.MonadRandom m, BlockCipher c, ByteArray a) =&gt; c -&gt; Int -&gt; m (Key c a)
+genSecretKey _ = fmap Key . CRT.getRandomBytes
+
+-- | Generate a random initialization vector for a given block cipher
+genRandomIV :: forall m c. (CRT.MonadRandom m, BlockCipher c) =&gt; c -&gt; m (Maybe (IV c))
+genRandomIV _ = do
+  bytes :: ByteString &lt;- CRT.getRandomBytes $ blockSize (undefined :: c)
+  return $ makeIV bytes
+
+-- | Initialize a block cipher
+initCipher :: (BlockCipher c, ByteArray a) =&gt; Key c a -&gt; Either CryptoError c
+initCipher (Key k) = case cipherInit k of
+  CryptoFailed e -&gt; Left e
+  CryptoPassed a -&gt; Right a
+
+encrypt :: (BlockCipher c, ByteArray a) =&gt; Key c a -&gt; IV c -&gt; a -&gt; Either CryptoError a
+encrypt secretKey initIV msg =
+  case initCipher secretKey of
+    Left e -&gt; Left e
+    Right c -&gt; Right $ ctrCombine c initIV msg
+
+decrypt :: (BlockCipher c, ByteArray a) =&gt; Key c a -&gt; IV c -&gt; a -&gt; Either CryptoError a
+decrypt = encrypt
+
+exampleAES256 :: ByteString -&gt; IO ()
+exampleAES256 msg = do
+  -- secret key needs 256 bits (32 * 8)
+  secretKey &lt;- genSecretKey (undefined :: AES256) 32
+  mInitIV &lt;- genRandomIV (undefined :: AES256)
+  case mInitIV of
+    Nothing -&gt; error &quot;Failed to generate and initialization vector.&quot;
+    Just initIV -&gt; do
+      let encryptedMsg = encrypt secretKey initIV msg
+          decryptedMsg = decrypt secretKey initIV =&lt;&lt; encryptedMsg
+      case (,) &lt;$&gt; encryptedMsg &lt;*&gt; decryptedMsg of
+        Left err -&gt; error $ show err
+        Right (eMsg, dMsg) -&gt; do
+          putStrLn $ &quot;Original Message: &quot; ++ show msg
+          putStrLn $ &quot;Message after encryption: &quot; ++ show eMsg
+          putStrLn $ &quot;Message after decryption: &quot; ++ show dMsg</pre></div></div></div><div id="footer"><p>Produced by <a href="http://www.haskell.org/haddock/">Haddock</a> version 2.18.1</p></div></body></html>
