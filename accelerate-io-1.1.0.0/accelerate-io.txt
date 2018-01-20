@@ -41,13 +41,35 @@ toIArray :: forall ix sh a e. (IxShapeRepr (EltRepr ix) ~ EltRepr sh, IArray a e
 --   <a>Array</a>s.
 module Data.Array.Accelerate.IO.Data.ByteString
 
--- | <i>O(1)</i>. Convert a strict <a>ByteString</a> into an Accelerate
---   <a>Array</a>.
-fromByteString :: ByteString -> Array DIM1 Word8
+-- | A family of types that represents a collection of <a>ByteString</a>s.
+--   The structure of the collection depends on the element type
+--   <tt>e</tt>.
 
--- | <i>O(1)</i>. Convert an Accelerate <a>Array</a> into a strict
---   <a>ByteString</a>.
-toByteString :: Array sh Word8 -> ByteString
+-- | <i>O(1)</i>. Treat a set of strict <a>ByteStrings</a> as an Accelerate
+--   array. The type of the elements <tt>e</tt> in the output Accelerate
+--   array determines the structure of the collection.
+--   
+--   Data is considered to be in row-major order. You must ensure that each
+--   input contains the right number of bytes (this is not checked).
+--   
+--   The input data may not be modified through the <a>ByteString</a>s
+--   afterwards.
+--   
+--   <pre>
+--   since 1.1.0.0
+--   </pre>
+fromByteStrings :: (Shape sh, Elt e) => sh -> ByteStrings (EltRepr e) -> Array sh e
+
+-- | <i>O(1)</i>. Convert an Accelerate <a>Array</a> into a collection of
+--   strict <a>ByteStrings</a>. The element type <tt>e</tt> will determine
+--   the structure of the output collection.
+--   
+--   Data is considered to be in row-major order.
+--   
+--   <pre>
+--   since 1.1.0.0
+--   </pre>
+toByteStrings :: (Shape sh, Elt e) => Array sh e -> ByteStrings (EltRepr e)
 
 
 -- | Read and write uncompressed 24 or 32-bit Windows BMP images into a
@@ -243,14 +265,47 @@ fromForeignPtrs :: (Shape sh, Elt e) => sh -> ForeignPtrs (EltRepr e) -> Array s
 --   Accelerate <a>Array</a>. The element type <tt>e</tt> will determine
 --   the structure of the output collection.
 --   
---   Data is considered to be in row-major output.
---   
---   The data may not be modified through the <a>ForeignPtr</a>s
+--   Data is considered to be in row-major order.
 --   
 --   <pre>
 --   since 1.1.0.0
 --   </pre>
 toForeignPtrs :: (Shape sh, Elt e) => Array sh e -> ForeignPtrs (EltRepr e)
+
+
+module Data.Array.Accelerate.IO.Foreign.Ptr
+
+-- | A family of types which represent a collection of <a>Ptr</a>s. The
+--   structure of the collection depends on the element type <tt>e</tt>.
+type Ptrs e = ArrayPtrs e
+
+-- | <i>O(1)</i>. Treat the set of <a>Ptrs</a> as an Accelerate array. The
+--   type of elements <tt>e</tt> in the output Accelerate array determines
+--   the structure of the collection.
+--   
+--   Data is considered to be in row-major order. You must ensure that each
+--   of the input pointers contains the right number of elements.
+--   
+--   The data may not be modified through the <a>Ptrs</a> afterwards.
+--   
+--   You are responsible for ensuring that the data remains alive for the
+--   duration of the Accelerate computation, and for freeing it afterwards.
+--   
+--   <pre>
+--   since 1.1.0.0
+--   </pre>
+fromPtrs :: (Shape sh, Elt e) => sh -> Ptrs (EltRepr e) -> Array sh e
+
+-- | <i>O(1)</i>. Yield the underlying <a>Ptrs</a> backing the given
+--   Accelerate array. The element type <tt>e</tt> will determine the
+--   structure of the output collection.
+--   
+--   Data is considered to be in row-major order.
+--   
+--   <pre>
+--   since 1.1.0.0
+--   </pre>
+toPtrs :: (Shape sh, Elt e) => Array sh e -> Ptrs (EltRepr e)
 
 
 -- | This provides an efficient non-copying Repa manifest array
