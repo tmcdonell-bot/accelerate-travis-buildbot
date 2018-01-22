@@ -256,6 +256,8 @@ module Data.Array.Accelerate.IO.Foreign.ForeignPtr
 --   The data may not be modified through the <a>ForeignPtr</a>s
 --   afterwards.
 --   
+--   You should make sure that the data is suitably aligned.
+--   
 --   <pre>
 --   since 1.1.0.0
 --   </pre>
@@ -290,6 +292,8 @@ type Ptrs e = ArrayPtrs e
 --   
 --   You are responsible for ensuring that the data remains alive for the
 --   duration of the Accelerate computation, and for freeing it afterwards.
+--   
+--   You should make sure that the data is suitably aligned.
 --   
 --   <pre>
 --   since 1.1.0.0
