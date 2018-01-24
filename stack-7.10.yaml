@@ -54,7 +54,7 @@ extra-deps:
   commit: 88aeb033e92e98baf238f8c7e5611bb58a200479
 
 - git:    https://github.com/tmcdonell/lulesh-accelerate.git
-  commit: a22c39c1471d4e6d73a8ba96073c0197a2800b61
+  commit: 35b4e65b7ab0c167fed2ba11cc207c2c625f06b8
 
 - git:    https://github.com/tmcdonell/cuda.git
   commit: f04929808536fbcd28050d6bfd5ed682d8379d5b
