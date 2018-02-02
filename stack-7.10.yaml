@@ -36,7 +36,7 @@ extra-deps:
   commit: d69eb748a689df187012d0bd425a7bbfb9809655
 
 - git:    https://github.com/tmcdonell/gloss-accelerate.git
-  commit: 69900a2a68ad1dfded9c6173728120a2e1a35213
+  commit: 6679ac51126030bb5f44b35baa6b927989c735a6
 
 - git:    https://github.com/tmcdonell/gloss-raster-accelerate.git
   commit: a363e59299304cfd48981109f980b35c6141d1b4
