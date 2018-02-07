@@ -112,6 +112,55 @@
 @version 1.2.0.0
 
 
+-- | A functor performs a uniform action over a parameterised type
+--   
+--   This is essentially the same as the standard Haskell <a>Functor</a>
+--   class, lifted to Accelarete <a>Exp</a> terms.
+module Data.Array.Accelerate.Data.Functor
+
+-- | The <a>Functor</a> class is used for scalar types which can be mapped
+--   over. Instances of <a>Functor</a> should satisfy the following laws:
+--   
+--   <pre>
+--   fmap id      == id
+--   fmap (f . g) == fmap f . fmap g
+--   </pre>
+class Functor f
+fmap :: (Functor f, Elt a, Elt b, Elt (f a), Elt (f b)) => (Exp a -> Exp b) -> Exp (f a) -> Exp (f b)
+
+-- | Replace all locations in the input with the same value. The default
+--   definition is <tt>fmap . const</tt>, but this may be overridden with a
+--   more efficient version.
+(<$) :: (Functor f, Elt a, Elt b, Elt (f a), Elt (f b)) => Exp a -> Exp (f b) -> Exp (f a)
+
+-- | An infix synonym for <a>fmap</a>
+--   
+--   The name of this operator is an allusion to <a>$</a>. Note the
+--   similarities between their types:
+--   
+--   <pre>
+--    ($)  ::              (Exp a -&gt; Exp b) -&gt; Exp a     -&gt; Exp b
+--   (&lt;$&gt;) :: Functor f =&gt; (Exp a -&gt; Exp b) -&gt; Exp (f a) -&gt; Exp (f b)
+--   </pre>
+--   
+--   Whereas <a>$</a> is function application, <a>&lt;$&gt;</a> is function
+--   application lifted over a <a>Functor</a>.
+(<$>) :: (Functor f, Elt a, Elt b, Elt (f a), Elt (f b)) => (Exp a -> Exp b) -> Exp (f a) -> Exp (f b)
+infixl 4 <$>
+
+-- | A flipped version of '(&lt;$)'.
+($>) :: (Functor f, Elt a, Elt b, Elt (f a), Elt (f b)) => Exp (f a) -> Exp b -> Exp (f b)
+infixl 4 $>
+
+-- | <tt><a>void</a> value</tt> discards or ignores the result of
+--   evaluation.
+void :: (Functor f, Elt a, Elt (f a), Elt (f ())) => Exp (f a) -> Exp (f ())
+instance Data.Array.Accelerate.Data.Functor.Functor Data.Monoid.Sum
+instance Data.Array.Accelerate.Data.Functor.Functor Data.Monoid.Product
+instance Data.Array.Accelerate.Data.Functor.Functor Data.Semigroup.Min
+instance Data.Array.Accelerate.Data.Functor.Functor Data.Semigroup.Max
+
+
 -- | Bitwise operations for signed and unsigned integer expressions.
 module Data.Array.Accelerate.Data.Bits
 
@@ -258,6 +307,274 @@ instance Data.Array.Accelerate.Data.Bits.Bits Foreign.C.Types.CLLong
 instance Data.Array.Accelerate.Data.Bits.Bits Foreign.C.Types.CULLong
 instance Data.Array.Accelerate.Data.Bits.Bits Foreign.C.Types.CShort
 instance Data.Array.Accelerate.Data.Bits.Bits Foreign.C.Types.CUShort
+
+
+-- | Semigroup instances for Accelerate
+module Data.Array.Accelerate.Data.Semigroup
+
+-- | The class of semigroups (types with an associative binary operation).
+class Semigroup a
+
+-- | An associative operation.
+--   
+--   <pre>
+--   (a <a>&lt;&gt;</a> b) <a>&lt;&gt;</a> c = a <a>&lt;&gt;</a> (b <a>&lt;&gt;</a> c)
+--   </pre>
+--   
+--   If <tt>a</tt> is also a <a>Monoid</a> we further require
+--   
+--   <pre>
+--   (<a>&lt;&gt;</a>) = <a>mappend</a>
+--   </pre>
+(<>) :: Semigroup a => a -> a -> a
+
+-- | Reduce a non-empty list with <tt>&lt;&gt;</tt>
+--   
+--   The default definition should be sufficient, but this can be
+--   overridden for efficiency.
+sconcat :: Semigroup a => NonEmpty a -> a
+
+-- | Repeat a value <tt>n</tt> times.
+--   
+--   Given that this works on a <a>Semigroup</a> it is allowed to fail if
+--   you request 0 or fewer repetitions, and the default definition will do
+--   so.
+--   
+--   By making this a member of the class, idempotent semigroups and
+--   monoids can upgrade this to execute in <i>O(1)</i> by picking
+--   <tt>stimes = stimesIdempotent</tt> or <tt>stimes =
+--   stimesIdempotentMonoid</tt> respectively.
+stimes :: (Semigroup a, Integral b) => b -> a -> a
+newtype Min a :: * -> *
+Min :: a -> Min a
+[getMin] :: Min a -> a
+newtype Max a :: * -> *
+Max :: a -> Max a
+[getMax] :: Max a -> a
+instance Data.Array.Accelerate.Array.Sugar.Elt a => Data.Array.Accelerate.Array.Sugar.Elt (Data.Semigroup.Min a)
+instance Data.Array.Accelerate.Array.Sugar.Elt a => Data.Array.Accelerate.Product.IsProduct Data.Array.Accelerate.Array.Sugar.Elt (Data.Semigroup.Min a)
+instance (Data.Array.Accelerate.Lift.Lift Data.Array.Accelerate.Smart.Exp a, Data.Array.Accelerate.Array.Sugar.Elt (Data.Array.Accelerate.Lift.Plain a)) => Data.Array.Accelerate.Lift.Lift Data.Array.Accelerate.Smart.Exp (Data.Semigroup.Min a)
+instance Data.Array.Accelerate.Array.Sugar.Elt a => Data.Array.Accelerate.Lift.Unlift Data.Array.Accelerate.Smart.Exp (Data.Semigroup.Min (Data.Array.Accelerate.Smart.Exp a))
+instance Data.Array.Accelerate.Classes.Bounded.Bounded a => GHC.Enum.Bounded (Data.Array.Accelerate.Smart.Exp (Data.Semigroup.Min a))
+instance Data.Array.Accelerate.Classes.Num.Num a => GHC.Num.Num (Data.Array.Accelerate.Smart.Exp (Data.Semigroup.Min a))
+instance Data.Array.Accelerate.Classes.Eq.Eq a => Data.Array.Accelerate.Classes.Eq.Eq (Data.Semigroup.Min a)
+instance Data.Array.Accelerate.Classes.Ord.Ord a => Data.Array.Accelerate.Classes.Ord.Ord (Data.Semigroup.Min a)
+instance Data.Array.Accelerate.Classes.Ord.Ord a => Data.Semigroup.Semigroup (Data.Array.Accelerate.Smart.Exp (Data.Semigroup.Min a))
+instance (Data.Array.Accelerate.Classes.Ord.Ord a, Data.Array.Accelerate.Classes.Bounded.Bounded a) => GHC.Base.Monoid (Data.Array.Accelerate.Smart.Exp (Data.Semigroup.Min a))
+instance Data.Array.Accelerate.Array.Sugar.Elt a => Data.Array.Accelerate.Array.Sugar.Elt (Data.Semigroup.Max a)
+instance Data.Array.Accelerate.Array.Sugar.Elt a => Data.Array.Accelerate.Product.IsProduct Data.Array.Accelerate.Array.Sugar.Elt (Data.Semigroup.Max a)
+instance (Data.Array.Accelerate.Lift.Lift Data.Array.Accelerate.Smart.Exp a, Data.Array.Accelerate.Array.Sugar.Elt (Data.Array.Accelerate.Lift.Plain a)) => Data.Array.Accelerate.Lift.Lift Data.Array.Accelerate.Smart.Exp (Data.Semigroup.Max a)
+instance Data.Array.Accelerate.Array.Sugar.Elt a => Data.Array.Accelerate.Lift.Unlift Data.Array.Accelerate.Smart.Exp (Data.Semigroup.Max (Data.Array.Accelerate.Smart.Exp a))
+instance Data.Array.Accelerate.Classes.Bounded.Bounded a => GHC.Enum.Bounded (Data.Array.Accelerate.Smart.Exp (Data.Semigroup.Max a))
+instance Data.Array.Accelerate.Classes.Num.Num a => GHC.Num.Num (Data.Array.Accelerate.Smart.Exp (Data.Semigroup.Max a))
+instance Data.Array.Accelerate.Classes.Eq.Eq a => Data.Array.Accelerate.Classes.Eq.Eq (Data.Semigroup.Max a)
+instance Data.Array.Accelerate.Classes.Ord.Ord a => Data.Array.Accelerate.Classes.Ord.Ord (Data.Semigroup.Max a)
+instance Data.Array.Accelerate.Classes.Ord.Ord a => Data.Semigroup.Semigroup (Data.Array.Accelerate.Smart.Exp (Data.Semigroup.Max a))
+instance (Data.Array.Accelerate.Classes.Ord.Ord a, Data.Array.Accelerate.Classes.Bounded.Bounded a) => GHC.Base.Monoid (Data.Array.Accelerate.Smart.Exp (Data.Semigroup.Max a))
+instance Data.Semigroup.Semigroup (Data.Array.Accelerate.Smart.Exp ())
+instance (Data.Array.Accelerate.Array.Sugar.Elt a, Data.Array.Accelerate.Array.Sugar.Elt b, Data.Semigroup.Semigroup (Data.Array.Accelerate.Smart.Exp a), Data.Semigroup.Semigroup (Data.Array.Accelerate.Smart.Exp b)) => Data.Semigroup.Semigroup (Data.Array.Accelerate.Smart.Exp (a, b))
+instance (Data.Array.Accelerate.Array.Sugar.Elt a, Data.Array.Accelerate.Array.Sugar.Elt b, Data.Array.Accelerate.Array.Sugar.Elt c, Data.Semigroup.Semigroup (Data.Array.Accelerate.Smart.Exp a), Data.Semigroup.Semigroup (Data.Array.Accelerate.Smart.Exp b), Data.Semigroup.Semigroup (Data.Array.Accelerate.Smart.Exp c)) => Data.Semigroup.Semigroup (Data.Array.Accelerate.Smart.Exp (a, b, c))
+instance (Data.Array.Accelerate.Array.Sugar.Elt a, Data.Array.Accelerate.Array.Sugar.Elt b, Data.Array.Accelerate.Array.Sugar.Elt c, Data.Array.Accelerate.Array.Sugar.Elt d, Data.Semigroup.Semigroup (Data.Array.Accelerate.Smart.Exp a), Data.Semigroup.Semigroup (Data.Array.Accelerate.Smart.Exp b), Data.Semigroup.Semigroup (Data.Array.Accelerate.Smart.Exp c), Data.Semigroup.Semigroup (Data.Array.Accelerate.Smart.Exp d)) => Data.Semigroup.Semigroup (Data.Array.Accelerate.Smart.Exp (a, b, c, d))
+instance (Data.Array.Accelerate.Array.Sugar.Elt a, Data.Array.Accelerate.Array.Sugar.Elt b, Data.Array.Accelerate.Array.Sugar.Elt c, Data.Array.Accelerate.Array.Sugar.Elt d, Data.Array.Accelerate.Array.Sugar.Elt e, Data.Semigroup.Semigroup (Data.Array.Accelerate.Smart.Exp a), Data.Semigroup.Semigroup (Data.Array.Accelerate.Smart.Exp b), Data.Semigroup.Semigroup (Data.Array.Accelerate.Smart.Exp c), Data.Semigroup.Semigroup (Data.Array.Accelerate.Smart.Exp d), Data.Semigroup.Semigroup (Data.Array.Accelerate.Smart.Exp e)) => Data.Semigroup.Semigroup (Data.Array.Accelerate.Smart.Exp (a, b, c, d, e))
+
+
+-- | Monoid instances for Accelerate
+module Data.Array.Accelerate.Data.Monoid
+
+-- | The class of monoids (types with an associative binary operation that
+--   has an identity). Instances should satisfy the following laws:
+--   
+--   <ul>
+--   <li><pre>mappend mempty x = x</pre></li>
+--   <li><pre>mappend x mempty = x</pre></li>
+--   <li><pre>mappend x (mappend y z) = mappend (mappend x y) z</pre></li>
+--   <li><pre>mconcat = <a>foldr</a> mappend mempty</pre></li>
+--   </ul>
+--   
+--   The method names refer to the monoid of lists under concatenation, but
+--   there are many other instances.
+--   
+--   Some types can be viewed as a monoid in more than one way, e.g. both
+--   addition and multiplication on numbers. In such cases we often define
+--   <tt>newtype</tt>s and make those instances of <a>Monoid</a>, e.g.
+--   <tt>Sum</tt> and <tt>Product</tt>.
+class Monoid a
+
+-- | Identity of <a>mappend</a>
+mempty :: Monoid a => a
+
+-- | An associative operation
+mappend :: Monoid a => a -> a -> a
+
+-- | Fold a list using the monoid. For most types, the default definition
+--   for <a>mconcat</a> will be used, but the function is included in the
+--   class definition so that an optimized version can be provided for
+--   specific types.
+mconcat :: Monoid a => [a] -> a
+
+-- | An associative operation.
+--   
+--   <pre>
+--   (a <a>&lt;&gt;</a> b) <a>&lt;&gt;</a> c = a <a>&lt;&gt;</a> (b <a>&lt;&gt;</a> c)
+--   </pre>
+--   
+--   If <tt>a</tt> is also a <a>Monoid</a> we further require
+--   
+--   <pre>
+--   (<a>&lt;&gt;</a>) = <a>mappend</a>
+--   </pre>
+(<>) :: Semigroup a => a -> a -> a
+infixr 6 <>
+
+-- | Monoid under addition.
+newtype Sum a :: * -> *
+Sum :: a -> Sum a
+[getSum] :: Sum a -> a
+
+-- | Monoid under multiplication.
+newtype Product a :: * -> *
+Product :: a -> Product a
+[getProduct] :: Product a -> a
+instance Data.Array.Accelerate.Array.Sugar.Elt a => Data.Array.Accelerate.Array.Sugar.Elt (Data.Monoid.Sum a)
+instance Data.Array.Accelerate.Array.Sugar.Elt a => Data.Array.Accelerate.Product.IsProduct Data.Array.Accelerate.Array.Sugar.Elt (Data.Monoid.Sum a)
+instance (Data.Array.Accelerate.Lift.Lift Data.Array.Accelerate.Smart.Exp a, Data.Array.Accelerate.Array.Sugar.Elt (Data.Array.Accelerate.Lift.Plain a)) => Data.Array.Accelerate.Lift.Lift Data.Array.Accelerate.Smart.Exp (Data.Monoid.Sum a)
+instance Data.Array.Accelerate.Array.Sugar.Elt a => Data.Array.Accelerate.Lift.Unlift Data.Array.Accelerate.Smart.Exp (Data.Monoid.Sum (Data.Array.Accelerate.Smart.Exp a))
+instance Data.Array.Accelerate.Classes.Bounded.Bounded a => GHC.Enum.Bounded (Data.Array.Accelerate.Smart.Exp (Data.Monoid.Sum a))
+instance Data.Array.Accelerate.Classes.Num.Num a => GHC.Num.Num (Data.Array.Accelerate.Smart.Exp (Data.Monoid.Sum a))
+instance Data.Array.Accelerate.Classes.Eq.Eq a => Data.Array.Accelerate.Classes.Eq.Eq (Data.Monoid.Sum a)
+instance Data.Array.Accelerate.Classes.Ord.Ord a => Data.Array.Accelerate.Classes.Ord.Ord (Data.Monoid.Sum a)
+instance Data.Array.Accelerate.Classes.Num.Num a => GHC.Base.Monoid (Data.Array.Accelerate.Smart.Exp (Data.Monoid.Sum a))
+instance Data.Array.Accelerate.Classes.Num.Num a => Data.Semigroup.Semigroup (Data.Array.Accelerate.Smart.Exp (Data.Monoid.Sum a))
+instance Data.Array.Accelerate.Array.Sugar.Elt a => Data.Array.Accelerate.Array.Sugar.Elt (Data.Monoid.Product a)
+instance Data.Array.Accelerate.Array.Sugar.Elt a => Data.Array.Accelerate.Product.IsProduct Data.Array.Accelerate.Array.Sugar.Elt (Data.Monoid.Product a)
+instance (Data.Array.Accelerate.Lift.Lift Data.Array.Accelerate.Smart.Exp a, Data.Array.Accelerate.Array.Sugar.Elt (Data.Array.Accelerate.Lift.Plain a)) => Data.Array.Accelerate.Lift.Lift Data.Array.Accelerate.Smart.Exp (Data.Monoid.Product a)
+instance Data.Array.Accelerate.Array.Sugar.Elt a => Data.Array.Accelerate.Lift.Unlift Data.Array.Accelerate.Smart.Exp (Data.Monoid.Product (Data.Array.Accelerate.Smart.Exp a))
+instance Data.Array.Accelerate.Classes.Bounded.Bounded a => GHC.Enum.Bounded (Data.Array.Accelerate.Smart.Exp (Data.Monoid.Product a))
+instance Data.Array.Accelerate.Classes.Num.Num a => GHC.Num.Num (Data.Array.Accelerate.Smart.Exp (Data.Monoid.Product a))
+instance Data.Array.Accelerate.Classes.Eq.Eq a => Data.Array.Accelerate.Classes.Eq.Eq (Data.Monoid.Product a)
+instance Data.Array.Accelerate.Classes.Ord.Ord a => Data.Array.Accelerate.Classes.Ord.Ord (Data.Monoid.Product a)
+instance Data.Array.Accelerate.Classes.Num.Num a => GHC.Base.Monoid (Data.Array.Accelerate.Smart.Exp (Data.Monoid.Product a))
+instance Data.Array.Accelerate.Classes.Num.Num a => Data.Semigroup.Semigroup (Data.Array.Accelerate.Smart.Exp (Data.Monoid.Product a))
+instance GHC.Base.Monoid (Data.Array.Accelerate.Smart.Exp ())
+instance (Data.Array.Accelerate.Array.Sugar.Elt a, Data.Array.Accelerate.Array.Sugar.Elt b, GHC.Base.Monoid (Data.Array.Accelerate.Smart.Exp a), GHC.Base.Monoid (Data.Array.Accelerate.Smart.Exp b)) => GHC.Base.Monoid (Data.Array.Accelerate.Smart.Exp (a, b))
+instance (Data.Array.Accelerate.Array.Sugar.Elt a, Data.Array.Accelerate.Array.Sugar.Elt b, Data.Array.Accelerate.Array.Sugar.Elt c, GHC.Base.Monoid (Data.Array.Accelerate.Smart.Exp a), GHC.Base.Monoid (Data.Array.Accelerate.Smart.Exp b), GHC.Base.Monoid (Data.Array.Accelerate.Smart.Exp c)) => GHC.Base.Monoid (Data.Array.Accelerate.Smart.Exp (a, b, c))
+instance (Data.Array.Accelerate.Array.Sugar.Elt a, Data.Array.Accelerate.Array.Sugar.Elt b, Data.Array.Accelerate.Array.Sugar.Elt c, Data.Array.Accelerate.Array.Sugar.Elt d, GHC.Base.Monoid (Data.Array.Accelerate.Smart.Exp a), GHC.Base.Monoid (Data.Array.Accelerate.Smart.Exp b), GHC.Base.Monoid (Data.Array.Accelerate.Smart.Exp c), GHC.Base.Monoid (Data.Array.Accelerate.Smart.Exp d)) => GHC.Base.Monoid (Data.Array.Accelerate.Smart.Exp (a, b, c, d))
+instance (Data.Array.Accelerate.Array.Sugar.Elt a, Data.Array.Accelerate.Array.Sugar.Elt b, Data.Array.Accelerate.Array.Sugar.Elt c, Data.Array.Accelerate.Array.Sugar.Elt d, Data.Array.Accelerate.Array.Sugar.Elt e, GHC.Base.Monoid (Data.Array.Accelerate.Smart.Exp a), GHC.Base.Monoid (Data.Array.Accelerate.Smart.Exp b), GHC.Base.Monoid (Data.Array.Accelerate.Smart.Exp c), GHC.Base.Monoid (Data.Array.Accelerate.Smart.Exp d), GHC.Base.Monoid (Data.Array.Accelerate.Smart.Exp e)) => GHC.Base.Monoid (Data.Array.Accelerate.Smart.Exp (a, b, c, d, e))
+
+
+module Data.Array.Accelerate.Data.Maybe
+
+-- | The <a>Maybe</a> type encapsulates an optional value. A value of type
+--   <tt><a>Maybe</a> a</tt> either contains a value of type <tt>a</tt>
+--   (represented as <tt><a>Just</a> a</tt>), or it is empty (represented
+--   as <a>Nothing</a>). Using <a>Maybe</a> is a good way to deal with
+--   errors or exceptional cases without resorting to drastic measures such
+--   as <a>error</a>.
+--   
+--   The <a>Maybe</a> type is also a monad. It is a simple kind of error
+--   monad, where all errors are represented by <a>Nothing</a>. A richer
+--   error monad can be built using the <a>Either</a> type.
+data Maybe a :: * -> *
+Nothing :: Maybe a
+Just :: a -> Maybe a
+
+-- | The <a>maybe</a> function takes a default value, a function, and a
+--   <a>Maybe</a> value. If the <a>Maybe</a> value is nothing, the default
+--   value is returned; otherwise, it applies the function to the value
+--   inside the <a>Just</a> and returns the result
+maybe :: (Elt a, Elt b) => Exp b -> (Exp a -> Exp b) -> Exp (Maybe a) -> Exp b
+
+-- | Returns <a>True</a> if the argument is of the form <tt>Just _</tt>
+isJust :: Elt a => Exp (Maybe a) -> Exp Bool
+
+-- | Returns <a>True</a> if the argument is <a>Nothing</a>
+isNothing :: Elt a => Exp (Maybe a) -> Exp Bool
+
+-- | The <a>fromMaybe</a> function takes a default value and a <a>Maybe</a>
+--   value. If the <a>Maybe</a> is <a>Nothing</a>, the default value is
+--   returned; otherwise, it returns the value contained in the
+--   <a>Maybe</a>.
+fromMaybe :: Elt a => Exp a -> Exp (Maybe a) -> Exp a
+
+-- | The <a>fromJust</a> function extracts the element out of the
+--   <a>Just</a> constructor. If the argument was actually <a>Nothing</a>,
+--   you will get an undefined value instead.
+fromJust :: Elt a => Exp (Maybe a) -> Exp a
+instance Data.Array.Accelerate.Data.Functor.Functor GHC.Base.Maybe
+instance Data.Array.Accelerate.Classes.Eq.Eq a => Data.Array.Accelerate.Classes.Eq.Eq (GHC.Base.Maybe a)
+instance Data.Array.Accelerate.Classes.Ord.Ord a => Data.Array.Accelerate.Classes.Ord.Ord (GHC.Base.Maybe a)
+instance (GHC.Base.Monoid (Data.Array.Accelerate.Smart.Exp a), Data.Array.Accelerate.Array.Sugar.Elt a) => GHC.Base.Monoid (Data.Array.Accelerate.Smart.Exp (GHC.Base.Maybe a))
+instance (Data.Semigroup.Semigroup (Data.Array.Accelerate.Smart.Exp a), Data.Array.Accelerate.Array.Sugar.Elt a) => Data.Semigroup.Semigroup (Data.Array.Accelerate.Smart.Exp (GHC.Base.Maybe a))
+instance Data.Array.Accelerate.Array.Sugar.Elt a => Data.Array.Accelerate.Array.Sugar.Elt (GHC.Base.Maybe a)
+instance Data.Array.Accelerate.Array.Sugar.Elt a => Data.Array.Accelerate.Product.IsProduct Data.Array.Accelerate.Array.Sugar.Elt (GHC.Base.Maybe a)
+instance (Data.Array.Accelerate.Lift.Lift Data.Array.Accelerate.Smart.Exp a, Data.Array.Accelerate.Array.Sugar.Elt (Data.Array.Accelerate.Lift.Plain a)) => Data.Array.Accelerate.Lift.Lift Data.Array.Accelerate.Smart.Exp (GHC.Base.Maybe a)
+
+
+-- | Complex numbers, stored in the usual C-style array-of-struct
+--   representation, for easy interoperability.
+module Data.Array.Accelerate.Data.Complex
+
+-- | Complex numbers are an algebraic type.
+--   
+--   For a complex number <tt>z</tt>, <tt><a>abs</a> z</tt> is a number
+--   with the magnitude of <tt>z</tt>, but oriented in the positive real
+--   direction, whereas <tt><a>signum</a> z</tt> has the phase of
+--   <tt>z</tt>, but unit magnitude.
+--   
+--   The <a>Foldable</a> and <a>Traversable</a> instances traverse the real
+--   part first.
+data Complex a :: * -> *
+
+-- | forms a complex number from its real and imaginary rectangular
+--   components.
+(:+) :: !a -> !a -> Complex a
+
+-- | Return the real part of a complex number
+real :: (Elt a, Elt (Complex a)) => Exp (Complex a) -> Exp a
+
+-- | Return the imaginary part of a complex number
+imag :: (Elt a, Elt (Complex a)) => Exp (Complex a) -> Exp a
+
+-- | Form a complex number from polar components of magnitude and phase.
+mkPolar :: forall a. (Floating a, Elt (Complex a)) => Exp a -> Exp a -> Exp (Complex a)
+
+-- | <tt><a>cis</a> t</tt> is a complex value with magnitude <tt>1</tt> and
+--   phase <tt>t</tt> (modulo <tt>2*<a>pi</a></tt>).
+cis :: forall a. (Floating a, Elt (Complex a)) => Exp a -> Exp (Complex a)
+
+-- | The function <a>polar</a> takes a complex number and returns a
+--   (magnitude, phase) pair in canonical form: the magnitude is
+--   non-negative, and the phase in the range <tt>(-<a>pi</a>,
+--   <a>pi</a>]</tt>; if the magnitude is zero, then so is the phase.
+polar :: (RealFloat a, Elt (Complex a)) => Exp (Complex a) -> Exp (a, a)
+
+-- | The non-negative magnitude of a complex number
+magnitude :: (RealFloat a, Elt (Complex a)) => Exp (Complex a) -> Exp a
+
+-- | The phase of a complex number, in the range <tt>(-<a>pi</a>,
+--   <a>pi</a>]</tt>. If the magnitude is zero, then so is the phase.
+phase :: (RealFloat a, Elt (Complex a)) => Exp (Complex a) -> Exp a
+
+-- | Return the complex conjugate of a complex number, defined as
+--   
+--   <pre>
+--   conjugate(Z) = X - iY
+--   </pre>
+conjugate :: (Num a, Elt (Complex a)) => Exp (Complex a) -> Exp (Complex a)
+instance Data.Array.Accelerate.Array.Sugar.Elt (Data.Complex.Complex Numeric.Half.Half)
+instance Data.Array.Accelerate.Array.Sugar.Elt (Data.Complex.Complex GHC.Types.Float)
+instance Data.Array.Accelerate.Array.Sugar.Elt (Data.Complex.Complex GHC.Types.Double)
+instance Data.Array.Accelerate.Array.Sugar.Elt (Data.Complex.Complex Foreign.C.Types.CFloat)
+instance Data.Array.Accelerate.Array.Sugar.Elt (Data.Complex.Complex Foreign.C.Types.CDouble)
+instance cst a => Data.Array.Accelerate.Product.IsProduct cst (Data.Complex.Complex a)
+instance (Data.Array.Accelerate.Lift.Lift Data.Array.Accelerate.Smart.Exp a, Data.Array.Accelerate.Array.Sugar.Elt (Data.Array.Accelerate.Lift.Plain a), Data.Array.Accelerate.Array.Sugar.Elt (Data.Complex.Complex (Data.Array.Accelerate.Lift.Plain a))) => Data.Array.Accelerate.Lift.Lift Data.Array.Accelerate.Smart.Exp (Data.Complex.Complex a)
+instance (Data.Array.Accelerate.Array.Sugar.Elt a, Data.Array.Accelerate.Array.Sugar.Elt (Data.Complex.Complex a)) => Data.Array.Accelerate.Lift.Unlift Data.Array.Accelerate.Smart.Exp (Data.Complex.Complex (Data.Array.Accelerate.Smart.Exp a))
+instance (Data.Array.Accelerate.Classes.Eq.Eq a, Data.Array.Accelerate.Array.Sugar.Elt (Data.Complex.Complex a)) => Data.Array.Accelerate.Classes.Eq.Eq (Data.Complex.Complex a)
+instance (Data.Array.Accelerate.Classes.RealFloat.RealFloat a, Data.Array.Accelerate.Array.Sugar.Elt (Data.Complex.Complex a)) => GHC.Num.Num (Data.Array.Accelerate.Smart.Exp (Data.Complex.Complex a))
+instance (Data.Array.Accelerate.Classes.RealFloat.RealFloat a, Data.Array.Accelerate.Array.Sugar.Elt (Data.Complex.Complex a)) => GHC.Real.Fractional (Data.Array.Accelerate.Smart.Exp (Data.Complex.Complex a))
+instance (Data.Array.Accelerate.Classes.RealFloat.RealFloat a, Data.Array.Accelerate.Array.Sugar.Elt (Data.Complex.Complex a)) => GHC.Float.Floating (Data.Array.Accelerate.Smart.Exp (Data.Complex.Complex a))
+instance (Data.Array.Accelerate.Classes.FromIntegral.FromIntegral a b, Data.Array.Accelerate.Classes.Num.Num b, Data.Array.Accelerate.Array.Sugar.Elt (Data.Complex.Complex b)) => Data.Array.Accelerate.Classes.FromIntegral.FromIntegral a (Data.Complex.Complex b)
+instance Data.Array.Accelerate.Data.Functor.Functor Data.Complex.Complex
 
 
 -- | <tt>Data.Array.Accelerate</tt> defines an embedded language of array
@@ -705,7 +1022,7 @@ type Segments i = Vector i
 --   
 --   <ul>
 --   <li>Signed and unsigned integers (8, 16, 32, and 64-bits wide)</li>
---   <li>Floating point numbers (single and double precision)</li>
+--   <li>Floating point numbers (half, single, and double precision)</li>
 --   <li><a>Char</a></li>
 --   <li><a>Bool</a></li>
 --   <li>()</li>
@@ -3248,6 +3565,9 @@ data Word32 :: *
 
 -- | 64-bit unsigned integer type
 data Word64 :: *
+newtype Half :: *
+Half :: CUShort -> Half
+[getHalf] :: Half -> CUShort
 
 -- | Single-precision floating point numbers. It is desirable that this
 --   type be at least equal in range and precision to the IEEE
@@ -3318,283 +3638,19 @@ data CUChar :: *
 class Typeable a => IsScalar a
 
 -- | Numeric types
-class (Num a, IsScalar a) => IsNum a
+class (Num a, IsSingle a) => IsNum a
 
 -- | Bounded types
 class IsBounded a
 
 -- | Integral types
-class (IsScalar a, IsNum a, IsBounded a) => IsIntegral a
+class (IsSingle a, IsNum a, IsBounded a) => IsIntegral a
 
 -- | Floating types
-class (Floating a, IsScalar a, IsNum a) => IsFloating a
+class (Floating a, IsSingle a, IsNum a) => IsFloating a
 
 -- | Non-numeric types
 class IsNonNum a
-
-
--- | Semigroup instances for Accelerate
-module Data.Array.Accelerate.Data.Semigroup
-
--- | The class of semigroups (types with an associative binary operation).
-class Semigroup a
-
--- | An associative operation.
---   
---   <pre>
---   (a <a>&lt;&gt;</a> b) <a>&lt;&gt;</a> c = a <a>&lt;&gt;</a> (b <a>&lt;&gt;</a> c)
---   </pre>
---   
---   If <tt>a</tt> is also a <a>Monoid</a> we further require
---   
---   <pre>
---   (<a>&lt;&gt;</a>) = <a>mappend</a>
---   </pre>
-(<>) :: Semigroup a => a -> a -> a
-
--- | Reduce a non-empty list with <tt>&lt;&gt;</tt>
---   
---   The default definition should be sufficient, but this can be
---   overridden for efficiency.
-sconcat :: Semigroup a => NonEmpty a -> a
-
--- | Repeat a value <tt>n</tt> times.
---   
---   Given that this works on a <a>Semigroup</a> it is allowed to fail if
---   you request 0 or fewer repetitions, and the default definition will do
---   so.
---   
---   By making this a member of the class, idempotent semigroups and
---   monoids can upgrade this to execute in <i>O(1)</i> by picking
---   <tt>stimes = stimesIdempotent</tt> or <tt>stimes =
---   stimesIdempotentMonoid</tt> respectively.
-stimes :: (Semigroup a, Integral b) => b -> a -> a
-newtype Min a :: * -> *
-Min :: a -> Min a
-[getMin] :: Min a -> a
-newtype Max a :: * -> *
-Max :: a -> Max a
-[getMax] :: Max a -> a
-instance Data.Array.Accelerate.Array.Sugar.Elt a => Data.Array.Accelerate.Array.Sugar.Elt (Data.Semigroup.Min a)
-instance Data.Array.Accelerate.Array.Sugar.Elt a => Data.Array.Accelerate.Product.IsProduct Data.Array.Accelerate.Array.Sugar.Elt (Data.Semigroup.Min a)
-instance (Data.Array.Accelerate.Lift.Lift Data.Array.Accelerate.Smart.Exp a, Data.Array.Accelerate.Array.Sugar.Elt (Data.Array.Accelerate.Lift.Plain a)) => Data.Array.Accelerate.Lift.Lift Data.Array.Accelerate.Smart.Exp (Data.Semigroup.Min a)
-instance Data.Array.Accelerate.Array.Sugar.Elt a => Data.Array.Accelerate.Lift.Unlift Data.Array.Accelerate.Smart.Exp (Data.Semigroup.Min (Data.Array.Accelerate.Smart.Exp a))
-instance Data.Array.Accelerate.Classes.Bounded.Bounded a => GHC.Enum.Bounded (Data.Array.Accelerate.Smart.Exp (Data.Semigroup.Min a))
-instance Data.Array.Accelerate.Classes.Num.Num a => GHC.Num.Num (Data.Array.Accelerate.Smart.Exp (Data.Semigroup.Min a))
-instance Data.Array.Accelerate.Classes.Eq.Eq a => Data.Array.Accelerate.Classes.Eq.Eq (Data.Semigroup.Min a)
-instance Data.Array.Accelerate.Classes.Ord.Ord a => Data.Array.Accelerate.Classes.Ord.Ord (Data.Semigroup.Min a)
-instance Data.Array.Accelerate.Classes.Ord.Ord a => Data.Semigroup.Semigroup (Data.Array.Accelerate.Smart.Exp (Data.Semigroup.Min a))
-instance (Data.Array.Accelerate.Classes.Ord.Ord a, Data.Array.Accelerate.Classes.Bounded.Bounded a) => GHC.Base.Monoid (Data.Array.Accelerate.Smart.Exp (Data.Semigroup.Min a))
-instance Data.Array.Accelerate.Array.Sugar.Elt a => Data.Array.Accelerate.Array.Sugar.Elt (Data.Semigroup.Max a)
-instance Data.Array.Accelerate.Array.Sugar.Elt a => Data.Array.Accelerate.Product.IsProduct Data.Array.Accelerate.Array.Sugar.Elt (Data.Semigroup.Max a)
-instance (Data.Array.Accelerate.Lift.Lift Data.Array.Accelerate.Smart.Exp a, Data.Array.Accelerate.Array.Sugar.Elt (Data.Array.Accelerate.Lift.Plain a)) => Data.Array.Accelerate.Lift.Lift Data.Array.Accelerate.Smart.Exp (Data.Semigroup.Max a)
-instance Data.Array.Accelerate.Array.Sugar.Elt a => Data.Array.Accelerate.Lift.Unlift Data.Array.Accelerate.Smart.Exp (Data.Semigroup.Max (Data.Array.Accelerate.Smart.Exp a))
-instance Data.Array.Accelerate.Classes.Bounded.Bounded a => GHC.Enum.Bounded (Data.Array.Accelerate.Smart.Exp (Data.Semigroup.Max a))
-instance Data.Array.Accelerate.Classes.Num.Num a => GHC.Num.Num (Data.Array.Accelerate.Smart.Exp (Data.Semigroup.Max a))
-instance Data.Array.Accelerate.Classes.Eq.Eq a => Data.Array.Accelerate.Classes.Eq.Eq (Data.Semigroup.Max a)
-instance Data.Array.Accelerate.Classes.Ord.Ord a => Data.Array.Accelerate.Classes.Ord.Ord (Data.Semigroup.Max a)
-instance Data.Array.Accelerate.Classes.Ord.Ord a => Data.Semigroup.Semigroup (Data.Array.Accelerate.Smart.Exp (Data.Semigroup.Max a))
-instance (Data.Array.Accelerate.Classes.Ord.Ord a, Data.Array.Accelerate.Classes.Bounded.Bounded a) => GHC.Base.Monoid (Data.Array.Accelerate.Smart.Exp (Data.Semigroup.Max a))
-instance Data.Semigroup.Semigroup (Data.Array.Accelerate.Smart.Exp ())
-instance (Data.Array.Accelerate.Array.Sugar.Elt a, Data.Array.Accelerate.Array.Sugar.Elt b, Data.Semigroup.Semigroup (Data.Array.Accelerate.Smart.Exp a), Data.Semigroup.Semigroup (Data.Array.Accelerate.Smart.Exp b)) => Data.Semigroup.Semigroup (Data.Array.Accelerate.Smart.Exp (a, b))
-instance (Data.Array.Accelerate.Array.Sugar.Elt a, Data.Array.Accelerate.Array.Sugar.Elt b, Data.Array.Accelerate.Array.Sugar.Elt c, Data.Semigroup.Semigroup (Data.Array.Accelerate.Smart.Exp a), Data.Semigroup.Semigroup (Data.Array.Accelerate.Smart.Exp b), Data.Semigroup.Semigroup (Data.Array.Accelerate.Smart.Exp c)) => Data.Semigroup.Semigroup (Data.Array.Accelerate.Smart.Exp (a, b, c))
-instance (Data.Array.Accelerate.Array.Sugar.Elt a, Data.Array.Accelerate.Array.Sugar.Elt b, Data.Array.Accelerate.Array.Sugar.Elt c, Data.Array.Accelerate.Array.Sugar.Elt d, Data.Semigroup.Semigroup (Data.Array.Accelerate.Smart.Exp a), Data.Semigroup.Semigroup (Data.Array.Accelerate.Smart.Exp b), Data.Semigroup.Semigroup (Data.Array.Accelerate.Smart.Exp c), Data.Semigroup.Semigroup (Data.Array.Accelerate.Smart.Exp d)) => Data.Semigroup.Semigroup (Data.Array.Accelerate.Smart.Exp (a, b, c, d))
-instance (Data.Array.Accelerate.Array.Sugar.Elt a, Data.Array.Accelerate.Array.Sugar.Elt b, Data.Array.Accelerate.Array.Sugar.Elt c, Data.Array.Accelerate.Array.Sugar.Elt d, Data.Array.Accelerate.Array.Sugar.Elt e, Data.Semigroup.Semigroup (Data.Array.Accelerate.Smart.Exp a), Data.Semigroup.Semigroup (Data.Array.Accelerate.Smart.Exp b), Data.Semigroup.Semigroup (Data.Array.Accelerate.Smart.Exp c), Data.Semigroup.Semigroup (Data.Array.Accelerate.Smart.Exp d), Data.Semigroup.Semigroup (Data.Array.Accelerate.Smart.Exp e)) => Data.Semigroup.Semigroup (Data.Array.Accelerate.Smart.Exp (a, b, c, d, e))
-
-
--- | Monoid instances for Accelerate
-module Data.Array.Accelerate.Data.Monoid
-
--- | The class of monoids (types with an associative binary operation that
---   has an identity). Instances should satisfy the following laws:
---   
---   <ul>
---   <li><pre>mappend mempty x = x</pre></li>
---   <li><pre>mappend x mempty = x</pre></li>
---   <li><pre>mappend x (mappend y z) = mappend (mappend x y) z</pre></li>
---   <li><pre>mconcat = <a>foldr</a> mappend mempty</pre></li>
---   </ul>
---   
---   The method names refer to the monoid of lists under concatenation, but
---   there are many other instances.
---   
---   Some types can be viewed as a monoid in more than one way, e.g. both
---   addition and multiplication on numbers. In such cases we often define
---   <tt>newtype</tt>s and make those instances of <a>Monoid</a>, e.g.
---   <tt>Sum</tt> and <tt>Product</tt>.
-class Monoid a
-
--- | Identity of <a>mappend</a>
-mempty :: Monoid a => a
-
--- | An associative operation
-mappend :: Monoid a => a -> a -> a
-
--- | Fold a list using the monoid. For most types, the default definition
---   for <a>mconcat</a> will be used, but the function is included in the
---   class definition so that an optimized version can be provided for
---   specific types.
-mconcat :: Monoid a => [a] -> a
-
--- | An associative operation.
---   
---   <pre>
---   (a <a>&lt;&gt;</a> b) <a>&lt;&gt;</a> c = a <a>&lt;&gt;</a> (b <a>&lt;&gt;</a> c)
---   </pre>
---   
---   If <tt>a</tt> is also a <a>Monoid</a> we further require
---   
---   <pre>
---   (<a>&lt;&gt;</a>) = <a>mappend</a>
---   </pre>
-(<>) :: Semigroup a => a -> a -> a
-infixr 6 <>
-
--- | Monoid under addition.
-newtype Sum a :: * -> *
-Sum :: a -> Sum a
-[getSum] :: Sum a -> a
-
--- | Monoid under multiplication.
-newtype Product a :: * -> *
-Product :: a -> Product a
-[getProduct] :: Product a -> a
-instance Data.Array.Accelerate.Array.Sugar.Elt a => Data.Array.Accelerate.Array.Sugar.Elt (Data.Monoid.Sum a)
-instance Data.Array.Accelerate.Array.Sugar.Elt a => Data.Array.Accelerate.Product.IsProduct Data.Array.Accelerate.Array.Sugar.Elt (Data.Monoid.Sum a)
-instance (Data.Array.Accelerate.Lift.Lift Data.Array.Accelerate.Smart.Exp a, Data.Array.Accelerate.Array.Sugar.Elt (Data.Array.Accelerate.Lift.Plain a)) => Data.Array.Accelerate.Lift.Lift Data.Array.Accelerate.Smart.Exp (Data.Monoid.Sum a)
-instance Data.Array.Accelerate.Array.Sugar.Elt a => Data.Array.Accelerate.Lift.Unlift Data.Array.Accelerate.Smart.Exp (Data.Monoid.Sum (Data.Array.Accelerate.Smart.Exp a))
-instance Data.Array.Accelerate.Classes.Bounded.Bounded a => GHC.Enum.Bounded (Data.Array.Accelerate.Smart.Exp (Data.Monoid.Sum a))
-instance Data.Array.Accelerate.Classes.Num.Num a => GHC.Num.Num (Data.Array.Accelerate.Smart.Exp (Data.Monoid.Sum a))
-instance Data.Array.Accelerate.Classes.Eq.Eq a => Data.Array.Accelerate.Classes.Eq.Eq (Data.Monoid.Sum a)
-instance Data.Array.Accelerate.Classes.Ord.Ord a => Data.Array.Accelerate.Classes.Ord.Ord (Data.Monoid.Sum a)
-instance Data.Array.Accelerate.Classes.Num.Num a => GHC.Base.Monoid (Data.Array.Accelerate.Smart.Exp (Data.Monoid.Sum a))
-instance Data.Array.Accelerate.Classes.Num.Num a => Data.Semigroup.Semigroup (Data.Array.Accelerate.Smart.Exp (Data.Monoid.Sum a))
-instance Data.Array.Accelerate.Array.Sugar.Elt a => Data.Array.Accelerate.Array.Sugar.Elt (Data.Monoid.Product a)
-instance Data.Array.Accelerate.Array.Sugar.Elt a => Data.Array.Accelerate.Product.IsProduct Data.Array.Accelerate.Array.Sugar.Elt (Data.Monoid.Product a)
-instance (Data.Array.Accelerate.Lift.Lift Data.Array.Accelerate.Smart.Exp a, Data.Array.Accelerate.Array.Sugar.Elt (Data.Array.Accelerate.Lift.Plain a)) => Data.Array.Accelerate.Lift.Lift Data.Array.Accelerate.Smart.Exp (Data.Monoid.Product a)
-instance Data.Array.Accelerate.Array.Sugar.Elt a => Data.Array.Accelerate.Lift.Unlift Data.Array.Accelerate.Smart.Exp (Data.Monoid.Product (Data.Array.Accelerate.Smart.Exp a))
-instance Data.Array.Accelerate.Classes.Bounded.Bounded a => GHC.Enum.Bounded (Data.Array.Accelerate.Smart.Exp (Data.Monoid.Product a))
-instance Data.Array.Accelerate.Classes.Num.Num a => GHC.Num.Num (Data.Array.Accelerate.Smart.Exp (Data.Monoid.Product a))
-instance Data.Array.Accelerate.Classes.Eq.Eq a => Data.Array.Accelerate.Classes.Eq.Eq (Data.Monoid.Product a)
-instance Data.Array.Accelerate.Classes.Ord.Ord a => Data.Array.Accelerate.Classes.Ord.Ord (Data.Monoid.Product a)
-instance Data.Array.Accelerate.Classes.Num.Num a => GHC.Base.Monoid (Data.Array.Accelerate.Smart.Exp (Data.Monoid.Product a))
-instance Data.Array.Accelerate.Classes.Num.Num a => Data.Semigroup.Semigroup (Data.Array.Accelerate.Smart.Exp (Data.Monoid.Product a))
-instance GHC.Base.Monoid (Data.Array.Accelerate.Smart.Exp ())
-instance (Data.Array.Accelerate.Array.Sugar.Elt a, Data.Array.Accelerate.Array.Sugar.Elt b, GHC.Base.Monoid (Data.Array.Accelerate.Smart.Exp a), GHC.Base.Monoid (Data.Array.Accelerate.Smart.Exp b)) => GHC.Base.Monoid (Data.Array.Accelerate.Smart.Exp (a, b))
-instance (Data.Array.Accelerate.Array.Sugar.Elt a, Data.Array.Accelerate.Array.Sugar.Elt b, Data.Array.Accelerate.Array.Sugar.Elt c, GHC.Base.Monoid (Data.Array.Accelerate.Smart.Exp a), GHC.Base.Monoid (Data.Array.Accelerate.Smart.Exp b), GHC.Base.Monoid (Data.Array.Accelerate.Smart.Exp c)) => GHC.Base.Monoid (Data.Array.Accelerate.Smart.Exp (a, b, c))
-instance (Data.Array.Accelerate.Array.Sugar.Elt a, Data.Array.Accelerate.Array.Sugar.Elt b, Data.Array.Accelerate.Array.Sugar.Elt c, Data.Array.Accelerate.Array.Sugar.Elt d, GHC.Base.Monoid (Data.Array.Accelerate.Smart.Exp a), GHC.Base.Monoid (Data.Array.Accelerate.Smart.Exp b), GHC.Base.Monoid (Data.Array.Accelerate.Smart.Exp c), GHC.Base.Monoid (Data.Array.Accelerate.Smart.Exp d)) => GHC.Base.Monoid (Data.Array.Accelerate.Smart.Exp (a, b, c, d))
-instance (Data.Array.Accelerate.Array.Sugar.Elt a, Data.Array.Accelerate.Array.Sugar.Elt b, Data.Array.Accelerate.Array.Sugar.Elt c, Data.Array.Accelerate.Array.Sugar.Elt d, Data.Array.Accelerate.Array.Sugar.Elt e, GHC.Base.Monoid (Data.Array.Accelerate.Smart.Exp a), GHC.Base.Monoid (Data.Array.Accelerate.Smart.Exp b), GHC.Base.Monoid (Data.Array.Accelerate.Smart.Exp c), GHC.Base.Monoid (Data.Array.Accelerate.Smart.Exp d), GHC.Base.Monoid (Data.Array.Accelerate.Smart.Exp e)) => GHC.Base.Monoid (Data.Array.Accelerate.Smart.Exp (a, b, c, d, e))
-
-
--- | A functor performs a uniform action over a parameterised type
---   
---   This is essentially the same as the standard Haskell <a>Functor</a>
---   class, lifted to Accelarete <a>Exp</a> terms.
-module Data.Array.Accelerate.Data.Functor
-
--- | The <a>Functor</a> class is used for scalar types which can be mapped
---   over. Instances of <a>Functor</a> should satisfy the following laws:
---   
---   <pre>
---   fmap id      == id
---   fmap (f . g) == fmap f . fmap g
---   </pre>
-class Functor f
-fmap :: (Functor f, Elt a, Elt b) => (Exp a -> Exp b) -> Exp (f a) -> Exp (f b)
-
--- | Replace all locations in the input with the same value. The default
---   definition is <tt>fmap . const</tt>, but this may be overridden with a
---   more efficient version.
-(<$) :: (Functor f, Elt a, Elt b) => Exp a -> Exp (f b) -> Exp (f a)
-
--- | An infix synonym for <a>fmap</a>
---   
---   The name of this operator is an allusion to <a>$</a>. Note the
---   similarities between their types:
---   
---   <pre>
---    ($)  ::              (Exp a -&gt; Exp b) -&gt; Exp a     -&gt; Exp b
---   (&lt;$&gt;) :: Functor f =&gt; (Exp a -&gt; Exp b) -&gt; Exp (f a) -&gt; Exp (f b)
---   </pre>
---   
---   Whereas <a>$</a> is function application, <a>&lt;$&gt;</a> is function
---   application lifted over a <a>Functor</a>.
-(<$>) :: (Functor f, Elt a, Elt b) => (Exp a -> Exp b) -> Exp (f a) -> Exp (f b)
-infixl 4 <$>
-
--- | A flipped version of '(&lt;$)'.
-($>) :: (Functor f, Elt a, Elt b) => Exp (f a) -> Exp b -> Exp (f b)
-infixl 4 $>
-
--- | <tt><a>void</a> value</tt> discards or ignores the result of
---   evaluation.
-void :: (Functor f, Elt a) => Exp (f a) -> Exp (f ())
-instance Data.Array.Accelerate.Data.Functor.Functor Data.Monoid.Sum
-instance Data.Array.Accelerate.Data.Functor.Functor Data.Monoid.Product
-instance Data.Array.Accelerate.Data.Functor.Functor Data.Semigroup.Min
-instance Data.Array.Accelerate.Data.Functor.Functor Data.Semigroup.Max
-
-
--- | Complex numbers
-module Data.Array.Accelerate.Data.Complex
-
--- | Complex numbers are an algebraic type.
---   
---   For a complex number <tt>z</tt>, <tt><a>abs</a> z</tt> is a number
---   with the magnitude of <tt>z</tt>, but oriented in the positive real
---   direction, whereas <tt><a>signum</a> z</tt> has the phase of
---   <tt>z</tt>, but unit magnitude.
---   
---   The <a>Foldable</a> and <a>Traversable</a> instances traverse the real
---   part first.
-data Complex a :: * -> *
-
--- | forms a complex number from its real and imaginary rectangular
---   components.
-(:+) :: !a -> !a -> Complex a
-
--- | Return the real part of a complex number
-real :: Elt a => Exp (Complex a) -> Exp a
-
--- | Return the imaginary part of a complex number
-imag :: Elt a => Exp (Complex a) -> Exp a
-
--- | Form a complex number from polar components of magnitude and phase.
-mkPolar :: forall a. Floating a => Exp a -> Exp a -> Exp (Complex a)
-
--- | <tt><a>cis</a> t</tt> is a complex value with magnitude <tt>1</tt> and
---   phase <tt>t</tt> (modulo <tt>2*<a>pi</a></tt>).
-cis :: forall a. Floating a => Exp a -> Exp (Complex a)
-
--- | The function <a>polar</a> takes a complex number and returns a
---   (magnitude, phase) pair in canonical form: the magnitude is
---   non-negative, and the phase in the range <tt>(-<a>pi</a>,
---   <a>pi</a>]</tt>; if the magnitude is zero, then so is the phase.
-polar :: RealFloat a => Exp (Complex a) -> Exp (a, a)
-
--- | The non-negative magnitude of a complex number
-magnitude :: RealFloat a => Exp (Complex a) -> Exp a
-
--- | The phase of a complex number, in the range <tt>(-<a>pi</a>,
---   <a>pi</a>]</tt>. If the magnitude is zero, then so is the phase.
-phase :: RealFloat a => Exp (Complex a) -> Exp a
-
--- | Return the complex conjugate of a complex number, defined as
---   
---   <pre>
---   conjugate(Z) = X - iY
---   </pre>
-conjugate :: Num a => Exp (Complex a) -> Exp (Complex a)
-instance Data.Array.Accelerate.Array.Sugar.Elt a => Data.Array.Accelerate.Array.Sugar.Elt (Data.Complex.Complex a)
-instance cst a => Data.Array.Accelerate.Product.IsProduct cst (Data.Complex.Complex a)
-instance (Data.Array.Accelerate.Lift.Lift Data.Array.Accelerate.Smart.Exp a, Data.Array.Accelerate.Array.Sugar.Elt (Data.Array.Accelerate.Lift.Plain a)) => Data.Array.Accelerate.Lift.Lift Data.Array.Accelerate.Smart.Exp (Data.Complex.Complex a)
-instance Data.Array.Accelerate.Array.Sugar.Elt a => Data.Array.Accelerate.Lift.Unlift Data.Array.Accelerate.Smart.Exp (Data.Complex.Complex (Data.Array.Accelerate.Smart.Exp a))
-instance Data.Array.Accelerate.Classes.Eq.Eq a => Data.Array.Accelerate.Classes.Eq.Eq (Data.Complex.Complex a)
-instance Data.Array.Accelerate.Classes.RealFloat.RealFloat a => GHC.Num.Num (Data.Array.Accelerate.Smart.Exp (Data.Complex.Complex a))
-instance Data.Array.Accelerate.Classes.RealFloat.RealFloat a => GHC.Real.Fractional (Data.Array.Accelerate.Smart.Exp (Data.Complex.Complex a))
-instance Data.Array.Accelerate.Classes.RealFloat.RealFloat a => GHC.Float.Floating (Data.Array.Accelerate.Smart.Exp (Data.Complex.Complex a))
-instance (Data.Array.Accelerate.Classes.FromIntegral.FromIntegral a b, Data.Array.Accelerate.Classes.Num.Num b) => Data.Array.Accelerate.Classes.FromIntegral.FromIntegral a (Data.Complex.Complex b)
-instance Data.Array.Accelerate.Data.Functor.Functor Data.Complex.Complex
 
 
 -- | Combine folds in <a>Applicative</a> style to generate multiple results

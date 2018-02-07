@@ -48,7 +48,7 @@ instance Linear.Conjugate.Conjugate (Data.Array.Accelerate.Smart.Exp GHC.Types.D
 instance Linear.Conjugate.Conjugate (Data.Array.Accelerate.Smart.Exp GHC.Types.Float)
 instance Linear.Conjugate.Conjugate (Data.Array.Accelerate.Smart.Exp Foreign.C.Types.CFloat)
 instance Linear.Conjugate.Conjugate (Data.Array.Accelerate.Smart.Exp Foreign.C.Types.CDouble)
-instance (Linear.Conjugate.Conjugate (Data.Array.Accelerate.Smart.Exp a), Data.Array.Accelerate.Classes.RealFloat.RealFloat a) => Linear.Conjugate.Conjugate (Data.Array.Accelerate.Smart.Exp (Data.Complex.Complex a))
+instance (Linear.Conjugate.Conjugate (Data.Array.Accelerate.Smart.Exp a), Data.Array.Accelerate.Classes.RealFloat.RealFloat a, Data.Array.Accelerate.Array.Sugar.Elt (Data.Complex.Complex a)) => Linear.Conjugate.Conjugate (Data.Array.Accelerate.Smart.Exp (Data.Complex.Complex a))
 instance Linear.Conjugate.TrivialConjugate (Data.Array.Accelerate.Smart.Exp GHC.Types.Int)
 instance Linear.Conjugate.TrivialConjugate (Data.Array.Accelerate.Smart.Exp GHC.Int.Int64)
 instance Linear.Conjugate.TrivialConjugate (Data.Array.Accelerate.Smart.Exp GHC.Int.Int32)
@@ -737,28 +737,28 @@ Quaternion :: !a -> {-# UNPACK #-} !V3 a -> Quaternion a
 slerp :: RealFloat a => Exp (Quaternion a) -> Exp (Quaternion a) -> Exp a -> Exp (Quaternion a)
 
 -- | <a>asin</a> with a specified branch cut
-asinq :: RealFloat a => Exp (Quaternion a) -> Exp (Quaternion a) -> Exp (Quaternion a)
+asinq :: (RealFloat a, Elt (Complex a)) => Exp (Quaternion a) -> Exp (Quaternion a) -> Exp (Quaternion a)
 
 -- | <a>acos</a> with a specified branch cut
-acosq :: RealFloat a => Exp (Quaternion a) -> Exp (Quaternion a) -> Exp (Quaternion a)
+acosq :: (RealFloat a, Elt (Complex a)) => Exp (Quaternion a) -> Exp (Quaternion a) -> Exp (Quaternion a)
 
 -- | <a>atan</a> with a specified branch cut
-atanq :: RealFloat a => Exp (Quaternion a) -> Exp (Quaternion a) -> Exp (Quaternion a)
+atanq :: (RealFloat a, Elt (Complex a)) => Exp (Quaternion a) -> Exp (Quaternion a) -> Exp (Quaternion a)
 
 -- | <a>asinh</a> with a specified branch cut
-asinhq :: RealFloat a => Exp (Quaternion a) -> Exp (Quaternion a) -> Exp (Quaternion a)
+asinhq :: (RealFloat a, Elt (Complex a)) => Exp (Quaternion a) -> Exp (Quaternion a) -> Exp (Quaternion a)
 
 -- | <a>acosh</a> with a specified branch cut
-acoshq :: RealFloat a => Exp (Quaternion a) -> Exp (Quaternion a) -> Exp (Quaternion a)
+acoshq :: (RealFloat a, Elt (Complex a)) => Exp (Quaternion a) -> Exp (Quaternion a) -> Exp (Quaternion a)
 
 -- | <a>atanh</a> with a specified branch cut
-atanhq :: RealFloat a => Exp (Quaternion a) -> Exp (Quaternion a) -> Exp (Quaternion a)
+atanhq :: (RealFloat a, Elt (Complex a)) => Exp (Quaternion a) -> Exp (Quaternion a) -> Exp (Quaternion a)
 
 -- | norm of the imaginary component
 absi :: Floating a => Exp (Quaternion a) -> Exp a
 
 -- | raise a <a>Quaternion</a> to a scalar power
-pow :: RealFloat a => Exp (Quaternion a) -> Exp a -> Exp (Quaternion a)
+pow :: (RealFloat a, Elt (Complex a)) => Exp (Quaternion a) -> Exp a -> Exp (Quaternion a)
 
 -- | Apply a rotation to a vector
 rotate :: forall a. (Conjugate (Exp a), RealFloat a) => Exp (Quaternion a) -> Exp (V3 a) -> Exp (V3 a)
@@ -777,7 +777,7 @@ instance Data.Array.Accelerate.Classes.Eq.Eq a => Data.Array.Accelerate.Classes.
 instance Data.Array.Accelerate.Classes.Ord.Ord a => Data.Array.Accelerate.Classes.Ord.Ord (Linear.Quaternion.Quaternion a)
 instance Data.Array.Accelerate.Classes.RealFloat.RealFloat a => GHC.Num.Num (Data.Array.Accelerate.Smart.Exp (Linear.Quaternion.Quaternion a))
 instance Data.Array.Accelerate.Classes.RealFloat.RealFloat a => GHC.Real.Fractional (Data.Array.Accelerate.Smart.Exp (Linear.Quaternion.Quaternion a))
-instance Data.Array.Accelerate.Classes.RealFloat.RealFloat a => GHC.Float.Floating (Data.Array.Accelerate.Smart.Exp (Linear.Quaternion.Quaternion a))
+instance (Data.Array.Accelerate.Classes.RealFloat.RealFloat a, Data.Array.Accelerate.Array.Sugar.Elt (Data.Complex.Complex a)) => GHC.Float.Floating (Data.Array.Accelerate.Smart.Exp (Linear.Quaternion.Quaternion a))
 instance (Data.Array.Accelerate.Classes.RealFloat.RealFloat a, Data.Array.Accelerate.Linear.Epsilon.Epsilon a) => Data.Array.Accelerate.Linear.Epsilon.Epsilon (Linear.Quaternion.Quaternion a)
 instance (Data.Array.Accelerate.Classes.RealFloat.RealFloat a, Linear.Conjugate.Conjugate (Data.Array.Accelerate.Smart.Exp a)) => Linear.Conjugate.Conjugate (Data.Array.Accelerate.Smart.Exp (Linear.Quaternion.Quaternion a))
 instance Data.Array.Accelerate.Data.Functor.Functor Linear.Quaternion.Quaternion
