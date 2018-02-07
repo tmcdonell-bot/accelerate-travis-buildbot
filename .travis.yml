@@ -113,7 +113,8 @@ install:
   - cabal --version
   - stack --version
   - stack build --dry-run ${TARGET}
-  - travis_retry travis_wait 60 stack build --fast --jobs=2 --no-terminal --no-copy-bins --only-dependencies accelerate-examples ${HADDOCK}
+  - travis_retry travis_wait 60 stack build --fast --jobs=2 --no-terminal --no-copy-bins --only-dependencies accelerate-llvm-native accelerate-llvm-ptx ${HADDOCK}
+  # - travis_retry travis_wait 60 stack build --fast --jobs=2 --no-terminal --no-copy-bins --only-dependencies accelerate-examples ${HADDOCK}
   # - travis_retry travis_wait 60 stack build --fast --jobs=2 --only-dependencies --no-terminal --no-copy-bins ${HADDOCK} ${TARGET}
 
 script:
