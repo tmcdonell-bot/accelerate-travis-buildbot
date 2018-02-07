@@ -47,8 +47,8 @@ addons:
       - liblapack-dev
 
 compiler:
-  - GHC-8.2.1
-  - GHC-8.0.2
+  # - GHC-8.2.1
+  # - GHC-8.0.2
   - GHC-7.10.3
   # - GHC-7.8.4
 
@@ -113,7 +113,7 @@ install:
   - cabal --version
   - stack --version
   - stack build --dry-run ${TARGET}
-  - travis_retry travis_wait 60 stack build --fast --jobs=2 --no-terminal --no-copy-bins --only-dependencies accelerate-llvm-native accelerate-llvm-ptx ${HADDOCK}
+  - travis_retry travis_wait 60 stack build --fast --jobs=2 --no-terminal --no-copy-bins --only-dependencies accelerate-llvm-native ${HADDOCK}
   # - travis_retry travis_wait 60 stack build --fast --jobs=2 --no-terminal --no-copy-bins --only-dependencies accelerate-examples ${HADDOCK}
   # - travis_retry travis_wait 60 stack build --fast --jobs=2 --only-dependencies --no-terminal --no-copy-bins ${HADDOCK} ${TARGET}
 
