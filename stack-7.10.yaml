@@ -48,7 +48,7 @@ extra-deps:
   commit: feaf458f4ecbebc33846420cf6f4cfcf9ea090c5
 
 - git:    https://github.com/tmcdonell/mwc-random-accelerate.git
-  commit: 6b43b357516b71ef4b7ed33260c975447d01bccc
+  commit: 2c3a3654be10aae5bf4e8673ab1e3b2a8dff3128
 
 - git:    https://github.com/tmcdonell/numeric-prelude-accelerate.git
   commit: 88aeb033e92e98baf238f8c7e5611bb58a200479
