@@ -270,12 +270,17 @@ setStream :: (Handle) -> (Stream) -> IO ()
 --   The <a>cuda</a> package can be used for writing to and retrieving data
 --   from the GPU.
 --   
---   For more information see
---   <a>http://docs.nvidia.com/cuda/cufft/index.html</a>
---   
 --   <ul>
 --   <li><i><i>Example</i></i></li>
 --   </ul>
 --   
---   <b>TODO</b>
+--   _TODO_
+--   
+--   <ul>
+--   <li><i><i>Additional information</i></i></li>
+--   </ul>
+--   
+--   For more information, see the NVIDIA cuFFT documentation:
+--   
+--   <a>http://docs.nvidia.com/cuda/cufft/index.html</a>
 module Foreign.CUDA.FFT
