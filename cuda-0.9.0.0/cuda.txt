@@ -39,12 +39,12 @@
 --   <li><i><i>NOTES:</i></i></li>
 --   </ul>
 --   
---   The setup script for this package requires at least Cabal-1.22. To
+--   The setup script for this package requires at least Cabal-1.24. To
 --   upgrade, execute one of:
 --   
 --   <ul>
 --   <li>cabal users: <tt>cabal install Cabal --constraint="Cabal &gt;=
---   1.22"</tt></li>
+--   1.24"</tt></li>
 --   <li>stack users: <tt>stack setup --upgrade-cabal</tt></li>
 --   </ul>
 --   
@@ -2711,10 +2711,10 @@ export :: DevicePtr a -> IO (IPCDevicePtr a)
 -- | Open an inter-process memory handle exported from another process,
 --   returning a device pointer usable in the current process.
 --   
---   Maps memory exported by another process with <tt>create</tt> into the
---   current device address space. For contexts on different devices,
---   <a>open</a> can attempt to enable peer access if the user called
---   <a>add</a>, and is controlled by the <a>LazyEnablePeerAccess</a> flag.
+--   Maps memory exported by another process with 'export into the current
+--   device address space. For contexts on different devices, <a>open</a>
+--   can attempt to enable peer access if the user called <a>add</a>, and
+--   is controlled by the <a>LazyEnablePeerAccess</a> flag.
 --   
 --   Each handle from a given device and context may only be <a>open</a>ed
 --   by one context per device per other process. Memory returned by
