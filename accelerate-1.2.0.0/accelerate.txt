@@ -1323,6 +1323,71 @@ enumFromStepN :: (Shape sh, Num e, FromIntegral Int e) => Exp sh -> Exp e -> Exp
 (++) :: forall sh e. (Slice sh, Shape sh, Elt e) => Acc (Array (sh :. Int) e) -> Acc (Array (sh :. Int) e) -> Acc (Array (sh :. Int) e)
 infixr 5 ++
 
+-- | Generalised version of '(++)' where the argument <a>Lens'</a>
+--   specifies which dimension to concatenate along.
+--   
+--   Appropriate lenses are available from <a>lens-accelerate</a>
+--   
+--   <pre>
+--   &gt;&gt;&gt; let m1 = fromList (Z:.5:.10) [0..] :: Matrix Int
+--   
+--   &gt;&gt;&gt; m1
+--   Matrix (Z :. 5 :. 10)
+--     [  0,  1,  2,  3,  4,  5,  6,  7,  8,  9,
+--       10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
+--       20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
+--       30, 31, 32, 33, 34, 35, 36, 37, 38, 39,
+--       40, 41, 42, 43, 44, 45, 46, 47, 48, 49]
+--   </pre>
+--   
+--   <pre>
+--   &gt;&gt;&gt; let m2 = fromList (Z:.10:.5) [0..] :: Matrix Int
+--   
+--   &gt;&gt;&gt; m2
+--   Matrix (Z :. 10 :. 5)
+--     [  0,  1,  2,  3,  4,
+--        5,  6,  7,  8,  9,
+--       10, 11, 12, 13, 14,
+--       15, 16, 17, 18, 19,
+--       20, 21, 22, 23, 24,
+--       25, 26, 27, 28, 29,
+--       30, 31, 32, 33, 34,
+--       35, 36, 37, 38, 39,
+--       40, 41, 42, 43, 44,
+--       45, 46, 47, 48, 49]
+--   </pre>
+--   
+--   <pre>
+--   &gt;&gt;&gt; run $ concatOn _1 (use m1) (use m2)
+--   Matrix (Z :. 5 :. 15)
+--     [  0,  1,  2,  3,  4,  5,  6,  7,  8,  9,  0,  1,  2,  3,  4,
+--       10, 11, 12, 13, 14, 15, 16, 17, 18, 19,  5,  6,  7,  8,  9,
+--       20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 10, 11, 12, 13, 14,
+--       30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 15, 16, 17, 18, 19,
+--       40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 20, 21, 22, 23, 24]
+--   </pre>
+--   
+--   <pre>
+--   &gt;&gt;&gt; run $ concatOn _2 (use m1) (use m2)
+--   Matrix (Z :. 15 :. 5)
+--     [  0,  1,  2,  3,  4,
+--       10, 11, 12, 13, 14,
+--       20, 21, 22, 23, 24,
+--       30, 31, 32, 33, 34,
+--       40, 41, 42, 43, 44,
+--        0,  1,  2,  3,  4,
+--        5,  6,  7,  8,  9,
+--       10, 11, 12, 13, 14,
+--       15, 16, 17, 18, 19,
+--       20, 21, 22, 23, 24,
+--       25, 26, 27, 28, 29,
+--       30, 31, 32, 33, 34,
+--       35, 36, 37, 38, 39,
+--       40, 41, 42, 43, 44,
+--       45, 46, 47, 48, 49]
+--   </pre>
+concatOn :: (Shape sh, Elt e) => Lens' (Exp sh) (Exp Int) -> Acc (Array sh e) -> Acc (Array sh e) -> Acc (Array sh e)
+
 -- | Infix version of <a>acond</a>. If the predicate evaluates to
 --   <a>True</a>, the first component of the tuple is returned, else the
 --   second.
@@ -1930,6 +1995,36 @@ drop :: forall sh e. (Slice sh, Shape sh, Elt e) => Exp Int -> Acc (Array (sh :.
 --   </pre>
 slit :: forall sh e. (Slice sh, Shape sh, Elt e) => Exp Int -> Exp Int -> Acc (Array (sh :. Int) e) -> Acc (Array (sh :. Int) e)
 
+-- | Generalised version of <a>init</a> where the argument <a>Lens'</a>
+--   specifies which dimension to operate over.
+--   
+--   Appropriate lenses are available from <a>lens-accelerate</a>
+initOn :: (Shape sh, Elt e) => Lens' (Exp sh) (Exp Int) -> Acc (Array sh e) -> Acc (Array sh e)
+
+-- | Generalised version of <a>tail</a> where the argument <a>Lens'</a>
+--   specifies which dimension to operate over.
+--   
+--   Appropriate lenses are available from <a>lens-accelerate</a>
+tailOn :: (Shape sh, Elt e) => Lens' (Exp sh) (Exp Int) -> Acc (Array sh e) -> Acc (Array sh e)
+
+-- | Generalised version of <a>take</a> where the argument <a>Lens'</a>
+--   specifies which dimension to operate over.
+--   
+--   Appropriate lenses are available from <a>lens-accelerate</a>
+takeOn :: (Shape sh, Elt e) => Lens' (Exp sh) (Exp Int) -> Exp Int -> Acc (Array sh e) -> Acc (Array sh e)
+
+-- | Generalised version of <a>drop</a> where the argument <a>Lens'</a>
+--   specifies which dimension to operate over.
+--   
+--   Appropriate lenses are available from <a>lens-accelerate</a>
+dropOn :: (Shape sh, Elt e) => Lens' (Exp sh) (Exp Int) -> Exp Int -> Acc (Array sh e) -> Acc (Array sh e)
+
+-- | Generalised version of <a>drop</a> where the argument <a>Lens'</a>
+--   specifies which dimension to operate over.
+--   
+--   Appropriate lenses are available from <a>lens-accelerate</a>
+slitOn :: (Shape sh, Elt e) => Lens' (Exp sh) (Exp Int) -> Exp Int -> Exp Int -> Acc (Array sh e) -> Acc (Array sh e)
+
 -- | Generalised forward permutation operation (array scatter).
 --   
 --   Forward permutation specified by a function mapping indices from the
@@ -2101,6 +2196,99 @@ reverse :: Elt e => Acc (Vector e) -> Acc (Vector e)
 
 -- | Transpose the rows and columns of a matrix.
 transpose :: Elt e => Acc (Array DIM2 e) -> Acc (Array DIM2 e)
+
+-- | Generalised version of <a>reverse</a> where the argument <a>Lens'</a>
+--   specifies which dimension to reverse.
+--   
+--   Appropriate lenses are available from <a>lens-accelerate</a>
+--   
+--   <pre>
+--   &gt;&gt;&gt; let mat = fromList (Z:.5:.10) [0..] :: Matrix Int
+--   
+--   &gt;&gt;&gt; mat
+--   Matrix (Z :. 5 :. 10)
+--     [  0,  1,  2,  3,  4,  5,  6,  7,  8,  9,
+--       10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
+--       20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
+--       30, 31, 32, 33, 34, 35, 36, 37, 38, 39,
+--       40, 41, 42, 43, 44, 45, 46, 47, 48, 49]
+--   </pre>
+--   
+--   <pre>
+--   &gt;&gt;&gt; run $ reverseOn _1 (use mat)
+--   Matrix (Z :. 5 :. 10)
+--     [  9,  8,  7,  6,  5,  4,  3,  2,  1,  0,
+--       19, 18, 17, 16, 15, 14, 13, 12, 11, 10,
+--       29, 28, 27, 26, 25, 24, 23, 22, 21, 20,
+--       39, 38, 37, 36, 35, 34, 33, 32, 31, 30,
+--       49, 48, 47, 46, 45, 44, 43, 42, 41, 40]
+--   </pre>
+--   
+--   <pre>
+--   &gt;&gt;&gt; run $ reverseOn _2 (use mat)
+--   Matrix (Z :. 5 :. 10)
+--     [ 40, 41, 42, 43, 44, 45, 46, 47, 48, 49,
+--       30, 31, 32, 33, 34, 35, 36, 37, 38, 39,
+--       20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
+--       10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
+--        0,  1,  2,  3,  4,  5,  6,  7,  8,  9]
+--   </pre>
+reverseOn :: (Shape sh, Elt e) => Lens' (Exp sh) (Exp Int) -> Acc (Array sh e) -> Acc (Array sh e)
+
+-- | Generalised version of <a>transpose</a> where the argument
+--   <a>Lens'</a>s specify which two dimensions to transpose.
+--   
+--   Appropriate lenses are available from <a>lens-accelerate</a>
+--   
+--   <pre>
+--   &gt;&gt;&gt; let mat = fromList (Z:.5:.10) [0..] :: Matrix Int
+--   
+--   &gt;&gt;&gt; mat
+--   Matrix (Z :. 5 :. 10)
+--     [  0,  1,  2,  3,  4,  5,  6,  7,  8,  9,
+--       10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
+--       20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
+--       30, 31, 32, 33, 34, 35, 36, 37, 38, 39,
+--       40, 41, 42, 43, 44, 45, 46, 47, 48, 49]
+--   </pre>
+--   
+--   <pre>
+--   &gt;&gt;&gt; run $ transposeOn _1 _2 (use mat)
+--   Matrix (Z :. 10 :. 5)
+--     [ 0, 10, 20, 30, 40,
+--       1, 11, 21, 31, 41,
+--       2, 12, 22, 32, 42,
+--       3, 13, 23, 33, 43,
+--       4, 14, 24, 34, 44,
+--       5, 15, 25, 35, 45,
+--       6, 16, 26, 36, 46,
+--       7, 17, 27, 37, 47,
+--       8, 18, 28, 38, 48,
+--       9, 19, 29, 39, 49]
+--   </pre>
+--   
+--   <pre>
+--   &gt;&gt;&gt; let box = fromList (Z:.2:.3:.5) [0..] :: Array DIM3 Int
+--   
+--   &gt;&gt;&gt; box
+--   Array (Z :. 2 :. 3 :. 5) [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29]
+--   </pre>
+--   
+--   <pre>
+--   &gt;&gt;&gt; run $ transposeOn _1 _2 (use box)
+--   Array (Z :. 2 :. 5 :. 3) [0,5,10,1,6,11,2,7,12,3,8,13,4,9,14,15,20,25,16,21,26,17,22,27,18,23,28,19,24,29]
+--   </pre>
+--   
+--   <pre>
+--   &gt;&gt;&gt; run $ transposeOn _2 _3 (use box)
+--   Array (Z :. 3 :. 2 :. 5) [0,1,2,3,4,15,16,17,18,19,5,6,7,8,9,20,21,22,23,24,10,11,12,13,14,25,26,27,28,29]
+--   </pre>
+--   
+--   <pre>
+--   &gt;&gt;&gt; run $ transposeOn _1 _3 (use box)
+--   Array (Z :. 5 :. 3 :. 2) [0,15,5,20,10,25,1,16,6,21,11,26,2,17,7,22,12,27,3,18,8,23,13,28,4,19,9,24,14,29]
+--   </pre>
+transposeOn :: (Shape sh, Elt e) => Lens' (Exp sh) (Exp Int) -> Lens' (Exp sh) (Exp Int) -> Acc (Array sh e) -> Acc (Array sh e)
 
 -- | Drop elements that do not satisfy the predicate. Returns the elements
 --   which pass the predicate, together with a segment descriptor
