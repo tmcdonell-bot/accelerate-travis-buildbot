@@ -24,7 +24,7 @@ s|{SHA_numeric-prelude-accelerate}|88aeb033e92e98baf238f8c7e5611bb58a200479|
 s|{SHA_lulesh-accelerate}|35b4e65b7ab0c167fed2ba11cc207c2c625f06b8|
 s|{SHA_cuda}|c9f1d452d9ad54644f291976b7f3146987a7e2c4|
 s|{SHA_cufft}|214b8a204b859f78825ecdfa3c038dccc4ace84f|
-s|{SHA_cublas}|9b7e1ce0686036b5e7edecff7240ab781d21fe58|
+s|{SHA_cublas}|99c811330251be1977dc8962c7f9c28cea0bc286|
 s|{SHA_cusparse}|d64f297281441e8b6e90bd97768c5d9849ba608e|
 s|{SHA_cusolver}|5e7edaadf96a5c415efbb4d3a3b120d32611841c|
 s|{SHA_nvvm}|baeb5a8bafab00b9f5d98f341abe4e2d8ae4d3fd|
