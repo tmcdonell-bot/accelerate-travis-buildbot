@@ -462,54 +462,6 @@ instance (Data.Array.Accelerate.Array.Sugar.Elt a, Data.Array.Accelerate.Array.S
 instance (Data.Array.Accelerate.Array.Sugar.Elt a, Data.Array.Accelerate.Array.Sugar.Elt b, Data.Array.Accelerate.Array.Sugar.Elt c, Data.Array.Accelerate.Array.Sugar.Elt d, Data.Array.Accelerate.Array.Sugar.Elt e, GHC.Base.Monoid (Data.Array.Accelerate.Smart.Exp a), GHC.Base.Monoid (Data.Array.Accelerate.Smart.Exp b), GHC.Base.Monoid (Data.Array.Accelerate.Smart.Exp c), GHC.Base.Monoid (Data.Array.Accelerate.Smart.Exp d), GHC.Base.Monoid (Data.Array.Accelerate.Smart.Exp e)) => GHC.Base.Monoid (Data.Array.Accelerate.Smart.Exp (a, b, c, d, e))
 
 
-module Data.Array.Accelerate.Data.Maybe
-
--- | The <a>Maybe</a> type encapsulates an optional value. A value of type
---   <tt><a>Maybe</a> a</tt> either contains a value of type <tt>a</tt>
---   (represented as <tt><a>Just</a> a</tt>), or it is empty (represented
---   as <a>Nothing</a>). Using <a>Maybe</a> is a good way to deal with
---   errors or exceptional cases without resorting to drastic measures such
---   as <a>error</a>.
---   
---   The <a>Maybe</a> type is also a monad. It is a simple kind of error
---   monad, where all errors are represented by <a>Nothing</a>. A richer
---   error monad can be built using the <a>Either</a> type.
-data Maybe a :: * -> *
-Nothing :: Maybe a
-Just :: a -> Maybe a
-
--- | The <a>maybe</a> function takes a default value, a function, and a
---   <a>Maybe</a> value. If the <a>Maybe</a> value is nothing, the default
---   value is returned; otherwise, it applies the function to the value
---   inside the <a>Just</a> and returns the result
-maybe :: (Elt a, Elt b) => Exp b -> (Exp a -> Exp b) -> Exp (Maybe a) -> Exp b
-
--- | Returns <a>True</a> if the argument is of the form <tt>Just _</tt>
-isJust :: Elt a => Exp (Maybe a) -> Exp Bool
-
--- | Returns <a>True</a> if the argument is <a>Nothing</a>
-isNothing :: Elt a => Exp (Maybe a) -> Exp Bool
-
--- | The <a>fromMaybe</a> function takes a default value and a <a>Maybe</a>
---   value. If the <a>Maybe</a> is <a>Nothing</a>, the default value is
---   returned; otherwise, it returns the value contained in the
---   <a>Maybe</a>.
-fromMaybe :: Elt a => Exp a -> Exp (Maybe a) -> Exp a
-
--- | The <a>fromJust</a> function extracts the element out of the
---   <a>Just</a> constructor. If the argument was actually <a>Nothing</a>,
---   you will get an undefined value instead.
-fromJust :: Elt a => Exp (Maybe a) -> Exp a
-instance Data.Array.Accelerate.Data.Functor.Functor GHC.Base.Maybe
-instance Data.Array.Accelerate.Classes.Eq.Eq a => Data.Array.Accelerate.Classes.Eq.Eq (GHC.Base.Maybe a)
-instance Data.Array.Accelerate.Classes.Ord.Ord a => Data.Array.Accelerate.Classes.Ord.Ord (GHC.Base.Maybe a)
-instance (GHC.Base.Monoid (Data.Array.Accelerate.Smart.Exp a), Data.Array.Accelerate.Array.Sugar.Elt a) => GHC.Base.Monoid (Data.Array.Accelerate.Smart.Exp (GHC.Base.Maybe a))
-instance (Data.Semigroup.Semigroup (Data.Array.Accelerate.Smart.Exp a), Data.Array.Accelerate.Array.Sugar.Elt a) => Data.Semigroup.Semigroup (Data.Array.Accelerate.Smart.Exp (GHC.Base.Maybe a))
-instance Data.Array.Accelerate.Array.Sugar.Elt a => Data.Array.Accelerate.Array.Sugar.Elt (GHC.Base.Maybe a)
-instance Data.Array.Accelerate.Array.Sugar.Elt a => Data.Array.Accelerate.Product.IsProduct Data.Array.Accelerate.Array.Sugar.Elt (GHC.Base.Maybe a)
-instance (Data.Array.Accelerate.Lift.Lift Data.Array.Accelerate.Smart.Exp a, Data.Array.Accelerate.Array.Sugar.Elt (Data.Array.Accelerate.Lift.Plain a)) => Data.Array.Accelerate.Lift.Lift Data.Array.Accelerate.Smart.Exp (GHC.Base.Maybe a)
-
-
 -- | Complex numbers, stored in the usual C-style array-of-struct
 --   representation, for easy interoperability.
 module Data.Array.Accelerate.Data.Complex
@@ -1326,7 +1278,7 @@ infixr 5 ++
 -- | Generalised version of '(++)' where the argument <a>Lens'</a>
 --   specifies which dimension to concatenate along.
 --   
---   Appropriate lenses are available from <a>lens-accelerate</a>
+--   Appropriate lenses are available from <a>lens-accelerate</a>.
 --   
 --   <pre>
 --   &gt;&gt;&gt; let m1 = fromList (Z:.5:.10) [0..] :: Matrix Int
@@ -1998,31 +1950,31 @@ slit :: forall sh e. (Slice sh, Shape sh, Elt e) => Exp Int -> Exp Int -> Acc (A
 -- | Generalised version of <a>init</a> where the argument <a>Lens'</a>
 --   specifies which dimension to operate over.
 --   
---   Appropriate lenses are available from <a>lens-accelerate</a>
+--   Appropriate lenses are available from <a>lens-accelerate</a>.
 initOn :: (Shape sh, Elt e) => Lens' (Exp sh) (Exp Int) -> Acc (Array sh e) -> Acc (Array sh e)
 
 -- | Generalised version of <a>tail</a> where the argument <a>Lens'</a>
 --   specifies which dimension to operate over.
 --   
---   Appropriate lenses are available from <a>lens-accelerate</a>
+--   Appropriate lenses are available from <a>lens-accelerate</a>.
 tailOn :: (Shape sh, Elt e) => Lens' (Exp sh) (Exp Int) -> Acc (Array sh e) -> Acc (Array sh e)
 
 -- | Generalised version of <a>take</a> where the argument <a>Lens'</a>
 --   specifies which dimension to operate over.
 --   
---   Appropriate lenses are available from <a>lens-accelerate</a>
+--   Appropriate lenses are available from <a>lens-accelerate</a>.
 takeOn :: (Shape sh, Elt e) => Lens' (Exp sh) (Exp Int) -> Exp Int -> Acc (Array sh e) -> Acc (Array sh e)
 
 -- | Generalised version of <a>drop</a> where the argument <a>Lens'</a>
 --   specifies which dimension to operate over.
 --   
---   Appropriate lenses are available from <a>lens-accelerate</a>
+--   Appropriate lenses are available from <a>lens-accelerate</a>.
 dropOn :: (Shape sh, Elt e) => Lens' (Exp sh) (Exp Int) -> Exp Int -> Acc (Array sh e) -> Acc (Array sh e)
 
 -- | Generalised version of <a>drop</a> where the argument <a>Lens'</a>
 --   specifies which dimension to operate over.
 --   
---   Appropriate lenses are available from <a>lens-accelerate</a>
+--   Appropriate lenses are available from <a>lens-accelerate</a>.
 slitOn :: (Shape sh, Elt e) => Lens' (Exp sh) (Exp Int) -> Exp Int -> Exp Int -> Acc (Array sh e) -> Acc (Array sh e)
 
 -- | Generalised forward permutation operation (array scatter).
@@ -2034,7 +1986,7 @@ slitOn :: (Shape sh, Elt e) => Lens' (Exp sh) (Exp Int) -> Exp Int -> Exp Int ->
 --   the given combination function.
 --   
 --   The combination function must be <i>associative</i> and
---   <i>commutative</i>. Elements that are mapped to the magic value
+--   <i>commutative</i>. Elements that are mapped to the magic index
 --   <a>ignore</a> by the permutation function are dropped.
 --   
 --   The combination function is given the new value being permuted as its
@@ -2105,9 +2057,16 @@ slitOn :: (Shape sh, Elt e) => Lens' (Exp sh) (Exp Int) -> Exp Int -> Exp Int ->
 --   <li>If the array of default values is only used once, it will be
 --   updated in-place.</li>
 --   </ol>
+--   
+--   Regarding the defaults array:
+--   
+--   If you are sure that the default values are not necessary---they are
+--   not used by the combination function and every element will be
+--   overwritten---a default array created by <a>fill</a>ing with the value
+--   <a>undef</a> will give you a new uninitialised array.
 permute :: (Shape sh, Shape sh', Elt a) => (Exp a -> Exp a -> Exp a) -> Acc (Array sh' a) -> (Exp sh -> Exp sh') -> Acc (Array sh a) -> Acc (Array sh' a)
 
--- | Magic value identifying elements that are ignored in a forward
+-- | Magic index identifying elements that are ignored in a forward
 --   permutation.
 ignore :: Shape sh => Exp sh
 
@@ -2200,7 +2159,7 @@ transpose :: Elt e => Acc (Array DIM2 e) -> Acc (Array DIM2 e)
 -- | Generalised version of <a>reverse</a> where the argument <a>Lens'</a>
 --   specifies which dimension to reverse.
 --   
---   Appropriate lenses are available from <a>lens-accelerate</a>
+--   Appropriate lenses are available from <a>lens-accelerate</a>.
 --   
 --   <pre>
 --   &gt;&gt;&gt; let mat = fromList (Z:.5:.10) [0..] :: Matrix Int
@@ -2238,7 +2197,7 @@ reverseOn :: (Shape sh, Elt e) => Lens' (Exp sh) (Exp Int) -> Acc (Array sh e) -
 -- | Generalised version of <a>transpose</a> where the argument
 --   <a>Lens'</a>s specify which two dimensions to transpose.
 --   
---   Appropriate lenses are available from <a>lens-accelerate</a>
+--   Appropriate lenses are available from <a>lens-accelerate</a>.
 --   
 --   <pre>
 --   &gt;&gt;&gt; let mat = fromList (Z:.5:.10) [0..] :: Matrix Int
@@ -3430,6 +3389,17 @@ ilift3 :: (Exp Int -> Exp Int -> Exp Int -> Exp Int) -> Exp DIM1 -> Exp DIM1 -> 
 --   need to generate fresh code.
 constant :: Elt t => t -> Exp t
 
+-- | <a>undef</a> can be used anywhere a constant is expected, and
+--   indicates that the consumer of the value can receive an unspecified
+--   bit pattern.
+--   
+--   This is useful because a store of an undefined value can be assumed to
+--   not have any effect; we can assume that the value is overwritten with
+--   bits that happen to match what was already there. However, a store
+--   <i>to</i> an undefined location could clobber arbitrary memory,
+--   therefore, it has undefined behaviour.
+undef :: Elt t => Exp t
+
 -- | Extract the first component of a scalar pair.
 fst :: forall a b. (Elt a, Elt b) => Exp (a, b) -> Exp a
 
@@ -4128,3 +4098,218 @@ run1 :: (Arrays a, Arrays b) => (Acc a -> Acc b) -> a -> b
 
 -- | Prepare and execute an embedded array program.
 runN :: Afunction f => f -> AfunctionR f
+
+
+module Data.Array.Accelerate.Data.Maybe
+
+-- | The <a>Maybe</a> type encapsulates an optional value. A value of type
+--   <tt><a>Maybe</a> a</tt> either contains a value of type <tt>a</tt>
+--   (represented as <tt><a>Just</a> a</tt>), or it is empty (represented
+--   as <a>Nothing</a>). Using <a>Maybe</a> is a good way to deal with
+--   errors or exceptional cases without resorting to drastic measures such
+--   as <a>error</a>.
+--   
+--   The <a>Maybe</a> type is also a monad. It is a simple kind of error
+--   monad, where all errors are represented by <a>Nothing</a>. A richer
+--   error monad can be built using the <a>Either</a> type.
+data Maybe a :: * -> *
+Nothing :: Maybe a
+Just :: a -> Maybe a
+
+-- | Lift a value into a <a>Just</a> constructor
+just :: Elt a => Exp a -> Exp (Maybe a)
+
+-- | The <a>Nothing</a> constructor
+nothing :: forall a. Elt a => Exp (Maybe a)
+
+-- | The <a>maybe</a> function takes a default value, a function, and a
+--   <a>Maybe</a> value. If the <a>Maybe</a> value is nothing, the default
+--   value is returned; otherwise, it applies the function to the value
+--   inside the <a>Just</a> and returns the result
+maybe :: (Elt a, Elt b) => Exp b -> (Exp a -> Exp b) -> Exp (Maybe a) -> Exp b
+
+-- | Returns <a>True</a> if the argument is of the form <tt>Just _</tt>
+isJust :: Elt a => Exp (Maybe a) -> Exp Bool
+
+-- | Returns <a>True</a> if the argument is <a>Nothing</a>
+isNothing :: Elt a => Exp (Maybe a) -> Exp Bool
+
+-- | The <a>fromMaybe</a> function takes a default value and a <a>Maybe</a>
+--   value. If the <a>Maybe</a> is <a>Nothing</a>, the default value is
+--   returned; otherwise, it returns the value contained in the
+--   <a>Maybe</a>.
+fromMaybe :: Elt a => Exp a -> Exp (Maybe a) -> Exp a
+
+-- | The <a>fromJust</a> function extracts the element out of the
+--   <a>Just</a> constructor. If the argument was actually <a>Nothing</a>,
+--   you will get an undefined value instead.
+fromJust :: Elt a => Exp (Maybe a) -> Exp a
+
+-- | Extract from an array all of the <a>Just</a> values, together with a
+--   segment descriptor indicating how many elements along each dimension
+--   were returned.
+justs :: (Shape sh, Slice sh, Elt a) => Acc (Array (sh :. Int) (Maybe a)) -> Acc (Vector a, Array sh Int)
+instance Data.Array.Accelerate.Data.Functor.Functor GHC.Base.Maybe
+instance Data.Array.Accelerate.Classes.Eq.Eq a => Data.Array.Accelerate.Classes.Eq.Eq (GHC.Base.Maybe a)
+instance Data.Array.Accelerate.Classes.Ord.Ord a => Data.Array.Accelerate.Classes.Ord.Ord (GHC.Base.Maybe a)
+instance (GHC.Base.Monoid (Data.Array.Accelerate.Smart.Exp a), Data.Array.Accelerate.Array.Sugar.Elt a) => GHC.Base.Monoid (Data.Array.Accelerate.Smart.Exp (GHC.Base.Maybe a))
+instance (Data.Semigroup.Semigroup (Data.Array.Accelerate.Smart.Exp a), Data.Array.Accelerate.Array.Sugar.Elt a) => Data.Semigroup.Semigroup (Data.Array.Accelerate.Smart.Exp (GHC.Base.Maybe a))
+instance Data.Array.Accelerate.Array.Sugar.Elt a => Data.Array.Accelerate.Array.Sugar.Elt (GHC.Base.Maybe a)
+instance Data.Array.Accelerate.Array.Sugar.Elt a => Data.Array.Accelerate.Product.IsProduct Data.Array.Accelerate.Array.Sugar.Elt (GHC.Base.Maybe a)
+instance (Data.Array.Accelerate.Lift.Lift Data.Array.Accelerate.Smart.Exp a, Data.Array.Accelerate.Array.Sugar.Elt (Data.Array.Accelerate.Lift.Plain a)) => Data.Array.Accelerate.Lift.Lift Data.Array.Accelerate.Smart.Exp (GHC.Base.Maybe a)
+
+
+module Data.Array.Accelerate.Data.Either
+
+-- | The <a>Either</a> type represents values with two possibilities: a
+--   value of type <tt><a>Either</a> a b</tt> is either <tt><a>Left</a>
+--   a</tt> or <tt><a>Right</a> b</tt>.
+--   
+--   The <a>Either</a> type is sometimes used to represent a value which is
+--   either correct or an error; by convention, the <a>Left</a> constructor
+--   is used to hold an error value and the <a>Right</a> constructor is
+--   used to hold a correct value (mnemonic: "right" also means "correct").
+--   
+--   <h4><b>Examples</b></h4>
+--   
+--   The type <tt><a>Either</a> <a>String</a> <a>Int</a></tt> is the type
+--   of values which can be either a <a>String</a> or an <a>Int</a>. The
+--   <a>Left</a> constructor can be used only on <a>String</a>s, and the
+--   <a>Right</a> constructor can be used only on <a>Int</a>s:
+--   
+--   <pre>
+--   &gt;&gt;&gt; let s = Left "foo" :: Either String Int
+--   
+--   &gt;&gt;&gt; s
+--   Left "foo"
+--   
+--   &gt;&gt;&gt; let n = Right 3 :: Either String Int
+--   
+--   &gt;&gt;&gt; n
+--   Right 3
+--   
+--   &gt;&gt;&gt; :type s
+--   s :: Either String Int
+--   
+--   &gt;&gt;&gt; :type n
+--   n :: Either String Int
+--   </pre>
+--   
+--   The <a>fmap</a> from our <a>Functor</a> instance will ignore
+--   <a>Left</a> values, but will apply the supplied function to values
+--   contained in a <a>Right</a>:
+--   
+--   <pre>
+--   &gt;&gt;&gt; let s = Left "foo" :: Either String Int
+--   
+--   &gt;&gt;&gt; let n = Right 3 :: Either String Int
+--   
+--   &gt;&gt;&gt; fmap (*2) s
+--   Left "foo"
+--   
+--   &gt;&gt;&gt; fmap (*2) n
+--   Right 6
+--   </pre>
+--   
+--   The <a>Monad</a> instance for <a>Either</a> allows us to chain
+--   together multiple actions which may fail, and fail overall if any of
+--   the individual steps failed. First we'll write a function that can
+--   either parse an <a>Int</a> from a <a>Char</a>, or fail.
+--   
+--   <pre>
+--   &gt;&gt;&gt; import Data.Char ( digitToInt, isDigit )
+--   
+--   &gt;&gt;&gt; :{
+--       let parseEither :: Char -&gt; Either String Int
+--           parseEither c
+--             | isDigit c = Right (digitToInt c)
+--             | otherwise = Left "parse error"
+--   
+--   &gt;&gt;&gt; :}
+--   </pre>
+--   
+--   The following should work, since both <tt>'1'</tt> and <tt>'2'</tt>
+--   can be parsed as <a>Int</a>s.
+--   
+--   <pre>
+--   &gt;&gt;&gt; :{
+--       let parseMultiple :: Either String Int
+--           parseMultiple = do
+--             x &lt;- parseEither '1'
+--             y &lt;- parseEither '2'
+--             return (x + y)
+--   
+--   &gt;&gt;&gt; :}
+--   </pre>
+--   
+--   <pre>
+--   &gt;&gt;&gt; parseMultiple
+--   Right 3
+--   </pre>
+--   
+--   But the following should fail overall, since the first operation where
+--   we attempt to parse <tt>'m'</tt> as an <a>Int</a> will fail:
+--   
+--   <pre>
+--   &gt;&gt;&gt; :{
+--       let parseMultiple :: Either String Int
+--           parseMultiple = do
+--             x &lt;- parseEither 'm'
+--             y &lt;- parseEither '2'
+--             return (x + y)
+--   
+--   &gt;&gt;&gt; :}
+--   </pre>
+--   
+--   <pre>
+--   &gt;&gt;&gt; parseMultiple
+--   Left "parse error"
+--   </pre>
+data Either a b :: * -> * -> *
+Left :: a -> Either a b
+Right :: b -> Either a b
+
+-- | Lift a value into the <a>Left</a> constructor
+left :: forall a b. (Elt a, Elt b) => Exp a -> Exp (Either a b)
+
+-- | Lift a value into the <a>Right</a> constructor
+right :: forall a b. (Elt a, Elt b) => Exp b -> Exp (Either a b)
+
+-- | The <a>either</a> function performs case analysis on the <a>Either</a>
+--   type. If the value is <tt><a>Left</a> a</tt>, apply the first function
+--   to <tt>a</tt>; if it is <tt><a>Right</a> b</tt>, apply the second
+--   function to <tt>b</tt>.
+either :: (Elt a, Elt b, Elt c) => (Exp a -> Exp c) -> (Exp b -> Exp c) -> Exp (Either a b) -> Exp c
+
+-- | Return <a>True</a> if the argument is a <a>Left</a>-value
+isLeft :: (Elt a, Elt b) => Exp (Either a b) -> Exp Bool
+
+-- | Return <a>True</a> if the argument is a <a>Right</a>-value
+isRight :: (Elt a, Elt b) => Exp (Either a b) -> Exp Bool
+
+-- | The <a>fromLeft</a> function extracts the element out of the
+--   <a>Left</a> constructor. If the argument was actually <a>Right</a>,
+--   you will get an undefined value instead.
+fromLeft :: (Elt a, Elt b) => Exp (Either a b) -> Exp a
+
+-- | The <a>fromRight</a> function extracts the element out of the
+--   <a>Right</a> constructor. If the argument was actually <a>Left</a>,
+--   you will get an undefined value instead.
+fromRight :: (Elt a, Elt b) => Exp (Either a b) -> Exp b
+
+-- | Extract from the array of <a>Either</a> all of the <a>Left</a>
+--   elements, together with a segment descriptor indicating how many
+--   elements along each dimension were returned.
+lefts :: (Shape sh, Slice sh, Elt a, Elt b) => Acc (Array (sh :. Int) (Either a b)) -> Acc (Vector a, Array sh Int)
+
+-- | Extract from the array of <a>Either</a> all of the <a>Right</a>
+--   elements, together with a segment descriptor indicating how many
+--   elements along each dimension were returned.
+rights :: (Shape sh, Slice sh, Elt a, Elt b) => Acc (Array (sh :. Int) (Either a b)) -> Acc (Vector b, Array sh Int)
+instance Data.Array.Accelerate.Array.Sugar.Elt a => Data.Array.Accelerate.Data.Functor.Functor (Data.Either.Either a)
+instance (Data.Array.Accelerate.Classes.Eq.Eq a, Data.Array.Accelerate.Classes.Eq.Eq b) => Data.Array.Accelerate.Classes.Eq.Eq (Data.Either.Either a b)
+instance (Data.Array.Accelerate.Classes.Ord.Ord a, Data.Array.Accelerate.Classes.Ord.Ord b) => Data.Array.Accelerate.Classes.Ord.Ord (Data.Either.Either a b)
+instance (Data.Array.Accelerate.Array.Sugar.Elt a, Data.Array.Accelerate.Array.Sugar.Elt b) => Data.Semigroup.Semigroup (Data.Array.Accelerate.Smart.Exp (Data.Either.Either a b))
+instance (Data.Array.Accelerate.Array.Sugar.Elt a, Data.Array.Accelerate.Array.Sugar.Elt b) => Data.Array.Accelerate.Array.Sugar.Elt (Data.Either.Either a b)
+instance (Data.Array.Accelerate.Array.Sugar.Elt a, Data.Array.Accelerate.Array.Sugar.Elt b) => Data.Array.Accelerate.Product.IsProduct Data.Array.Accelerate.Array.Sugar.Elt (Data.Either.Either a b)
+instance (Data.Array.Accelerate.Lift.Lift Data.Array.Accelerate.Smart.Exp a, Data.Array.Accelerate.Lift.Lift Data.Array.Accelerate.Smart.Exp b, Data.Array.Accelerate.Array.Sugar.Elt (Data.Array.Accelerate.Lift.Plain a), Data.Array.Accelerate.Array.Sugar.Elt (Data.Array.Accelerate.Lift.Plain b)) => Data.Array.Accelerate.Lift.Lift Data.Array.Accelerate.Smart.Exp (Data.Either.Either a b)
