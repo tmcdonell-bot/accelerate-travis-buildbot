@@ -8,71 +8,71 @@ packages:
 
 extra-deps:
 - git:    https://github.com/tmcdonell/accelerate.git
-  commit: 48e0288f1f51abf796f84b59f9faad4887118986
+  commit: f808a6e6cddf1d516851106da63cf00f11f2a9c0
 
 - git:    https://github.com/tmcdonell/accelerate-llvm.git
-  commit: f9d833c58df0070a9ecd06ffe6a41866d21c31ac
+  commit: 455d265e761e7a1d1924b406dde00b672e6ced8d
   subdirs:
     - 'accelerate-llvm'
     - 'accelerate-llvm-native'
     - 'accelerate-llvm-ptx'
 
 - git:    https://github.com/tmcdonell/accelerate-fft.git
-  commit: e1c73891e473a6e3a361fe8837859dce94ec3871
+  commit: 540332967616dacdf76b905112153726e2c89142
 
 - git:    https://github.com/tmcdonell/accelerate-blas.git
-  commit: d5e0ac3f7c84a34423235feeb3c8765bcf892b06
+  commit: f3121e4839f49aacf00b0236ce53b81dbf2eb18f
 
 - git:    https://github.com/tmcdonell/accelerate-io.git
-  commit: 85f9b7a7bb00035af1e1368ec7919ce65a997ba7
+  commit: 6e2cbcc915310e6fed0dcfb7dc09fa497a2efe2a
 
 - git:    https://github.com/tmcdonell/accelerate-bignum.git
-  commit: 805799459f49cbbfee364abebb13d03db99792c1
+  commit: cec80c690918b887d867b642a527553822d7ef48
 
 - git:    https://github.com/tmcdonell/accelerate-examples.git
-  commit: 31fa03ff51df324f037172006cb554e05e91e59b
+  commit: 3f46b5884772429de03e25272226383f53281917
 
 - git:    https://github.com/tmcdonell/colour-accelerate.git
-  commit: 1f633b892b366e6794f43e23b6755907c1a7bf8b
+  commit: 6740c35e10fe3db655943fb56901418b8e99a946
 
 - git:    https://github.com/tmcdonell/gloss-accelerate.git
-  commit: 1e774cfcbc919a37be98ec8ab333a20f4ef37873
+  commit: 6679ac51126030bb5f44b35baa6b927989c735a6
 
 - git:    https://github.com/tmcdonell/gloss-raster-accelerate.git
   commit: a363e59299304cfd48981109f980b35c6141d1b4
 
 - git:    https://github.com/tmcdonell/lens-accelerate.git
-  commit: ebe7afea4592d7b3dadfb49a506617245cd986e5
+  commit: 5a943eea734e1aeaa6ec21b00404ab4c951b2253
 
 - git:    https://github.com/tmcdonell/linear-accelerate.git
-  commit: ff7a86782fbb17335a6b454ceb521100e67fd77a
+  commit: feaf458f4ecbebc33846420cf6f4cfcf9ea090c5
 
 - git:    https://github.com/tmcdonell/mwc-random-accelerate.git
-  commit: 6b43b357516b71ef4b7ed33260c975447d01bccc
+  commit: 2c3a3654be10aae5bf4e8673ab1e3b2a8dff3128
 
 - git:    https://github.com/tmcdonell/numeric-prelude-accelerate.git
   commit: 88aeb033e92e98baf238f8c7e5611bb58a200479
 
 - git:    https://github.com/tmcdonell/lulesh-accelerate.git
-  commit: 6ed733b55cd78a10bf3901ac1d5ffd582cc6ac6f
+  commit: 35b4e65b7ab0c167fed2ba11cc207c2c625f06b8
 
 - git:    https://github.com/tmcdonell/cuda.git
-  commit: 11f2107ad89c6a2ac17907697871cbab5d0cd598
+  commit: 943ca00f4568ee5b892d7e0e2a9ec4e4042e4065
 
 - git:    https://github.com/tmcdonell/cufft.git
-  commit: 4327010c6a00aa1dbf40c4fc2d3eeb657483df4a
+  commit: 214b8a204b859f78825ecdfa3c038dccc4ace84f
 
 - git:    https://github.com/tmcdonell/cublas.git
-  commit: 9b7e1ce0686036b5e7edecff7240ab781d21fe58
+  commit: 99c811330251be1977dc8962c7f9c28cea0bc286
 
 - git:    https://github.com/tmcdonell/cusparse.git
-  commit: d64f297281441e8b6e90bd97768c5d9849ba608e
+  commit: b7ad9b0a8e04a5b2dca1d4ca2000d0b320fd45b3
 
 - git:    https://github.com/tmcdonell/cusolver.git
-  commit: 5e7edaadf96a5c415efbb4d3a3b120d32611841c
+  commit: 3eaf7fc970ee5b215738bc5c8d555ad104add566
 
 - git:    https://github.com/tmcdonell/nvvm.git
-  commit: baeb5a8bafab00b9f5d98f341abe4e2d8ae4d3fd
+  commit: f60de1aa8b1356ef5c7d7e6751042f0a8a2fc505
 
 - 'atomic-primops-0.8.0.4'
 - 'attoparsec-0.13.1.0'
