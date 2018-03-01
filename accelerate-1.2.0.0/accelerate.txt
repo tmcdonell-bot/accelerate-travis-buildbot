@@ -112,6 +112,60 @@
 @version 1.2.0.0
 
 
+-- | Operations which may be unsafe. Use with care.
+module Data.Array.Accelerate.Unsafe
+
+-- | <a>undef</a> can be used anywhere a constant is expected, and
+--   indicates that the consumer of the value can receive an unspecified
+--   bit pattern.
+--   
+--   This is useful because a store of an undefined value can be assumed to
+--   not have any effect; we can assume that the value is overwritten with
+--   bits that happen to match what was already there. However, a store
+--   <i>to</i> an undefined location could clobber arbitrary memory,
+--   therefore, its use in such a context would introduce undefined
+--   <i>behaviour</i>.
+--   
+--   There are (at least) two cases where you may want to use this:
+--   
+--   <ol>
+--   <li>The <a>permute</a> function requires an array of default values,
+--   into which the new values are combined. However, if you are sure the
+--   default values are not used, and will (eventually) be completely
+--   overwritten, then <a>fill</a>ing an array with this value will give
+--   you a new uninitialised array.</li>
+--   <li>In the definition of sum data types. See for example
+--   <a>Data.Array.Accelerate.Data.Maybe</a> and
+--   <a>Data.Array.Accelerate.Data.Either</a>.</li>
+--   </ol>
+undef :: Elt t => Exp t
+
+-- | The function <a>coerce</a> allows you to convert a value between any
+--   two types whose underlying representations have the same bit size at
+--   each component.
+--   
+--   For example:
+--   
+--   <pre>
+--   coerce (x :: Exp Double)         :: Exp Word64
+--   coerce (x :: Exp (Int64,Float))  :: Exp (Complex Float, Word32)
+--   </pre>
+--   
+--   Furthermore, as we typically declare newtype wrappers similarly to:
+--   
+--   <pre>
+--   type instance EltRepr (Sum a) = ((), EltRepr a)
+--   </pre>
+--   
+--   This can be used instead of the newtype constructor, to go from the
+--   newtype's abstract type to the concrete type by dropping the extra
+--   <tt>()</tt> from the representation, and vice-versa.
+--   
+--   You will get a runtime error if it fails to find a coercion between
+--   the two representations.
+coerce :: (Elt a, Elt b) => Exp a -> Exp b
+
+
 -- | A functor performs a uniform action over a parameterised type
 --   
 --   This is essentially the same as the standard Haskell <a>Functor</a>
@@ -3388,17 +3442,6 @@ ilift3 :: (Exp Int -> Exp Int -> Exp Int -> Exp Int) -> Exp DIM1 -> Exp DIM1 -> 
 --   input to the computation and thus the value can change without the
 --   need to generate fresh code.
 constant :: Elt t => t -> Exp t
-
--- | <a>undef</a> can be used anywhere a constant is expected, and
---   indicates that the consumer of the value can receive an unspecified
---   bit pattern.
---   
---   This is useful because a store of an undefined value can be assumed to
---   not have any effect; we can assume that the value is overwritten with
---   bits that happen to match what was already there. However, a store
---   <i>to</i> an undefined location could clobber arbitrary memory,
---   therefore, it has undefined behaviour.
-undef :: Elt t => Exp t
 
 -- | Extract the first component of a scalar pair.
 fst :: forall a b. (Elt a, Elt b) => Exp (a, b) -> Exp a
