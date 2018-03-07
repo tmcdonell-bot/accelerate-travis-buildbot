@@ -15,13 +15,13 @@ window.onload = function () {pageLoad();};
  \left(\begin{matrix} 1 &amp; 2 &amp; 3 \\ 4 &amp; 5 &amp; 6 \\ \end{matrix}\right)  =
  \left(\begin{matrix} 9 &amp; 12 &amp; 15 \\ 19 &amp; 26 &amp; 33 \\ 29 &amp; 40 &amp; 51 \\ \end{matrix}\right)
  \]</p><p>I assume you know how to initialise the CUDA
- environment, as described in the <a href="../cuda-0.9.0.1/Foreign-CUDA-Driver.html">Foreign.CUDA.Driver</a> module:</p><pre class="screen"><code class="prompt">&gt;&gt;&gt; </code><strong class="userinput"><code>import Foreign.CUDA.Driver as CUDA
+ environment, as described in the <a href="../cuda-0.9.0.2/Foreign-CUDA-Driver.html">Foreign.CUDA.Driver</a> module:</p><pre class="screen"><code class="prompt">&gt;&gt;&gt; </code><strong class="userinput"><code>import Foreign.CUDA.Driver as CUDA
 </code></strong><code class="prompt">&gt;&gt;&gt; </code><strong class="userinput"><code>import Foreign.CUDA.BLAS as BLAS
 </code></strong><code class="prompt">&gt;&gt;&gt; </code><strong class="userinput"><code>CUDA.initialise []
 </code></strong><code class="prompt">&gt;&gt;&gt; </code><strong class="userinput"><code>dev &lt;- CUDA.device 0
 </code></strong><code class="prompt">&gt;&gt;&gt; </code><strong class="userinput"><code>ctx &lt;- CUDA.create dev []
 </code></strong></pre><p>Just as we must create a CUDA execution context with
- <code><a href="../cuda-0.9.0.1/Foreign-CUDA-Driver.html#v:create">create</a></code> before interacting with the GPU, we must create
+ <code><a href="../cuda-0.9.0.2/Foreign-CUDA-Driver.html#v:create">create</a></code> before interacting with the GPU, we must create
  a BLAS context handle before executing any cuBLAS library operations, which
  will be associated with the current device context:</p><pre class="screen"><code class="prompt">&gt;&gt;&gt; </code><strong class="userinput"><code>hdl &lt;- BLAS.create
 </code></strong></pre><p>Now, let us generate the matrix data on the GPU. (For simplicity in this
@@ -44,13 +44,13 @@ window.onload = function () {pageLoad();};
  operation, \(\alpha\) and \(\beta\). By default, it is assumed that these
  values reside in host memory, but this setting can be changed with
  <code><a href="Foreign-CUDA-BLAS-Context.html#v:setPointerMode">setPointerMode</a></code>; When set to <code><a href="Foreign-CUDA-BLAS-Context.html#v:Device">Device</a></code> mode, the function
- <code><a href="../cuda-0.9.0.1/Foreign-CUDA-Ptr.html#v:withDevicePtr">withDevicePtr</a></code> can be used to treat the device memory
+ <code><a href="../cuda-0.9.0.2/Foreign-CUDA-Ptr.html#v:withDevicePtr">withDevicePtr</a></code> can be used to treat the device memory
  pointer as a plain pointer to pass to the function.</p><p>Now, we are ready to piece it all together:</p><pre class="screen"><code class="prompt">&gt;&gt;&gt; </code><strong class="userinput"><code>import Foreign.Marshal
 </code></strong><code class="prompt">&gt;&gt;&gt; </code><strong class="userinput"><code>with 1.0 $ \alpha -&gt;
 </code></strong><code class="prompt">&gt;&gt;&gt; </code><strong class="userinput"><code>with 0.0 $ \beta -&gt;
 </code></strong><code class="prompt">&gt;&gt;&gt; </code><strong class="userinput"><code>dgemm hdl N N colsB rowsA colsA alpha matB colsB matA colsA beta matC colsB
 </code></strong></pre><p>And retrieve the result:</p><pre class="screen"><code class="prompt">&gt;&gt;&gt; </code><strong class="userinput"><code>print =&lt;&lt; CUDA.peekListArray sizeC matC
 </code></strong>[9.0,12.0,15.0,19.0,26.0,33.0,29.0,40.0,51.0]
-</pre><p>Finally, we should <code><a href="../cuda-0.9.0.1/Foreign-CUDA-Driver.html#v:free">free</a></code> the device memory we allocated,
+</pre><p>Finally, we should <code><a href="../cuda-0.9.0.2/Foreign-CUDA-Driver.html#v:free">free</a></code> the device memory we allocated,
  and release the BLAS context handle:</p><pre class="screen"><code class="prompt">&gt;&gt;&gt; </code><strong class="userinput"><code>BLAS.destroy hdl
 </code></strong></pre><dl><dt><em>Additional information</em></dt><dd></dd></dl><p>For more information, see the NVIDIA cuBLAS documentation:</p><p><a href="http://docs.nvidia.com/cuda/cublas/index.html">http://docs.nvidia.com/cuda/cublas/index.html</a></p></div></div><div id="synopsis"><p id="control.syn" class="caption expander" onclick="toggleSection('syn')">Synopsis</p><ul id="section.syn" class="hide" onclick="toggleSection('syn')"><li class="src short">module <a href="Foreign-CUDA-BLAS-Context.html">Foreign.CUDA.BLAS.Context</a></li><li class="src short">module <a href="Foreign-CUDA-BLAS-Stream.html">Foreign.CUDA.BLAS.Stream</a></li><li class="src short">module <a href="Foreign-CUDA-BLAS-Error.html">Foreign.CUDA.BLAS.Error</a></li><li class="src short">module <a href="Foreign-CUDA-BLAS-Level1.html">Foreign.CUDA.BLAS.Level1</a></li><li class="src short">module <a href="Foreign-CUDA-BLAS-Level2.html">Foreign.CUDA.BLAS.Level2</a></li><li class="src short">module <a href="Foreign-CUDA-BLAS-Level3.html">Foreign.CUDA.BLAS.Level3</a></li></ul></div><div id="interface"><h1 id="g:1">Control</h1><div class="top"><p class="src">module <a href="Foreign-CUDA-BLAS-Context.html">Foreign.CUDA.BLAS.Context</a></p></div><div class="top"><p class="src">module <a href="Foreign-CUDA-BLAS-Stream.html">Foreign.CUDA.BLAS.Stream</a></p></div><div class="top"><p class="src">module <a href="Foreign-CUDA-BLAS-Error.html">Foreign.CUDA.BLAS.Error</a></p></div><h1 id="g:2">Operations</h1><div class="top"><p class="src">module <a href="Foreign-CUDA-BLAS-Level1.html">Foreign.CUDA.BLAS.Level1</a></p></div><div class="top"><p class="src">module <a href="Foreign-CUDA-BLAS-Level2.html">Foreign.CUDA.BLAS.Level2</a></p></div><div class="top"><p class="src">module <a href="Foreign-CUDA-BLAS-Level3.html">Foreign.CUDA.BLAS.Level3</a></p></div></div></div><div id="footer"><p>Produced by <a href="http://www.haskell.org/haddock/">Haddock</a> version 2.18.1</p></div></body></html>
