@@ -26,7 +26,7 @@ s|{SHA_cuda}|14de27eb614e761ea1cb4cc4e341543e1644e0f5|
 s|{SHA_cufft}|cbd9f59c619828d7895f82e9bd99ee4d126baa5e|
 s|{SHA_cublas}|09fe9445aa012c65bfc5834f91a0fef3be9def00|
 s|{SHA_cusparse}|6902430e0b5aad370ada96b4f32640c34b6c0644|
-s|{SHA_cusolver}|a0837313ede83b9a17b4dbdef59d6c2e1c694ffd|
+s|{SHA_cusolver}|886172350e36d5066f5b4a1e87ab9adcd56b3311|
 s|{SHA_nvvm}|a4806255346d837b23569e736e8de7fc27790e42|
 
 # TRAVIS_REPO_SLUG
