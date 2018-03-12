@@ -8,7 +8,7 @@ packages:
 
 extra-deps:
 - git:    https://github.com/tmcdonell/accelerate.git
-  commit: f808a6e6cddf1d516851106da63cf00f11f2a9c0
+  commit: 378c9c18db0b58ae737918b257261122b790e500
 
 - git:    https://github.com/tmcdonell/accelerate-llvm.git
   commit: 455d265e761e7a1d1924b406dde00b672e6ced8d
@@ -57,22 +57,22 @@ extra-deps:
   commit: 35b4e65b7ab0c167fed2ba11cc207c2c625f06b8
 
 - git:    https://github.com/tmcdonell/cuda.git
-  commit: c43328e767a2ad81d0434e4c08542eb1b58d4691
+  commit: 4acccbca9d7fa20bd410f73ef9985b498e7c5143
 
 - git:    https://github.com/tmcdonell/cufft.git
-  commit: 214b8a204b859f78825ecdfa3c038dccc4ace84f
+  commit: 0007cd43120e334059c59438e748b8c0e5a452e5
 
 - git:    https://github.com/tmcdonell/cublas.git
-  commit: 99c811330251be1977dc8962c7f9c28cea0bc286
+  commit: 583a8ccf3fb7b98cf476107bc17941b44fcf16d6
 
 - git:    https://github.com/tmcdonell/cusparse.git
-  commit: b7ad9b0a8e04a5b2dca1d4ca2000d0b320fd45b3
+  commit: a26bbfac726bf14f55ba7aeb0287ec5ba5917117
 
 - git:    https://github.com/tmcdonell/cusolver.git
-  commit: 3eaf7fc970ee5b215738bc5c8d555ad104add566
+  commit: 75260c474e8f62496f9780862e81b77b5b80a244
 
 - git:    https://github.com/tmcdonell/nvvm.git
-  commit: a4806255346d837b23569e736e8de7fc27790e42
+  commit: 7497769775b86ad577cc90ae809928804583718a
 
 - 'atomic-primops-0.8.0.4'
 - 'attoparsec-0.13.1.0'
