@@ -26,7 +26,7 @@ window.onload = function () {pageLoad();};
 </code></strong><code class="prompt">&gt;&gt;&gt; </code><strong class="userinput"><code>prp0 &lt;- CUDA.props dev0
 </code></strong><code class="prompt">&gt;&gt;&gt; </code><strong class="userinput"><code>ctx0 &lt;- CUDA.create dev0 []
 </code></strong></pre><p>Remember that once the context is no longer needed, it should be
- <code><a href="../cuda-0.9.0.2/Foreign-CUDA-Driver-Context-Base.html#v:destroy">destroy</a></code>ed in order to free up any
+ <code><a href="../cuda-0.9.0.3/Foreign-CUDA-Driver-Context-Base.html#v:destroy">destroy</a></code>ed in order to free up any
  resources that were allocated into it.</p><dl><dt><em>Compiling kernels with NVVM</em></dt><dd></dd></dl><p>For this example we will step through executing the equivalent of the
  following Haskell function, which element-wise adds the elements of two
  arrays:</p><pre class="screen"><code class="prompt">&gt;&gt;&gt; </code><strong class="userinput"><code>vecAdd xs ys = zipWith (+) xs ys
@@ -82,7 +82,7 @@ declare i32 @llvm.nvvm.read.ptx.sreg.tid.x() readnone nounwind
  later execute.</p><pre class="screen"><code class="prompt">&gt;&gt;&gt; </code><strong class="userinput"><code>mdl    &lt;- CUDA.loadData (NVVM.compileResult ptx)
 </code></strong><code class="prompt">&gt;&gt;&gt; </code><strong class="userinput"><code>vecAdd &lt;- CUDA.getFun mdl &quot;vecAdd&quot;
 </code></strong></pre><p>After we are finished with the module, it is a good idea to
- <code><a href="../cuda-0.9.0.2/Foreign-CUDA-Driver-Module-Base.html#v:unload">unload</a></code> it in order to free any resources it
+ <code><a href="../cuda-0.9.0.3/Foreign-CUDA-Driver-Module-Base.html#v:unload">unload</a></code> it in order to free any resources it
  used.</p><dl><dt><em>Executing the kernel</em></dt><dd></dd></dl><p>Executing the <code>vecAdd</code> kernel now proceeds exactly like executing any other
  kernel function using the CUDA Driver API. The following is a quick overview;
  see the tutorial in the <code>cuda</code> package for more information.</p><p>First, generate some data and copy it to the device. We also allocate an
