@@ -60,7 +60,7 @@ extra-deps:
   commit: 4acccbca9d7fa20bd410f73ef9985b498e7c5143
 
 - git:    https://github.com/tmcdonell/cufft.git
-  commit: 0007cd43120e334059c59438e748b8c0e5a452e5
+  commit: f3b757abbb921345f74439cfde68a6a393a3e170
 
 - git:    https://github.com/tmcdonell/cublas.git
   commit: 583a8ccf3fb7b98cf476107bc17941b44fcf16d6
@@ -72,7 +72,7 @@ extra-deps:
   commit: 75260c474e8f62496f9780862e81b77b5b80a244
 
 - git:    https://github.com/tmcdonell/nvvm.git
-  commit: a4806255346d837b23569e736e8de7fc27790e42
+  commit: 7497769775b86ad577cc90ae809928804583718a
 
 # Override default flag values for local packages and extra-deps
 flags:
