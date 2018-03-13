@@ -3080,7 +3080,7 @@ clamp :: Boundary (Array sh e)
 mirror :: Boundary (Array sh e)
 
 -- | Stencil boundary condition where coordinates beyond the array extent
---   instead wrap around the array.
+--   instead wrap around the array (circular boundary conditions).
 --   
 --   In the following 3x3 stencil, the out of bounds elements will be read
 --   as in the pattern on the right.
@@ -3097,6 +3097,29 @@ wrap :: Boundary (Array sh e)
 
 -- | Stencil boundary condition where the given function is applied to any
 --   outlying coordinates.
+--   
+--   The function is passed the out-of-bounds index, so you can use it to
+--   specify different boundary conditions at each side. For example, the
+--   following would clamp out-of-bounds elements in the y-direction to
+--   zero, while having circular boundary conditions in the x-direction.
+--   
+--   <pre>
+--   ring :: Acc (Matrix Float) -&gt; Acc (Matrix Float)
+--   ring xs = stencil f boundary xs
+--     where
+--       boundary :: Boundary (Matrix Float)
+--       boundary = function $ \(unlift -&gt; Z :. y :. x) -&gt;
+--         if y &lt; 0 || y &gt;= height
+--           then 0
+--           else if x &lt; 0
+--                  then xs ! index2 y (width+x)
+--                  else xs ! index2 y (x-width)
+--   
+--       f :: Stencil3x3 Float -&gt; Exp Float
+--       f = ...
+--   
+--       Z :. height :. width = unlift (shape xs)
+--   </pre>
 function :: (Shape sh, Elt e) => (Exp sh -> Exp e) -> Boundary (Array sh e)
 type Stencil3 a = (Exp a, Exp a, Exp a)
 type Stencil5 a = (Exp a, Exp a, Exp a, Exp a, Exp a)
