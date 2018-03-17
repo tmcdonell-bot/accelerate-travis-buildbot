@@ -42,7 +42,7 @@ extra-deps:
   commit: a363e59299304cfd48981109f980b35c6141d1b4
 
 - git:    https://github.com/tmcdonell/lens-accelerate.git
-  commit: 59fb14c33aed24ca90a64abd8ed3d54f6b8a3859
+  commit: 8893c758145d70cd08035c185a2f0bb24fd52de9
 
 - git:    https://github.com/tmcdonell/linear-accelerate.git
   commit: 0877d709f7355cab41010a6ee05a3a284f7fe51a
