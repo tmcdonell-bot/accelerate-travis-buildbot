@@ -101,10 +101,10 @@ before_install:
   #     if [ ${DEPENDENCIES_STATUS} -ne 0 ] || [ $( echo ${DEPENDENCIES} | grep cuda | wc -l ) -gt 0 ]; then
   #       source .travis/install-cuda-trusty.sh
   #     fi
-  - |
-      if [ ${GHC%.*} == 8.2 ]; then
-        HADDOCK="--haddock"
-      fi
+  # - |
+  #     if [ ${GHC%.*} == 8.2 ]; then
+  #       HADDOCK="--haddock"
+  #     fi
   - travis_retry stack install hscolour --fast --no-terminal
   - travis_retry stack install c2hs --fast --no-terminal
 
