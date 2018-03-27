@@ -96,6 +96,7 @@ before_install:
   - source .travis/update-ghc-settings.sh
   - source .travis/install-cuda-trusty.sh
 
+  # try to only install cuda if it will be required
   # - DEPENDENCIES=$( stack list-dependencies ${TARGET} ); DEPENDENCIES_STATUS=$? # travis-ci#3771
   # - |
   #     if [ ${DEPENDENCIES_STATUS} -ne 0 ] || [ $( echo ${DEPENDENCIES} | grep cuda | wc -l ) -gt 0 ]; then
