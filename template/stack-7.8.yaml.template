@@ -116,7 +116,7 @@ extra-deps:
 flags:
   llvm-hs:
     shared-llvm: true
-    semigroups:  true
+    semigroups: true
   llvm-hs-pure:
     semigroups: true
   accelerate-fft:

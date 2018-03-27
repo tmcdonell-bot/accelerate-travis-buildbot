@@ -96,11 +96,11 @@ extra-deps:
 flags:
   llvm-hs:
     shared-llvm: true
-    semigroups:  true
+    semigroups: true
   llvm-hs-pure:
     semigroups: true
   lulesh-accelerate:
-    llvm-gpu:   false
+    llvm-gpu: false
 
 # Extra package databases containing global packages
 extra-package-dbs: []
