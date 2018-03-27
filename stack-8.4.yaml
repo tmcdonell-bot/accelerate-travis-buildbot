@@ -1,0 +1,110 @@
+# For more information, see: https://github.com/commercialhaskell/stack/blob/release/doc/yaml_configuration.md
+# vim: nospell filetype=yaml
+
+resolver: nightly-2018-03-18
+
+packages:
+- '.'
+
+extra-deps:
+- git:    https://github.com/tmcdonell/accelerate.git
+  commit: 0a5d8f622f9c7541afbbf3d6848d6fa636e510d2
+
+- git:    https://github.com/tmcdonell/accelerate-llvm.git
+  commit: fd2cb894c702e3cb4a243bc54586e018163f8d5b
+  subdirs:
+    - 'accelerate-llvm'
+    - 'accelerate-llvm-native'
+    - 'accelerate-llvm-ptx'
+
+- git:    https://github.com/tmcdonell/accelerate-fft.git
+  commit: a3d06786cf5e4b3c41f2d358448ba6fbeace21e5
+
+- git:    https://github.com/tmcdonell/accelerate-blas.git
+  commit: ffd2de1ae8dde59fb6eaf80aae78a3c0352a040a
+
+- git:    https://github.com/tmcdonell/accelerate-io.git
+  commit: 652e4a1831f144628a0ca8cae582032815dd64c9
+
+- git:    https://github.com/tmcdonell/accelerate-bignum.git
+  commit: c9b1fdd5b465114bb0a284cb7c959b364c3c8ade
+
+- git:    https://github.com/tmcdonell/accelerate-examples.git
+  commit: cebcfaf440f3e2ce25cd8ac37abdb5e3072b73c8
+
+- git:    https://github.com/tmcdonell/colour-accelerate.git
+  commit: e347b28b0d5a6306890c37b8df8086de7edfc0ba
+
+- git:    https://github.com/tmcdonell/gloss-accelerate.git
+  commit: 046f625fd9102618b9635b10c4ee7aae0075147f
+
+- git:    https://github.com/tmcdonell/gloss-raster-accelerate.git
+  commit: 164c6ee43f04dd8c17ab526bf13d1b3b6eacd6d0
+
+- git:    https://github.com/tmcdonell/lens-accelerate.git
+  commit: ccb8067e95d5997ab5fe7066cb1b2c3f0a81c27e
+
+- git:    https://github.com/tmcdonell/linear-accelerate.git
+  commit: 4199e58f3551419ac66d868352c5b0101b291214
+
+- git:    https://github.com/tmcdonell/mwc-random-accelerate.git
+  commit: 50b0bcf805a6b605636974cdefb031c2db846763
+
+- git:    https://github.com/tmcdonell/numeric-prelude-accelerate.git
+  commit: 88aeb033e92e98baf238f8c7e5611bb58a200479
+
+- git:    https://github.com/tmcdonell/lulesh-accelerate.git
+  commit: 1a0ffdb5752149e7961cfaefb854422ae5588cb0
+
+- git:    https://github.com/tmcdonell/cuda.git
+  commit: d5e0b9cd369312a9d9c03e10599bcb4833000868
+
+- git:    https://github.com/tmcdonell/cufft.git
+  commit: f3b757abbb921345f74439cfde68a6a393a3e170
+
+- git:    https://github.com/tmcdonell/cublas.git
+  commit: b0983b68e98a953d558996ba37d7131fcff2f7ed
+
+- git:    https://github.com/tmcdonell/cusparse.git
+  commit: 3d94510ba30cbf265f9c601b209ebcb416ae46ac
+
+- git:    https://github.com/tmcdonell/cusolver.git
+  commit: b323f3104f8d34426aae2ccd6229bc206a43a038
+
+- git:    https://github.com/tmcdonell/nvvm.git
+  commit: 7497769775b86ad577cc90ae809928804583718a
+
+- 'gloss-1.12.0.0'
+- 'gloss-rendering-1.12.0.0'
+- 'hashtables-1.2.3.0'
+- 'normaldistribution-1.1.0.3'
+- 'repa-3.4.1.3'
+- 'repa-io-3.4.1.1'
+- 'tasty-hedgehog-0.2.0.0'
+
+# Override default flag values for local packages and extra-deps
+flags:
+  lulesh-accelerate:
+    llvm-gpu:   false
+
+# Extra package databases containing global packages
+# extra-package-dbs: []
+
+# Extra global and per-package GHC options
+# ghc-options: {}
+
+# Control whether we use the GHC we find on the path
+# system-ghc: true
+
+# Require a specific version of stack, using version ranges
+# require-stack-version: -any # Default
+# require-stack-version: >= 0.1.4.0
+
+# Override the architecture used by stack, especially useful on Windows
+# arch: i386
+# arch: x86_64
+
+# Extra directories used by stack for building
+# extra-include-dirs: [/path/to/dir]
+# extra-lib-dirs: [/path/to/dir]
+
