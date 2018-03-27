@@ -1,7 +1,7 @@
 # For more information, see: https://github.com/commercialhaskell/stack/blob/release/doc/yaml_configuration.md
 # vim: nospell filetype=yaml
 
-resolver: lts-10.0
+resolver: lts-11.2
 
 packages:
 - '.'
@@ -73,6 +73,8 @@ extra-deps:
 
 - git:    https://github.com/{REPO_nvvm}.git
   commit: {SHA_nvvm}
+
+- 'normaldistribution-1.1.0.3'
 
 # Override default flag values for local packages and extra-deps
 flags:
