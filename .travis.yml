@@ -92,7 +92,7 @@ before_install:
       esac
 
   # - source .travis/install-llvm-trusty.sh
-  - sudo -E apt-get -yq --no-install-suggests --no-install-recommends --force-yet install llvm-${LLVM:0:3}-dev
+  - sudo -E apt-get -yq --no-install-suggests --no-install-recommends --force-yes install llvm-${LLVM:0:3}-dev
   - source .travis/install-stack.sh
   - source .travis/update-ghc-settings.sh
   - source .travis/install-cuda-trusty.sh
