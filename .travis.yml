@@ -59,15 +59,15 @@ env:
     - TARGET=accelerate-llvm-ptx
     - TARGET=accelerate-fft
     - TARGET=accelerate-blas
-    - TARGET=accelerate-io
+    # - TARGET=accelerate-io
     - TARGET=accelerate-bignum
     - TARGET=accelerate-examples
-    - TARGET=colour-accelerate
-    - TARGET=gloss-accelerate
-    - TARGET=gloss-raster-accelerate
-    - TARGET=lens-accelerate
-    - TARGET=linear-accelerate
-    - TARGET=mwc-random-accelerate
+    # - TARGET=colour-accelerate
+    # - TARGET=gloss-accelerate
+    # - TARGET=gloss-raster-accelerate
+    # - TARGET=lens-accelerate
+    # - TARGET=linear-accelerate
+    # - TARGET=mwc-random-accelerate
     - TARGET=lulesh-accelerate
     # - TARGET=numeric-prelude-accelerate
 
@@ -119,7 +119,8 @@ install:
   - opt-${LLVM:0:3} --version; true
 
   # bootstrap
-  - travis_retry travis_wait 60 stack build --fast --only-dependencies --no-terminal --no-copy-bins ${HADDOCK} accelerate
+  # - travis_retry travis_wait 60 stack build --fast --only-dependencies --no-terminal --no-copy-bins ${HADDOCK} accelerate
+  - travis_retry travis_wait 60 stack build --fast --jobs=2 --only-dependencies --no-terminal accelerate-llvm-native accelerate-llvm-ptx
 
   # standard build
   # - stack build --dry-run ${TARGET}
