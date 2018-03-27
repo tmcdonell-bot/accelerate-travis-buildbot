@@ -116,13 +116,18 @@ install:
   - llc-${LLVM:0:3} --version; true
   - opt-${LLVM:0:3} --version; true
 
-  - stack build --dry-run ${TARGET}
-  - travis_retry travis_wait 60 stack build --fast --only-dependencies --no-terminal --no-copy-bins ${HADDOCK} ${TARGET}
+  # bootstrap
+  - travis_retry travis_wait 60 stack build --fast --only-dependencies --no-terminal --no-copy-bins ${HADDOCK} accelerate
+
+  # standard build
+  # - stack build --dry-run ${TARGET}
+  # - travis_retry travis_wait 60 stack build --fast --only-dependencies --no-terminal --no-copy-bins ${HADDOCK} ${TARGET}
 
 script:
-  - travis_retry travis_wait 60 stack build --fast --no-terminal --no-copy-bins ${HADDOCK} ${TARGET}
-  - |
-      if [ ${GHC%.*} == 8.4 ] && [ -z ${TARGET} ]; then
-        source .travis/update-docs.sh
-      fi
+  - true
+  # - travis_retry travis_wait 60 stack build --fast --no-terminal --no-copy-bins ${HADDOCK} ${TARGET}
+  # - |
+  #     if [ ${GHC%.*} == 8.4 ] && [ -z ${TARGET} ]; then
+  #       source .travis/update-docs.sh
+  #     fi
 
