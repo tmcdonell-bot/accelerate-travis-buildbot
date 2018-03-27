@@ -27,7 +27,7 @@ extra-deps:
   commit: 652e4a1831f144628a0ca8cae582032815dd64c9
 
 - git:    https://github.com/tmcdonell/accelerate-bignum.git
-  commit: 7ddaf9086dda77e6bd84fb46193a0dee2486a4e5
+  commit: 29545136a2ca204fb3a5589ea4754d994583e651
 
 - git:    https://github.com/tmcdonell/accelerate-examples.git
   commit: 3f46b5884772429de03e25272226383f53281917
