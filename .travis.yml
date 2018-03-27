@@ -68,8 +68,8 @@ env:
     - TARGET=lens-accelerate
     - TARGET=linear-accelerate
     - TARGET=mwc-random-accelerate
-    # - TARGET=numeric-prelude-accelerate
     - TARGET=lulesh-accelerate
+    # - TARGET=numeric-prelude-accelerate
 
 matrix:
   fast_finish: true
@@ -84,14 +84,15 @@ before_install:
   - unset CC
   - |
       case ${GHC%.*} in
-  #       7.8)  export LLVM="3.5.2" ; export UPGRADE_CABAL=1 ;;
-  #       7.10) export LLVM="3.5.2" ;;
-        8.0)  export LLVM="4.0" ;;
-        8.2)  export LLVM="5.0" ;;
-        8.4)  export LLVM="6.0" ;;
+        7.8)  export LLVM="3.5.2" ;;
+        7.10) export LLVM="3.5.2" ;;
+        8.0)  export LLVM="4.0.1" ;;
+        8.2)  export LLVM="5.0.1" ;;
+        8.4)  export LLVM="6.0.0" ;;
       esac
+
   # - source .travis/install-llvm-trusty.sh
-  - sudo -E apt-get -yq --no-install-suggests --no-install-recommends --force-yet install llvm-${LLVM}-dev
+  - sudo -E apt-get -yq --no-install-suggests --no-install-recommends --force-yet install llvm-${LLVM:0:3}-dev
   - source .travis/install-stack.sh
   - source .travis/update-ghc-settings.sh
   - source .travis/install-cuda-trusty.sh
