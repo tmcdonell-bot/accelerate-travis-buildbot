@@ -104,10 +104,12 @@ before_install:
   #       source .travis/install-cuda-trusty.sh
   #     fi
 
-  - |
-      if [ ${GHC%.*} == 8.4 ]; then
-        HADDOCK="--haddock"
-      fi
+  # https://github.com/haskell/haddock/issues/775
+  # - |
+  #     if [ ${GHC%.*} == 8.4 ]; then
+  #       HADDOCK="--haddock"
+  #     fi
+
   - travis_retry stack install hscolour --fast --no-terminal
   - travis_retry stack install c2hs --fast --no-terminal
 
