@@ -15,7 +15,7 @@ s|{SHA_accelerate-io}|c8d281c6e3bcada173535817314330e792b540f0|
 s|{SHA_accelerate-bignum}|c9b1fdd5b465114bb0a284cb7c959b364c3c8ade|
 s|{SHA_accelerate-examples}|527a09b6c0ab03f98aa9050cb946afdc9061dbab|
 s|{SHA_colour-accelerate}|e182226ff242717e8ae0b2df861a713fcb05bdd9|
-s|{SHA_gloss-accelerate}|046f625fd9102618b9635b10c4ee7aae0075147f|
+s|{SHA_gloss-accelerate}|f13a74dd343778b3011c6e8f17ed19a5918cf341|
 s|{SHA_gloss-raster-accelerate}|164c6ee43f04dd8c17ab526bf13d1b3b6eacd6d0|
 s|{SHA_lens-accelerate}|6fdc2141d595da1056c59cab77f11594686b7cdd|
 s|{SHA_linear-accelerate}|8b24c72b301a85225b43ae9504c590e60f1caee0|
