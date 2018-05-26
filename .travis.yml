@@ -53,22 +53,22 @@ env:
     - CUDA=8.0.61-1
   matrix:
     - TARGET="" # all packages
-    # - TARGET=accelerate
-    # - TARGET=accelerate-llvm
-    # - TARGET=accelerate-llvm-native
-    # - TARGET=accelerate-llvm-ptx
+    - TARGET=accelerate
+    - TARGET=accelerate-llvm
+    - TARGET=accelerate-llvm-native
+    - TARGET=accelerate-llvm-ptx
     - TARGET=accelerate-fft
-    # - TARGET=accelerate-blas
-    # - TARGET=accelerate-io
-    # - TARGET=accelerate-bignum
+    - TARGET=accelerate-blas
+    - TARGET=accelerate-io
+    - TARGET=accelerate-bignum
     - TARGET=accelerate-examples
-    # - TARGET=colour-accelerate
-    # - TARGET=gloss-accelerate
-    # - TARGET=gloss-raster-accelerate
-    # - TARGET=lens-accelerate
-    # - TARGET=linear-accelerate
-    # - TARGET=mwc-random-accelerate
-    # - TARGET=lulesh-accelerate
+    - TARGET=colour-accelerate
+    - TARGET=gloss-accelerate
+    - TARGET=gloss-raster-accelerate
+    - TARGET=lens-accelerate
+    - TARGET=linear-accelerate
+    - TARGET=mwc-random-accelerate
+    - TARGET=lulesh-accelerate
 
     # disabled
     # - TARGET=numeric-prelude-accelerate
@@ -131,11 +131,9 @@ install:
   - travis_retry travis_wait 60 stack build --fast --only-dependencies --no-terminal --no-copy-bins ${HADDOCK} ${TARGET}
 
 script:
-  - true
-
-  # - travis_retry travis_wait 60 stack build --fast --no-terminal --no-copy-bins ${HADDOCK} ${TARGET}
-  # - |
-  #     if [ ${GHC%.*} == 8.4 ] && [ -z ${TARGET} ]; then
-  #       source .travis/update-docs.sh
-  #     fi
+  - travis_retry travis_wait 60 stack build --fast --no-terminal --no-copy-bins ${HADDOCK} ${TARGET}
+  - |
+      if [ ${GHC%.*} == 8.4 ] && [ -z ${TARGET} ]; then
+        source .travis/update-docs.sh
+      fi
 
