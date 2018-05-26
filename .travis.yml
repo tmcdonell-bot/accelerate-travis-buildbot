@@ -124,11 +124,11 @@ install:
 
   # bootstrap
   # - travis_retry travis_wait 60 stack build --fast --only-dependencies --no-terminal --no-copy-bins ${HADDOCK} accelerate
-  - travis_retry travis_wait 60 stack build --fast --only-dependencies --no-terminal ${HADDOCK} accelerate-llvm-native accelerate-llvm-ptx
+  # - travis_retry travis_wait 60 stack build --fast --only-dependencies --no-terminal ${HADDOCK} accelerate-llvm-native accelerate-llvm-ptx
 
-  # # standard build
-  # - stack build --dry-run ${TARGET}
-  # - travis_retry travis_wait 60 stack build --fast --only-dependencies --no-terminal --no-copy-bins ${HADDOCK} ${TARGET}
+  # standard build
+  - stack build --dry-run ${TARGET}
+  - travis_retry travis_wait 60 stack build --fast --only-dependencies --no-terminal --no-copy-bins ${HADDOCK} ${TARGET}
 
 script:
   - true
