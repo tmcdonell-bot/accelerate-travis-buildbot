@@ -8,7 +8,7 @@
 
 # TRAVIS_COMMIT
 s|{SHA_accelerate}|efdf039298e2095929e5a97e853e35a05d8f4a71|
-s|{SHA_accelerate-llvm}|4ecab979bafee129d47466387f0831524d5a3aaf|
+s|{SHA_accelerate-llvm}|8a526781324777e2689f4eff91f6001dd758e787|
 s|{SHA_accelerate-fft}|0c80fe5dfc5fe82b7aad4f24839c414cd8b92abc|
 s|{SHA_accelerate-blas}|d0f33fb84fab928912d585d1aaa1377e9a45baa3|
 s|{SHA_accelerate-io}|c8d281c6e3bcada173535817314330e792b540f0|
