@@ -74,9 +74,10 @@ extra-deps:
 - git:    https://github.com/tmcdonell/nvvm.git
   commit: 366d066095c269788e0a39d646730026056cc50b
 
-- 'half-0.3'
-- 'normaldistribution-1.1.0.3'
-- 'OpenGLRaw-3.3.0.1'
+- half-0.3
+- normaldistribution-1.1.0.3
+- OpenGLRaw-3.3.1.0
+- primitive-0.6.4.0
 
 # Override default flag values for local packages and extra-deps
 flags:

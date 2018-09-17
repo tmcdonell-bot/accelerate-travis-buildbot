@@ -1,7 +1,7 @@
 # For more information, see: https://github.com/commercialhaskell/stack/blob/release/doc/yaml_configuration.md
 # vim: nospell filetype=yaml
 
-resolver: nightly-2018-05-15
+resolver: lts-12.0
 
 packages:
 - '.'
@@ -74,8 +74,9 @@ extra-deps:
 - git:    https://github.com/{REPO_nvvm}.git
   commit: {SHA_nvvm}
 
-- 'normaldistribution-1.1.0.3'
-- 'repa-io-3.4.1.1'
+- normaldistribution-1.1.0.3
+- primitive-0.6.4.0
+- repa-io-3.4.1.1
 
 # Override default flag values for local packages and extra-deps
 flags:
