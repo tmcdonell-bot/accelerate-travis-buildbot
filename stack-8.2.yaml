@@ -66,7 +66,7 @@ extra-deps:
   commit: c279a55b0f1c13495983aaf499563c368531ffc0
 
 - git:    https://github.com/tmcdonell/cusparse.git
-  commit: 3d94510ba30cbf265f9c601b209ebcb416ae46ac
+  commit: 42190d3fee0bf471687195570af2f1a15e78f0a4
 
 - git:    https://github.com/tmcdonell/cusolver.git
   commit: b323f3104f8d34426aae2ccd6229bc206a43a038
