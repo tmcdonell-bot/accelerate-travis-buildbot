@@ -69,7 +69,7 @@ extra-deps:
   commit: 42190d3fee0bf471687195570af2f1a15e78f0a4
 
 - git:    https://github.com/tmcdonell/cusolver.git
-  commit: b323f3104f8d34426aae2ccd6229bc206a43a038
+  commit: 7b90826ef58fe56a0a5256c2ef2c77ef8e4ea080
 
 - git:    https://github.com/tmcdonell/nvvm.git
   commit: 0d6ea9a7d716f49a3fd8e595ea00b264b5821da7
