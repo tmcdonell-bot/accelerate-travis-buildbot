@@ -60,7 +60,7 @@ extra-deps:
   commit: a16ae2b339b811678d94555b8ee34a88ccccc61c
 
 - git:    https://github.com/tmcdonell/cufft.git
-  commit: 0ff6c2450a83a48720f1cd31007e7df1dcac62e2
+  commit: d8530e8d2e8bcececee25bed1f6878398a05dd7e
 
 - git:    https://github.com/tmcdonell/cublas.git
   commit: c279a55b0f1c13495983aaf499563c368531ffc0
