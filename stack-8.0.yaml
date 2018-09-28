@@ -72,7 +72,7 @@ extra-deps:
   commit: 7b90826ef58fe56a0a5256c2ef2c77ef8e4ea080
 
 - git:    https://github.com/tmcdonell/nvvm.git
-  commit: 0d6ea9a7d716f49a3fd8e595ea00b264b5821da7
+  commit: aa74e43fe0dc754bc433c10318224ab8a8262515
 
 - blas-hs-0.1.1.0
 - Cabal-2.0.1.1
