@@ -21,7 +21,7 @@ extra-deps:
   commit: 2afae51413f33079d43a3d2104d84e7aab2ca0a7
 
 - git:    https://github.com/tmcdonell/accelerate-blas.git
-  commit: 5602397e62d5592c6981c353e18e02268d34281f
+  commit: d4d6efb7134debc0d8f1cc8840d21148990fdad8
 
 - git:    https://github.com/tmcdonell/accelerate-io.git
   commit: a6fc49a0728dfef36c87a64b97f7985d5876db50
