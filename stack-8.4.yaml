@@ -18,7 +18,7 @@ extra-deps:
     - 'accelerate-llvm-ptx'
 
 - git:    https://github.com/tmcdonell/accelerate-fft.git
-  commit: 2afae51413f33079d43a3d2104d84e7aab2ca0a7
+  commit: a8da5921f425e07c8536f778a92267e145eab016
 
 - git:    https://github.com/tmcdonell/accelerate-blas.git
   commit: d4d6efb7134debc0d8f1cc8840d21148990fdad8
