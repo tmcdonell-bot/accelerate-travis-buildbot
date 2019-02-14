@@ -11,7 +11,7 @@ extra-deps:
   commit: 610cd14c80a11e76654d7eeb9acf779589ec9e19
 
 - git:    https://github.com/tmcdonell/accelerate-llvm.git
-  commit: 53901b00b2d6f22dc55df7661bd19bcd7f7341ea
+  commit: a7a5c89a35f766dd14f6f2a982ea165bed0fcac1
   subdirs:
     - 'accelerate-llvm'
     - 'accelerate-llvm-native'
