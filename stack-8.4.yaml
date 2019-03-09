@@ -63,7 +63,7 @@ extra-deps:
   commit: 4ca4d3b834369ce2f1ae5c37f4ab93d41f901512
 
 - git:    https://github.com/tmcdonell/cublas.git
-  commit: 4fe02b20b7eeb6fb68e46916d1b7bdedbbc79b8b
+  commit: d5cf7292b4704616d3007ebe591352d5a2e2bbdf
 
 - git:    https://github.com/tmcdonell/cusparse.git
   commit: 1499516a9e2be37b55d305640aac935038fb7b1a
