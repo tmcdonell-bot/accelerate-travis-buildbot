@@ -13,9 +13,9 @@ extra-deps:
 - git:    https://github.com/tmcdonell/accelerate-llvm.git
   commit: da5a3926a11b08d752913f37c4dc042ce0b25346
   subdirs:
-    - 'accelerate-llvm'
-    - 'accelerate-llvm-native'
-    - 'accelerate-llvm-ptx'
+    - accelerate-llvm
+    - accelerate-llvm-native
+    - accelerate-llvm-ptx
 
 - git:    https://github.com/tmcdonell/accelerate-fft.git
   commit: 782a873c000a89fd521e1ce4107daaf14bdc819d
@@ -25,6 +25,14 @@ extra-deps:
 
 - git:    https://github.com/tmcdonell/accelerate-io.git
   commit: c4e6e0c8c4f5855bc5a5fcb916ecb8a518d7afc2
+  subdirs:
+    - accelerate-io
+    - accelerate-io-array
+    - accelerate-io-bmp
+    - accelerate-io-bytestring
+    - accelerate-io-JuicyPixels
+    - accelerate-io-repa
+    - accelerate-io-vector
 
 - git:    https://github.com/tmcdonell/accelerate-bignum.git
   commit: db95f9c8a155f4af1ad54d4475c2602893f58cb2
@@ -83,6 +91,7 @@ extra-deps:
 - normaldistribution-1.1.0.3
 - OpenGL-3.0.2.2
 - OpenGLRaw-3.3.1.0
+- prettyprinter-1.2.1
 - primitive-0.6.4.0
 - repa-3.4.1.3
 - repa-io-3.4.1.1
@@ -94,7 +103,7 @@ flags:
     llvm-gpu: false
 
 # Extra package databases containing global packages
-extra-package-dbs: []
+# extra-package-dbs: []
 
 # Control whether we use the GHC we find on the path
 # system-ghc: true

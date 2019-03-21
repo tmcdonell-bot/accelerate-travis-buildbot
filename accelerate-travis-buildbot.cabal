@@ -27,6 +27,12 @@ library
     , accelerate-fft
     , accelerate-blas
     , accelerate-io
+    , accelerate-io-array
+    , accelerate-io-bmp
+    , accelerate-io-bytestring
+    , accelerate-io-JuicyPixels
+    , accelerate-io-repa
+    , accelerate-io-vector
     , accelerate-bignum
     , accelerate-examples
     , colour-accelerate

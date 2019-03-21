@@ -7,7 +7,7 @@
 # Set the language type to 'c' so that the 'compiler' key becomes active and our
 # build matrix is constructed as the product of compiler x target.
 #
-language: c
+language: minimal
 dist: trusty
 sudo: required
 
@@ -22,118 +22,242 @@ before_cache:
 
 addons:
   apt:
-    sources:
+    sources: &apt_sources
       - hvr-ghc
       - ubuntu-toolchain-r-test
       - llvm-toolchain-trusty
-      - llvm-toolchain-trusty-4.0
-      - llvm-toolchain-trusty-5.0
-      - llvm-toolchain-trusty-6.0
-
-    packages:
-      - cabal-install-2.0
-      - freeglut3-dev
-      - g++-4.8
-      - happy-1.19.5
+    packages: &apt_packages
       - alex-3.1.7
-      - libfftw3-dev
+      - dpkg
+      - g++-8
+      - gcc-8
+      - happy-1.19.5
       - libgmp-dev
-      - libblas-dev
-      - liblapack-dev
-
-compiler:
-  - GHC-8.4.2
-  - GHC-8.2.2
-  - GHC-8.0.2
-  # - GHC-7.10.3
-  # - GHC-7.8.4
-
-env:
-  global:
-    - CUDA=8.0.61-1
-  matrix:
-    - TARGET="" # all packages
-    - TARGET=accelerate
-    - TARGET=accelerate-llvm
-    - TARGET=accelerate-llvm-native
-    - TARGET=accelerate-llvm-ptx
-    - TARGET=accelerate-fft
-    - TARGET=accelerate-blas
-    - TARGET=accelerate-io
-    - TARGET=accelerate-bignum
-    - TARGET=accelerate-examples
-    - TARGET=colour-accelerate
-    - TARGET=gloss-accelerate
-    - TARGET=gloss-raster-accelerate
-    - TARGET=lens-accelerate
-    - TARGET=linear-accelerate
-    - TARGET=mwc-random-accelerate
-    - TARGET=lulesh-accelerate
-
-    # disabled
-    # - TARGET=numeric-prelude-accelerate
 
 matrix:
   fast_finish: true
-  # exclude:
-  #   - compiler: GHC-7.10.3  # too slow |:
-  #     env: TARGET=""
+  include:
+    # Build everything
+    # Most recent version of GHC uploads the documentation as well
+    - env: GHC=8.6.4 LLVM=7.0.1 CUDA=10.1.105-1 HADDOCK="--haddock --haddock-hyperlink-source"
+      compiler: "GHC 8.6"
+      addons:
+        apt:
+          sources:
+            - *apt_sources
+            - llvm-toolchain-trusty-7
+          packages:
+            - *apt_packages
+            - freeglut3-dev
+            - libfftw3-dev
+            - llvm-7-dev
+
+    - env: GHC=8.4.3 LLVM=6.0.1 CUDA=10.0.130-1
+      compiler: "GHC 8.4"
+      addons:
+        apt:
+          sources:
+            - *apt_sources
+            - llvm-toolchain-trusty-6.0
+          packages:
+            - *apt_packages
+            - freeglut3-dev
+            - libfftw3-dev
+            - llvm-6.0-dev
+
+    - env: GHC=8.2.2 LLVM=5.0.2 CUDA=8.0.61-1
+      compiler: "GHC 8.2"
+      addons:
+        apt:
+          sources:
+            - *apt_sources
+            - llvm-toolchain-trusty-5.0
+          packages:
+            - *apt_packages
+            - freeglut3-dev
+            - libfftw3-dev
+            - llvm-5.0-dev
+
+    # Individual package sets
+    - env: GHC=8.6.4 TARGET="accelerate"
+      compiler: "GHC 8.6"
+      addons:
+        apt:
+          sources:  *apt_sources
+          packages: *apt_packages
+
+    - env: GHC=8.6.4 TARGET="accelerate-llvm accelerate-llvm-native" LLVM=7.0.1 CUDA=10.1.105-1
+      compiler: "GHC 8.6"
+      addons:
+        apt:
+          sources:
+            - *apt_sources
+            - llvm-toolchain-trusty-7
+          packages:
+            - *apt_packages
+            - llvm-7-dev
+
+    - env: GHC=8.6.4 TARGET="accelerate-llvm accelerate-llvm-ptx" LLVM=7.0.1 CUDA=10.1.105-1
+      compiler: "GHC 8.6"
+      addons:
+        apt:
+          sources:
+            - *apt_sources
+            - llvm-toolchain-trusty-7
+          packages:
+            - *apt_packages
+            - llvm-7-dev
+
+    - env: GHC=8.6.4 TARGET="accelerate-fft" LLVM=7.0.1 CUDA=10.1.105-1
+      compiler: "GHC 8.6"
+      addons:
+        apt:
+          sources:
+            - *apt_sources
+            - llvm-toolchain-trusty-7
+          packages:
+            - *apt_packages
+            - llvm-7-dev
+            - libfftw3-dev
+
+    - env: GHC=8.6.4 TARGET="accelerate-blas" LLVM=7.0.1 CUDA=10.1.105-1
+      compiler: "GHC 8.6"
+      addons:
+        apt:
+          sources:
+            - *apt_sources
+            - llvm-toolchain-trusty-7
+          packages:
+            - *apt_packages
+            - llvm-7-dev
+            - libblas-dev
+            - liblapack-dev
+
+    - env: GHC=8.6.4 TARGET="accelerate-bignum" LLVM=7.0.1 CUDA=10.1.105-1
+      compiler: "GHC 8.6"
+      addons:
+        apt:
+          sources:
+            - *apt_sources
+            - llvm-toolchain-trusty-7
+          packages:
+            - *apt_packages
+            - llvm-7-dev
+
+    - env: GHC=8.6.4 TARGET="accelerate-io accelerate-io-array accelerate-io-bytestring accelerate-io-bmp accelerate-io-vector accelerate-io-repa accelerate-io-JuicyPixels"
+      compiler: "GHC 8.6"
+      addons:
+        apt:
+          sources:  *apt_sources
+          packages: *apt_packages
+
+    - env: GHC=8.6.4 TARGET="accelerate-examples"
+      compiler: "GHC 8.6"
+      addons:
+        apt:
+          sources:  *apt_sources
+          packages:
+            - *apt_packages
+            - freeglut3-dev
+            - libfftw3-dev
+
+    - env: GHC=8.6.4 TARGET="lens-accelerate"
+      compiler: "GHC 8.6"
+      addons:
+        apt:
+          sources:  *apt_sources
+          packages: *apt_packages
+
+    - env: GHC=8.6.4 TARGET="linear-accelerate"
+      compiler: "GHC 8.6"
+      addons:
+        apt:
+          sources:  *apt_sources
+          packages: *apt_packages
+
+    - env: GHC=8.6.4 TARGET="colour-accelerate"
+      compiler: "GHC 8.6"
+      addons:
+        apt:
+          sources:  *apt_sources
+          packages: *apt_packages
+
+    - env: GHC=8.6.4 TARGET="mwc-random-accelerate"
+      compiler: "GHC 8.6"
+      addons:
+        apt:
+          sources:  *apt_sources
+          packages: *apt_packages
+
+    - env: GHC=8.6.4 TARGET="gloss-accelerate gloss-raster-accelerate"
+      compiler: "GHC 8.6"
+      addons:
+        apt:
+          sources:  *apt_sources
+          packages:
+            - *apt_packages
+            - freeglut3-dev
+
+    - env: GHC=8.6.4 TARGET="gloss-accelerate gloss-raster-accelerate"
+      compiler: "GHC 8.6"
+      addons:
+        apt:
+          sources:  *apt_sources
+          packages:
+            - *apt_packages
+            - libhdf5-openmpi-dev
+            - libsilo-dev
+            - libsiloh5-0
+
+    # disabled
+    # TARGET=numeric-prelude-accelerate
 
 
 before_install:
-  - export PATH=/opt/cabal/2.0/bin:/opt/alex/3.1.7/bin:/opt/happy/1.19.5/bin:$HOME/.cabal/bin:$PATH
-  - export GHC=${CC:4}
-  - unset CC
-  - |
-      case ${GHC%.*} in
-        7.8)  export LLVM="3.5.2" ;;
-        7.10) export LLVM="3.5.2" ;;
-        8.0)  export LLVM="4.0.1" ;;
-        8.2)  export LLVM="5.0.1" ;;
-        8.4)  export LLVM="6.0.0" ;;
-      esac
-
-  # - source .travis/install-llvm-trusty.sh
-  - sudo -E apt-get -yq --no-install-suggests --no-install-recommends --force-yes install llvm-${LLVM:0:3}-dev
+  - export PATH=/opt/alex/3.1.7/bin:/opt/happy/1.19.5/bin:$PATH
   - source .travis/install-stack.sh
-  - source .travis/update-ghc-settings.sh
-  - source .travis/install-cuda-trusty.sh
+  - |
+      if [ -n "${CUDA}" ]; then
+        source .travis/install-cuda-trusty.sh
+      fi
 
-  # try to only install cuda if it will be required
-  # - DEPENDENCIES=$( stack list-dependencies ${TARGET} ); DEPENDENCIES_STATUS=$? # travis-ci#3771
-  # - |
-  #     if [ ${DEPENDENCIES_STATUS} -ne 0 ] || [ $( echo ${DEPENDENCIES} | grep cuda | wc -l ) -gt 0 ]; then
-  #       source .travis/install-cuda-trusty.sh
-  #     fi
+  # llvm-hs requires new g++
+  - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 60 --slave /usr/bin/g++ g++ /usr/bin/g++-8
 
-  # https://github.com/haskell/haddock/issues/775
-  # - |
-  #     if [ ${GHC%.*} == 8.4 ]; then
-  #       HADDOCK="--haddock"
-  #     fi
+  # ghc-8.4+ require libffi7
+  - echo "deb http://deb.debian.org/debian experimental main" | sudo tee -a /etc/apt/sources.list
+  - sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-key 0x7638D0442B90D010 0x8B48AD6246925553 0x04EE7237B7D453EC
+  - sudo apt-get install debian-archive-keyring
+  - sudo apt-get update
+  - sudo apt-get install libffi7
 
-  - travis_retry stack install hscolour --fast --no-terminal
-  - travis_retry stack install c2hs --fast --no-terminal
+  # for documentation
+  - stack install hscolour --fast --no-terminal
 
-install:
+  # build environment
   - echo "$(stack exec ghc -- --version) [$(stack exec ghc -- --print-project-git-commit-id 2> /dev/null || echo '?')]"
-  - cabal --version
   - stack --version
   - llc-${LLVM:0:3} --version; true
   - opt-${LLVM:0:3} --version; true
 
-  # bootstrap
-  # - travis_retry travis_wait 60 stack build --fast --only-dependencies --no-terminal --no-copy-bins ${HADDOCK} accelerate
-  # - travis_retry travis_wait 60 stack build --fast --only-dependencies --no-terminal ${HADDOCK} accelerate-llvm-native accelerate-llvm-ptx
-
-  # standard build
+install:
+  - export FLAGS="--fast --jobs=2 --no-terminal --no-copy-bins"
   - stack build --dry-run ${TARGET}
-  - travis_retry travis_wait 60 stack build --fast --only-dependencies --no-terminal --no-copy-bins ${HADDOCK} ${TARGET}
+
+  # bootstrap
+  # - travis_retry travis_wait 60 stack build --only-dependencies ${FLAGS} ${HADDOCK} accelerate
+  # - travis_retry travis_wait 60 stack build --only-dependencies ${FLAGS} ${HADDOCK} accelerate-llvm-native accelerate-llvm-ptx
+
+  # build dependencies
+  - travis_retry travis_wait 60 stack build --only-dependencies ${FLAGS} ${HADDOCK} ${TARGET}
 
 script:
-  - travis_retry travis_wait 60 stack build --fast --no-terminal --no-copy-bins ${HADDOCK} ${TARGET}
   - |
-      if [ ${GHC%.*} == 8.4 ] && [ -z ${TARGET} ]; then
+      for PKG in "${TARGET}"; do
+        stack build ${FLAGS} ${HADDOCK} ${PKG}
+      done
+  - |
+      if [ -n "${HADDOCK}" ]; then
         source .travis/update-docs.sh
       fi
 

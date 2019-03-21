@@ -1,7 +1,7 @@
 # For more information, see: https://github.com/commercialhaskell/stack/blob/release/doc/yaml_configuration.md
 # vim: nospell filetype=yaml
 
-resolver: lts-12.0
+resolver: lts-12.26
 
 packages:
 - '.'
@@ -13,9 +13,9 @@ extra-deps:
 - git:    https://github.com/{REPO_accelerate-llvm}.git
   commit: {SHA_accelerate-llvm}
   subdirs:
-    - 'accelerate-llvm'
-    - 'accelerate-llvm-native'
-    - 'accelerate-llvm-ptx'
+    - accelerate-llvm
+    - accelerate-llvm-native
+    - accelerate-llvm-ptx
 
 - git:    https://github.com/{REPO_accelerate-fft}.git
   commit: {SHA_accelerate-fft}
@@ -25,6 +25,14 @@ extra-deps:
 
 - git:    https://github.com/{REPO_accelerate-io}.git
   commit: {SHA_accelerate-io}
+  subdirs:
+    - accelerate-io
+    - accelerate-io-array
+    - accelerate-io-bmp
+    - accelerate-io-bytestring
+    - accelerate-io-JuicyPixels
+    - accelerate-io-repa
+    - accelerate-io-vector
 
 - git:    https://github.com/{REPO_accelerate-bignum}.git
   commit: {SHA_accelerate-bignum}

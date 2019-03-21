@@ -1,7 +1,7 @@
 # For more information, see: https://github.com/commercialhaskell/stack/blob/release/doc/yaml_configuration.md
 # vim: nospell filetype=yaml
 
-resolver: lts-12.26
+resolver: lts-13.12
 
 packages:
 - '.'
@@ -82,13 +82,14 @@ extra-deps:
 - git:    https://github.com/tmcdonell/nvvm.git
   commit: be9fc3a600aa3809493d7e69d538038e5efff723
 
+- llvm-hs-7.0.1
 - normaldistribution-1.1.0.3
-- primitive-0.6.4.0
-- repa-io-3.4.1.1
 
 # Override default flag values for local packages and extra-deps
 flags:
   lulesh-accelerate:
+    visit: true
+    llvm-cpu: true
     llvm-gpu: false
 
 # Extra package databases containing global packages

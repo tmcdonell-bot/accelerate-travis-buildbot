@@ -13,9 +13,9 @@ extra-deps:
 - git:    https://github.com/{REPO_accelerate-llvm}.git
   commit: {SHA_accelerate-llvm}
   subdirs:
-    - 'accelerate-llvm'
-    - 'accelerate-llvm-native'
-    - 'accelerate-llvm-ptx'
+    - accelerate-llvm
+    - accelerate-llvm-native
+    - accelerate-llvm-ptx
 
 - git:    https://github.com/{REPO_accelerate-fft}.git
   commit: {SHA_accelerate-fft}
@@ -25,6 +25,14 @@ extra-deps:
 
 - git:    https://github.com/{REPO_accelerate-io}.git
   commit: {SHA_accelerate-io}
+  subdirs:
+    - accelerate-io
+    - accelerate-io-array
+    - accelerate-io-bmp
+    - accelerate-io-bytestring
+    - accelerate-io-JuicyPixels
+    - accelerate-io-repa
+    - accelerate-io-vector
 
 - git:    https://github.com/{REPO_accelerate-bignum}.git
   commit: {SHA_accelerate-bignum}
@@ -83,6 +91,7 @@ extra-deps:
 - normaldistribution-1.1.0.3
 - OpenGL-3.0.2.2
 - OpenGLRaw-3.3.1.0
+- prettyprinter-1.2.1
 - primitive-0.6.4.0
 - repa-3.4.1.3
 - repa-io-3.4.1.1
@@ -94,7 +103,7 @@ flags:
     llvm-gpu: false
 
 # Extra package databases containing global packages
-extra-package-dbs: []
+# extra-package-dbs: []
 
 # Control whether we use the GHC we find on the path
 # system-ghc: true
