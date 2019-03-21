@@ -204,17 +204,6 @@ matrix:
             - *apt_packages
             - freeglut3-dev
 
-    - env: GHC=8.6.4 TARGET="gloss-accelerate gloss-raster-accelerate"
-      compiler: "GHC 8.6"
-      addons:
-        apt:
-          sources:  *apt_sources
-          packages:
-            - *apt_packages
-            - libhdf5-openmpi-dev
-            - libsilo-dev
-            - libsiloh5-0
-
     # disabled
     # TARGET=numeric-prelude-accelerate
 
