@@ -204,6 +204,20 @@ matrix:
             - *apt_packages
             - freeglut3-dev
 
+    - env: GHC=8.6.4 TARGET="lulesh-accelerate" LLVM=7.0.1
+      compiler: "GHC 8.6"
+      addons:
+        apt:
+          sources:
+            - *apt_sources
+            - llvm-toolchain-trusty-7
+          packages:
+            - *apt_packages
+            - libhdf5-openmpi-dev
+            - libsilo-dev
+            - libsiloh5-0
+            - llvm-7-dev
+
     # disabled
     # TARGET=numeric-prelude-accelerate
 
