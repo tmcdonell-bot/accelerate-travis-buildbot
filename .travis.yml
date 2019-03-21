@@ -220,6 +220,10 @@ before_install:
       if [ -n "${CUDA}" ]; then
         source .travis/install-cuda-trusty.sh
       fi
+  - |
+      if [ -n "${HADDOCK}" ]; then
+        stack install hscolour --fast --no-terminal
+      fi
 
   # llvm-hs requires new g++
   - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 60 --slave /usr/bin/g++ g++ /usr/bin/g++-8
@@ -230,9 +234,6 @@ before_install:
   - sudo apt-get install debian-archive-keyring
   - sudo apt-get update
   - sudo apt-get install libffi7
-
-  # for documentation
-  - stack install hscolour --fast --no-terminal
 
   # build environment
   - echo "$(stack exec ghc -- --version) [$(stack exec ghc -- --print-project-git-commit-id 2> /dev/null || echo '?')]"
