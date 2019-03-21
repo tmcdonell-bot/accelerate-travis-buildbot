@@ -256,13 +256,10 @@ install:
   # - travis_retry travis_wait 60 stack build --only-dependencies ${FLAGS} ${HADDOCK} accelerate-llvm-native accelerate-llvm-ptx
 
   # build dependencies
-  - travis_retry travis_wait 60 stack build --only-dependencies ${FLAGS} ${HADDOCK} ${TARGET}
+  - stack build --only-dependencies ${FLAGS} ${HADDOCK} ${TARGET}
 
 script:
-  - |
-      for PKG in "${TARGET}"; do
-        stack build ${FLAGS} ${HADDOCK} ${PKG}
-      done
+  - stack build ${FLAGS} ${HADDOCK} ${TARGET}
   - |
       if [ -n "${HADDOCK}" ]; then
         source .travis/update-docs.sh
