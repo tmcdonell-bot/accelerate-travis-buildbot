@@ -49,7 +49,9 @@ matrix:
           packages:
             - *apt_packages
             - freeglut3-dev
+            - libblas-dev
             - libfftw3-dev
+            - liblapack-dev
             - llvm-7-dev
 
     - env: GHC=8.4.3 LLVM=6.0.1 CUDA=10.0.130-1
@@ -62,7 +64,9 @@ matrix:
           packages:
             - *apt_packages
             - freeglut3-dev
+            - libblas-dev
             - libfftw3-dev
+            - liblapack-dev
             - llvm-6.0-dev
 
     - env: GHC=8.2.2 LLVM=5.0.2 CUDA=8.0.61-1
@@ -75,7 +79,9 @@ matrix:
           packages:
             - *apt_packages
             - freeglut3-dev
+            - libblas-dev
             - libfftw3-dev
+            - liblapack-dev
             - llvm-5.0-dev
 
     # Individual package sets
