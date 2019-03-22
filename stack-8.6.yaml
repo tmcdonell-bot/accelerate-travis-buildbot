@@ -38,7 +38,7 @@ extra-deps:
   commit: a2b8caedeebe60dbc871ed8ff8005797bd13b824
 
 - git:    https://github.com/tmcdonell/accelerate-examples.git
-  commit: e564247767bf67640270947b790f7c746f5f3103
+  commit: d5f74b37af2ed0725721286e06bbe74bcaf61517
 
 - git:    https://github.com/tmcdonell/colour-accelerate.git
   commit: edc575cc6a810f5cce8d4b4423ef3968f30a93a3
