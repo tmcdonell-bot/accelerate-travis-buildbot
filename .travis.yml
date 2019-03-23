@@ -157,15 +157,18 @@ matrix:
           sources:  *apt_sources
           packages: *apt_packages
 
-    - env: GHC=8.6.4 TARGET="accelerate-examples"
+    - env: GHC=8.6.4 TARGET="accelerate-examples" LLVM=7.0.1 CUDA=10.1.105-1
       compiler: "GHC 8.6"
       addons:
         apt:
-          sources:  *apt_sources
+          sources:
+            - *apt_sources
+            - llvm-toolchain-trusty-7
           packages:
             - *apt_packages
             - freeglut3-dev
             - libfftw3-dev
+            - llvm-7-dev
 
     - env: GHC=8.6.4 TARGET="lens-accelerate"
       compiler: "GHC 8.6"
