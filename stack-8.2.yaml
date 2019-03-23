@@ -82,6 +82,7 @@ extra-deps:
 - git:    https://github.com/tmcdonell/nvvm.git
   commit: be9fc3a600aa3809493d7e69d538038e5efff723
 
+- criterion-measurement-0.1.1.0
 - half-0.3
 - normaldistribution-1.1.0.3
 - OpenGLRaw-3.3.1.0
