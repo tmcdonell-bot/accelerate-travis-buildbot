@@ -65,7 +65,7 @@ extra-deps:
   commit: a2c9d4972585acaa0edcc92b68263319b8f4d512
 
 - git:    https://github.com/tmcdonell/cuda.git
-  commit: d345d4d01116ba3bf7a77a8fba827538921330bd
+  commit: e8a832dd4d068553fc56a393a7aa3940f142b3b6
 
 - git:    https://github.com/tmcdonell/cufft.git
   commit: 374a09d341b70a6234d0b0b19f587797e90e9b70
