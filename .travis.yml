@@ -4,18 +4,15 @@
 # together. Also build them individually, to make it easier to diagnose which
 # package(s) are broken when one of the dependencies is updated.
 #
-# Set the language type to 'c' so that the 'compiler' key becomes active and our
-# build matrix is constructed as the product of compiler x target.
-#
 language: minimal
-dist: trusty
-sudo: required
+dist: xenial
 
 cache:
   timeout: 600
   directories:
-    - $HOME/.stack/snapshots
-    - .stack-work/install
+    - $HOME/.stack
+    - $HOME/.local/bin
+    - $TRAVIS_BUILD_DIR/.stack-work
 
 before_cache:
   - rm -rf $(stack path --local-install-root)/doc
@@ -24,8 +21,7 @@ addons:
   apt:
     sources: &apt_sources
       - hvr-ghc
-      - ubuntu-toolchain-r-test
-      - llvm-toolchain-trusty
+
     packages: &apt_packages
       - alex-3.1.7
       - dpkg
@@ -39,20 +35,20 @@ matrix:
   include:
     # Build everything
     # Most recent version of GHC uploads the documentation as well
-    - env: GHC=8.6.4 LLVM=7.0.1 CUDA=10.1.105-1 HADDOCK="--haddock --haddock-hyperlink-source"
+    - env: GHC=8.6.5 LLVM=8.0.0 CUDA=10.1.105-1 HADDOCK="--haddock --haddock-hyperlink-source"
       compiler: "GHC 8.6"
       addons:
         apt:
           sources:
             - *apt_sources
-            - llvm-toolchain-trusty-7
+            - llvm-toolchain-xenial-7
           packages:
             - *apt_packages
             - freeglut3-dev
             - libblas-dev
             - libfftw3-dev
             - liblapack-dev
-            - llvm-7-dev
+            - llvm-8-dev
 
     - env: GHC=8.4.3 LLVM=6.0.1 CUDA=10.0.130-1
       compiler: "GHC 8.4"
@@ -60,7 +56,7 @@ matrix:
         apt:
           sources:
             - *apt_sources
-            - llvm-toolchain-trusty-6.0
+            - llvm-toolchain-xenial-6.0
           packages:
             - *apt_packages
             - freeglut3-dev
@@ -75,7 +71,7 @@ matrix:
         apt:
           sources:
             - *apt_sources
-            - llvm-toolchain-trusty-5.0
+            - llvm-toolchain-xenial-5.0
           packages:
             - *apt_packages
             - freeglut3-dev
@@ -85,120 +81,120 @@ matrix:
             - llvm-5.0-dev
 
     # Individual package sets
-    - env: GHC=8.6.4 TARGET="accelerate"
+    - env: GHC=8.6.5 TARGET="accelerate"
       compiler: "GHC 8.6"
       addons:
         apt:
           sources:  *apt_sources
           packages: *apt_packages
 
-    - env: GHC=8.6.4 TARGET="accelerate-llvm accelerate-llvm-native" LLVM=7.0.1 CUDA=10.1.105-1
+    - env: GHC=8.6.5 TARGET="accelerate-llvm accelerate-llvm-native" LLVM=8.0.0 CUDA=10.1.105-1
       compiler: "GHC 8.6"
       addons:
         apt:
           sources:
             - *apt_sources
-            - llvm-toolchain-trusty-7
+            - llvm-toolchain-xenial-8
           packages:
             - *apt_packages
-            - llvm-7-dev
+            - llvm-8-dev
 
-    - env: GHC=8.6.4 TARGET="accelerate-llvm accelerate-llvm-ptx" LLVM=7.0.1 CUDA=10.1.105-1
+    - env: GHC=8.6.5 TARGET="accelerate-llvm accelerate-llvm-ptx" LLVM=8.0.0 CUDA=10.1.105-1
       compiler: "GHC 8.6"
       addons:
         apt:
           sources:
             - *apt_sources
-            - llvm-toolchain-trusty-7
+            - llvm-toolchain-xenial-8
           packages:
             - *apt_packages
-            - llvm-7-dev
+            - llvm-8-dev
 
-    - env: GHC=8.6.4 TARGET="accelerate-fft" LLVM=7.0.1 CUDA=10.1.105-1
+    - env: GHC=8.6.5 TARGET="accelerate-fft" LLVM=8.0.0 CUDA=10.1.105-1
       compiler: "GHC 8.6"
       addons:
         apt:
           sources:
             - *apt_sources
-            - llvm-toolchain-trusty-7
+            - llvm-toolchain-xenial-8
           packages:
             - *apt_packages
-            - llvm-7-dev
+            - llvm-8-dev
             - libfftw3-dev
 
-    - env: GHC=8.6.4 TARGET="accelerate-blas" LLVM=7.0.1 CUDA=10.1.105-1
+    - env: GHC=8.6.5 TARGET="accelerate-blas" LLVM=8.0.0 CUDA=10.1.105-1
       compiler: "GHC 8.6"
       addons:
         apt:
           sources:
             - *apt_sources
-            - llvm-toolchain-trusty-7
+            - llvm-toolchain-xenial-8
           packages:
             - *apt_packages
-            - llvm-7-dev
+            - llvm-8-dev
             - libblas-dev
             - liblapack-dev
 
-    - env: GHC=8.6.4 TARGET="accelerate-bignum" LLVM=7.0.1 CUDA=10.1.105-1
+    - env: GHC=8.6.5 TARGET="accelerate-bignum" LLVM=8.0.0 CUDA=10.1.105-1
       compiler: "GHC 8.6"
       addons:
         apt:
           sources:
             - *apt_sources
-            - llvm-toolchain-trusty-7
+            - llvm-toolchain-xenial-8
           packages:
             - *apt_packages
-            - llvm-7-dev
+            - llvm-8-dev
 
-    - env: GHC=8.6.4 TARGET="accelerate-io accelerate-io-array accelerate-io-bytestring accelerate-io-bmp accelerate-io-vector accelerate-io-repa accelerate-io-JuicyPixels"
+    - env: GHC=8.6.5 TARGET="accelerate-io accelerate-io-array accelerate-io-bytestring accelerate-io-bmp accelerate-io-vector accelerate-io-repa accelerate-io-JuicyPixels"
       compiler: "GHC 8.6"
       addons:
         apt:
           sources:  *apt_sources
           packages: *apt_packages
 
-    - env: GHC=8.6.4 TARGET="accelerate-examples" LLVM=7.0.1 CUDA=10.1.105-1
+    - env: GHC=8.6.5 TARGET="accelerate-examples" LLVM=8.0.0 CUDA=10.1.105-1
       compiler: "GHC 8.6"
       addons:
         apt:
           sources:
             - *apt_sources
-            - llvm-toolchain-trusty-7
+            - llvm-toolchain-xenial-8
           packages:
             - *apt_packages
             - freeglut3-dev
             - libfftw3-dev
-            - llvm-7-dev
+            - llvm-8-dev
 
-    - env: GHC=8.6.4 TARGET="lens-accelerate"
+    - env: GHC=8.6.5 TARGET="lens-accelerate"
       compiler: "GHC 8.6"
       addons:
         apt:
           sources:  *apt_sources
           packages: *apt_packages
 
-    - env: GHC=8.6.4 TARGET="linear-accelerate"
+    - env: GHC=8.6.5 TARGET="linear-accelerate"
       compiler: "GHC 8.6"
       addons:
         apt:
           sources:  *apt_sources
           packages: *apt_packages
 
-    - env: GHC=8.6.4 TARGET="colour-accelerate"
+    - env: GHC=8.6.5 TARGET="colour-accelerate"
       compiler: "GHC 8.6"
       addons:
         apt:
           sources:  *apt_sources
           packages: *apt_packages
 
-    - env: GHC=8.6.4 TARGET="mwc-random-accelerate"
+    - env: GHC=8.6.5 TARGET="mwc-random-accelerate"
       compiler: "GHC 8.6"
       addons:
         apt:
           sources:  *apt_sources
           packages: *apt_packages
 
-    - env: GHC=8.6.4 TARGET="gloss-accelerate gloss-raster-accelerate"
+    - env: GHC=8.6.5 TARGET="gloss-accelerate gloss-raster-accelerate"
       compiler: "GHC 8.6"
       addons:
         apt:
@@ -207,19 +203,19 @@ matrix:
             - *apt_packages
             - freeglut3-dev
 
-    - env: GHC=8.6.4 TARGET="lulesh-accelerate" LLVM=7.0.1
+    - env: GHC=8.6.5 TARGET="lulesh-accelerate" LLVM=8.0.0
       compiler: "GHC 8.6"
       addons:
         apt:
           sources:
             - *apt_sources
-            - llvm-toolchain-trusty-7
+            - llvm-toolchain-xenial-8
           packages:
             - *apt_packages
             - libhdf5-openmpi-dev
             - libsilo-dev
             - libsiloh5-0
-            - llvm-7-dev
+            - llvm-8-dev
 
     # disabled
     # TARGET=numeric-prelude-accelerate
@@ -230,7 +226,7 @@ before_install:
   - source .travis/install-stack.sh
   - |
       if [ -n "${CUDA}" ]; then
-        source .travis/install-cuda-trusty.sh
+        source .travis/install-cuda-xenial.sh
       fi
   - |
       if [ -n "${HADDOCK}" ]; then
