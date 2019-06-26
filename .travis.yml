@@ -21,6 +21,7 @@ addons:
   apt:
     sources: &apt_sources
       - hvr-ghc
+      - ubuntu-toolchain-r-test
 
     packages: &apt_packages
       - alex-3.1.7
@@ -41,7 +42,7 @@ matrix:
         apt:
           sources:
             - *apt_sources
-            - llvm-toolchain-xenial-7
+            - llvm-toolchain-xenial-8
           packages:
             - *apt_packages
             - freeglut3-dev
