@@ -251,7 +251,7 @@ before_install:
   - opt-${LLVM:0:3} --version; true
 
 install:
-  - export FLAGS="--fast --jobs=2 --no-terminal --no-copy-bins"
+  - export FLAGS="--fast --jobs=2 --no-terminal --no-copy-bins --no-interleaved-output"
   - stack build --dry-run ${TARGET}
 
   # bootstrap
