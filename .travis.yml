@@ -213,6 +213,7 @@ matrix:
             - llvm-toolchain-xenial-8
           packages:
             - *apt_packages
+            - libhdf5-dev
             - libhdf5-openmpi-dev
             - libsilo-dev
             - libsiloh5-0
