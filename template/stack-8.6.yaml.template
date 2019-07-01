@@ -91,7 +91,7 @@ flags:
   lulesh-accelerate:
     visit: true
     llvm-cpu: true
-    llvm-gpu: false
+    llvm-ptx: false
 
 # Extra package databases containing global packages
 # extra-package-dbs: []

@@ -91,7 +91,7 @@ extra-deps:
 # Override default flag values for local packages and extra-deps
 flags:
   lulesh-accelerate:
-    llvm-gpu: false
+    llvm-ptx: false
 
 # Extra package databases containing global packages
 # extra-package-dbs: []
