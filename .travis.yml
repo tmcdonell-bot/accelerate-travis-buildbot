@@ -14,9 +14,6 @@ cache:
     - $HOME/.local/bin
     - $TRAVIS_BUILD_DIR/.stack-work
 
-before_cache:
-  - rm -rf $(stack path --local-install-root)/doc
-
 addons:
   apt:
     sources: &apt_sources
