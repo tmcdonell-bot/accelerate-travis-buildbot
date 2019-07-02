@@ -257,8 +257,8 @@ install:
   - stack build --dry-run ${TARGET}
 
   # bootstrap
-  - stack build --only-dependencies ${FLAGS} ${HADDOCK} accelerate
-  # - stack build --only-dependencies ${FLAGS} ${HADDOCK} accelerate-llvm-native accelerate-llvm-ptx
+  # - stack build --only-dependencies ${FLAGS} ${HADDOCK} accelerate
+  - stack build --only-dependencies ${FLAGS} ${HADDOCK} accelerate-llvm-native accelerate-llvm-ptx
 
   # build dependencies
   # - stack build --only-dependencies ${FLAGS} ${HADDOCK} ${TARGET}
