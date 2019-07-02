@@ -1,0 +1,15 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-pragma">{-# LANGUAGE ForeignFunctionInterface #-}</span><span>
+</span><a name="line-2"></a><span>
+</span><a name="line-3"></a><span class="hs-comment">-- | FFI functions for handling the DynamicLibrary class</span><span>
+</span><a name="line-4"></a><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">LLVM.Internal.FFI.DynamicLibrary</span><span> </span><span class="hs-keyword">where</span><span>
+</span><a name="line-5"></a><span>
+</span><a name="line-6"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">LLVM.Prelude</span><span>
+</span><a name="line-7"></a><span>
+</span><a name="line-8"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">Foreign.C</span><span>
+</span><a name="line-9"></a><span>
+</span><a name="line-10"></a><span class="hs-keyword">import</span><span> </span><a href="LLVM.Internal.FFI.LLVMCTypes.html"><span class="hs-identifier">LLVM.Internal.FFI.LLVMCTypes</span></a><span>
+</span><a name="line-11"></a><span>
+</span><a name="line-12"></a><span class="hs-comment">-- | &lt;https://llvm.org/doxygen/Support_8h.html#a6fc1331c1a6d2cc6f0fda94f4a4636f9&gt;</span><span>
+</span><a name="line-13"></a><span class="hs-keyword">foreign</span><span> </span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">ccall</span><span> </span><span class="hs-keyword">safe</span><span> </span><span class="hs-string">&quot;LLVMLoadLibraryPermanently&quot;</span><span> </span><span class="hs-identifier">loadLibraryPermanently</span><span> </span><span class="hs-glyph">::</span><span>
+</span><a name="line-14"></a><span>  </span><span class="hs-identifier hs-type">CString</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier hs-type">IO</span><span> </span><a href="LLVM.Internal.FFI.LLVMCTypes.html#LLVMBool"><span class="hs-identifier hs-type">LLVMBool</span></a><span>
+</span><a name="line-15"></a></pre></body></html>

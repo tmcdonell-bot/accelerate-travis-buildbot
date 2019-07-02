@@ -1,0 +1,465 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-pragma">{-# LANGUAGE CPP #-}</span><span>
+</span><a name="line-2"></a><span class="hs-comment">-- |</span><span>
+</span><a name="line-3"></a><span class="hs-comment">-- Module      : Data.Array.Accelerate.LLVM.Native.Distribution.Simple.GHC</span><span>
+</span><a name="line-4"></a><span class="hs-comment">-- Copyright   : [2017..2019] The Accelerate Team</span><span>
+</span><a name="line-5"></a><span class="hs-comment">-- License     : BSD3</span><span>
+</span><a name="line-6"></a><span class="hs-comment">--</span><span>
+</span><a name="line-7"></a><span class="hs-comment">-- Maintainer  : Trevor L. McDonell &lt;trevor.mcdonell@gmail.com&gt;</span><span>
+</span><a name="line-8"></a><span class="hs-comment">-- Stability   : experimental</span><span>
+</span><a name="line-9"></a><span class="hs-comment">-- Portability : non-portable (GHC extensions)</span><span>
+</span><a name="line-10"></a><span class="hs-comment">--</span><span>
+</span><a name="line-11"></a><span class="hs-comment">-- Copied from: https://github.com/haskell/cabal/blob/2.0/Cabal/Distribution/Simple/GHC.hs</span><span>
+</span><a name="line-12"></a><span class="hs-comment">--</span><span>
+</span><a name="line-13"></a><span>
+</span><a name="line-14"></a><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">Data.Array.Accelerate.LLVM.Native.Distribution.Simple.GHC</span><span> </span><span class="hs-special">(</span><span>
+</span><a name="line-15"></a><span>
+</span><a name="line-16"></a><span>  </span><a href="Data.Array.Accelerate.LLVM.Native.Distribution.Simple.GHC.html#buildLib"><span class="hs-identifier hs-var">buildLib</span></a><span class="hs-special">,</span><span>
+</span><a name="line-17"></a><span>  </span><a href="Data.Array.Accelerate.LLVM.Native.Distribution.Simple.GHC.html#replLib"><span class="hs-identifier hs-var">replLib</span></a><span class="hs-special">,</span><span>
+</span><a name="line-18"></a><span>
+</span><a name="line-19"></a><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><a name="line-20"></a><span>
+</span><a name="line-21"></a><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><a href="Data.Array.Accelerate.LLVM.Native.Distribution.Simple.GHC.Internal.html"><span class="hs-identifier">Data.Array.Accelerate.LLVM.Native.Distribution.Simple.GHC.Internal</span></a><span> </span><span class="hs-keyword">as</span><span> </span><span class="hs-identifier">Internal</span><span>
+</span><a name="line-22"></a><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><a href="Data.Array.Accelerate.LLVM.Native.Plugin.BuildInfo.html"><span class="hs-identifier">Data.Array.Accelerate.LLVM.Native.Plugin.BuildInfo</span></a><span>                 </span><span class="hs-keyword">as</span><span> </span><span class="hs-identifier">Internal</span><span>
+</span><a name="line-23"></a><span>
+</span><a name="line-24"></a><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="hs-identifier">Distribution.Simple.GHC</span><span> </span><span class="hs-keyword">as</span><span> </span><span class="hs-identifier">Cabal</span><span>
+</span><a name="line-25"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">Distribution.PackageDescription</span><span> </span><span class="hs-keyword">as</span><span> </span><span class="hs-identifier">PD</span><span>
+</span><a name="line-26"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">Distribution.Simple.LocalBuildInfo</span><span>
+</span><a name="line-27"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">Distribution.Types.ComponentLocalBuildInfo</span><span>
+</span><a name="line-28"></a><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="hs-identifier">Distribution.Simple.Hpc</span><span> </span><span class="hs-keyword">as</span><span> </span><span class="hs-identifier">Hpc</span><span>
+</span><a name="line-29"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">Distribution.Simple.BuildPaths</span><span>
+</span><a name="line-30"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">Distribution.Simple.Utils</span><span>
+</span><a name="line-31"></a><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="hs-identifier">Distribution.ModuleName</span><span> </span><span class="hs-keyword">as</span><span> </span><span class="hs-identifier">ModuleName</span><span>
+</span><a name="line-32"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">Distribution.Simple.Program</span><span>
+</span><a name="line-33"></a><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="hs-identifier">Distribution.Simple.Program.Ar</span><span>    </span><span class="hs-keyword">as</span><span> </span><span class="hs-identifier">Ar</span><span>
+</span><a name="line-34"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">Distribution.Simple.Program.GHC</span><span>
+</span><a name="line-35"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">Distribution.Simple.Setup</span><span>
+</span><a name="line-36"></a><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="hs-identifier">Distribution.Simple.Setup</span><span> </span><span class="hs-keyword">as</span><span> </span><span class="hs-identifier">Cabal</span><span>
+</span><a name="line-37"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">Distribution.Simple.Compiler</span><span> </span><span class="hs-keyword">hiding</span><span> </span><span class="hs-special">(</span><span class="hs-identifier hs-type">Flag</span><span class="hs-special">)</span><span>
+</span><a name="line-38"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">Distribution.Version</span><span>
+</span><a name="line-39"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">Distribution.System</span><span>
+</span><a name="line-40"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">Distribution.Verbosity</span><span>
+</span><a name="line-41"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">Distribution.Text</span><span>
+</span><a name="line-42"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">Distribution.Utils.NubList</span><span>
+</span><a name="line-43"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">Language.Haskell.Extension</span><span>
+</span><a name="line-44"></a><span>
+</span><a name="line-45"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">Control.Monad</span><span> </span><span class="hs-special">(</span><span class="hs-identifier hs-var">when</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-var">unless</span><span class="hs-special">)</span><span>
+</span><a name="line-46"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">Data.List</span><span> </span><span class="hs-special">(</span><span class="hs-identifier hs-var">nub</span><span class="hs-special">)</span><span>
+</span><a name="line-47"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">Data.Maybe</span><span> </span><span class="hs-special">(</span><span class="hs-identifier hs-var">catMaybes</span><span class="hs-special">)</span><span>
+</span><a name="line-48"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">System.FilePath</span><span> </span><span class="hs-special">(</span><span> </span><span class="hs-special">(</span><span class="hs-operator hs-var">&lt;/&gt;</span><span class="hs-special">)</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-var">replaceExtension</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-var">isRelative</span><span> </span><span class="hs-special">)</span><span>
+</span><a name="line-49"></a><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="hs-identifier">Data.Map</span><span> </span><span class="hs-keyword">as</span><span> </span><span class="hs-identifier">Map</span><span>
+</span><a name="line-50"></a><span>
+</span><a name="line-51"></a><span>
+</span><a name="line-52"></a><span class="hs-comment">-- &lt;https://github.com/haskell/cabal/blob/2.0/Cabal/Distribution/Simple/GHC.hs#L505&gt;</span><span>
+</span><a name="line-53"></a><span class="hs-comment">--</span><span>
+</span><a name="line-54"></a><span class="hs-identifier">buildLib</span><span class="hs-special">,</span><span> </span><span class="hs-identifier">replLib</span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-identifier hs-type">Verbosity</span><span>          </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier hs-type">Cabal.Flag</span><span> </span><span class="hs-special">(</span><span class="hs-identifier hs-type">Maybe</span><span> </span><span class="hs-identifier hs-type">Int</span><span class="hs-special">)</span><span>
+</span><a name="line-55"></a><span>                  </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier hs-type">PackageDescription</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier hs-type">LocalBuildInfo</span><span>
+</span><a name="line-56"></a><span>                  </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier hs-type">Library</span><span>            </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier hs-type">ComponentLocalBuildInfo</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier hs-type">IO</span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span>
+</span><a name="line-57"></a><a name="buildLib"><a href="Data.Array.Accelerate.LLVM.Native.Distribution.Simple.GHC.html#buildLib"><span class="hs-identifier">buildLib</span></a></a><span> </span><span class="hs-glyph">=</span><span> </span><a href="Data.Array.Accelerate.LLVM.Native.Distribution.Simple.GHC.html#buildOrReplLib"><span class="hs-identifier hs-var">buildOrReplLib</span></a><span> </span><span class="hs-identifier hs-var">False</span><span>
+</span><a name="line-58"></a><a name="replLib"><a href="Data.Array.Accelerate.LLVM.Native.Distribution.Simple.GHC.html#replLib"><span class="hs-identifier">replLib</span></a></a><span>  </span><span class="hs-glyph">=</span><span> </span><a href="Data.Array.Accelerate.LLVM.Native.Distribution.Simple.GHC.html#buildOrReplLib"><span class="hs-identifier hs-var">buildOrReplLib</span></a><span> </span><span class="hs-identifier hs-var">True</span><span>
+</span><a name="line-59"></a><span>
+</span><a name="line-60"></a><span class="hs-identifier">buildOrReplLib</span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-identifier hs-type">Bool</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier hs-type">Verbosity</span><span>  </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier hs-type">Cabal.Flag</span><span> </span><span class="hs-special">(</span><span class="hs-identifier hs-type">Maybe</span><span> </span><span class="hs-identifier hs-type">Int</span><span class="hs-special">)</span><span>
+</span><a name="line-61"></a><span>               </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier hs-type">PackageDescription</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier hs-type">LocalBuildInfo</span><span>
+</span><a name="line-62"></a><span>               </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier hs-type">Library</span><span>            </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier hs-type">ComponentLocalBuildInfo</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier hs-type">IO</span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span>
+</span><a name="line-63"></a><a name="buildOrReplLib"><a href="Data.Array.Accelerate.LLVM.Native.Distribution.Simple.GHC.html#buildOrReplLib"><span class="hs-identifier">buildOrReplLib</span></a></a><span> </span><a name="local-6989586621679382858"><a href="#local-6989586621679382858"><span class="hs-identifier">forRepl</span></a></a><span> </span><a name="local-6989586621679382859"><a href="#local-6989586621679382859"><span class="hs-identifier">verbosity</span></a></a><span> </span><a name="local-6989586621679382860"><a href="#local-6989586621679382860"><span class="hs-identifier">numJobs</span></a></a><span> </span><a name="local-6989586621679382861"><a href="#local-6989586621679382861"><span class="hs-identifier">pkg_descr</span></a></a><span> </span><a name="local-6989586621679382862"><a href="#local-6989586621679382862"><span class="hs-identifier">lbi</span></a></a><span> </span><a name="local-6989586621679382863"><a href="#local-6989586621679382863"><span class="hs-identifier">lib</span></a></a><span> </span><a name="local-6989586621679382864"><a href="#local-6989586621679382864"><span class="hs-identifier">clbi</span></a></a><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><a name="line-64"></a><span>  </span><span class="hs-keyword">let</span><span> </span><a name="local-6989586621679382865"><a href="#local-6989586621679382865"><span class="hs-identifier">uid</span></a></a><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">componentUnitId</span><span> </span><a href="#local-6989586621679382864"><span class="hs-identifier hs-var">clbi</span></a><span>
+</span><a name="line-65"></a><span>      </span><a name="local-6989586621679382866"><a href="#local-6989586621679382866"><span class="hs-identifier">libTargetDir</span></a></a><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier hs-var">componentBuildDir</span><span> </span><a href="#local-6989586621679382862"><span class="hs-identifier hs-var">lbi</span></a><span> </span><a href="#local-6989586621679382864"><span class="hs-identifier hs-var">clbi</span></a><span>
+</span><a name="line-66"></a><span>      </span><a name="local-6989586621679382867"><a href="#local-6989586621679382867"><span class="hs-identifier">whenVanillaLib</span></a></a><span> </span><a name="local-6989586621679382879"><a href="#local-6989586621679382879"><span class="hs-identifier">forceVanilla</span></a></a><span> </span><span class="hs-glyph">=</span><span>
+</span><a name="line-67"></a><span>        </span><span class="hs-identifier hs-var">when</span><span> </span><span class="hs-special">(</span><a href="#local-6989586621679382879"><span class="hs-identifier hs-var">forceVanilla</span></a><span> </span><span class="hs-operator hs-var">||</span><span> </span><span class="hs-identifier">withVanillaLib</span><span> </span><a href="#local-6989586621679382862"><span class="hs-identifier hs-var">lbi</span></a><span class="hs-special">)</span><span>
+</span><a name="line-68"></a><span>      </span><a name="local-6989586621679382868"><a href="#local-6989586621679382868"><span class="hs-identifier">whenProfLib</span></a></a><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier hs-var">when</span><span> </span><span class="hs-special">(</span><span class="hs-identifier">withProfLib</span><span> </span><a href="#local-6989586621679382862"><span class="hs-identifier hs-var">lbi</span></a><span class="hs-special">)</span><span>
+</span><a name="line-69"></a><span>      </span><a name="local-6989586621679382869"><a href="#local-6989586621679382869"><span class="hs-identifier">whenSharedLib</span></a></a><span> </span><a name="local-6989586621679382880"><a href="#local-6989586621679382880"><span class="hs-identifier">forceShared</span></a></a><span> </span><span class="hs-glyph">=</span><span>
+</span><a name="line-70"></a><span>        </span><span class="hs-identifier hs-var">when</span><span> </span><span class="hs-special">(</span><a href="#local-6989586621679382880"><span class="hs-identifier hs-var">forceShared</span></a><span> </span><span class="hs-operator hs-var">||</span><span> </span><span class="hs-identifier">withSharedLib</span><span> </span><a href="#local-6989586621679382862"><span class="hs-identifier hs-var">lbi</span></a><span class="hs-special">)</span><span>
+</span><a name="line-71"></a><span>      </span><a name="local-6989586621679382870"><a href="#local-6989586621679382870"><span class="hs-identifier">whenGHCiLib</span></a></a><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier hs-var">when</span><span> </span><span class="hs-special">(</span><span class="hs-identifier">withGHCiLib</span><span> </span><a href="#local-6989586621679382862"><span class="hs-identifier hs-var">lbi</span></a><span> </span><span class="hs-operator hs-var">&amp;&amp;</span><span> </span><span class="hs-identifier">withVanillaLib</span><span> </span><a href="#local-6989586621679382862"><span class="hs-identifier hs-var">lbi</span></a><span class="hs-special">)</span><span>
+</span><a name="line-72"></a><span>      </span><a name="local-6989586621679382871"><a href="#local-6989586621679382871"><span class="hs-identifier">ifReplLib</span></a></a><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier hs-var">when</span><span> </span><a href="#local-6989586621679382858"><span class="hs-identifier hs-var">forRepl</span></a><span>
+</span><a name="line-73"></a><span>      </span><a name="local-6989586621679382872"><a href="#local-6989586621679382872"><span class="hs-identifier">comp</span></a></a><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">compiler</span><span> </span><a href="#local-6989586621679382862"><span class="hs-identifier hs-var">lbi</span></a><span>
+</span><a name="line-74"></a><span>      </span><a name="local-6989586621679382873"><a href="#local-6989586621679382873"><span class="hs-identifier">ghcVersion</span></a></a><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier hs-var">compilerVersion</span><span> </span><a href="#local-6989586621679382872"><span class="hs-identifier hs-var">comp</span></a><span>
+</span><a name="line-75"></a><span>      </span><a name="local-6989586621679382874"><a href="#local-6989586621679382874"><span class="hs-identifier">implInfo</span></a></a><span>  </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier hs-var">Cabal.getImplInfo</span><span> </span><a href="#local-6989586621679382872"><span class="hs-identifier hs-var">comp</span></a><span>
+</span><a name="line-76"></a><span>      </span><a name="local-6989586621679382875"><a href="#local-6989586621679382875"><span class="hs-identifier">platform</span></a></a><span class="hs-glyph">@</span><span class="hs-special">(</span><span class="hs-identifier hs-var">Platform</span><span> </span><a name="local-6989586621679382876"><a href="#local-6989586621679382876"><span class="hs-identifier">_hostArch</span></a></a><span> </span><a name="local-6989586621679382877"><a href="#local-6989586621679382877"><span class="hs-identifier">hostOS</span></a></a><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">hostPlatform</span><span> </span><a href="#local-6989586621679382862"><span class="hs-identifier hs-var">lbi</span></a><span>
+</span><a name="line-77"></a><span>      </span><a name="local-6989586621679382878"><a href="#local-6989586621679382878"><span class="hs-identifier">has_code</span></a></a><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier hs-var">not</span><span> </span><span class="hs-special">(</span><span class="hs-identifier hs-var">componentIsIndefinite</span><span> </span><a href="#local-6989586621679382864"><span class="hs-identifier hs-var">clbi</span></a><span class="hs-special">)</span><span>
+</span><a name="line-78"></a><span>
+</span><a name="line-79"></a><span>  </span><span class="hs-special">(</span><a name="local-6989586621679383620"><a href="#local-6989586621679383620"><span class="hs-identifier">ghcProg</span></a></a><span class="hs-special">,</span><span> </span><span class="hs-identifier">_</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="hs-identifier hs-var">requireProgram</span><span> </span><a href="#local-6989586621679382859"><span class="hs-identifier hs-var">verbosity</span></a><span> </span><span class="hs-identifier hs-var">ghcProgram</span><span> </span><span class="hs-special">(</span><span class="hs-identifier">withPrograms</span><span> </span><a href="#local-6989586621679382862"><span class="hs-identifier hs-var">lbi</span></a><span class="hs-special">)</span><span>
+</span><a name="line-80"></a><span>  </span><span class="hs-keyword">let</span><span> </span><a name="local-6989586621679383621"><a href="#local-6989586621679383621"><span class="hs-identifier">runGhcProg</span></a></a><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier hs-var">runGHC</span><span> </span><a href="#local-6989586621679382859"><span class="hs-identifier hs-var">verbosity</span></a><span> </span><a href="#local-6989586621679383620"><span class="hs-identifier hs-var">ghcProg</span></a><span> </span><a href="#local-6989586621679382872"><span class="hs-identifier hs-var">comp</span></a><span> </span><a href="#local-6989586621679382875"><span class="hs-identifier hs-var">platform</span></a><span>
+</span><a name="line-81"></a><span>
+</span><a name="line-82"></a><span>  </span><a name="local-6989586621679383622"><a href="#local-6989586621679383622"><span class="hs-identifier">libBi</span></a></a><span> </span><span class="hs-glyph">&lt;-</span><span> </span><a href="Data.Array.Accelerate.LLVM.Native.Distribution.Simple.GHC.html#hackThreadedFlag"><span class="hs-identifier hs-var">hackThreadedFlag</span></a><span> </span><a href="#local-6989586621679382859"><span class="hs-identifier hs-var">verbosity</span></a><span>
+</span><a name="line-83"></a><span>             </span><a href="#local-6989586621679382872"><span class="hs-identifier hs-var">comp</span></a><span> </span><span class="hs-special">(</span><span class="hs-identifier">withProfLib</span><span> </span><a href="#local-6989586621679382862"><span class="hs-identifier hs-var">lbi</span></a><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="hs-identifier">libBuildInfo</span><span> </span><a href="#local-6989586621679382863"><span class="hs-identifier hs-var">lib</span></a><span class="hs-special">)</span><span>
+</span><a name="line-84"></a><span>
+</span><a name="line-85"></a><span>  </span><span class="hs-keyword">let</span><span> </span><a name="local-6989586621679383623"><a href="#local-6989586621679383623"><span class="hs-identifier">isGhcDynamic</span></a></a><span>        </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier hs-var">Cabal.isDynamic</span><span> </span><a href="#local-6989586621679382872"><span class="hs-identifier hs-var">comp</span></a><span>
+</span><a name="line-86"></a><span>      </span><a name="local-6989586621679383624"><a href="#local-6989586621679383624"><span class="hs-identifier">dynamicTooSupported</span></a></a><span> </span><span class="hs-glyph">=</span><span> </span><a href="Data.Array.Accelerate.LLVM.Native.Distribution.Simple.GHC.html#supportsDynamicToo"><span class="hs-identifier hs-var">supportsDynamicToo</span></a><span> </span><a href="#local-6989586621679382872"><span class="hs-identifier hs-var">comp</span></a><span>
+</span><a name="line-87"></a><span>      </span><a name="local-6989586621679383625"><a href="#local-6989586621679383625"><span class="hs-identifier">doingTH</span></a></a><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier hs-var">EnableExtension</span><span> </span><span class="hs-identifier hs-var">TemplateHaskell</span><span> </span><span class="hs-special">`</span><span class="hs-identifier hs-var">elem</span><span class="hs-special">`</span><span> </span><span class="hs-identifier hs-var">allExtensions</span><span> </span><a href="#local-6989586621679383622"><span class="hs-identifier hs-var">libBi</span></a><span>
+</span><a name="line-88"></a><span>      </span><a name="local-6989586621679383626"><a href="#local-6989586621679383626"><span class="hs-identifier">forceVanillaLib</span></a></a><span> </span><span class="hs-glyph">=</span><span> </span><a href="#local-6989586621679383625"><span class="hs-identifier hs-var">doingTH</span></a><span> </span><span class="hs-operator hs-var">&amp;&amp;</span><span> </span><span class="hs-identifier hs-var">not</span><span> </span><a href="#local-6989586621679383623"><span class="hs-identifier hs-var">isGhcDynamic</span></a><span>
+</span><a name="line-89"></a><span>      </span><a name="local-6989586621679383627"><a href="#local-6989586621679383627"><span class="hs-identifier">forceSharedLib</span></a></a><span>  </span><span class="hs-glyph">=</span><span> </span><a href="#local-6989586621679383625"><span class="hs-identifier hs-var">doingTH</span></a><span> </span><span class="hs-operator hs-var">&amp;&amp;</span><span>     </span><a href="#local-6989586621679383623"><span class="hs-identifier hs-var">isGhcDynamic</span></a><span>
+</span><a name="line-90"></a><span>      </span><span class="hs-comment">-- TH always needs default libs, even when building for profiling</span><span>
+</span><a name="line-91"></a><span>
+</span><a name="line-92"></a><span>  </span><span class="hs-comment">-- Determine if program coverage should be enabled and if so, what</span><span>
+</span><a name="line-93"></a><span>  </span><span class="hs-comment">-- '-hpcdir' should be.</span><span>
+</span><a name="line-94"></a><span>  </span><span class="hs-keyword">let</span><span> </span><a name="local-6989586621679383628"><a href="#local-6989586621679383628"><span class="hs-identifier">isCoverageEnabled</span></a></a><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">libCoverage</span><span> </span><a href="#local-6989586621679382862"><span class="hs-identifier hs-var">lbi</span></a><span>
+</span><a name="line-95"></a><span>      </span><span class="hs-comment">-- TODO: Historically HPC files have been put into a directory which</span><span>
+</span><a name="line-96"></a><span>      </span><span class="hs-comment">-- has the package name.  I'm going to avoid changing this for</span><span>
+</span><a name="line-97"></a><span>      </span><span class="hs-comment">-- now, but it would probably be better for this to be the</span><span>
+</span><a name="line-98"></a><span>      </span><span class="hs-comment">-- component ID instead...</span><span>
+</span><a name="line-99"></a><span>      </span><a name="local-6989586621679383629"><a href="#local-6989586621679383629"><span class="hs-identifier">pkg_name</span></a></a><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier hs-var">display</span><span> </span><span class="hs-special">(</span><span class="hs-identifier">PD.package</span><span> </span><a href="#local-6989586621679382861"><span class="hs-identifier hs-var">pkg_descr</span></a><span class="hs-special">)</span><span>
+</span><a name="line-100"></a><span>      </span><a name="local-6989586621679383630"><a href="#local-6989586621679383630"><span class="hs-identifier">distPref</span></a></a><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier hs-var">fromFlag</span><span> </span><span class="hs-operator hs-var">$</span><span> </span><span class="hs-identifier">configDistPref</span><span> </span><span class="hs-operator hs-var">$</span><span> </span><span class="hs-identifier">configFlags</span><span> </span><a href="#local-6989586621679382862"><span class="hs-identifier hs-var">lbi</span></a><span>
+</span><a name="line-101"></a><span>      </span><a name="local-6989586621679383631"><a href="#local-6989586621679383631"><span class="hs-identifier">hpcdir</span></a></a><span> </span><a name="local-6989586621679383632"><a href="#local-6989586621679383632"><span class="hs-identifier">way</span></a></a><span>
+</span><a name="line-102"></a><span>        </span><span class="hs-glyph">|</span><span> </span><a href="#local-6989586621679382858"><span class="hs-identifier hs-var">forRepl</span></a><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier hs-var">mempty</span><span>  </span><span class="hs-comment">-- HPC is not supported in ghci</span><span>
+</span><a name="line-103"></a><span>        </span><span class="hs-glyph">|</span><span> </span><a href="#local-6989586621679383628"><span class="hs-identifier hs-var">isCoverageEnabled</span></a><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier hs-var">toFlag</span><span> </span><span class="hs-operator hs-var">$</span><span> </span><span class="hs-identifier hs-var">Hpc.mixDir</span><span> </span><a href="#local-6989586621679383630"><span class="hs-identifier hs-var">distPref</span></a><span> </span><a href="#local-6989586621679383632"><span class="hs-identifier hs-var">way</span></a><span> </span><a href="#local-6989586621679383629"><span class="hs-identifier hs-var">pkg_name</span></a><span>
+</span><a name="line-104"></a><span>        </span><span class="hs-glyph">|</span><span> </span><span class="hs-identifier hs-var">otherwise</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier hs-var">mempty</span><span>
+</span><a name="line-105"></a><span>
+</span><a name="line-106"></a><span>  </span><span class="hs-identifier hs-var">createDirectoryIfMissingVerbose</span><span> </span><a href="#local-6989586621679382859"><span class="hs-identifier hs-var">verbosity</span></a><span> </span><span class="hs-identifier hs-var">True</span><span> </span><a href="#local-6989586621679382866"><span class="hs-identifier hs-var">libTargetDir</span></a><span>
+</span><a name="line-107"></a><span>  </span><span class="hs-comment">-- TODO: do we need to put hs-boot files into place for mutually recursive</span><span>
+</span><a name="line-108"></a><span>  </span><span class="hs-comment">-- modules?</span><span>
+</span><a name="line-109"></a><span>  </span><span class="hs-keyword">let</span><span> </span><a name="local-6989586621679383633"><a href="#local-6989586621679383633"><span class="hs-identifier">cObjs</span></a></a><span>       </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier hs-var">map</span><span> </span><span class="hs-special">(</span><span class="hs-special">`</span><span class="hs-identifier hs-var">replaceExtension</span><span class="hs-special">`</span><span> </span><span class="hs-identifier hs-var">objExtension</span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="hs-identifier">cSources</span><span> </span><a href="#local-6989586621679383622"><span class="hs-identifier hs-var">libBi</span></a><span class="hs-special">)</span><span>
+</span><a name="line-110"></a><span>      </span><a name="local-6989586621679383634"><a href="#local-6989586621679383634"><span class="hs-identifier">baseOpts</span></a></a><span>    </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier hs-var">Cabal.componentGhcOptions</span><span> </span><a href="#local-6989586621679382859"><span class="hs-identifier hs-var">verbosity</span></a><span> </span><a href="#local-6989586621679382862"><span class="hs-identifier hs-var">lbi</span></a><span> </span><a href="#local-6989586621679383622"><span class="hs-identifier hs-var">libBi</span></a><span> </span><a href="#local-6989586621679382864"><span class="hs-identifier hs-var">clbi</span></a><span> </span><a href="#local-6989586621679382866"><span class="hs-identifier hs-var">libTargetDir</span></a><span>
+</span><a name="line-111"></a><span>      </span><a name="local-6989586621679383635"><a href="#local-6989586621679383635"><span class="hs-identifier">vanillaOpts</span></a></a><span> </span><span class="hs-glyph">=</span><span> </span><a href="#local-6989586621679383634"><span class="hs-identifier hs-var">baseOpts</span></a><span> </span><span class="hs-special">`</span><span class="hs-identifier hs-var">mappend</span><span class="hs-special">`</span><span> </span><span class="hs-identifier hs-var">mempty</span><span> </span><span class="hs-special">{</span><span>
+</span><a name="line-112"></a><span>                      </span><span class="hs-identifier">ghcOptMode</span><span>         </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier hs-var">toFlag</span><span> </span><span class="hs-identifier hs-var">GhcModeMake</span><span class="hs-special">,</span><span>
+</span><a name="line-113"></a><span>                      </span><span class="hs-identifier">ghcOptNumJobs</span><span>      </span><span class="hs-glyph">=</span><span> </span><a href="#local-6989586621679382860"><span class="hs-identifier hs-var">numJobs</span></a><span class="hs-special">,</span><span>
+</span><a name="line-114"></a><span>                      </span><span class="hs-identifier">ghcOptInputModules</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier hs-var">toNubListR</span><span> </span><span class="hs-operator hs-var">$</span><span> </span><span class="hs-identifier hs-var">allLibModules</span><span> </span><a href="#local-6989586621679382863"><span class="hs-identifier hs-var">lib</span></a><span> </span><a href="#local-6989586621679382864"><span class="hs-identifier hs-var">clbi</span></a><span class="hs-special">,</span><span>
+</span><a name="line-115"></a><span>                      </span><span class="hs-identifier">ghcOptHPCDir</span><span>       </span><span class="hs-glyph">=</span><span> </span><a href="#local-6989586621679383631"><span class="hs-identifier hs-var">hpcdir</span></a><span> </span><span class="hs-identifier hs-var">Hpc.Vanilla</span><span>
+</span><a name="line-116"></a><span>                    </span><span class="hs-special">}</span><span>
+</span><a name="line-117"></a><span>
+</span><a name="line-118"></a><span>      </span><a name="local-6989586621679383636"><a href="#local-6989586621679383636"><span class="hs-identifier">profOpts</span></a></a><span>    </span><span class="hs-glyph">=</span><span> </span><a href="#local-6989586621679383635"><span class="hs-identifier hs-var">vanillaOpts</span></a><span> </span><span class="hs-special">`</span><span class="hs-identifier hs-var">mappend</span><span class="hs-special">`</span><span> </span><span class="hs-identifier hs-var">mempty</span><span> </span><span class="hs-special">{</span><span>
+</span><a name="line-119"></a><span>                      </span><span class="hs-identifier">ghcOptProfilingMode</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier hs-var">toFlag</span><span> </span><span class="hs-identifier hs-var">True</span><span class="hs-special">,</span><span>
+</span><a name="line-120"></a><span>                      </span><span class="hs-identifier">ghcOptProfilingAuto</span><span> </span><span class="hs-glyph">=</span><span> </span><a href="Data.Array.Accelerate.LLVM.Native.Distribution.Simple.GHC.Internal.html#profDetailLevelFlag"><span class="hs-identifier hs-var">Internal.profDetailLevelFlag</span></a><span> </span><span class="hs-identifier hs-var">True</span><span>
+</span><a name="line-121"></a><span>                                              </span><span class="hs-special">(</span><span class="hs-identifier">withProfLibDetail</span><span> </span><a href="#local-6989586621679382862"><span class="hs-identifier hs-var">lbi</span></a><span class="hs-special">)</span><span class="hs-special">,</span><span>
+</span><a name="line-122"></a><span>                      </span><span class="hs-identifier">ghcOptHiSuffix</span><span>      </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier hs-var">toFlag</span><span> </span><span class="hs-string">&quot;p_hi&quot;</span><span class="hs-special">,</span><span>
+</span><a name="line-123"></a><span>                      </span><span class="hs-identifier">ghcOptObjSuffix</span><span>     </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier hs-var">toFlag</span><span> </span><span class="hs-string">&quot;p_o&quot;</span><span class="hs-special">,</span><span>
+</span><a name="line-124"></a><span class="hs-cpp">#if MIN_VERSION_Cabal(2,3,0)
+</span><span>                      </span><span class="hs-identifier">ghcOptExtra</span><span>         </span><span class="hs-glyph">=</span><span>              </span><span class="hs-identifier hs-var">hcProfOptions</span><span> </span><span class="hs-identifier hs-var">GHC</span><span> </span><a href="#local-6989586621679383622"><span class="hs-identifier hs-var">libBi</span></a><span class="hs-special">,</span><span>
+</span><a name="line-126"></a><span class="hs-cpp">#else
+</span><span>                      </span><span class="hs-identifier">ghcOptExtra</span><span>         </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">toNubListR</span><span> </span><span class="hs-operator">$</span><span> </span><span class="hs-identifier">hcProfOptions</span><span> </span><span class="hs-identifier">GHC</span><span> </span><span class="hs-identifier">libBi</span><span class="hs-special">,</span><span>
+</span><a name="line-128"></a><span class="hs-cpp">#endif
+</span><span class="">                      ghcOptHPCDir        = hpcdir Hpc.Prof
+                    }
+
+      sharedOpts  = vanillaOpts `mappend` mempty {
+                      ghcOptDynLinkMode = toFlag GhcDynamicOnly,
+                      ghcOptFPic        = toFlag True,
+                      ghcOptHiSuffix    = toFlag &quot;dyn_hi&quot;,
+                      ghcOptObjSuffix   = toFlag &quot;dyn_o&quot;,
+</span><span class="hs-cpp">#if MIN_VERSION_Cabal(2,3,0)
+</span><span>                      </span><span class="hs-identifier">ghcOptExtra</span><span>       </span><span class="hs-glyph">=</span><span>              </span><span class="hs-identifier hs-var">hcSharedOptions</span><span> </span><span class="hs-identifier hs-var">GHC</span><span> </span><a href="#local-6989586621679383622"><span class="hs-identifier hs-var">libBi</span></a><span class="hs-special">,</span><span>
+</span><a name="line-139"></a><span class="hs-cpp">#else
+</span><span>                      </span><span class="hs-identifier">ghcOptExtra</span><span>       </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">toNubListR</span><span> </span><span class="hs-operator">$</span><span> </span><span class="hs-identifier">hcSharedOptions</span><span> </span><span class="hs-identifier">GHC</span><span> </span><span class="hs-identifier">libBi</span><span class="hs-special">,</span><span>
+</span><a name="line-141"></a><span class="hs-cpp">#endif
+</span><span class="">                      ghcOptHPCDir      = hpcdir Hpc.Dyn
+                    }
+      linkerOpts = mempty {
+</span><span class="hs-cpp">#if MIN_VERSION_Cabal(2,3,0)
+</span><span>                      </span><span class="hs-identifier">ghcOptLinkOptions</span><span>       </span><span class="hs-glyph">=</span><span>              </span><span class="hs-identifier">PD.ldOptions</span><span> </span><a href="#local-6989586621679383622"><span class="hs-identifier hs-var">libBi</span></a><span class="hs-special">,</span><span>
+</span><a name="line-147"></a><span>                      </span><span class="hs-identifier">ghcOptLinkLibs</span><span>          </span><span class="hs-glyph">=</span><span>              </span><span class="hs-identifier">extraLibs</span><span> </span><a href="#local-6989586621679383622"><span class="hs-identifier hs-var">libBi</span></a><span class="hs-special">,</span><span>
+</span><a name="line-148"></a><span class="hs-cpp">#else
+</span><span>                      </span><span class="hs-identifier">ghcOptLinkOptions</span><span>       </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">toNubListR</span><span> </span><span class="hs-operator">$</span><span> </span><span class="hs-identifier">PD.ldOptions</span><span> </span><span class="hs-identifier">libBi</span><span class="hs-special">,</span><span>
+</span><a name="line-150"></a><span>                      </span><span class="hs-identifier">ghcOptLinkLibs</span><span>          </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">toNubListR</span><span> </span><span class="hs-operator">$</span><span> </span><span class="hs-identifier">extraLibs</span><span> </span><span class="hs-identifier">libBi</span><span class="hs-special">,</span><span>
+</span><a name="line-151"></a><span class="hs-cpp">#endif
+</span><span class="">                      ghcOptLinkLibPath       = toNubListR $ extraLibDirs libBi,
+                      ghcOptLinkFrameworks    = toNubListR $
+                                                PD.frameworks libBi,
+                      ghcOptLinkFrameworkDirs = toNubListR $
+                                                PD.extraFrameworkDirs libBi,
+                      ghcOptInputFiles     = toNubListR
+                                             [libTargetDir &lt;/&gt; x | x &lt;- cObjs]
+                   }
+      replOpts    = vanillaOpts {
+</span><span class="hs-cpp">#if MIN_VERSION_Cabal(2,3,0)
+</span><span>                      </span><span class="hs-identifier">ghcOptExtra</span><span>        </span><span class="hs-glyph">=</span><span>              </span><a href="Data.Array.Accelerate.LLVM.Native.Distribution.Simple.GHC.Internal.html#filterGhciFlags"><span class="hs-identifier hs-var">Internal.filterGhciFlags</span></a><span> </span><span class="hs-operator hs-var">$</span><span> </span><span class="hs-identifier">ghcOptExtra</span><span> </span><a href="#local-6989586621679383635"><span class="hs-identifier hs-var">vanillaOpts</span></a><span class="hs-special">,</span><span>
+</span><a name="line-163"></a><span class="hs-cpp">#else
+</span><span>                      </span><span class="hs-identifier">ghcOptExtra</span><span>        </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">overNubListR</span><span> </span><span class="hs-identifier">Internal.filterGhciFlags</span><span> </span><span class="hs-operator">$</span><span> </span><span class="hs-identifier">ghcOptExtra</span><span> </span><span class="hs-identifier">vanillaOpts</span><span class="hs-special">,</span><span>
+</span><a name="line-165"></a><span class="hs-cpp">#endif
+</span><span class="">                      ghcOptNumJobs      = mempty
+                    }
+                    `mappend` linkerOpts
+                    `mappend` mempty {
+                      ghcOptMode         = toFlag GhcModeInteractive,
+                      ghcOptOptimisation = toFlag GhcNoOptimisation
+                    }
+
+      vanillaSharedOpts = vanillaOpts `mappend` mempty {
+                      ghcOptDynLinkMode  = toFlag GhcStaticAndDynamic,
+                      ghcOptDynHiSuffix  = toFlag &quot;dyn_hi&quot;,
+                      ghcOptDynObjSuffix = toFlag &quot;dyn_o&quot;,
+                      ghcOptHPCDir       = hpcdir Hpc.Dyn
+                    }
+
+  unless (forRepl || null (allLibModules lib clbi)) $
+    do let vanilla = whenVanillaLib forceVanillaLib (runGhcProg vanillaOpts)
+           shared  = whenSharedLib  forceSharedLib  (runGhcProg sharedOpts)
+           useDynToo = dynamicTooSupported &amp;&amp;
+                       (forceVanillaLib || withVanillaLib lbi) &amp;&amp;
+                       (forceSharedLib  || withSharedLib  lbi) &amp;&amp;
+                       null (hcSharedOptions GHC libBi)
+       if not has_code
+        then vanilla
+        else
+         if useDynToo
+          then do
+              runGhcProg vanillaSharedOpts
+              case (hpcdir Hpc.Dyn, hpcdir Hpc.Vanilla) of
+                (Cabal.Flag dynDir, Cabal.Flag vanillaDir) -&gt;
+                    -- When the vanilla and shared library builds are done
+                    -- in one pass, only one set of HPC module interfaces
+                    -- are generated. This set should suffice for both
+                    -- static and dynamically linked executables. We copy
+                    -- the modules interfaces so they are available under
+                    -- both ways.
+                    copyDirectoryRecursive verbosity dynDir vanillaDir
+                _ -&gt; return ()
+          else if isGhcDynamic
+            then do shared;  vanilla
+            else do vanilla; shared
+       when has_code $ whenProfLib (runGhcProg profOpts)
+
+  -- build any C sources
+  unless (not has_code || null (cSources libBi)) $ do
+    info verbosity &quot;Building C Sources...&quot;
+    sequence_
+      [ do let baseCcOpts    = Cabal.componentCcGhcOptions verbosity
+                               lbi libBi clbi libTargetDir filename
+               vanillaCcOpts = if isGhcDynamic
+                               -- Dynamic GHC requires C sources to be built
+                               -- with -fPIC for REPL to work. See #2207.
+                               then baseCcOpts { ghcOptFPic = toFlag True }
+                               else baseCcOpts
+               profCcOpts    = vanillaCcOpts `mappend` mempty {
+                                 ghcOptProfilingMode = toFlag True,
+                                 ghcOptObjSuffix     = toFlag &quot;p_o&quot;
+                               }
+               sharedCcOpts  = vanillaCcOpts `mappend` mempty {
+                                 ghcOptFPic        = toFlag True,
+                                 ghcOptDynLinkMode = toFlag GhcDynamicOnly,
+                                 ghcOptObjSuffix   = toFlag &quot;dyn_o&quot;
+                               }
+               odir          = fromFlag (ghcOptObjDir vanillaCcOpts)
+           createDirectoryIfMissingVerbose verbosity True odir
+           let runGhcProgIfNeeded ccOpts = do
+                 needsRecomp &lt;- checkNeedsRecompilation filename ccOpts
+                 when needsRecomp $ runGhcProg ccOpts
+           runGhcProgIfNeeded vanillaCcOpts
+           unless forRepl $
+             whenSharedLib forceSharedLib (runGhcProgIfNeeded sharedCcOpts)
+           unless forRepl $ whenProfLib (runGhcProgIfNeeded profCcOpts)
+      | filename &lt;- cSources libBi]
+
+  -- TODO: problem here is we need the .c files built first, so we can load them
+  -- with ghci, but .c files can depend on .h files generated by ghc by ffi
+  -- exports.
+
+  when has_code . ifReplLib $ do
+    when (null (allLibModules lib clbi)) $ warn verbosity &quot;No exposed modules&quot;
+    ifReplLib (runGhcProg replOpts)
+
+  -- link:
+  when has_code . unless forRepl $ do
+    info verbosity &quot;Linking...&quot;
+    let cProfObjs   = map (`replaceExtension` (&quot;p_&quot; ++ objExtension))
+                      (cSources libBi)
+        cSharedObjs = map (`replaceExtension` (&quot;dyn_&quot; ++ objExtension))
+                      (cSources libBi)
+        compiler_id = compilerId (compiler lbi)
+        vanillaLibFilePath = libTargetDir &lt;/&gt; mkLibName uid
+        profileLibFilePath = libTargetDir &lt;/&gt; mkProfLibName uid
+</span><span class="hs-cpp">#if MIN_VERSION_Cabal(2,3,0)
+</span><span>        </span><a name="local-6989586621679383661"><a href="#local-6989586621679383661"><span class="hs-identifier">sharedLibFilePath</span></a></a><span>    </span><span class="hs-glyph">=</span><span> </span><a href="#local-6989586621679382866"><span class="hs-identifier hs-var">libTargetDir</span></a><span>   </span><span class="hs-operator hs-var">&lt;/&gt;</span><span> </span><span class="hs-identifier hs-var">mkSharedLibName</span><span> </span><a href="#local-6989586621679382875"><span class="hs-identifier hs-var">platform</span></a><span> </span><a href="#local-6989586621679383658"><span class="hs-identifier hs-var">compiler_id</span></a><span> </span><a href="#local-6989586621679382865"><span class="hs-identifier hs-var">uid</span></a><span>
+</span><a name="line-260"></a><span>        </span><a name="local-6989586621679383662"><a href="#local-6989586621679383662"><span class="hs-identifier">sharedLibInstallPath</span></a></a><span> </span><span class="hs-glyph">=</span><span> </span><a href="#local-6989586621679383664"><span class="hs-identifier hs-var">libInstallPath</span></a><span> </span><span class="hs-operator hs-var">&lt;/&gt;</span><span> </span><span class="hs-identifier hs-var">mkSharedLibName</span><span> </span><a href="#local-6989586621679382875"><span class="hs-identifier hs-var">platform</span></a><span> </span><a href="#local-6989586621679383658"><span class="hs-identifier hs-var">compiler_id</span></a><span> </span><a href="#local-6989586621679382865"><span class="hs-identifier hs-var">uid</span></a><span>
+</span><a name="line-261"></a><span class="hs-cpp">#else
+</span><span>        </span><span class="hs-identifier">sharedLibFilePath</span><span>    </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">libTargetDir</span><span>   </span><span class="hs-operator">&lt;/&gt;</span><span> </span><span class="hs-identifier">mkSharedLibName</span><span>          </span><span class="hs-identifier">compiler_id</span><span> </span><span class="hs-identifier">uid</span><span>
+</span><a name="line-263"></a><span>        </span><span class="hs-identifier">sharedLibInstallPath</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">libInstallPath</span><span> </span><span class="hs-operator">&lt;/&gt;</span><span> </span><span class="hs-identifier">mkSharedLibName</span><span>          </span><span class="hs-identifier">compiler_id</span><span> </span><span class="hs-identifier">uid</span><span>
+</span><a name="line-264"></a><span class="hs-cpp">#endif
+</span><span>        </span><a name="local-6989586621679383663"><a href="#local-6989586621679383663"><span class="hs-identifier">ghciLibFilePath</span></a></a><span>    </span><span class="hs-glyph">=</span><span> </span><a href="#local-6989586621679382866"><span class="hs-identifier hs-var">libTargetDir</span></a><span> </span><span class="hs-operator hs-var">&lt;/&gt;</span><span> </span><a href="Data.Array.Accelerate.LLVM.Native.Distribution.Simple.GHC.Internal.html#mkGHCiLibName"><span class="hs-identifier hs-var">Internal.mkGHCiLibName</span></a><span> </span><a href="#local-6989586621679382865"><span class="hs-identifier hs-var">uid</span></a><span>
+</span><a name="line-266"></a><span>        </span><a name="local-6989586621679383664"><a href="#local-6989586621679383664"><span class="hs-identifier">libInstallPath</span></a></a><span>     </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">libdir</span><span> </span><span class="hs-operator hs-var">$</span><span> </span><span class="hs-identifier hs-var">absoluteComponentInstallDirs</span><span> </span><a href="#local-6989586621679382861"><span class="hs-identifier hs-var">pkg_descr</span></a><span> </span><a href="#local-6989586621679382862"><span class="hs-identifier hs-var">lbi</span></a><span> </span><a href="#local-6989586621679382865"><span class="hs-identifier hs-var">uid</span></a><span> </span><span class="hs-identifier hs-var">NoCopyDest</span><span>
+</span><a name="line-267"></a><span>
+</span><a name="line-268"></a><span>    </span><a name="local-6989586621679383666"><a href="#local-6989586621679383666"><span class="hs-identifier">stubObjs</span></a></a><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="hs-identifier hs-var">catMaybes</span><span> </span><span class="hs-operator hs-var">&lt;$&gt;</span><span> </span><span class="hs-identifier hs-var">sequenceA</span><span>
+</span><a name="line-269"></a><span>      </span><span class="hs-special">[</span><span> </span><span class="hs-identifier hs-var">findFileWithExtension</span><span> </span><span class="hs-special">[</span><span class="hs-identifier hs-var">objExtension</span><span class="hs-special">]</span><span> </span><span class="hs-special">[</span><a href="#local-6989586621679382866"><span class="hs-identifier hs-var">libTargetDir</span></a><span class="hs-special">]</span><span>
+</span><a name="line-270"></a><span>          </span><span class="hs-special">(</span><span class="hs-identifier hs-var">ModuleName.toFilePath</span><span> </span><a href="#local-6989586621679383665"><span class="hs-identifier hs-var">x</span></a><span> </span><span class="hs-operator hs-var">++</span><span class="hs-string">&quot;_stub&quot;</span><span class="hs-special">)</span><span>
+</span><a name="line-271"></a><span>      </span><span class="hs-glyph">|</span><span> </span><a href="#local-6989586621679382873"><span class="hs-identifier hs-var">ghcVersion</span></a><span> </span><span class="hs-operator hs-var">&lt;</span><span> </span><span class="hs-identifier hs-var">mkVersion</span><span> </span><span class="hs-special">[</span><span class="hs-number">7</span><span class="hs-special">,</span><span class="hs-number">2</span><span class="hs-special">]</span><span> </span><span class="hs-comment">-- ghc-7.2+ does not make _stub.o files</span><span>
+</span><a name="line-272"></a><span>      </span><span class="hs-special">,</span><span> </span><a name="local-6989586621679383665"><a href="#local-6989586621679383665"><span class="hs-identifier">x</span></a></a><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="hs-identifier hs-var">allLibModules</span><span> </span><a href="#local-6989586621679382863"><span class="hs-identifier hs-var">lib</span></a><span> </span><a href="#local-6989586621679382864"><span class="hs-identifier hs-var">clbi</span></a><span> </span><span class="hs-special">]</span><span>
+</span><a name="line-273"></a><span>    </span><a name="local-6989586621679383668"><a href="#local-6989586621679383668"><span class="hs-identifier">stubProfObjs</span></a></a><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="hs-identifier hs-var">catMaybes</span><span> </span><span class="hs-operator hs-var">&lt;$&gt;</span><span> </span><span class="hs-identifier hs-var">sequenceA</span><span>
+</span><a name="line-274"></a><span>      </span><span class="hs-special">[</span><span> </span><span class="hs-identifier hs-var">findFileWithExtension</span><span> </span><span class="hs-special">[</span><span class="hs-string">&quot;p_&quot;</span><span> </span><span class="hs-operator hs-var">++</span><span> </span><span class="hs-identifier hs-var">objExtension</span><span class="hs-special">]</span><span> </span><span class="hs-special">[</span><a href="#local-6989586621679382866"><span class="hs-identifier hs-var">libTargetDir</span></a><span class="hs-special">]</span><span>
+</span><a name="line-275"></a><span>          </span><span class="hs-special">(</span><span class="hs-identifier hs-var">ModuleName.toFilePath</span><span> </span><a href="#local-6989586621679383667"><span class="hs-identifier hs-var">x</span></a><span> </span><span class="hs-operator hs-var">++</span><span class="hs-string">&quot;_stub&quot;</span><span class="hs-special">)</span><span>
+</span><a name="line-276"></a><span>      </span><span class="hs-glyph">|</span><span> </span><a href="#local-6989586621679382873"><span class="hs-identifier hs-var">ghcVersion</span></a><span> </span><span class="hs-operator hs-var">&lt;</span><span> </span><span class="hs-identifier hs-var">mkVersion</span><span> </span><span class="hs-special">[</span><span class="hs-number">7</span><span class="hs-special">,</span><span class="hs-number">2</span><span class="hs-special">]</span><span> </span><span class="hs-comment">-- ghc-7.2+ does not make _stub.o files</span><span>
+</span><a name="line-277"></a><span>      </span><span class="hs-special">,</span><span> </span><a name="local-6989586621679383667"><a href="#local-6989586621679383667"><span class="hs-identifier">x</span></a></a><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="hs-identifier hs-var">allLibModules</span><span> </span><a href="#local-6989586621679382863"><span class="hs-identifier hs-var">lib</span></a><span> </span><a href="#local-6989586621679382864"><span class="hs-identifier hs-var">clbi</span></a><span> </span><span class="hs-special">]</span><span>
+</span><a name="line-278"></a><span>    </span><a name="local-6989586621679383670"><a href="#local-6989586621679383670"><span class="hs-identifier">stubSharedObjs</span></a></a><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="hs-identifier hs-var">catMaybes</span><span> </span><span class="hs-operator hs-var">&lt;$&gt;</span><span> </span><span class="hs-identifier hs-var">sequenceA</span><span>
+</span><a name="line-279"></a><span>      </span><span class="hs-special">[</span><span> </span><span class="hs-identifier hs-var">findFileWithExtension</span><span> </span><span class="hs-special">[</span><span class="hs-string">&quot;dyn_&quot;</span><span> </span><span class="hs-operator hs-var">++</span><span> </span><span class="hs-identifier hs-var">objExtension</span><span class="hs-special">]</span><span> </span><span class="hs-special">[</span><a href="#local-6989586621679382866"><span class="hs-identifier hs-var">libTargetDir</span></a><span class="hs-special">]</span><span>
+</span><a name="line-280"></a><span>          </span><span class="hs-special">(</span><span class="hs-identifier hs-var">ModuleName.toFilePath</span><span> </span><a href="#local-6989586621679383669"><span class="hs-identifier hs-var">x</span></a><span> </span><span class="hs-operator hs-var">++</span><span class="hs-string">&quot;_stub&quot;</span><span class="hs-special">)</span><span>
+</span><a name="line-281"></a><span>      </span><span class="hs-glyph">|</span><span> </span><a href="#local-6989586621679382873"><span class="hs-identifier hs-var">ghcVersion</span></a><span> </span><span class="hs-operator hs-var">&lt;</span><span> </span><span class="hs-identifier hs-var">mkVersion</span><span> </span><span class="hs-special">[</span><span class="hs-number">7</span><span class="hs-special">,</span><span class="hs-number">2</span><span class="hs-special">]</span><span> </span><span class="hs-comment">-- ghc-7.2+ does not make _stub.o files</span><span>
+</span><a name="line-282"></a><span>      </span><span class="hs-special">,</span><span> </span><a name="local-6989586621679383669"><a href="#local-6989586621679383669"><span class="hs-identifier">x</span></a></a><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="hs-identifier hs-var">allLibModules</span><span> </span><a href="#local-6989586621679382863"><span class="hs-identifier hs-var">lib</span></a><span> </span><a href="#local-6989586621679382864"><span class="hs-identifier hs-var">clbi</span></a><span> </span><span class="hs-special">]</span><span>
+</span><a name="line-283"></a><span>
+</span><a name="line-284"></a><span>    </span><a name="local-6989586621679383671"><a href="#local-6989586621679383671"><span class="hs-identifier">hObjs</span></a></a><span>     </span><span class="hs-glyph">&lt;-</span><span> </span><a href="Data.Array.Accelerate.LLVM.Native.Distribution.Simple.GHC.Internal.html#getHaskellObjects"><span class="hs-identifier hs-var">Internal.getHaskellObjects</span></a><span> </span><a href="#local-6989586621679382874"><span class="hs-identifier hs-var">implInfo</span></a><span> </span><a href="#local-6989586621679382863"><span class="hs-identifier hs-var">lib</span></a><span> </span><a href="#local-6989586621679382862"><span class="hs-identifier hs-var">lbi</span></a><span> </span><a href="#local-6989586621679382864"><span class="hs-identifier hs-var">clbi</span></a><span>
+</span><a name="line-285"></a><span>                      </span><a href="#local-6989586621679382866"><span class="hs-identifier hs-var">libTargetDir</span></a><span> </span><span class="hs-identifier hs-var">objExtension</span><span> </span><span class="hs-identifier hs-var">True</span><span>
+</span><a name="line-286"></a><span>    </span><a name="local-6989586621679383672"><a href="#local-6989586621679383672"><span class="hs-identifier">hProfObjs</span></a></a><span> </span><span class="hs-glyph">&lt;-</span><span>
+</span><a name="line-287"></a><span>      </span><span class="hs-keyword">if</span><span> </span><span class="hs-identifier">withProfLib</span><span> </span><a href="#local-6989586621679382862"><span class="hs-identifier hs-var">lbi</span></a><span>
+</span><a name="line-288"></a><span>              </span><span class="hs-keyword">then</span><span> </span><a href="Data.Array.Accelerate.LLVM.Native.Distribution.Simple.GHC.Internal.html#getHaskellObjects"><span class="hs-identifier hs-var">Internal.getHaskellObjects</span></a><span> </span><a href="#local-6989586621679382874"><span class="hs-identifier hs-var">implInfo</span></a><span> </span><a href="#local-6989586621679382863"><span class="hs-identifier hs-var">lib</span></a><span> </span><a href="#local-6989586621679382862"><span class="hs-identifier hs-var">lbi</span></a><span> </span><a href="#local-6989586621679382864"><span class="hs-identifier hs-var">clbi</span></a><span>
+</span><a name="line-289"></a><span>                      </span><a href="#local-6989586621679382866"><span class="hs-identifier hs-var">libTargetDir</span></a><span> </span><span class="hs-special">(</span><span class="hs-string">&quot;p_&quot;</span><span> </span><span class="hs-operator hs-var">++</span><span> </span><span class="hs-identifier hs-var">objExtension</span><span class="hs-special">)</span><span> </span><span class="hs-identifier hs-var">True</span><span>
+</span><a name="line-290"></a><span>              </span><span class="hs-keyword">else</span><span> </span><span class="hs-identifier hs-var">return</span><span> </span><span class="hs-special">[</span><span class="hs-special">]</span><span>
+</span><a name="line-291"></a><span>    </span><a name="local-6989586621679383673"><a href="#local-6989586621679383673"><span class="hs-identifier">hSharedObjs</span></a></a><span> </span><span class="hs-glyph">&lt;-</span><span>
+</span><a name="line-292"></a><span>      </span><span class="hs-keyword">if</span><span> </span><span class="hs-identifier">withSharedLib</span><span> </span><a href="#local-6989586621679382862"><span class="hs-identifier hs-var">lbi</span></a><span>
+</span><a name="line-293"></a><span>              </span><span class="hs-keyword">then</span><span> </span><a href="Data.Array.Accelerate.LLVM.Native.Distribution.Simple.GHC.Internal.html#getHaskellObjects"><span class="hs-identifier hs-var">Internal.getHaskellObjects</span></a><span> </span><a href="#local-6989586621679382874"><span class="hs-identifier hs-var">implInfo</span></a><span> </span><a href="#local-6989586621679382863"><span class="hs-identifier hs-var">lib</span></a><span> </span><a href="#local-6989586621679382862"><span class="hs-identifier hs-var">lbi</span></a><span> </span><a href="#local-6989586621679382864"><span class="hs-identifier hs-var">clbi</span></a><span>
+</span><a name="line-294"></a><span>                      </span><a href="#local-6989586621679382866"><span class="hs-identifier hs-var">libTargetDir</span></a><span> </span><span class="hs-special">(</span><span class="hs-string">&quot;dyn_&quot;</span><span> </span><span class="hs-operator hs-var">++</span><span> </span><span class="hs-identifier hs-var">objExtension</span><span class="hs-special">)</span><span> </span><span class="hs-identifier hs-var">False</span><span>
+</span><a name="line-295"></a><span>              </span><span class="hs-keyword">else</span><span> </span><span class="hs-identifier hs-var">return</span><span> </span><span class="hs-special">[</span><span class="hs-special">]</span><span>
+</span><a name="line-296"></a><span>
+</span><a name="line-297"></a><span>    </span><span class="hs-comment">-- XXX: This is the only change; determine if there are any</span><span>
+</span><a name="line-298"></a><span>    </span><span class="hs-comment">-- accelerate-generated object files which need to linked into the final</span><span>
+</span><a name="line-299"></a><span>    </span><span class="hs-comment">-- libraries.</span><span>
+</span><a name="line-300"></a><span>    </span><a name="local-6989586621679383674"><a href="#local-6989586621679383674"><span class="hs-identifier">accObjs</span></a></a><span>   </span><span class="hs-glyph">&lt;-</span><span> </span><span class="hs-identifier hs-var">fmap</span><span> </span><span class="hs-special">(</span><span class="hs-identifier hs-var">nub</span><span> </span><span class="hs-operator hs-var">.</span><span> </span><span class="hs-identifier hs-var">concat</span><span> </span><span class="hs-operator hs-var">.</span><span> </span><span class="hs-identifier hs-var">Map.elems</span><span class="hs-special">)</span><span>
+</span><a name="line-301"></a><span>               </span><span class="hs-operator hs-var">$</span><span> </span><a href="Data.Array.Accelerate.LLVM.Native.Plugin.BuildInfo.html#readBuildInfo"><span class="hs-identifier hs-var">Internal.readBuildInfo</span></a><span>
+</span><a name="line-302"></a><span>               </span><span class="hs-operator hs-var">$</span><span> </span><a href="Data.Array.Accelerate.LLVM.Native.Plugin.BuildInfo.html#mkBuildInfoFileName"><span class="hs-identifier hs-var">Internal.mkBuildInfoFileName</span></a><span> </span><a href="#local-6989586621679382866"><span class="hs-identifier hs-var">libTargetDir</span></a><span>
+</span><a name="line-303"></a><span>
+</span><a name="line-304"></a><span>    </span><span class="hs-identifier hs-var">unless</span><span> </span><span class="hs-special">(</span><span class="hs-identifier hs-var">null</span><span> </span><a href="#local-6989586621679383674"><span class="hs-identifier hs-var">accObjs</span></a><span> </span><span class="hs-operator hs-var">&amp;&amp;</span><span> </span><span class="hs-identifier hs-var">null</span><span> </span><a href="#local-6989586621679383671"><span class="hs-identifier hs-var">hObjs</span></a><span> </span><span class="hs-operator hs-var">&amp;&amp;</span><span> </span><span class="hs-identifier hs-var">null</span><span> </span><a href="#local-6989586621679383633"><span class="hs-identifier hs-var">cObjs</span></a><span> </span><span class="hs-operator hs-var">&amp;&amp;</span><span> </span><span class="hs-identifier hs-var">null</span><span> </span><a href="#local-6989586621679383666"><span class="hs-identifier hs-var">stubObjs</span></a><span class="hs-special">)</span><span> </span><span class="hs-operator hs-var">$</span><span> </span><span class="hs-keyword">do</span><span>
+</span><a name="line-305"></a><span>      </span><a name="local-6989586621679383675"><a href="#local-6989586621679383675"><span class="hs-identifier">rpaths</span></a></a><span> </span><span class="hs-glyph">&lt;-</span><span> </span><a href="Data.Array.Accelerate.LLVM.Native.Distribution.Simple.GHC.html#getRPaths"><span class="hs-identifier hs-var">getRPaths</span></a><span> </span><a href="#local-6989586621679382862"><span class="hs-identifier hs-var">lbi</span></a><span> </span><a href="#local-6989586621679382864"><span class="hs-identifier hs-var">clbi</span></a><span>
+</span><a name="line-306"></a><span>
+</span><a name="line-307"></a><span>      </span><span class="hs-keyword">let</span><span> </span><a name="local-6989586621679383676"><a href="#local-6989586621679383676"><span class="hs-identifier">staticObjectFiles</span></a></a><span> </span><span class="hs-glyph">=</span><span>
+</span><a name="line-308"></a><span>                 </span><a href="#local-6989586621679383671"><span class="hs-identifier hs-var">hObjs</span></a><span>
+</span><a name="line-309"></a><span>              </span><span class="hs-operator hs-var">++</span><span> </span><a href="#local-6989586621679383674"><span class="hs-identifier hs-var">accObjs</span></a><span>
+</span><a name="line-310"></a><span>              </span><span class="hs-operator hs-var">++</span><span> </span><span class="hs-identifier hs-var">map</span><span> </span><span class="hs-special">(</span><a href="#local-6989586621679382866"><span class="hs-identifier hs-var">libTargetDir</span></a><span> </span><span class="hs-operator hs-var">&lt;/&gt;</span><span class="hs-special">)</span><span> </span><a href="#local-6989586621679383633"><span class="hs-identifier hs-var">cObjs</span></a><span>
+</span><a name="line-311"></a><span>              </span><span class="hs-operator hs-var">++</span><span> </span><a href="#local-6989586621679383666"><span class="hs-identifier hs-var">stubObjs</span></a><span>
+</span><a name="line-312"></a><span>          </span><a name="local-6989586621679383677"><a href="#local-6989586621679383677"><span class="hs-identifier">profObjectFiles</span></a></a><span> </span><span class="hs-glyph">=</span><span>
+</span><a name="line-313"></a><span>                 </span><a href="#local-6989586621679383672"><span class="hs-identifier hs-var">hProfObjs</span></a><span>
+</span><a name="line-314"></a><span>              </span><span class="hs-operator hs-var">++</span><span> </span><a href="#local-6989586621679383674"><span class="hs-identifier hs-var">accObjs</span></a><span>
+</span><a name="line-315"></a><span>              </span><span class="hs-operator hs-var">++</span><span> </span><span class="hs-identifier hs-var">map</span><span> </span><span class="hs-special">(</span><a href="#local-6989586621679382866"><span class="hs-identifier hs-var">libTargetDir</span></a><span> </span><span class="hs-operator hs-var">&lt;/&gt;</span><span class="hs-special">)</span><span> </span><a href="#local-6989586621679383656"><span class="hs-identifier hs-var">cProfObjs</span></a><span>
+</span><a name="line-316"></a><span>              </span><span class="hs-operator hs-var">++</span><span> </span><a href="#local-6989586621679383668"><span class="hs-identifier hs-var">stubProfObjs</span></a><span>
+</span><a name="line-317"></a><span>          </span><a name="local-6989586621679383678"><a href="#local-6989586621679383678"><span class="hs-identifier">ghciObjFiles</span></a></a><span> </span><span class="hs-glyph">=</span><span>
+</span><a name="line-318"></a><span>                 </span><a href="#local-6989586621679383671"><span class="hs-identifier hs-var">hObjs</span></a><span>
+</span><a name="line-319"></a><span>              </span><span class="hs-operator hs-var">++</span><span> </span><a href="#local-6989586621679383674"><span class="hs-identifier hs-var">accObjs</span></a><span>
+</span><a name="line-320"></a><span>              </span><span class="hs-operator hs-var">++</span><span> </span><span class="hs-identifier hs-var">map</span><span> </span><span class="hs-special">(</span><a href="#local-6989586621679382866"><span class="hs-identifier hs-var">libTargetDir</span></a><span> </span><span class="hs-operator hs-var">&lt;/&gt;</span><span class="hs-special">)</span><span> </span><a href="#local-6989586621679383633"><span class="hs-identifier hs-var">cObjs</span></a><span>
+</span><a name="line-321"></a><span>              </span><span class="hs-operator hs-var">++</span><span> </span><a href="#local-6989586621679383666"><span class="hs-identifier hs-var">stubObjs</span></a><span>
+</span><a name="line-322"></a><span>          </span><a name="local-6989586621679383679"><a href="#local-6989586621679383679"><span class="hs-identifier">dynamicObjectFiles</span></a></a><span> </span><span class="hs-glyph">=</span><span>
+</span><a name="line-323"></a><span>                 </span><a href="#local-6989586621679383673"><span class="hs-identifier hs-var">hSharedObjs</span></a><span>
+</span><a name="line-324"></a><span>              </span><span class="hs-operator hs-var">++</span><span> </span><a href="#local-6989586621679383674"><span class="hs-identifier hs-var">accObjs</span></a><span>
+</span><a name="line-325"></a><span>              </span><span class="hs-operator hs-var">++</span><span> </span><span class="hs-identifier hs-var">map</span><span> </span><span class="hs-special">(</span><a href="#local-6989586621679382866"><span class="hs-identifier hs-var">libTargetDir</span></a><span> </span><span class="hs-operator hs-var">&lt;/&gt;</span><span class="hs-special">)</span><span> </span><a href="#local-6989586621679383657"><span class="hs-identifier hs-var">cSharedObjs</span></a><span>
+</span><a name="line-326"></a><span>              </span><span class="hs-operator hs-var">++</span><span> </span><a href="#local-6989586621679383670"><span class="hs-identifier hs-var">stubSharedObjs</span></a><span>
+</span><a name="line-327"></a><span>          </span><span class="hs-comment">-- After the relocation lib is created we invoke ghc -shared</span><span>
+</span><a name="line-328"></a><span>          </span><span class="hs-comment">-- with the dependencies spelled out as -package arguments</span><span>
+</span><a name="line-329"></a><span>          </span><span class="hs-comment">-- and ghc invokes the linker with the proper library paths</span><span>
+</span><a name="line-330"></a><span>          </span><a name="local-6989586621679383680"><a href="#local-6989586621679383680"><span class="hs-identifier">ghcSharedLinkArgs</span></a></a><span> </span><span class="hs-glyph">=</span><span>
+</span><a name="line-331"></a><span>              </span><span class="hs-identifier hs-var">mempty</span><span> </span><span class="hs-special">{</span><span>
+</span><a name="line-332"></a><span>                </span><span class="hs-identifier">ghcOptShared</span><span>             </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier hs-var">toFlag</span><span> </span><span class="hs-identifier hs-var">True</span><span class="hs-special">,</span><span>
+</span><a name="line-333"></a><span>                </span><span class="hs-identifier">ghcOptDynLinkMode</span><span>        </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier hs-var">toFlag</span><span> </span><span class="hs-identifier hs-var">GhcDynamicOnly</span><span class="hs-special">,</span><span>
+</span><a name="line-334"></a><span>                </span><span class="hs-identifier">ghcOptInputFiles</span><span>         </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier hs-var">toNubListR</span><span> </span><a href="#local-6989586621679383679"><span class="hs-identifier hs-var">dynamicObjectFiles</span></a><span class="hs-special">,</span><span>
+</span><a name="line-335"></a><span>                </span><span class="hs-identifier">ghcOptOutputFile</span><span>         </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier hs-var">toFlag</span><span> </span><a href="#local-6989586621679383661"><span class="hs-identifier hs-var">sharedLibFilePath</span></a><span class="hs-special">,</span><span>
+</span><a name="line-336"></a><span class="hs-cpp">#if MIN_VERSION_Cabal(2,3,0)
+</span><span>                </span><span class="hs-identifier">ghcOptExtra</span><span>              </span><span class="hs-glyph">=</span><span>              </span><span class="hs-identifier hs-var">hcSharedOptions</span><span> </span><span class="hs-identifier hs-var">GHC</span><span> </span><a href="#local-6989586621679383622"><span class="hs-identifier hs-var">libBi</span></a><span class="hs-special">,</span><span>
+</span><a name="line-338"></a><span class="hs-cpp">#else
+</span><span>                </span><span class="hs-identifier">ghcOptExtra</span><span>              </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">toNubListR</span><span> </span><span class="hs-operator">$</span><span> </span><span class="hs-identifier">hcSharedOptions</span><span> </span><span class="hs-identifier">GHC</span><span> </span><span class="hs-identifier">libBi</span><span class="hs-special">,</span><span>
+</span><a name="line-340"></a><span class="hs-cpp">#endif
+</span><span>                </span><span class="hs-comment">-- For dynamic libs, Mac OS/X needs to know the install location</span><span>
+</span><a name="line-342"></a><span>                </span><span class="hs-comment">-- at build time. This only applies to GHC &lt; 7.8 - see the</span><span>
+</span><a name="line-343"></a><span>                </span><span class="hs-comment">-- discussion in #1660.</span><span>
+</span><a name="line-344"></a><span>                </span><span class="hs-identifier">ghcOptDylibName</span><span>          </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">if</span><span> </span><a href="#local-6989586621679382877"><span class="hs-identifier hs-var">hostOS</span></a><span> </span><span class="hs-operator hs-var">==</span><span> </span><span class="hs-identifier hs-var">OSX</span><span>
+</span><a name="line-345"></a><span>                                              </span><span class="hs-operator hs-var">&amp;&amp;</span><span> </span><a href="#local-6989586621679382873"><span class="hs-identifier hs-var">ghcVersion</span></a><span> </span><span class="hs-operator hs-var">&lt;</span><span> </span><span class="hs-identifier hs-var">mkVersion</span><span> </span><span class="hs-special">[</span><span class="hs-number">7</span><span class="hs-special">,</span><span class="hs-number">8</span><span class="hs-special">]</span><span>
+</span><a name="line-346"></a><span>                                            </span><span class="hs-keyword">then</span><span> </span><span class="hs-identifier hs-var">toFlag</span><span> </span><a href="#local-6989586621679383662"><span class="hs-identifier hs-var">sharedLibInstallPath</span></a><span>
+</span><a name="line-347"></a><span>                                            </span><span class="hs-keyword">else</span><span> </span><span class="hs-identifier hs-var">mempty</span><span class="hs-special">,</span><span>
+</span><a name="line-348"></a><span>                </span><span class="hs-identifier">ghcOptHideAllPackages</span><span>    </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier hs-var">toFlag</span><span> </span><span class="hs-identifier hs-var">True</span><span class="hs-special">,</span><span>
+</span><a name="line-349"></a><span>                </span><span class="hs-identifier">ghcOptNoAutoLinkPackages</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier hs-var">toFlag</span><span> </span><span class="hs-identifier hs-var">True</span><span class="hs-special">,</span><span>
+</span><a name="line-350"></a><span>                </span><span class="hs-identifier">ghcOptPackageDBs</span><span>         </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">withPackageDB</span><span> </span><a href="#local-6989586621679382862"><span class="hs-identifier hs-var">lbi</span></a><span class="hs-special">,</span><span>
+</span><a name="line-351"></a><span>                </span><span class="hs-identifier">ghcOptThisUnitId</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">case</span><span> </span><a href="#local-6989586621679382864"><span class="hs-identifier hs-var">clbi</span></a><span> </span><span class="hs-keyword">of</span><span>
+</span><a name="line-352"></a><span>                    </span><span class="hs-identifier hs-var">LibComponentLocalBuildInfo</span><span> </span><span class="hs-special">{</span><span> </span><span class="hs-identifier">componentCompatPackageKey</span><span> </span><span class="hs-glyph">=</span><span> </span><a name="local-6989586621679383681"><a href="#local-6989586621679383681"><span class="hs-identifier">pk</span></a></a><span> </span><span class="hs-special">}</span><span>
+</span><a name="line-353"></a><span>                      </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier hs-var">toFlag</span><span> </span><a href="#local-6989586621679383681"><span class="hs-identifier hs-var">pk</span></a><span>
+</span><a name="line-354"></a><span>                    </span><span class="hs-identifier">_</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier hs-var">mempty</span><span class="hs-special">,</span><span>
+</span><a name="line-355"></a><span>                </span><span class="hs-identifier">ghcOptThisComponentId</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">case</span><span> </span><a href="#local-6989586621679382864"><span class="hs-identifier hs-var">clbi</span></a><span> </span><span class="hs-keyword">of</span><span>
+</span><a name="line-356"></a><span>                    </span><span class="hs-identifier hs-var">LibComponentLocalBuildInfo</span><span> </span><span class="hs-special">{</span><span> </span><span class="hs-identifier">componentInstantiatedWith</span><span> </span><span class="hs-glyph">=</span><span> </span><a name="local-6989586621679383682"><a href="#local-6989586621679383682"><span class="hs-identifier">insts</span></a></a><span> </span><span class="hs-special">}</span><span> </span><span class="hs-glyph">-&gt;</span><span>
+</span><a name="line-357"></a><span>                        </span><span class="hs-keyword">if</span><span> </span><span class="hs-identifier hs-var">null</span><span> </span><a href="#local-6989586621679383682"><span class="hs-identifier hs-var">insts</span></a><span>
+</span><a name="line-358"></a><span>                            </span><span class="hs-keyword">then</span><span> </span><span class="hs-identifier hs-var">mempty</span><span>
+</span><a name="line-359"></a><span>                            </span><span class="hs-keyword">else</span><span> </span><span class="hs-identifier hs-var">toFlag</span><span> </span><span class="hs-special">(</span><span class="hs-identifier">componentComponentId</span><span> </span><a href="#local-6989586621679382864"><span class="hs-identifier hs-var">clbi</span></a><span class="hs-special">)</span><span>
+</span><a name="line-360"></a><span>                    </span><span class="hs-identifier">_</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier hs-var">mempty</span><span class="hs-special">,</span><span>
+</span><a name="line-361"></a><span>                </span><span class="hs-identifier">ghcOptInstantiatedWith</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">case</span><span> </span><a href="#local-6989586621679382864"><span class="hs-identifier hs-var">clbi</span></a><span> </span><span class="hs-keyword">of</span><span>
+</span><a name="line-362"></a><span>                    </span><span class="hs-identifier hs-var">LibComponentLocalBuildInfo</span><span> </span><span class="hs-special">{</span><span> </span><span class="hs-identifier">componentInstantiatedWith</span><span> </span><span class="hs-glyph">=</span><span> </span><a name="local-6989586621679383683"><a href="#local-6989586621679383683"><span class="hs-identifier">insts</span></a></a><span> </span><span class="hs-special">}</span><span>
+</span><a name="line-363"></a><span>                      </span><span class="hs-glyph">-&gt;</span><span> </span><a href="#local-6989586621679383683"><span class="hs-identifier hs-var">insts</span></a><span>
+</span><a name="line-364"></a><span>                    </span><span class="hs-identifier">_</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="hs-special">]</span><span class="hs-special">,</span><span>
+</span><a name="line-365"></a><span>                </span><span class="hs-identifier">ghcOptPackages</span><span>           </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier hs-var">toNubListR</span><span> </span><span class="hs-operator hs-var">$</span><span>
+</span><a name="line-366"></a><span>                                           </span><a href="Data.Array.Accelerate.LLVM.Native.Distribution.Simple.GHC.Internal.html#mkGhcOptPackages"><span class="hs-identifier hs-var">Internal.mkGhcOptPackages</span></a><span> </span><a href="#local-6989586621679382864"><span class="hs-identifier hs-var">clbi</span></a><span> </span><span class="hs-special">,</span><span>
+</span><a name="line-367"></a><span class="hs-cpp">#if MIN_VERSION_Cabal(2,3,0)
+</span><span>                </span><span class="hs-identifier">ghcOptLinkLibs</span><span>           </span><span class="hs-glyph">=</span><span>              </span><span class="hs-identifier">extraLibs</span><span> </span><a href="#local-6989586621679383622"><span class="hs-identifier hs-var">libBi</span></a><span class="hs-special">,</span><span>
+</span><a name="line-369"></a><span class="hs-cpp">#else
+</span><span>                </span><span class="hs-identifier">ghcOptLinkLibPath</span><span>        </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">toNubListR</span><span> </span><span class="hs-operator">$</span><span> </span><span class="hs-identifier">extraLibDirs</span><span> </span><span class="hs-identifier">libBi</span><span class="hs-special">,</span><span>
+</span><a name="line-371"></a><span class="hs-cpp">#endif
+</span><span class="">                ghcOptLinkFrameworks     = toNubListR $ PD.frameworks libBi,
+                ghcOptLinkFrameworkDirs  =
+                  toNubListR $ PD.extraFrameworkDirs libBi,
+                ghcOptRPaths             = rpaths
+              }
+
+      info verbosity (show (ghcOptPackages ghcSharedLinkArgs))
+
+      whenVanillaLib False $
+        Ar.createArLibArchive verbosity lbi vanillaLibFilePath staticObjectFiles
+
+      whenProfLib $
+        Ar.createArLibArchive verbosity lbi profileLibFilePath profObjectFiles
+
+      whenGHCiLib $ do
+        (ldProg, _) &lt;- requireProgram verbosity ldProgram (withPrograms lbi)
+        Internal.combineObjectFiles verbosity lbi ldProg
+          ghciLibFilePath ghciObjFiles
+
+      whenSharedLib False $
+        runGhcProg ghcSharedLinkArgs
+
+
+-- | Returns True if the modification date of the given source file is newer than
+-- the object file we last compiled for it, or if no object file exists yet.
+checkNeedsRecompilation :: FilePath -&gt; GhcOptions -&gt; IO Bool
+checkNeedsRecompilation filename opts = filename `moreRecentFile` oname
+    where oname = getObjectFileName filename opts
+
+-- | Finds the object file name of the given source file
+getObjectFileName :: FilePath -&gt; GhcOptions -&gt; FilePath
+getObjectFileName filename opts = oname
+    where odir  = fromFlag (ghcOptObjDir opts)
+          oext  = fromFlagOrDefault &quot;o&quot; (ghcOptObjSuffix opts)
+          oname = odir &lt;/&gt; replaceExtension filename oext
+
+-- | Calculate the RPATHs for the component we are building.
+--
+-- Calculates relative RPATHs when 'relocatable' is set.
+getRPaths :: LocalBuildInfo
+          -&gt; ComponentLocalBuildInfo -- ^ Component we are building
+          -&gt; IO (NubListR FilePath)
+getRPaths lbi clbi | supportRPaths hostOS = do
+    libraryPaths &lt;- depLibraryPaths False (relocatable lbi) lbi clbi
+    let hostPref = case hostOS of
+                     OSX -&gt; &quot;@loader_path&quot;
+                     _   -&gt; &quot;$ORIGIN&quot;
+        relPath p = if isRelative p then hostPref &lt;/&gt; p else p
+        rpaths    = toNubListR (map relPath libraryPaths)
+    return rpaths
+  where
+    (Platform _ hostOS) = hostPlatform lbi
+
+    -- The list of RPath-supported operating systems below reflects the
+    -- platforms on which Cabal's RPATH handling is tested. It does _NOT_
+    -- reflect whether the OS supports RPATH.
+
+    -- E.g. when this comment was written, the *BSD operating systems were
+    -- untested with regards to Cabal RPATH handling, and were hence set to
+    -- 'False', while those operating systems themselves do support RPATH.
+    supportRPaths Linux       = True
+    supportRPaths Windows     = False
+    supportRPaths OSX         = True
+    supportRPaths FreeBSD     = False
+    supportRPaths OpenBSD     = False
+    supportRPaths NetBSD      = False
+    supportRPaths DragonFly   = False
+    supportRPaths Solaris     = False
+    supportRPaths AIX         = False
+    supportRPaths HPUX        = False
+    supportRPaths IRIX        = False
+    supportRPaths HaLVM       = False
+    supportRPaths IOS         = False
+    supportRPaths Android     = False
+    supportRPaths Ghcjs       = False
+    supportRPaths Hurd        = False
+    supportRPaths (OtherOS _) = False
+    -- Do _not_ add a default case so that we get a warning here when a new OS
+    -- is added.
+
+getRPaths _ _ = return mempty
+
+-- | Filter the &quot;-threaded&quot; flag when profiling as it does not
+--   work with ghc-6.8 and older.
+hackThreadedFlag :: Verbosity -&gt; Compiler -&gt; Bool -&gt; BuildInfo -&gt; IO BuildInfo
+hackThreadedFlag _ _ _ = return
+
+-- -----------------------------------------------------------------------------
+-- Utils
+
+supportsDynamicToo :: Compiler -&gt; Bool
+supportsDynamicToo = Internal.ghcLookupProperty &quot;Support dynamic-too&quot;
+
+</span></pre></body></html>

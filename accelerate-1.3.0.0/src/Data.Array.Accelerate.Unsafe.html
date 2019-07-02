@@ -1,0 +1,50 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-comment">-- |</span><span>
+</span><a name="line-2"></a><span class="hs-comment">-- Module      : Data.Array.Accelerate.Unsafe</span><span>
+</span><a name="line-3"></a><span class="hs-comment">-- Copyright   : [2009..2019] The Accelerate Team</span><span>
+</span><a name="line-4"></a><span class="hs-comment">-- License     : BSD3</span><span>
+</span><a name="line-5"></a><span class="hs-comment">--</span><span>
+</span><a name="line-6"></a><span class="hs-comment">-- Maintainer  : Trevor L. McDonell &lt;trevor.mcdonell@gmail.com&gt;</span><span>
+</span><a name="line-7"></a><span class="hs-comment">-- Stability   : experimental</span><span>
+</span><a name="line-8"></a><span class="hs-comment">-- Portability : non-portable (GHC extensions)</span><span>
+</span><a name="line-9"></a><span class="hs-comment">--</span><span>
+</span><a name="line-10"></a><span class="hs-comment">-- Operations which may be unsafe. Use with care.</span><span>
+</span><a name="line-11"></a><span class="hs-comment">--</span><span>
+</span><a name="line-12"></a><span class="hs-comment">-- @since 1.2.0.0</span><span>
+</span><a name="line-13"></a><span class="hs-comment">--</span><span>
+</span><a name="line-14"></a><span>
+</span><a name="line-15"></a><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">Data.Array.Accelerate.Unsafe</span><span> </span><span class="hs-special">(</span><span>
+</span><a name="line-16"></a><span>
+</span><a name="line-17"></a><span>  </span><span class="hs-comment">-- ** Unsafe operations</span><span>
+</span><a name="line-18"></a><span>  </span><a href="Data.Array.Accelerate.Smart.html#undef"><span class="hs-identifier hs-var">undef</span></a><span class="hs-special">,</span><span> </span><a href="Data.Array.Accelerate.Unsafe.html#coerce"><span class="hs-identifier hs-var">coerce</span></a><span class="hs-special">,</span><span>
+</span><a name="line-19"></a><span>
+</span><a name="line-20"></a><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><a name="line-21"></a><span>
+</span><a name="line-22"></a><span class="hs-keyword">import</span><span> </span><a href="Data.Array.Accelerate.Array.Sugar.html"><span class="hs-identifier">Data.Array.Accelerate.Array.Sugar</span></a><span>
+</span><a name="line-23"></a><span class="hs-keyword">import</span><span> </span><a href="Data.Array.Accelerate.Smart.html"><span class="hs-identifier">Data.Array.Accelerate.Smart</span></a><span>
+</span><a name="line-24"></a><span>
+</span><a name="line-25"></a><span>
+</span><a name="line-26"></a><span class="hs-comment">-- | The function 'coerce' allows you to convert a value between any two types</span><span>
+</span><a name="line-27"></a><span class="hs-comment">-- whose underlying representations have the same bit size at each component.</span><span>
+</span><a name="line-28"></a><span class="hs-comment">--</span><span>
+</span><a name="line-29"></a><span class="hs-comment">-- For example:</span><span>
+</span><a name="line-30"></a><span class="hs-comment">--</span><span>
+</span><a name="line-31"></a><span class="hs-comment">-- &gt; coerce (x :: Exp Double)         :: Exp Word64</span><span>
+</span><a name="line-32"></a><span class="hs-comment">-- &gt; coerce (x :: Exp (Int64,Float))  :: Exp (Complex Float, Word32)</span><span>
+</span><a name="line-33"></a><span class="hs-comment">--</span><span>
+</span><a name="line-34"></a><span class="hs-comment">-- Furthermore, as we typically declare newtype wrappers similarly to:</span><span>
+</span><a name="line-35"></a><span class="hs-comment">--</span><span>
+</span><a name="line-36"></a><span class="hs-comment">-- &gt; type instance EltRepr (Sum a) = ((), EltRepr a)</span><span>
+</span><a name="line-37"></a><span class="hs-comment">--</span><span>
+</span><a name="line-38"></a><span class="hs-comment">-- This can be used instead of the newtype constructor, to go from the newtype's</span><span>
+</span><a name="line-39"></a><span class="hs-comment">-- abstract type to the concrete type by dropping the extra @()@ from the</span><span>
+</span><a name="line-40"></a><span class="hs-comment">-- representation, and vice-versa.</span><span>
+</span><a name="line-41"></a><span class="hs-comment">--</span><span>
+</span><a name="line-42"></a><span class="hs-comment">-- You will get a runtime error if it fails to find a coercion between the two</span><span>
+</span><a name="line-43"></a><span class="hs-comment">-- representations.</span><span>
+</span><a name="line-44"></a><span class="hs-comment">--</span><span>
+</span><a name="line-45"></a><span class="hs-comment">-- @since 1.2.0.0</span><span>
+</span><a name="line-46"></a><span class="hs-comment">--</span><span>
+</span><a name="line-47"></a><span class="hs-identifier">coerce</span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><a href="Data.Array.Accelerate.Array.Sugar.html#Elt"><span class="hs-identifier hs-type">Elt</span></a><span> </span><a href="#local-6989586621679776213"><span class="hs-identifier hs-type">a</span></a><span class="hs-special">,</span><span> </span><a href="Data.Array.Accelerate.Array.Sugar.html#Elt"><span class="hs-identifier hs-type">Elt</span></a><span> </span><a href="#local-6989586621679776214"><span class="hs-identifier hs-type">b</span></a><span class="hs-special">)</span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><a href="Data.Array.Accelerate.Smart.html#Exp"><span class="hs-identifier hs-type">Exp</span></a><span> </span><a href="#local-6989586621679776213"><span class="hs-identifier hs-type">a</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><a href="Data.Array.Accelerate.Smart.html#Exp"><span class="hs-identifier hs-type">Exp</span></a><span> </span><a href="#local-6989586621679776214"><span class="hs-identifier hs-type">b</span></a><span>
+</span><a name="line-48"></a><a name="coerce"><a href="Data.Array.Accelerate.Unsafe.html#coerce"><span class="hs-identifier">coerce</span></a></a><span> </span><span class="hs-glyph">=</span><span> </span><a href="Data.Array.Accelerate.Smart.html#mkUnsafeCoerce"><span class="hs-identifier hs-var">mkUnsafeCoerce</span></a><span>
+</span><a name="line-49"></a><span>
+</span><a name="line-50"></a></pre></body></html>

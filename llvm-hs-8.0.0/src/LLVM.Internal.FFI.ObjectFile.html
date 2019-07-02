@@ -1,0 +1,18 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-pragma">{-# LANGUAGE ForeignFunctionInterface #-}</span><span>
+</span><a name="line-2"></a><span>
+</span><a name="line-3"></a><span class="hs-comment">-- | &lt;https://llvm.org/doxygen/classllvm_1_1object_1_1ObjectFile.html&gt;</span><span>
+</span><a name="line-4"></a><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">LLVM.Internal.FFI.ObjectFile</span><span> </span><span class="hs-keyword">where</span><span>
+</span><a name="line-5"></a><span>
+</span><a name="line-6"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">Foreign.Ptr</span><span>
+</span><a name="line-7"></a><span>
+</span><a name="line-8"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">LLVM.Prelude</span><span>
+</span><a name="line-9"></a><span class="hs-keyword">import</span><span> </span><a href="LLVM.Internal.FFI.MemoryBuffer.html"><span class="hs-identifier">LLVM.Internal.FFI.MemoryBuffer</span></a><span>
+</span><a name="line-10"></a><span>
+</span><a name="line-11"></a><span class="hs-keyword">data</span><span> </span><a name="ObjectFile"><a href="LLVM.Internal.FFI.ObjectFile.html#ObjectFile"><span class="hs-identifier">ObjectFile</span></a></a><span>
+</span><a name="line-12"></a><span>
+</span><a name="line-13"></a><span class="hs-keyword">foreign</span><span> </span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">ccall</span><span> </span><span class="hs-keyword">unsafe</span><span> </span><span class="hs-string">&quot;LLVMCreateObjectFile&quot;</span><span> </span><span class="hs-identifier">createObjectFile</span><span> </span><span class="hs-glyph">::</span><span>
+</span><a name="line-14"></a><span>  </span><span class="hs-identifier hs-type">Ptr</span><span> </span><a href="LLVM.Internal.FFI.MemoryBuffer.html#MemoryBuffer"><span class="hs-identifier hs-type">MemoryBuffer</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier hs-type">IO</span><span> </span><span class="hs-special">(</span><span class="hs-identifier hs-type">Ptr</span><span> </span><a href="LLVM.Internal.FFI.ObjectFile.html#ObjectFile"><span class="hs-identifier hs-type">ObjectFile</span></a><span class="hs-special">)</span><span>
+</span><a name="line-15"></a><span>
+</span><a name="line-16"></a><span class="hs-keyword">foreign</span><span> </span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">ccall</span><span> </span><span class="hs-keyword">unsafe</span><span> </span><span class="hs-string">&quot;LLVMDisposeObjectFile&quot;</span><span> </span><span class="hs-identifier">disposeObjectFile</span><span> </span><span class="hs-glyph">::</span><span>
+</span><a name="line-17"></a><span>  </span><span class="hs-identifier hs-type">Ptr</span><span> </span><a href="LLVM.Internal.FFI.ObjectFile.html#ObjectFile"><span class="hs-identifier hs-type">ObjectFile</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier hs-type">IO</span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span>
+</span><a name="line-18"></a></pre></body></html>

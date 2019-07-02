@@ -1,0 +1,148 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-pragma">{-# LANGUAGE CPP #-}</span><span>
+</span><a name="line-2"></a><span class="hs-comment">-- |</span><span>
+</span><a name="line-3"></a><span class="hs-comment">-- Module      : Data.Array.Accelerate.LLVM.Native.State</span><span>
+</span><a name="line-4"></a><span class="hs-comment">-- Copyright   : [2014..2019] The Accelerate Team</span><span>
+</span><a name="line-5"></a><span class="hs-comment">-- License     : BSD3</span><span>
+</span><a name="line-6"></a><span class="hs-comment">--</span><span>
+</span><a name="line-7"></a><span class="hs-comment">-- Maintainer  : Trevor L. McDonell &lt;trevor.mcdonell@gmail.com&gt;</span><span>
+</span><a name="line-8"></a><span class="hs-comment">-- Stability   : experimental</span><span>
+</span><a name="line-9"></a><span class="hs-comment">-- Portability : non-portable (GHC extensions)</span><span>
+</span><a name="line-10"></a><span class="hs-comment">--</span><span>
+</span><a name="line-11"></a><span>
+</span><a name="line-12"></a><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">Data.Array.Accelerate.LLVM.Native.State</span><span> </span><span class="hs-special">(</span><span>
+</span><a name="line-13"></a><span>
+</span><a name="line-14"></a><span>  </span><a href="Data.Array.Accelerate.LLVM.Native.State.html#evalNative"><span class="hs-identifier hs-var">evalNative</span></a><span class="hs-special">,</span><span>
+</span><a name="line-15"></a><span>  </span><a href="Data.Array.Accelerate.LLVM.Native.State.html#createTarget"><span class="hs-identifier hs-var">createTarget</span></a><span class="hs-special">,</span><span> </span><a href="Data.Array.Accelerate.LLVM.Native.State.html#defaultTarget"><span class="hs-identifier hs-var">defaultTarget</span></a><span class="hs-special">,</span><span>
+</span><a name="line-16"></a><span>
+</span><a name="line-17"></a><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><a name="line-18"></a><span>
+</span><a name="line-19"></a><span class="hs-comment">-- accelerate</span><span>
+</span><a name="line-20"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">Data.Array.Accelerate.LLVM.State</span><span>
+</span><a name="line-21"></a><span class="hs-keyword">import</span><span> </span><a href="Data.Array.Accelerate.LLVM.Native.Target.html"><span class="hs-identifier">Data.Array.Accelerate.LLVM.Native.Target</span></a><span>
+</span><a name="line-22"></a><span class="hs-keyword">import</span><span> </span><a href="Data.Array.Accelerate.LLVM.Native.Execute.Scheduler.html"><span class="hs-identifier">Data.Array.Accelerate.LLVM.Native.Execute.Scheduler</span></a><span>
+</span><a name="line-23"></a><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><a href="Data.Array.Accelerate.LLVM.Native.Link.Cache.html"><span class="hs-identifier">Data.Array.Accelerate.LLVM.Native.Link.Cache</span></a><span>   </span><span class="hs-keyword">as</span><span> </span><span class="hs-identifier">LC</span><span>
+</span><a name="line-24"></a><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><a href="Data.Array.Accelerate.LLVM.Native.Debug.html"><span class="hs-identifier">Data.Array.Accelerate.LLVM.Native.Debug</span></a><span>        </span><span class="hs-keyword">as</span><span> </span><span class="hs-identifier">Debug</span><span>
+</span><a name="line-25"></a><span>
+</span><a name="line-26"></a><span class="hs-comment">-- library</span><span>
+</span><a name="line-27"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">Data.Maybe</span><span>
+</span><a name="line-28"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">System.Environment</span><span>
+</span><a name="line-29"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">System.IO.Unsafe</span><span>
+</span><a name="line-30"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">Text.Printf</span><span>
+</span><a name="line-31"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">Text.Read</span><span>
+</span><a name="line-32"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">Prelude</span><span>                                                  </span><span class="hs-keyword">as</span><span> </span><span class="hs-identifier">P</span><span>
+</span><a name="line-33"></a><span>
+</span><a name="line-34"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">GHC.Conc</span><span>
+</span><a name="line-35"></a><span>
+</span><a name="line-36"></a><span>
+</span><a name="line-37"></a><span class="hs-comment">-- | Execute a computation in the Native backend</span><span>
+</span><a name="line-38"></a><span class="hs-comment">--</span><span>
+</span><a name="line-39"></a><span class="hs-identifier">evalNative</span><span> </span><span class="hs-glyph">::</span><span> </span><a href="Data.Array.Accelerate.LLVM.Native.Target.html#Native"><span class="hs-identifier hs-type">Native</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier hs-type">LLVM</span><span> </span><a href="Data.Array.Accelerate.LLVM.Native.Target.html#Native"><span class="hs-identifier hs-type">Native</span></a><span> </span><a href="#local-6989586621679409311"><span class="hs-identifier hs-type">a</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier hs-type">IO</span><span> </span><a href="#local-6989586621679409311"><span class="hs-identifier hs-type">a</span></a><span>
+</span><a name="line-40"></a><a name="evalNative"><a href="Data.Array.Accelerate.LLVM.Native.State.html#evalNative"><span class="hs-identifier">evalNative</span></a></a><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier hs-var">evalLLVM</span><span>
+</span><a name="line-41"></a><span>
+</span><a name="line-42"></a><span>
+</span><a name="line-43"></a><span class="hs-comment">-- | Create a Native execution target by spawning a worker thread on each of the</span><span>
+</span><a name="line-44"></a><span class="hs-comment">-- given capabilities.</span><span>
+</span><a name="line-45"></a><span class="hs-comment">--</span><span>
+</span><a name="line-46"></a><span class="hs-identifier">createTarget</span><span>
+</span><a name="line-47"></a><span>    </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">[</span><span class="hs-identifier hs-type">Int</span><span class="hs-special">]</span><span>              </span><span class="hs-comment">-- ^ CPUs to launch worker threads on</span><span>
+</span><a name="line-48"></a><span>    </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier hs-type">IO</span><span> </span><a href="Data.Array.Accelerate.LLVM.Native.Target.html#Native"><span class="hs-identifier hs-type">Native</span></a><span>
+</span><a name="line-49"></a><a name="createTarget"><a href="Data.Array.Accelerate.LLVM.Native.State.html#createTarget"><span class="hs-identifier">createTarget</span></a></a><span> </span><a name="local-6989586621679409312"><a href="#local-6989586621679409312"><span class="hs-identifier">cpus</span></a></a><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><a name="line-50"></a><span>  </span><a name="local-6989586621679409313"><a href="#local-6989586621679409313"><span class="hs-identifier">gang</span></a></a><span>    </span><span class="hs-glyph">&lt;-</span><span> </span><a href="Data.Array.Accelerate.LLVM.Native.Execute.Scheduler.html#hireWorkersOn"><span class="hs-identifier hs-var">hireWorkersOn</span></a><span> </span><a href="#local-6989586621679409312"><span class="hs-identifier hs-var">cpus</span></a><span>
+</span><a name="line-51"></a><span>  </span><a name="local-6989586621679409314"><a href="#local-6989586621679409314"><span class="hs-identifier">linker</span></a></a><span>  </span><span class="hs-glyph">&lt;-</span><span> </span><span class="hs-identifier hs-var">LC.new</span><span>
+</span><a name="line-52"></a><span>  </span><span class="hs-identifier hs-var">return</span><span>  </span><span class="hs-operator hs-var">$!</span><span> </span><a href="Data.Array.Accelerate.LLVM.Native.Target.html#Native"><span class="hs-identifier hs-var">Native</span></a><span> </span><a href="#local-6989586621679409314"><span class="hs-identifier hs-var">linker</span></a><span> </span><a href="#local-6989586621679409313"><span class="hs-identifier hs-var">gang</span></a><span> </span><span class="hs-special">(</span><a href="Data.Array.Accelerate.LLVM.Native.Execute.Scheduler.html#numWorkers"><span class="hs-identifier hs-var">numWorkers</span></a><span> </span><a href="#local-6989586621679409313"><span class="hs-identifier hs-var">gang</span></a><span> </span><span class="hs-operator hs-var">&gt;</span><span> </span><span class="hs-number">1</span><span class="hs-special">)</span><span>
+</span><a name="line-53"></a><span>
+</span><a name="line-54"></a><span class="hs-comment">{--
+-- | The strategy for balancing work amongst the available worker threads.
+--
+type Strategy = Gang -&gt; Executable
+
+
+-- | Execute an operation sequentially on a single thread
+--
+sequentialIO :: Strategy
+sequentialIO gang =
+  Executable $ \name _ppt range fill -&gt;
+    timed name $ runSeqIO gang range fill
+
+
+-- | Execute a computation without load balancing. Each thread computes an
+-- equally sized chunk of the input. No work stealing occurs.
+--
+unbalancedParIO :: Strategy
+unbalancedParIO gang =
+  Executable $ \name _ppt range fill -&gt;
+    timed name $ runParIO Single.mkResource gang range fill
+
+
+-- | Execute a computation where threads use work stealing (based on lazy
+-- splitting of work stealing queues and exponential backoff) in order to
+-- automatically balance the workload amongst themselves.
+--
+balancedParIO
+    :: Int                -- ^ number of steal attempts before backing off
+    -&gt; Strategy
+balancedParIO retries gang =
+  Executable $ \name ppt range fill -&gt;
+    -- TLM: A suitable PPT should be chosen when invoking the continuation in
+    --      order to balance scheduler overhead with fine-grained function calls
+    --
+    let resource = LBS.mkResource ppt (SMP.mkResource retries &lt;&gt; Backoff.mkResource)
+    in  timed name $ runParIO resource gang range fill
+--}</span><span>
+</span><a name="line-92"></a><span>
+</span><a name="line-93"></a><span>
+</span><a name="line-94"></a><span class="hs-comment">-- Top-level mutable state</span><span>
+</span><a name="line-95"></a><span class="hs-comment">-- -----------------------</span><span>
+</span><a name="line-96"></a><span class="hs-comment">--</span><span>
+</span><a name="line-97"></a><span class="hs-comment">-- It is important to keep some information alive for the entire run of the</span><span>
+</span><a name="line-98"></a><span class="hs-comment">-- program, not just a single execution. These tokens use 'unsafePerformIO' to</span><span>
+</span><a name="line-99"></a><span class="hs-comment">-- ensure they are executed only once, and reused for subsequent invocations.</span><span>
+</span><a name="line-100"></a><span class="hs-comment">--</span><span>
+</span><a name="line-101"></a><span>
+</span><a name="line-102"></a><span class="hs-comment">-- | Initialise the gang of threads that will be used to execute computations.</span><span>
+</span><a name="line-103"></a><span class="hs-comment">-- This spawns one worker for each available processor, or as specified by the</span><span>
+</span><a name="line-104"></a><span class="hs-comment">-- value of the environment variable @ACCELERATE_LLVM_NATIVE_THREADS@.</span><span>
+</span><a name="line-105"></a><span class="hs-comment">--</span><span>
+</span><a name="line-106"></a><span class="hs-comment">-- This globally shared thread gang is auto-initialised on startup and shared by</span><span>
+</span><a name="line-107"></a><span class="hs-comment">-- all computations (unless the user chooses to 'run' with a different gang).</span><span>
+</span><a name="line-108"></a><span class="hs-comment">--</span><span>
+</span><a name="line-109"></a><span class="hs-comment">-- It does not help to have multiple gangs running at the same time, as then the</span><span>
+</span><a name="line-110"></a><span class="hs-comment">-- system as a whole may run slower as the threads contend for cache. The</span><span>
+</span><a name="line-111"></a><span class="hs-comment">-- scheduler is able to execute operations from multiple sources concurrently,</span><span>
+</span><a name="line-112"></a><span class="hs-comment">-- so multiple gangs should not be necessary.</span><span>
+</span><a name="line-113"></a><span class="hs-comment">--</span><span>
+</span><a name="line-114"></a><span class="hs-pragma">{-# NOINLINE</span><span> </span><span class="hs-pragma">defaultTarget</span><span> </span><span class="hs-pragma">#-}</span><span>
+</span><a name="line-115"></a><span class="hs-identifier">defaultTarget</span><span> </span><span class="hs-glyph">::</span><span> </span><a href="Data.Array.Accelerate.LLVM.Native.Target.html#Native"><span class="hs-identifier hs-type">Native</span></a><span>
+</span><a name="line-116"></a><a name="defaultTarget"><a href="Data.Array.Accelerate.LLVM.Native.State.html#defaultTarget"><span class="hs-identifier">defaultTarget</span></a></a><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier hs-var">unsafePerformIO</span><span> </span><span class="hs-operator hs-var">$</span><span> </span><span class="hs-keyword">do</span><span>
+</span><a name="line-117"></a><span>  </span><a name="local-6989586621679409315"><a href="#local-6989586621679409315"><span class="hs-identifier">nproc</span></a></a><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="hs-identifier hs-var">getNumProcessors</span><span>
+</span><a name="line-118"></a><span>  </span><a name="local-6989586621679409316"><a href="#local-6989586621679409316"><span class="hs-identifier">ncaps</span></a></a><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="hs-identifier hs-var">getNumCapabilities</span><span>
+</span><a name="line-119"></a><span>  </span><a name="local-6989586621679409317"><a href="#local-6989586621679409317"><span class="hs-identifier">menv</span></a></a><span>  </span><span class="hs-glyph">&lt;-</span><span> </span><span class="hs-special">(</span><span class="hs-identifier hs-var">readMaybe</span><span> </span><span class="hs-operator hs-var">=&lt;&lt;</span><span class="hs-special">)</span><span> </span><span class="hs-operator hs-var">&lt;$&gt;</span><span> </span><span class="hs-identifier hs-var">lookupEnv</span><span> </span><span class="hs-string">&quot;ACCELERATE_LLVM_NATIVE_THREADS&quot;</span><span>
+</span><a name="line-120"></a><span>
+</span><a name="line-121"></a><span>  </span><span class="hs-keyword">let</span><span> </span><a name="local-6989586621679409318"><a href="#local-6989586621679409318"><span class="hs-identifier">nthreads</span></a></a><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier hs-var">fromMaybe</span><span> </span><a href="#local-6989586621679409315"><span class="hs-identifier hs-var">nproc</span></a><span> </span><a href="#local-6989586621679409317"><span class="hs-identifier hs-var">menv</span></a><span>
+</span><a name="line-122"></a><span>
+</span><a name="line-123"></a><span>  </span><span class="hs-comment">-- Update the number of capabilities, but never set it lower than it already</span><span>
+</span><a name="line-124"></a><span>  </span><span class="hs-comment">-- is. This target will spawn a worker on each processor (as returned by</span><span>
+</span><a name="line-125"></a><span>  </span><span class="hs-comment">-- 'getNumProcessors', which includes SMT (hyperthreading) cores), but the</span><span>
+</span><a name="line-126"></a><span>  </span><span class="hs-comment">-- user may have requested more capabilities than this to handle, for example,</span><span>
+</span><a name="line-127"></a><span>  </span><span class="hs-comment">-- concurrent output.</span><span>
+</span><a name="line-128"></a><span>  </span><span class="hs-comment">--</span><span>
+</span><a name="line-129"></a><span>  </span><span class="hs-identifier hs-var">setNumCapabilities</span><span> </span><span class="hs-special">(</span><span class="hs-identifier hs-var">max</span><span> </span><a href="#local-6989586621679409316"><span class="hs-identifier hs-var">ncaps</span></a><span> </span><a href="#local-6989586621679409318"><span class="hs-identifier hs-var">nthreads</span></a><span class="hs-special">)</span><span>
+</span><a name="line-130"></a><span>
+</span><a name="line-131"></a><span>  </span><span class="hs-identifier hs-var">Debug.traceIO</span><span> </span><span class="hs-identifier hs-var">Debug.dump_gc</span><span> </span><span class="hs-special">(</span><span class="hs-identifier hs-var">printf</span><span> </span><span class="hs-string">&quot;gc: initialise native target with %d worker threads&quot;</span><span> </span><a href="#local-6989586621679409318"><span class="hs-identifier hs-var">nthreads</span></a><span class="hs-special">)</span><span>
+</span><a name="line-132"></a><span>  </span><a href="Data.Array.Accelerate.LLVM.Native.State.html#createTarget"><span class="hs-identifier hs-var">createTarget</span></a><span> </span><span class="hs-special">[</span><span class="hs-number">0</span><span> </span><span class="hs-glyph">..</span><span> </span><a href="#local-6989586621679409318"><span class="hs-identifier hs-var">nthreads</span></a><span class="hs-glyph">-</span><span class="hs-number">1</span><span class="hs-special">]</span><span>
+</span><a name="line-133"></a><span>
+</span><a name="line-134"></a><span>
+</span><a name="line-135"></a><span class="hs-comment">{--
+-- Debugging
+-- ---------
+
+{-# INLINE timed #-}
+timed :: ShortByteString -&gt; IO a -&gt; IO a
+timed name f = Debug.timed Debug.dump_exec (elapsed name) f
+
+{-# INLINE elapsed #-}
+elapsed :: ShortByteString -&gt; Double -&gt; Double -&gt; String
+elapsed name x y = printf &quot;exec: %s %s&quot; (unpack name) (Debug.elapsedP x y)
+--}</span><span>
+</span><a name="line-147"></a><span>
+</span><a name="line-148"></a></pre></body></html>

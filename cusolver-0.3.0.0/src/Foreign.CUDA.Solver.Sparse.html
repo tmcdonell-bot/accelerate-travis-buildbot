@@ -1,0 +1,55 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-comment">-- |</span><span>
+</span><a name="line-2"></a><span class="hs-comment">-- Module      : Foreign.CUDA.Solver.Sparse</span><span>
+</span><a name="line-3"></a><span class="hs-comment">-- Copyright   : [2017] Trevor L. McDonell</span><span>
+</span><a name="line-4"></a><span class="hs-comment">-- License     : BSD3</span><span>
+</span><a name="line-5"></a><span class="hs-comment">--</span><span>
+</span><a name="line-6"></a><span class="hs-comment">-- Maintainer  : Trevor L. McDonell &lt;tmcdonell@cse.unsw.edu.au&gt;</span><span>
+</span><a name="line-7"></a><span class="hs-comment">-- Stability   : experimental</span><span>
+</span><a name="line-8"></a><span class="hs-comment">-- Portability : non-portable (GHC extensions)</span><span>
+</span><a name="line-9"></a><span class="hs-comment">--</span><span>
+</span><a name="line-10"></a><span class="hs-comment">-- The cuSolver library provides useful LAPACK-like features implemented on</span><span>
+</span><a name="line-11"></a><span class="hs-comment">-- NVIDIA GPUs. This module implements a subset of LAPACK functions on sparse</span><span>
+</span><a name="line-12"></a><span class="hs-comment">-- matrices in CSR or CSC format.</span><span>
+</span><a name="line-13"></a><span class="hs-comment">--</span><span>
+</span><a name="line-14"></a><span class="hs-comment">-- To use operations from the cuSolver library, the user must allocate the</span><span>
+</span><a name="line-15"></a><span class="hs-comment">-- required vectors and matrices in the GPU memory space, fill them with data,</span><span>
+</span><a name="line-16"></a><span class="hs-comment">-- call the desired sequence of cuSolver functions, then copy the results from</span><span>
+</span><a name="line-17"></a><span class="hs-comment">-- the GPU memory space back to the host.</span><span>
+</span><a name="line-18"></a><span class="hs-comment">--</span><span>
+</span><a name="line-19"></a><span class="hs-comment">-- The &lt;http://hackage.haskell.org/package/cuda cuda&gt; package can be used for</span><span>
+</span><a name="line-20"></a><span class="hs-comment">-- writing to and retrieving data from the GPU.</span><span>
+</span><a name="line-21"></a><span class="hs-comment">--</span><span>
+</span><a name="line-22"></a><span class="hs-comment">-- [/Example/]</span><span>
+</span><a name="line-23"></a><span class="hs-comment">--</span><span>
+</span><a name="line-24"></a><span class="hs-comment">-- /TODO/</span><span>
+</span><a name="line-25"></a><span class="hs-comment">--</span><span>
+</span><a name="line-26"></a><span class="hs-comment">-- [/Additional information/]</span><span>
+</span><a name="line-27"></a><span class="hs-comment">--</span><span>
+</span><a name="line-28"></a><span class="hs-comment">-- For more information, see the NVIDIA cuSolver documentation:</span><span>
+</span><a name="line-29"></a><span class="hs-comment">--</span><span>
+</span><a name="line-30"></a><span class="hs-comment">-- &lt;http://docs.nvidia.com/cuda/cusolver/index.html&gt;</span><span>
+</span><a name="line-31"></a><span class="hs-comment">--</span><span>
+</span><a name="line-32"></a><span>
+</span><a name="line-33"></a><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">Foreign.CUDA.Solver.Sparse</span><span> </span><span class="hs-special">(</span><span>
+</span><a name="line-34"></a><span>
+</span><a name="line-35"></a><span>  </span><span class="hs-comment">-- * Control</span><span>
+</span><a name="line-36"></a><span>  </span><span class="hs-keyword">module</span><span> </span><a href="Foreign.CUDA.Solver.Sparse.Context.html"><span class="hs-identifier">Foreign.CUDA.Solver.Sparse.Context</span></a><span class="hs-special">,</span><span>
+</span><a name="line-37"></a><span>  </span><span class="hs-keyword">module</span><span> </span><a href="Foreign.CUDA.Solver.Sparse.Analysis.html"><span class="hs-identifier">Foreign.CUDA.Solver.Sparse.Analysis</span></a><span class="hs-special">,</span><span>
+</span><a name="line-38"></a><span>  </span><span class="hs-keyword">module</span><span> </span><a href="Foreign.CUDA.Solver.Sparse.Stream.html"><span class="hs-identifier">Foreign.CUDA.Solver.Sparse.Stream</span></a><span class="hs-special">,</span><span>
+</span><a name="line-39"></a><span>  </span><span class="hs-keyword">module</span><span> </span><a href="Foreign.CUDA.Solver.Error.html"><span class="hs-identifier">Foreign.CUDA.Solver.Error</span></a><span class="hs-special">,</span><span>
+</span><a name="line-40"></a><span>
+</span><a name="line-41"></a><span>  </span><span class="hs-comment">-- * Operations</span><span>
+</span><a name="line-42"></a><span>  </span><span class="hs-keyword">module</span><span> </span><a href="Foreign.CUDA.Solver.Sparse.High.html"><span class="hs-identifier">Foreign.CUDA.Solver.Sparse.High</span></a><span class="hs-special">,</span><span>
+</span><a name="line-43"></a><span>  </span><span class="hs-keyword">module</span><span> </span><a href="Foreign.CUDA.Solver.Sparse.Low.html"><span class="hs-identifier">Foreign.CUDA.Solver.Sparse.Low</span></a><span class="hs-special">,</span><span>
+</span><a name="line-44"></a><span>
+</span><a name="line-45"></a><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><a name="line-46"></a><span>
+</span><a name="line-47"></a><span class="hs-keyword">import</span><span> </span><a href="Foreign.CUDA.Solver.Sparse.Context.html"><span class="hs-identifier">Foreign.CUDA.Solver.Sparse.Context</span></a><span>                  </span><span class="hs-keyword">hiding</span><span> </span><span class="hs-special">(</span><span> </span><a href="Foreign.CUDA.Solver.Sparse.Context.html#useHandle"><span class="hs-identifier hs-var">useHandle</span></a><span> </span><span class="hs-special">)</span><span>
+</span><a name="line-48"></a><span class="hs-keyword">import</span><span> </span><a href="Foreign.CUDA.Solver.Sparse.Analysis.html"><span class="hs-identifier">Foreign.CUDA.Solver.Sparse.Analysis</span></a><span>
+</span><a name="line-49"></a><span class="hs-keyword">import</span><span> </span><a href="Foreign.CUDA.Solver.Sparse.Stream.html"><span class="hs-identifier">Foreign.CUDA.Solver.Sparse.Stream</span></a><span>
+</span><a name="line-50"></a><span class="hs-keyword">import</span><span> </span><a href="Foreign.CUDA.Solver.Error.html"><span class="hs-identifier">Foreign.CUDA.Solver.Error</span></a><span>
+</span><a name="line-51"></a><span>
+</span><a name="line-52"></a><span class="hs-keyword">import</span><span> </span><a href="Foreign.CUDA.Solver.Sparse.High.html"><span class="hs-identifier">Foreign.CUDA.Solver.Sparse.High</span></a><span>
+</span><a name="line-53"></a><span class="hs-keyword">import</span><span> </span><a href="Foreign.CUDA.Solver.Sparse.Low.html"><span class="hs-identifier">Foreign.CUDA.Solver.Sparse.Low</span></a><span>
+</span><a name="line-54"></a><span>
+</span><a name="line-55"></a></pre></body></html>

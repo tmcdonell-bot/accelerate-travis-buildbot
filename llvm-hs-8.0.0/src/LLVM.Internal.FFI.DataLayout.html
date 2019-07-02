@@ -1,0 +1,31 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-pragma">{-# LANGUAGE
+  ForeignFunctionInterface
+  #-}</span><span>
+</span><a name="line-4"></a><span>
+</span><a name="line-5"></a><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">LLVM.Internal.FFI.DataLayout</span><span> </span><span class="hs-keyword">where</span><span>
+</span><a name="line-6"></a><span>
+</span><a name="line-7"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">LLVM.Prelude</span><span>
+</span><a name="line-8"></a><span>
+</span><a name="line-9"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">Foreign.C.String</span><span>
+</span><a name="line-10"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">Foreign.Ptr</span><span>
+</span><a name="line-11"></a><span>
+</span><a name="line-12"></a><span class="hs-keyword">import</span><span> </span><a href="LLVM.Internal.FFI.LLVMCTypes.html"><span class="hs-identifier">LLVM.Internal.FFI.LLVMCTypes</span></a><span>
+</span><a name="line-13"></a><span class="hs-keyword">import</span><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html"><span class="hs-identifier">LLVM.Internal.FFI.PtrHierarchy</span></a><span>
+</span><a name="line-14"></a><span>
+</span><a name="line-15"></a><span class="hs-keyword">data</span><span> </span><a name="DataLayout"><a href="LLVM.Internal.FFI.DataLayout.html#DataLayout"><span class="hs-identifier">DataLayout</span></a></a><span>
+</span><a name="line-16"></a><span>
+</span><a name="line-17"></a><span class="hs-comment">-- Oooh those wacky LLVM C-API coders: C API called DataLayout TargetData.</span><span>
+</span><a name="line-18"></a><span class="hs-comment">-- Great. Just great.</span><span>
+</span><a name="line-19"></a><span>
+</span><a name="line-20"></a><span class="hs-keyword">foreign</span><span> </span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">ccall</span><span> </span><span class="hs-keyword">unsafe</span><span> </span><span class="hs-string">&quot;LLVMCreateTargetData&quot;</span><span> </span><span class="hs-identifier">createDataLayout</span><span> </span><span class="hs-glyph">::</span><span>
+</span><a name="line-21"></a><span>  </span><span class="hs-identifier hs-type">CString</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier hs-type">IO</span><span> </span><span class="hs-special">(</span><span class="hs-identifier hs-type">Ptr</span><span> </span><a href="LLVM.Internal.FFI.DataLayout.html#DataLayout"><span class="hs-identifier hs-type">DataLayout</span></a><span class="hs-special">)</span><span>
+</span><a name="line-22"></a><span>
+</span><a name="line-23"></a><span class="hs-keyword">foreign</span><span> </span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">ccall</span><span> </span><span class="hs-keyword">unsafe</span><span> </span><span class="hs-string">&quot;LLVMDisposeTargetData&quot;</span><span> </span><span class="hs-identifier">disposeDataLayout</span><span> </span><span class="hs-glyph">::</span><span>
+</span><a name="line-24"></a><span>  </span><span class="hs-identifier hs-type">Ptr</span><span> </span><a href="LLVM.Internal.FFI.DataLayout.html#DataLayout"><span class="hs-identifier hs-type">DataLayout</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier hs-type">IO</span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span>
+</span><a name="line-25"></a><span>
+</span><a name="line-26"></a><span class="hs-keyword">foreign</span><span> </span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">ccall</span><span> </span><span class="hs-keyword">unsafe</span><span> </span><span class="hs-string">&quot;LLVMCopyStringRepOfTargetData&quot;</span><span> </span><span class="hs-identifier">dataLayoutToString</span><span> </span><span class="hs-glyph">::</span><span>
+</span><a name="line-27"></a><span>  </span><span class="hs-identifier hs-type">Ptr</span><span> </span><a href="LLVM.Internal.FFI.DataLayout.html#DataLayout"><span class="hs-identifier hs-type">DataLayout</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier hs-type">IO</span><span> </span><span class="hs-special">(</span><a href="LLVM.Internal.FFI.LLVMCTypes.html#OwnerTransfered"><span class="hs-identifier hs-type">OwnerTransfered</span></a><span> </span><span class="hs-identifier hs-type">CString</span><span class="hs-special">)</span><span>
+</span><a name="line-28"></a><span>
+</span><a name="line-29"></a><span class="hs-keyword">foreign</span><span> </span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">ccall</span><span> </span><span class="hs-keyword">unsafe</span><span> </span><span class="hs-string">&quot;LLVMABISizeOfType&quot;</span><span> </span><span class="hs-identifier">getTypeAllocSize</span><span> </span><span class="hs-glyph">::</span><span>
+</span><a name="line-30"></a><span>  </span><span class="hs-identifier hs-type">Ptr</span><span> </span><a href="LLVM.Internal.FFI.DataLayout.html#DataLayout"><span class="hs-identifier hs-type">DataLayout</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier hs-type">Ptr</span><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#Type"><span class="hs-identifier hs-type">Type</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier hs-type">IO</span><span> </span><span class="hs-identifier hs-type">Word64</span><span>
+</span><a name="line-31"></a></pre></body></html>

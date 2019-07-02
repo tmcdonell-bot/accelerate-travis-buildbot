@@ -1,0 +1,168 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-pragma">{-# LANGUAGE GADTs               #-}</span><span>
+</span><a name="line-2"></a><span class="hs-pragma">{-# LANGUAGE ScopedTypeVariables #-}</span><span>
+</span><a name="line-3"></a><span class="hs-pragma">{-# LANGUAGE TemplateHaskell     #-}</span><span>
+</span><a name="line-4"></a><span class="hs-pragma">{-# LANGUAGE TypeApplications    #-}</span><span>
+</span><a name="line-5"></a><span class="hs-comment">-- |</span><span>
+</span><a name="line-6"></a><span class="hs-comment">-- Module      : Data.Array.Accelerate.LLVM.CodeGen.Native.Loop</span><span>
+</span><a name="line-7"></a><span class="hs-comment">-- Copyright   : [2014..2019] The Accelerate Team</span><span>
+</span><a name="line-8"></a><span class="hs-comment">-- License     : BSD3</span><span>
+</span><a name="line-9"></a><span class="hs-comment">--</span><span>
+</span><a name="line-10"></a><span class="hs-comment">-- Maintainer  : Trevor L. McDonell &lt;trevor.mcdonell@gmail.com&gt;</span><span>
+</span><a name="line-11"></a><span class="hs-comment">-- Stability   : experimental</span><span>
+</span><a name="line-12"></a><span class="hs-comment">-- Portability : non-portable (GHC extensions)</span><span>
+</span><a name="line-13"></a><span class="hs-comment">--</span><span>
+</span><a name="line-14"></a><span>
+</span><a name="line-15"></a><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">Data.Array.Accelerate.LLVM.Native.CodeGen.Loop</span><span>
+</span><a name="line-16"></a><span>  </span><span class="hs-keyword">where</span><span>
+</span><a name="line-17"></a><span>
+</span><a name="line-18"></a><span class="hs-comment">-- accelerate</span><span>
+</span><a name="line-19"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">Data.Array.Accelerate.Analysis.Match</span><span>
+</span><a name="line-20"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">Data.Array.Accelerate.Array.Sugar</span><span>
+</span><a name="line-21"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">Data.Array.Accelerate.Error</span><span>
+</span><a name="line-22"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">Data.Array.Accelerate.Type</span><span>
+</span><a name="line-23"></a><span>
+</span><a name="line-24"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">Data.Array.Accelerate.LLVM.CodeGen.Arithmetic</span><span>
+</span><a name="line-25"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">Data.Array.Accelerate.LLVM.CodeGen.Exp</span><span>
+</span><a name="line-26"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">Data.Array.Accelerate.LLVM.CodeGen.IR</span><span>
+</span><a name="line-27"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">Data.Array.Accelerate.LLVM.CodeGen.Monad</span><span>
+</span><a name="line-28"></a><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="hs-identifier">Data.Array.Accelerate.LLVM.CodeGen.Loop</span><span>            </span><span class="hs-keyword">as</span><span> </span><span class="hs-identifier">Loop</span><span>
+</span><a name="line-29"></a><span>
+</span><a name="line-30"></a><span class="hs-keyword">import</span><span> </span><a href="Data.Array.Accelerate.LLVM.Native.Target.html"><span class="hs-identifier">Data.Array.Accelerate.LLVM.Native.Target</span></a><span>                     </span><span class="hs-special">(</span><span> </span><a href="Data.Array.Accelerate.LLVM.Native.Target.html#Native"><span class="hs-identifier hs-type">Native</span></a><span> </span><span class="hs-special">)</span><span>
+</span><a name="line-31"></a><span>
+</span><a name="line-32"></a><span>
+</span><a name="line-33"></a><span class="hs-comment">-- | A standard 'for' loop, that steps from the start to end index executing the</span><span>
+</span><a name="line-34"></a><span class="hs-comment">-- given function at each index.</span><span>
+</span><a name="line-35"></a><span class="hs-comment">--</span><span>
+</span><a name="line-36"></a><span class="hs-identifier">imapFromTo</span><span>
+</span><a name="line-37"></a><span>    </span><span class="hs-glyph">::</span><span> </span><span class="hs-identifier hs-type">IR</span><span> </span><span class="hs-identifier hs-type">Int</span><span>                                   </span><span class="hs-comment">-- ^ starting index (inclusive)</span><span>
+</span><a name="line-38"></a><span>    </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier hs-type">IR</span><span> </span><span class="hs-identifier hs-type">Int</span><span>                                   </span><span class="hs-comment">-- ^ final index (exclusive)</span><span>
+</span><a name="line-39"></a><span>    </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">(</span><span class="hs-identifier hs-type">IR</span><span> </span><span class="hs-identifier hs-type">Int</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier hs-type">CodeGen</span><span> </span><a href="Data.Array.Accelerate.LLVM.Native.Target.html#Native"><span class="hs-identifier hs-type">Native</span></a><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span class="hs-special">)</span><span>            </span><span class="hs-comment">-- ^ apply at each index</span><span>
+</span><a name="line-40"></a><span>    </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier hs-type">CodeGen</span><span> </span><a href="Data.Array.Accelerate.LLVM.Native.Target.html#Native"><span class="hs-identifier hs-type">Native</span></a><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span>
+</span><a name="line-41"></a><a name="imapFromTo"><a href="Data.Array.Accelerate.LLVM.Native.CodeGen.Loop.html#imapFromTo"><span class="hs-identifier">imapFromTo</span></a></a><span> </span><a name="local-6989586621679425254"><a href="#local-6989586621679425254"><span class="hs-identifier">start</span></a></a><span> </span><a name="local-6989586621679425255"><a href="#local-6989586621679425255"><span class="hs-identifier">end</span></a></a><span> </span><a name="local-6989586621679425256"><a href="#local-6989586621679425256"><span class="hs-identifier">body</span></a></a><span> </span><span class="hs-glyph">=</span><span>
+</span><a name="line-42"></a><span>  </span><span class="hs-identifier hs-var">Loop.imapFromStepTo</span><span> </span><a href="#local-6989586621679425254"><span class="hs-identifier hs-var">start</span></a><span> </span><span class="hs-special">(</span><span class="hs-identifier hs-var">lift</span><span> </span><span class="hs-number">1</span><span class="hs-special">)</span><span> </span><a href="#local-6989586621679425255"><span class="hs-identifier hs-var">end</span></a><span> </span><a href="#local-6989586621679425256"><span class="hs-identifier hs-var">body</span></a><span>
+</span><a name="line-43"></a><span>
+</span><a name="line-44"></a><span>
+</span><a name="line-45"></a><span class="hs-comment">-- | Generate a series of nested 'for' loops which iterate between the start and</span><span>
+</span><a name="line-46"></a><span class="hs-comment">-- end indices of a given hyper-rectangle. LLVM is very good at vectorising</span><span>
+</span><a name="line-47"></a><span class="hs-comment">-- these kinds of nested loops, but not so good at vectorising the flattened</span><span>
+</span><a name="line-48"></a><span class="hs-comment">-- representation utilising to/from index.</span><span>
+</span><a name="line-49"></a><span class="hs-comment">--</span><span>
+</span><a name="line-50"></a><span class="hs-identifier">imapNestFromTo</span><span>
+</span><a name="line-51"></a><span>    </span><span class="hs-glyph">::</span><span> </span><span class="hs-keyword">forall</span><span> </span><a name="local-6989586621679425253"><a href="#local-6989586621679425253"><span class="hs-identifier">sh</span></a></a><span class="hs-operator">.</span><span> </span><span class="hs-identifier hs-type">Shape</span><span> </span><a href="#local-6989586621679425253"><span class="hs-identifier hs-type">sh</span></a><span>
+</span><a name="line-52"></a><span>    </span><span class="hs-glyph">=&gt;</span><span> </span><span class="hs-identifier hs-type">IR</span><span> </span><a href="#local-6989586621679425253"><span class="hs-identifier hs-type">sh</span></a><span>                                    </span><span class="hs-comment">-- ^ initial index (inclusive)</span><span>
+</span><a name="line-53"></a><span>    </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier hs-type">IR</span><span> </span><a href="#local-6989586621679425253"><span class="hs-identifier hs-type">sh</span></a><span>                                    </span><span class="hs-comment">-- ^ final index (exclusive)</span><span>
+</span><a name="line-54"></a><span>    </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier hs-type">IR</span><span> </span><a href="#local-6989586621679425253"><span class="hs-identifier hs-type">sh</span></a><span>                                    </span><span class="hs-comment">-- ^ total array extent</span><span>
+</span><a name="line-55"></a><span>    </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">(</span><span class="hs-identifier hs-type">IR</span><span> </span><a href="#local-6989586621679425253"><span class="hs-identifier hs-type">sh</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier hs-type">IR</span><span> </span><span class="hs-identifier hs-type">Int</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier hs-type">CodeGen</span><span> </span><a href="Data.Array.Accelerate.LLVM.Native.Target.html#Native"><span class="hs-identifier hs-type">Native</span></a><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span class="hs-special">)</span><span>   </span><span class="hs-comment">-- ^ apply at each index</span><span>
+</span><a name="line-56"></a><span>    </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier hs-type">CodeGen</span><span> </span><a href="Data.Array.Accelerate.LLVM.Native.Target.html#Native"><span class="hs-identifier hs-type">Native</span></a><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span>
+</span><a name="line-57"></a><a name="imapNestFromTo"><a href="Data.Array.Accelerate.LLVM.Native.CodeGen.Loop.html#imapNestFromTo"><span class="hs-identifier">imapNestFromTo</span></a></a><span> </span><span class="hs-special">(</span><span class="hs-identifier hs-var">IR</span><span> </span><a name="local-6989586621679425257"><a href="#local-6989586621679425257"><span class="hs-identifier">start</span></a></a><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="hs-identifier hs-var">IR</span><span> </span><a name="local-6989586621679425258"><a href="#local-6989586621679425258"><span class="hs-identifier">end</span></a></a><span class="hs-special">)</span><span> </span><a name="local-6989586621679425259"><a href="#local-6989586621679425259"><span class="hs-identifier">extent</span></a></a><span> </span><a name="local-6989586621679425260"><a href="#local-6989586621679425260"><span class="hs-identifier">body</span></a></a><span> </span><span class="hs-glyph">=</span><span>
+</span><a name="line-58"></a><span>  </span><a href="#local-6989586621679425262"><span class="hs-identifier hs-var">go</span></a><span> </span><span class="hs-special">(</span><span class="hs-identifier hs-var">eltType</span><span> </span><span class="hs-glyph">@</span><a href="#local-6989586621679425253"><span class="hs-identifier hs-type">sh</span></a><span class="hs-special">)</span><span> </span><a href="#local-6989586621679425257"><span class="hs-identifier hs-var">start</span></a><span> </span><a href="#local-6989586621679425258"><span class="hs-identifier hs-var">end</span></a><span> </span><span class="hs-special">(</span><a href="#local-6989586621679425261"><span class="hs-identifier hs-var">body'</span></a><span> </span><span class="hs-operator hs-var">.</span><span> </span><span class="hs-identifier hs-var">IR</span><span class="hs-special">)</span><span>
+</span><a name="line-59"></a><span>  </span><span class="hs-keyword">where</span><span>
+</span><a name="line-60"></a><span>    </span><a name="local-6989586621679425261"><a href="#local-6989586621679425261"><span class="hs-identifier">body'</span></a></a><span> </span><a name="local-6989586621679425264"><a href="#local-6989586621679425264"><span class="hs-identifier">ix</span></a></a><span> </span><span class="hs-glyph">=</span><span> </span><a href="#local-6989586621679425260"><span class="hs-identifier hs-var">body</span></a><span> </span><a href="#local-6989586621679425264"><span class="hs-identifier hs-var">ix</span></a><span> </span><span class="hs-operator hs-var">=&lt;&lt;</span><span> </span><span class="hs-identifier hs-var">intOfIndex</span><span> </span><a href="#local-6989586621679425259"><span class="hs-identifier hs-var">extent</span></a><span> </span><a href="#local-6989586621679425264"><span class="hs-identifier hs-var">ix</span></a><span>
+</span><a name="line-61"></a><span>
+</span><a name="line-62"></a><span>    </span><span class="hs-identifier">go</span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-identifier hs-type">TupleType</span><span> </span><a href="#local-6989586621679425263"><span class="hs-identifier hs-type">t</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier hs-type">Operands</span><span> </span><a href="#local-6989586621679425263"><span class="hs-identifier hs-type">t</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier hs-type">Operands</span><span> </span><a href="#local-6989586621679425263"><span class="hs-identifier hs-type">t</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">(</span><span class="hs-identifier hs-type">Operands</span><span> </span><a href="#local-6989586621679425263"><span class="hs-identifier hs-type">t</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier hs-type">CodeGen</span><span> </span><a href="Data.Array.Accelerate.LLVM.Native.Target.html#Native"><span class="hs-identifier hs-type">Native</span></a><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier hs-type">CodeGen</span><span> </span><a href="Data.Array.Accelerate.LLVM.Native.Target.html#Native"><span class="hs-identifier hs-type">Native</span></a><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span>
+</span><a name="line-63"></a><span>    </span><a name="local-6989586621679425262"><a href="#local-6989586621679425262"><span class="hs-identifier">go</span></a></a><span> </span><span class="hs-identifier hs-var">TypeRunit</span><span> </span><span class="hs-identifier hs-var">OP_Unit</span><span> </span><span class="hs-identifier hs-var">OP_Unit</span><span> </span><a name="local-6989586621679425265"><a href="#local-6989586621679425265"><span class="hs-identifier">k</span></a></a><span>
+</span><a name="line-64"></a><span>      </span><span class="hs-glyph">=</span><span> </span><a href="#local-6989586621679425265"><span class="hs-identifier hs-var">k</span></a><span> </span><span class="hs-identifier hs-var">OP_Unit</span><span>
+</span><a name="line-65"></a><span>
+</span><a name="line-66"></a><span>    </span><span class="hs-identifier">go</span><span> </span><span class="hs-special">(</span><span class="hs-identifier hs-var">TypeRpair</span><span> </span><a name="local-6989586621679425266"><a href="#local-6989586621679425266"><span class="hs-identifier">tsh</span></a></a><span> </span><a name="local-6989586621679425267"><a href="#local-6989586621679425267"><span class="hs-identifier">tsz</span></a></a><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="hs-identifier hs-var">OP_Pair</span><span> </span><a name="local-6989586621679425268"><a href="#local-6989586621679425268"><span class="hs-identifier">ssh</span></a></a><span> </span><a name="local-6989586621679425269"><a href="#local-6989586621679425269"><span class="hs-identifier">ssz</span></a></a><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="hs-identifier hs-var">OP_Pair</span><span> </span><a name="local-6989586621679425270"><a href="#local-6989586621679425270"><span class="hs-identifier">esh</span></a></a><span> </span><a name="local-6989586621679425271"><a href="#local-6989586621679425271"><span class="hs-identifier">esz</span></a></a><span class="hs-special">)</span><span> </span><a name="local-6989586621679425272"><a href="#local-6989586621679425272"><span class="hs-identifier">k</span></a></a><span>
+</span><a name="line-67"></a><span>      </span><span class="hs-glyph">|</span><span> </span><span class="hs-identifier hs-var">TypeRscalar</span><span> </span><a name="local-6989586621679425273"><a href="#local-6989586621679425273"><span class="hs-identifier">t</span></a></a><span> </span><span class="hs-glyph">&lt;-</span><span> </span><a href="#local-6989586621679425267"><span class="hs-identifier hs-var">tsz</span></a><span>
+</span><a name="line-68"></a><span>      </span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-var">Just</span><span> </span><span class="hs-identifier hs-var">Refl</span><span>     </span><span class="hs-glyph">&lt;-</span><span> </span><span class="hs-identifier hs-var">matchScalarType</span><span> </span><a href="#local-6989586621679425273"><span class="hs-identifier hs-var">t</span></a><span> </span><span class="hs-special">(</span><span class="hs-identifier hs-var">scalarType</span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-identifier hs-type">ScalarType</span><span> </span><span class="hs-identifier hs-type">Int</span><span class="hs-special">)</span><span>
+</span><a name="line-69"></a><span>      </span><span class="hs-glyph">=</span><span> </span><a href="#local-6989586621679425262"><span class="hs-identifier hs-var">go</span></a><span> </span><a href="#local-6989586621679425266"><span class="hs-identifier hs-var">tsh</span></a><span> </span><a href="#local-6989586621679425268"><span class="hs-identifier hs-var">ssh</span></a><span> </span><a href="#local-6989586621679425270"><span class="hs-identifier hs-var">esh</span></a><span>
+</span><a name="line-70"></a><span>      </span><span class="hs-operator hs-var">$</span><span> </span><span class="hs-glyph">\</span><a name="local-6989586621679425274"><a href="#local-6989586621679425274"><span class="hs-identifier">sz</span></a></a><span>      </span><span class="hs-glyph">-&gt;</span><span> </span><a href="Data.Array.Accelerate.LLVM.Native.CodeGen.Loop.html#imapFromTo"><span class="hs-identifier hs-var">imapFromTo</span></a><span> </span><span class="hs-special">(</span><span class="hs-identifier hs-var">IR</span><span> </span><a href="#local-6989586621679425269"><span class="hs-identifier hs-var">ssz</span></a><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="hs-identifier hs-var">IR</span><span> </span><a href="#local-6989586621679425271"><span class="hs-identifier hs-var">esz</span></a><span class="hs-special">)</span><span>
+</span><a name="line-71"></a><span>      </span><span class="hs-operator hs-var">$</span><span> </span><span class="hs-glyph">\</span><span class="hs-special">(</span><span class="hs-identifier hs-var">IR</span><span> </span><a name="local-6989586621679425275"><a href="#local-6989586621679425275"><span class="hs-identifier">i</span></a></a><span class="hs-special">)</span><span>  </span><span class="hs-glyph">-&gt;</span><span> </span><a href="#local-6989586621679425272"><span class="hs-identifier hs-var">k</span></a><span> </span><span class="hs-special">(</span><span class="hs-identifier hs-var">OP_Pair</span><span> </span><a href="#local-6989586621679425274"><span class="hs-identifier hs-var">sz</span></a><span> </span><a href="#local-6989586621679425275"><span class="hs-identifier hs-var">i</span></a><span class="hs-special">)</span><span>
+</span><a name="line-72"></a><span>
+</span><a name="line-73"></a><span>    </span><span class="hs-identifier">go</span><span> </span><span class="hs-identifier">_</span><span> </span><span class="hs-identifier">_</span><span> </span><span class="hs-identifier">_</span><span> </span><span class="hs-identifier">_</span><span>
+</span><a name="line-74"></a><span>      </span><span class="hs-glyph">=</span><span> </span><span class="">$internalError</span><span> </span><span class="hs-string">&quot;imapNestFromTo&quot;</span><span> </span><span class="hs-string">&quot;expected shape with Int components&quot;</span><span>
+</span><a name="line-75"></a><span>
+</span><a name="line-76"></a><span>
+</span><a name="line-77"></a><span class="hs-comment">{--
+-- TLM: this version (seems to) compute the corresponding linear index as it
+--      goes. We need to compare it against the above implementation to see if
+--      there are any advantages.
+--
+imapNestFromTo'
+    :: forall sh. Shape sh
+    =&gt; IR sh
+    -&gt; IR sh
+    -&gt; IR sh
+    -&gt; (IR sh -&gt; IR Int -&gt; CodeGen Native ())
+    -&gt; CodeGen Native ()
+imapNestFromTo' (IR start) (IR end) (IR extent) body = do
+  startl &lt;- intOfIndex (IR extent :: IR sh) (IR start)
+  void $ go (eltType @sh) start end extent (int 1) startl body'
+  where
+    body' :: Operands (EltRepr sh) -&gt; IR Int -&gt; CodeGen Native (IR Int)
+    body' ix l = body (IR ix) l &gt;&gt; add numType (int 1) l
+
+    go :: TupleType t
+       -&gt; Operands t
+       -&gt; Operands t
+       -&gt; Operands t
+       -&gt; IR Int
+       -&gt; IR Int
+       -&gt; (Operands t -&gt; IR Int -&gt; CodeGen Native (IR Int))
+       -&gt; CodeGen Native (IR Int)
+    go TypeRunit OP_Unit OP_Unit OP_Unit _delta l k
+      = k OP_Unit l
+
+    go (TypeRpair tsh tsz) (OP_Pair ssh ssz) (OP_Pair esh esz) (OP_Pair exh exz) delta l k
+      | TypeRscalar t &lt;- tsz
+      , Just Refl     &lt;- matchScalarType t (scalarType :: ScalarType Int)
+      = do
+          delta' &lt;- mul numType delta (IR exz)
+          go tsh ssh esh exh delta' l $ \sz ll -&gt; do
+            Loop.iterFromStepTo (IR ssz) (int 1) (IR esz) ll $ \(IR i) l' -&gt;
+              k (OP_Pair sz i) l'
+            add numType ll delta'
+
+    go _ _ _ _ _ _ _
+      = $internalError &quot;imapNestFromTo'&quot; &quot;expected shape with Int components&quot;
+--}</span><span>
+</span><a name="line-120"></a><span>
+</span><a name="line-121"></a><span class="hs-comment">{--
+-- | Generate a series of nested 'for' loops which iterate between the start and
+-- end indices of a given hyper-rectangle. LLVM is very good at vectorising
+-- these kinds of nested loops, but not so good at vectorising the flattened
+-- representation utilising to/from index.
+--
+imapNestFromStepTo
+    :: forall sh. Shape sh
+    =&gt; IR sh                                    -- ^ initial index (inclusive)
+    -&gt; IR sh                                    -- ^ steps
+    -&gt; IR sh                                    -- ^ final index (exclusive)
+    -&gt; IR sh                                    -- ^ total array extent
+    -&gt; (IR sh -&gt; IR Int -&gt; CodeGen Native ())   -- ^ apply at each index
+    -&gt; CodeGen Native ()
+imapNestFromStepTo (IR start) (IR steps) (IR end) extent body =
+  go (eltType @sh) start steps end (body' . IR)
+  where
+    body' ix = body ix =&lt;&lt; intOfIndex extent ix
+
+    go :: TupleType t -&gt; Operands t -&gt; Operands t -&gt; Operands t -&gt; (Operands t -&gt; CodeGen Native ()) -&gt; CodeGen Native ()
+    go TypeRunit OP_Unit OP_Unit OP_Unit k
+      = k OP_Unit
+
+    go (TypeRpair tsh tsz) (OP_Pair ssh ssz) (OP_Pair sts stz) (OP_Pair esh esz) k
+      | TypeRscalar t &lt;- tsz
+      , Just Refl     &lt;- matchScalarType t (scalarType :: ScalarType Int)
+      = go tsh ssh sts esh
+      $ \sz      -&gt; Loop.imapFromStepTo (IR ssz :: IR Int) (IR stz) (IR esz)
+      $ \(IR i)  -&gt; k (OP_Pair sz i)
+
+    go _ _ _ _ _
+      = $internalError &quot;imapNestFromTo&quot; &quot;expected shape with Int components&quot;
+--}</span><span>
+</span><a name="line-154"></a><span>
+</span><a name="line-155"></a><span class="hs-comment">-- | Iterate with an accumulator between the start and end index, executing the</span><span>
+</span><a name="line-156"></a><span class="hs-comment">-- given function at each.</span><span>
+</span><a name="line-157"></a><span class="hs-comment">--</span><span>
+</span><a name="line-158"></a><span class="hs-identifier">iterFromTo</span><span>
+</span><a name="line-159"></a><span>    </span><span class="hs-glyph">::</span><span> </span><span class="hs-identifier hs-type">Elt</span><span> </span><a href="#local-6989586621679425252"><span class="hs-identifier hs-type">a</span></a><span>
+</span><a name="line-160"></a><span>    </span><span class="hs-glyph">=&gt;</span><span> </span><span class="hs-identifier hs-type">IR</span><span> </span><span class="hs-identifier hs-type">Int</span><span>                                       </span><span class="hs-comment">-- ^ starting index (inclusive)</span><span>
+</span><a name="line-161"></a><span>    </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier hs-type">IR</span><span> </span><span class="hs-identifier hs-type">Int</span><span>                                       </span><span class="hs-comment">-- ^ final index (exclusive)</span><span>
+</span><a name="line-162"></a><span>    </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier hs-type">IR</span><span> </span><a href="#local-6989586621679425252"><span class="hs-identifier hs-type">a</span></a><span>                                         </span><span class="hs-comment">-- ^ initial value</span><span>
+</span><a name="line-163"></a><span>    </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">(</span><span class="hs-identifier hs-type">IR</span><span> </span><span class="hs-identifier hs-type">Int</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier hs-type">IR</span><span> </span><a href="#local-6989586621679425252"><span class="hs-identifier hs-type">a</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier hs-type">CodeGen</span><span> </span><a href="Data.Array.Accelerate.LLVM.Native.Target.html#Native"><span class="hs-identifier hs-type">Native</span></a><span> </span><span class="hs-special">(</span><span class="hs-identifier hs-type">IR</span><span> </span><a href="#local-6989586621679425252"><span class="hs-identifier hs-type">a</span></a><span class="hs-special">)</span><span class="hs-special">)</span><span>    </span><span class="hs-comment">-- ^ apply at each index</span><span>
+</span><a name="line-164"></a><span>    </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier hs-type">CodeGen</span><span> </span><a href="Data.Array.Accelerate.LLVM.Native.Target.html#Native"><span class="hs-identifier hs-type">Native</span></a><span> </span><span class="hs-special">(</span><span class="hs-identifier hs-type">IR</span><span> </span><a href="#local-6989586621679425252"><span class="hs-identifier hs-type">a</span></a><span class="hs-special">)</span><span>
+</span><a name="line-165"></a><a name="iterFromTo"><a href="Data.Array.Accelerate.LLVM.Native.CodeGen.Loop.html#iterFromTo"><span class="hs-identifier">iterFromTo</span></a></a><span> </span><a name="local-6989586621679425285"><a href="#local-6989586621679425285"><span class="hs-identifier">start</span></a></a><span> </span><a name="local-6989586621679425286"><a href="#local-6989586621679425286"><span class="hs-identifier">end</span></a></a><span> </span><a name="local-6989586621679425287"><a href="#local-6989586621679425287"><span class="hs-identifier">seed</span></a></a><span> </span><a name="local-6989586621679425288"><a href="#local-6989586621679425288"><span class="hs-identifier">body</span></a></a><span> </span><span class="hs-glyph">=</span><span>
+</span><a name="line-166"></a><span>  </span><span class="hs-identifier hs-var">Loop.iterFromStepTo</span><span> </span><a href="#local-6989586621679425285"><span class="hs-identifier hs-var">start</span></a><span> </span><span class="hs-special">(</span><span class="hs-identifier hs-var">lift</span><span> </span><span class="hs-number">1</span><span class="hs-special">)</span><span> </span><a href="#local-6989586621679425286"><span class="hs-identifier hs-var">end</span></a><span> </span><a href="#local-6989586621679425287"><span class="hs-identifier hs-var">seed</span></a><span> </span><a href="#local-6989586621679425288"><span class="hs-identifier hs-var">body</span></a><span>
+</span><a name="line-167"></a><span>
+</span><a name="line-168"></a></pre></body></html>

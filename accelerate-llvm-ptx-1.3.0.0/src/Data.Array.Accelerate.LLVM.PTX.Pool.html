@@ -1,0 +1,194 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-pragma">{-# LANGUAGE ScopedTypeVariables #-}</span><span>
+</span><a name="line-2"></a><span class="hs-comment">-- |</span><span>
+</span><a name="line-3"></a><span class="hs-comment">-- Module      : Data.Array.Accelerate.LLVM.PTX.Pool</span><span>
+</span><a name="line-4"></a><span class="hs-comment">-- Copyright   : [2017..2019] The Accelerate Team</span><span>
+</span><a name="line-5"></a><span class="hs-comment">-- License     : BSD3</span><span>
+</span><a name="line-6"></a><span class="hs-comment">--</span><span>
+</span><a name="line-7"></a><span class="hs-comment">-- Maintainer  : Trevor L. McDonell &lt;trevor.mcdonell@gmail.com&gt;</span><span>
+</span><a name="line-8"></a><span class="hs-comment">-- Stability   : experimental</span><span>
+</span><a name="line-9"></a><span class="hs-comment">-- Portability : non-portable (GHC extensions)</span><span>
+</span><a name="line-10"></a><span class="hs-comment">--</span><span>
+</span><a name="line-11"></a><span>
+</span><a name="line-12"></a><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">Data.Array.Accelerate.LLVM.PTX.Pool</span><span> </span><span class="hs-special">(</span><span>
+</span><a name="line-13"></a><span>
+</span><a name="line-14"></a><span>  </span><a href="Data.Array.Accelerate.LLVM.PTX.Pool.html#Pool"><span class="hs-identifier hs-type">Pool</span></a><span class="hs-special">,</span><span>
+</span><a name="line-15"></a><span>  </span><a href="Data.Array.Accelerate.LLVM.PTX.Pool.html#create"><span class="hs-identifier hs-var">create</span></a><span class="hs-special">,</span><span> </span><a href="Data.Array.Accelerate.LLVM.PTX.Pool.html#with"><span class="hs-identifier hs-var">with</span></a><span class="hs-special">,</span><span> </span><a href="Data.Array.Accelerate.LLVM.PTX.Pool.html#take"><span class="hs-identifier hs-var">take</span></a><span class="hs-special">,</span><span> </span><a href="Data.Array.Accelerate.LLVM.PTX.Pool.html#put"><span class="hs-identifier hs-var">put</span></a><span class="hs-special">,</span><span>
+</span><a name="line-16"></a><span>  </span><a href="Data.Array.Accelerate.LLVM.PTX.Pool.html#unsafeWith"><span class="hs-identifier hs-var">unsafeWith</span></a><span class="hs-special">,</span><span>
+</span><a name="line-17"></a><span>
+</span><a name="line-18"></a><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><a name="line-19"></a><span>
+</span><a name="line-20"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">Control.Concurrent.MVar</span><span>
+</span><a name="line-21"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">Control.Exception</span><span>
+</span><a name="line-22"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">Data.Maybe</span><span>
+</span><a name="line-23"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">System.IO.Unsafe</span><span>
+</span><a name="line-24"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">Prelude</span><span>                                                      </span><span class="hs-keyword">hiding</span><span> </span><span class="hs-special">(</span><span> </span><span class="hs-identifier hs-var">take</span><span> </span><span class="hs-special">)</span><span>
+</span><a name="line-25"></a><span>
+</span><a name="line-26"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">Data.Sequence</span><span>                                                </span><span class="hs-special">(</span><span> </span><span class="hs-identifier hs-type">Seq</span><span> </span><span class="hs-special">)</span><span>
+</span><a name="line-27"></a><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="hs-identifier">Data.Sequence</span><span>                                      </span><span class="hs-keyword">as</span><span> </span><span class="hs-identifier">Seq</span><span>
+</span><a name="line-28"></a><span>
+</span><a name="line-29"></a><span>
+</span><a name="line-30"></a><span class="hs-comment">-- | An item pool</span><span>
+</span><a name="line-31"></a><span class="hs-comment">--</span><span>
+</span><a name="line-32"></a><span class="hs-comment">-- Based on 'Control.Concurrent.QSem'</span><span>
+</span><a name="line-33"></a><span class="hs-comment">--</span><span>
+</span><a name="line-34"></a><span class="hs-keyword">data</span><span> </span><a name="Pool"><a href="Data.Array.Accelerate.LLVM.PTX.Pool.html#Pool"><span class="hs-identifier">Pool</span></a></a><span> </span><a name="local-6989586621679149486"><a href="#local-6989586621679149486"><span class="hs-identifier">a</span></a></a><span> </span><span class="hs-glyph">=</span><span> </span><a name="Pool"><a href="Data.Array.Accelerate.LLVM.PTX.Pool.html#Pool"><span class="hs-identifier">Pool</span></a></a><span> </span><span class="hs-pragma">{-# UNPACK</span><span> </span><span class="hs-pragma">#-}</span><span> </span><span class="hs-glyph">!</span><span class="hs-special">(</span><span class="hs-identifier hs-type">MVar</span><span> </span><span class="hs-special">(</span><span class="hs-special">[</span><a href="#local-6989586621679149486"><span class="hs-identifier hs-type">a</span></a><span class="hs-special">]</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-type">Seq</span><span> </span><span class="hs-special">(</span><span class="hs-identifier hs-type">MVar</span><span> </span><a href="#local-6989586621679149486"><span class="hs-identifier hs-type">a</span></a><span class="hs-special">)</span><span class="hs-special">)</span><span class="hs-special">)</span><span>
+</span><a name="line-35"></a><span>
+</span><a name="line-36"></a><span class="hs-comment">-- The semaphore state (as, bs):</span><span>
+</span><a name="line-37"></a><span class="hs-comment">--</span><span>
+</span><a name="line-38"></a><span class="hs-comment">-- * as   the currently available resources</span><span>
+</span><a name="line-39"></a><span class="hs-comment">--</span><span>
+</span><a name="line-40"></a><span class="hs-comment">-- * bs   is the queue of blocked threads, stored in FIFO order. New threads are</span><span>
+</span><a name="line-41"></a><span class="hs-comment">--        queued onto the right, and threads are woken up from the left.</span><span>
+</span><a name="line-42"></a><span class="hs-comment">--</span><span>
+</span><a name="line-43"></a><span class="hs-comment">-- A blocked thread is represented by an empty (MVar a). To unblock the thread,</span><span>
+</span><a name="line-44"></a><span class="hs-comment">-- we give it a resource via its MVar.</span><span>
+</span><a name="line-45"></a><span class="hs-comment">--</span><span>
+</span><a name="line-46"></a><span class="hs-comment">-- A thread can deque itself by also putting () into the MVar, which it must do</span><span>
+</span><a name="line-47"></a><span class="hs-comment">-- if it receives an exception while blocked in 'take'. This means that when</span><span>
+</span><a name="line-48"></a><span class="hs-comment">-- unblocking a thread in 'put' we must first check whether the MVar is already</span><span>
+</span><a name="line-49"></a><span class="hs-comment">-- full; the MVar lock on the semaphore itself resolves race conditions between</span><span>
+</span><a name="line-50"></a><span class="hs-comment">-- put and a thread attempting to deque itself.</span><span>
+</span><a name="line-51"></a><span class="hs-comment">--</span><span>
+</span><a name="line-52"></a><span>
+</span><a name="line-53"></a><span class="hs-comment">-- | Build a new pool with the supplied initial quantity.</span><span>
+</span><a name="line-54"></a><span class="hs-comment">--</span><span>
+</span><a name="line-55"></a><span class="hs-identifier">create</span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">[</span><a href="#local-6989586621679149494"><span class="hs-identifier hs-type">a</span></a><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier hs-type">IO</span><span> </span><span class="hs-special">(</span><a href="Data.Array.Accelerate.LLVM.PTX.Pool.html#Pool"><span class="hs-identifier hs-type">Pool</span></a><span> </span><a href="#local-6989586621679149494"><span class="hs-identifier hs-type">a</span></a><span class="hs-special">)</span><span>
+</span><a name="line-56"></a><a name="create"><a href="Data.Array.Accelerate.LLVM.PTX.Pool.html#create"><span class="hs-identifier">create</span></a></a><span> </span><a name="local-6989586621679149495"><a href="#local-6989586621679149495"><span class="hs-identifier">initial</span></a></a><span> </span><span class="hs-glyph">=</span><span>
+</span><a name="line-57"></a><span>  </span><a href="Data.Array.Accelerate.LLVM.PTX.Pool.html#Pool"><span class="hs-identifier hs-var">Pool</span></a><span> </span><span class="hs-operator hs-var">&lt;$&gt;</span><span> </span><span class="hs-identifier hs-var">newMVar</span><span> </span><span class="hs-special">(</span><a href="#local-6989586621679149495"><span class="hs-identifier hs-var">initial</span></a><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-var">Seq.empty</span><span class="hs-special">)</span><span>
+</span><a name="line-58"></a><span>
+</span><a name="line-59"></a><span class="hs-comment">-- | Wait for a unit of the resource to become available, and run the supplied</span><span>
+</span><a name="line-60"></a><span class="hs-comment">-- action given that resource.</span><span>
+</span><a name="line-61"></a><span class="hs-comment">--</span><span>
+</span><a name="line-62"></a><span class="hs-identifier">with</span><span> </span><span class="hs-glyph">::</span><span> </span><a href="Data.Array.Accelerate.LLVM.PTX.Pool.html#Pool"><span class="hs-identifier hs-type">Pool</span></a><span> </span><a href="#local-6989586621679149492"><span class="hs-identifier hs-type">a</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">(</span><a href="#local-6989586621679149492"><span class="hs-identifier hs-type">a</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier hs-type">IO</span><span> </span><a href="#local-6989586621679149493"><span class="hs-identifier hs-type">b</span></a><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier hs-type">IO</span><span> </span><a href="#local-6989586621679149493"><span class="hs-identifier hs-type">b</span></a><span>
+</span><a name="line-63"></a><a name="with"><a href="Data.Array.Accelerate.LLVM.PTX.Pool.html#with"><span class="hs-identifier">with</span></a></a><span> </span><a name="local-6989586621679149510"><a href="#local-6989586621679149510"><span class="hs-identifier">pool</span></a></a><span> </span><a name="local-6989586621679149511"><a href="#local-6989586621679149511"><span class="hs-identifier">action</span></a></a><span> </span><span class="hs-glyph">=</span><span>
+</span><a name="line-64"></a><span>  </span><span class="hs-identifier hs-var">bracket</span><span> </span><span class="hs-special">(</span><a href="Data.Array.Accelerate.LLVM.PTX.Pool.html#take"><span class="hs-identifier hs-var">take</span></a><span> </span><a href="#local-6989586621679149510"><span class="hs-identifier hs-var">pool</span></a><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><a href="Data.Array.Accelerate.LLVM.PTX.Pool.html#put"><span class="hs-identifier hs-var">put</span></a><span> </span><a href="#local-6989586621679149510"><span class="hs-identifier hs-var">pool</span></a><span class="hs-special">)</span><span> </span><a href="#local-6989586621679149511"><span class="hs-identifier hs-var">action</span></a><span>
+</span><a name="line-65"></a><span>
+</span><a name="line-66"></a><span class="hs-identifier">unsafeWith</span><span> </span><span class="hs-glyph">::</span><span> </span><a href="Data.Array.Accelerate.LLVM.PTX.Pool.html#Pool"><span class="hs-identifier hs-type">Pool</span></a><span> </span><a href="#local-6989586621679149490"><span class="hs-identifier hs-type">a</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">(</span><a href="#local-6989586621679149490"><span class="hs-identifier hs-type">a</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><a href="#local-6989586621679149491"><span class="hs-identifier hs-type">b</span></a><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><a href="#local-6989586621679149491"><span class="hs-identifier hs-type">b</span></a><span>
+</span><a name="line-67"></a><a name="unsafeWith"><a href="Data.Array.Accelerate.LLVM.PTX.Pool.html#unsafeWith"><span class="hs-identifier">unsafeWith</span></a></a><span> </span><a name="local-6989586621679149512"><a href="#local-6989586621679149512"><span class="hs-identifier">pool</span></a></a><span> </span><a name="local-6989586621679149513"><a href="#local-6989586621679149513"><span class="hs-identifier">action</span></a></a><span> </span><span class="hs-glyph">=</span><span>
+</span><a name="line-68"></a><span>  </span><span class="hs-identifier hs-var">unsafePerformIO</span><span> </span><span class="hs-operator hs-var">$</span><span> </span><a href="Data.Array.Accelerate.LLVM.PTX.Pool.html#with"><span class="hs-identifier hs-var">with</span></a><span> </span><a href="#local-6989586621679149512"><span class="hs-identifier hs-var">pool</span></a><span> </span><span class="hs-special">(</span><span class="hs-identifier hs-var">evaluate</span><span> </span><span class="hs-operator hs-var">.</span><span> </span><a href="#local-6989586621679149513"><span class="hs-identifier hs-var">action</span></a><span class="hs-special">)</span><span>
+</span><a name="line-69"></a><span>
+</span><a name="line-70"></a><span>
+</span><a name="line-71"></a><span class="hs-comment">-- | Wait for an item from the pool to become available.</span><span>
+</span><a name="line-72"></a><span class="hs-comment">--</span><span>
+</span><a name="line-73"></a><span class="hs-identifier">take</span><span> </span><span class="hs-glyph">::</span><span> </span><a href="Data.Array.Accelerate.LLVM.PTX.Pool.html#Pool"><span class="hs-identifier hs-type">Pool</span></a><span> </span><a href="#local-6989586621679149489"><span class="hs-identifier hs-type">a</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier hs-type">IO</span><span> </span><a href="#local-6989586621679149489"><span class="hs-identifier hs-type">a</span></a><span>
+</span><a name="line-74"></a><a name="take"><a href="Data.Array.Accelerate.LLVM.PTX.Pool.html#take"><span class="hs-identifier">take</span></a></a><span> </span><span class="hs-special">(</span><a href="Data.Array.Accelerate.LLVM.PTX.Pool.html#Pool"><span class="hs-identifier hs-var">Pool</span></a><span> </span><a name="local-6989586621679149662"><a href="#local-6989586621679149662"><span class="hs-identifier">ref</span></a></a><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span>
+</span><a name="line-75"></a><span>  </span><span class="hs-identifier hs-var">mask_</span><span> </span><span class="hs-operator hs-var">$</span><span> </span><span class="hs-keyword">do</span><span>
+</span><a name="line-76"></a><span>    </span><span class="hs-special">(</span><a name="local-6989586621679149791"><a href="#local-6989586621679149791"><span class="hs-identifier">r</span></a></a><span class="hs-special">,</span><span> </span><a name="local-6989586621679149792"><a href="#local-6989586621679149792"><span class="hs-identifier">bs</span></a></a><span class="hs-special">)</span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="hs-identifier hs-var">takeMVar</span><span> </span><a href="#local-6989586621679149662"><span class="hs-identifier hs-var">ref</span></a><span>
+</span><a name="line-77"></a><span>    </span><span class="hs-keyword">case</span><span> </span><a href="#local-6989586621679149791"><span class="hs-identifier hs-var">r</span></a><span> </span><span class="hs-keyword">of</span><span>
+</span><a name="line-78"></a><span>      </span><span class="hs-special">[</span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">do</span><span>
+</span><a name="line-79"></a><span>        </span><a name="local-6989586621679149793"><a href="#local-6989586621679149793"><span class="hs-identifier">b</span></a></a><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="hs-identifier hs-var">newEmptyMVar</span><span>
+</span><a name="line-80"></a><span>        </span><span class="hs-identifier hs-var">putMVar</span><span> </span><a href="#local-6989586621679149662"><span class="hs-identifier hs-var">ref</span></a><span> </span><span class="hs-special">(</span><a href="#local-6989586621679149791"><span class="hs-identifier hs-var">r</span></a><span class="hs-special">,</span><span> </span><a href="#local-6989586621679149792"><span class="hs-identifier hs-var">bs</span></a><span> </span><span class="hs-operator hs-var">Seq.|&gt;</span><span> </span><a href="#local-6989586621679149793"><span class="hs-identifier hs-var">b</span></a><span class="hs-special">)</span><span>
+</span><a name="line-81"></a><span>        </span><a href="#local-6989586621679149663"><span class="hs-identifier hs-var">wait</span></a><span> </span><a href="#local-6989586621679149793"><span class="hs-identifier hs-var">b</span></a><span>
+</span><a name="line-82"></a><span>
+</span><a name="line-83"></a><span>      </span><span class="hs-special">(</span><a name="local-6989586621679149794"><a href="#local-6989586621679149794"><span class="hs-identifier">a</span></a></a><span class="hs-glyph">:</span><span class="hs-keyword">as</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">do</span><span>
+</span><a name="line-84"></a><span>        </span><span class="hs-identifier hs-var">putMVar</span><span> </span><a href="#local-6989586621679149662"><span class="hs-identifier hs-var">ref</span></a><span> </span><span class="hs-special">(</span><span class="hs-keyword">as</span><span class="hs-special">,</span><span> </span><a href="#local-6989586621679149792"><span class="hs-identifier hs-var">bs</span></a><span class="hs-special">)</span><span>
+</span><a name="line-85"></a><span>        </span><span class="hs-identifier hs-var">return</span><span> </span><a href="#local-6989586621679149794"><span class="hs-identifier hs-var">a</span></a><span>
+</span><a name="line-86"></a><span>  </span><span class="hs-keyword">where</span><span>
+</span><a name="line-87"></a><span>    </span><a name="local-6989586621679149663"><a href="#local-6989586621679149663"><span class="hs-identifier">wait</span></a></a><span> </span><a name="local-6989586621679149664"><a href="#local-6989586621679149664"><span class="hs-identifier">b</span></a></a><span> </span><span class="hs-glyph">=</span><span>
+</span><a name="line-88"></a><span>      </span><span class="hs-identifier hs-var">takeMVar</span><span> </span><a href="#local-6989586621679149664"><span class="hs-identifier hs-var">b</span></a><span> </span><span class="hs-special">`</span><span class="hs-identifier hs-var">catch</span><span class="hs-special">`</span><span> </span><span class="hs-glyph">\</span><span class="hs-special">(</span><a name="local-6989586621679149665"><a href="#local-6989586621679149665"><span class="hs-identifier">e</span></a></a><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-identifier hs-type">SomeException</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span>
+</span><a name="line-89"></a><span>        </span><span class="hs-identifier hs-var">uninterruptibleMask_</span><span> </span><span class="hs-operator hs-var">$</span><span> </span><span class="hs-keyword">do</span><span>  </span><span class="hs-comment">-- Note [signal interruptible]</span><span>
+</span><a name="line-90"></a><span>          </span><a name="local-6989586621679149666"><a href="#local-6989586621679149666"><span class="hs-identifier">r</span></a></a><span>  </span><span class="hs-glyph">&lt;-</span><span> </span><span class="hs-identifier hs-var">takeMVar</span><span> </span><a href="#local-6989586621679149662"><span class="hs-identifier hs-var">ref</span></a><span>
+</span><a name="line-91"></a><span>          </span><a name="local-6989586621679149667"><a href="#local-6989586621679149667"><span class="hs-identifier">ma</span></a></a><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="hs-identifier hs-var">tryTakeMVar</span><span> </span><a href="#local-6989586621679149664"><span class="hs-identifier hs-var">b</span></a><span>
+</span><a name="line-92"></a><span>          </span><a name="local-6989586621679149790"><a href="#local-6989586621679149790"><span class="hs-identifier">r'</span></a></a><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="hs-keyword">case</span><span> </span><a href="#local-6989586621679149667"><span class="hs-identifier hs-var">ma</span></a><span> </span><span class="hs-keyword">of</span><span>
+</span><a name="line-93"></a><span>                  </span><span class="hs-identifier hs-var">Just</span><span> </span><a name="local-6989586621679149668"><a href="#local-6989586621679149668"><span class="hs-identifier">a</span></a></a><span>  </span><span class="hs-glyph">-&gt;</span><span> </span><a href="Data.Array.Accelerate.LLVM.PTX.Pool.html#signal"><span class="hs-identifier hs-var">signal</span></a><span> </span><a href="#local-6989586621679149668"><span class="hs-identifier hs-var">a</span></a><span> </span><a href="#local-6989586621679149666"><span class="hs-identifier hs-var">r</span></a><span>               </span><span class="hs-comment">-- make sure we don't lose the resource</span><span>
+</span><a name="line-94"></a><span>                  </span><span class="hs-identifier hs-var">Nothing</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">do</span><span> </span><span class="hs-identifier hs-var">putMVar</span><span> </span><a href="#local-6989586621679149664"><span class="hs-identifier hs-var">b</span></a><span> </span><span class="hs-special">(</span><span class="hs-identifier hs-var">throw</span><span> </span><a href="#local-6989586621679149665"><span class="hs-identifier hs-var">e</span></a><span class="hs-special">)</span><span>   </span><span class="hs-comment">-- unblock the thread??</span><span>
+</span><a name="line-95"></a><span>                                </span><span class="hs-identifier hs-var">return</span><span> </span><a href="#local-6989586621679149666"><span class="hs-identifier hs-var">r</span></a><span>
+</span><a name="line-96"></a><span>          </span><span class="hs-identifier hs-var">putMVar</span><span> </span><a href="#local-6989586621679149662"><span class="hs-identifier hs-var">ref</span></a><span> </span><a href="#local-6989586621679149790"><span class="hs-identifier hs-var">r'</span></a><span>
+</span><a name="line-97"></a><span>          </span><span class="hs-identifier hs-var">throwIO</span><span> </span><a href="#local-6989586621679149665"><span class="hs-identifier hs-var">e</span></a><span>
+</span><a name="line-98"></a><span>
+</span><a name="line-99"></a><span>
+</span><a name="line-100"></a><span class="hs-comment">-- | Return a unit of the resource to the pool.</span><span>
+</span><a name="line-101"></a><span class="hs-comment">--</span><span>
+</span><a name="line-102"></a><span class="hs-identifier">put</span><span> </span><span class="hs-glyph">::</span><span> </span><a href="Data.Array.Accelerate.LLVM.PTX.Pool.html#Pool"><span class="hs-identifier hs-type">Pool</span></a><span> </span><a href="#local-6989586621679149488"><span class="hs-identifier hs-type">a</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><a href="#local-6989586621679149488"><span class="hs-identifier hs-type">a</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier hs-type">IO</span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span>
+</span><a name="line-103"></a><a name="put"><a href="Data.Array.Accelerate.LLVM.PTX.Pool.html#put"><span class="hs-identifier">put</span></a></a><span> </span><span class="hs-special">(</span><a href="Data.Array.Accelerate.LLVM.PTX.Pool.html#Pool"><span class="hs-identifier hs-var">Pool</span></a><span> </span><a name="local-6989586621679149796"><a href="#local-6989586621679149796"><span class="hs-identifier">ref</span></a></a><span class="hs-special">)</span><span> </span><a name="local-6989586621679149797"><a href="#local-6989586621679149797"><span class="hs-identifier">a</span></a></a><span> </span><span class="hs-glyph">=</span><span>
+</span><a name="line-104"></a><span>  </span><span class="hs-identifier hs-var">uninterruptibleMask_</span><span> </span><span class="hs-operator hs-var">$</span><span> </span><span class="hs-keyword">do</span><span>   </span><span class="hs-comment">-- Note [signal interruptible]</span><span>
+</span><a name="line-105"></a><span>    </span><a name="local-6989586621679149798"><a href="#local-6989586621679149798"><span class="hs-identifier">r</span></a></a><span>  </span><span class="hs-glyph">&lt;-</span><span> </span><span class="hs-identifier hs-var">takeMVar</span><span> </span><a href="#local-6989586621679149796"><span class="hs-identifier hs-var">ref</span></a><span>
+</span><a name="line-106"></a><span>    </span><a name="local-6989586621679149799"><a href="#local-6989586621679149799"><span class="hs-identifier">r'</span></a></a><span> </span><span class="hs-glyph">&lt;-</span><span> </span><a href="Data.Array.Accelerate.LLVM.PTX.Pool.html#signal"><span class="hs-identifier hs-var">signal</span></a><span> </span><a href="#local-6989586621679149797"><span class="hs-identifier hs-var">a</span></a><span> </span><a href="#local-6989586621679149798"><span class="hs-identifier hs-var">r</span></a><span>
+</span><a name="line-107"></a><span>    </span><span class="hs-identifier hs-var">putMVar</span><span> </span><a href="#local-6989586621679149796"><span class="hs-identifier hs-var">ref</span></a><span> </span><a href="#local-6989586621679149799"><span class="hs-identifier hs-var">r'</span></a><span>
+</span><a name="line-108"></a><span>
+</span><a name="line-109"></a><span>
+</span><a name="line-110"></a><span class="hs-comment">-- Note [signal interruptible]</span><span>
+</span><a name="line-111"></a><span class="hs-comment">--</span><span>
+</span><a name="line-112"></a><span class="hs-comment">-- If we have:</span><span>
+</span><a name="line-113"></a><span class="hs-comment">--</span><span>
+</span><a name="line-114"></a><span class="hs-comment">-- &gt; bracket take put (...)</span><span>
+</span><a name="line-115"></a><span class="hs-comment">--</span><span>
+</span><a name="line-116"></a><span class="hs-comment">-- and an exception arrives at the put, then we must not lose the resource. The</span><span>
+</span><a name="line-117"></a><span class="hs-comment">-- put is masked by bracket, but taking the MVar might block, and so it would be</span><span>
+</span><a name="line-118"></a><span class="hs-comment">-- interruptible. Hence we need an uninterruptibleMask here.</span><span>
+</span><a name="line-119"></a><span class="hs-comment">--</span><span>
+</span><a name="line-120"></a><span class="hs-identifier">signal</span><span> </span><span class="hs-glyph">::</span><span> </span><a href="#local-6989586621679149487"><span class="hs-identifier hs-type">a</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">(</span><span class="hs-special">[</span><a href="#local-6989586621679149487"><span class="hs-identifier hs-type">a</span></a><span class="hs-special">]</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-type">Seq</span><span> </span><span class="hs-special">(</span><span class="hs-identifier hs-type">MVar</span><span> </span><a href="#local-6989586621679149487"><span class="hs-identifier hs-type">a</span></a><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier hs-type">IO</span><span> </span><span class="hs-special">(</span><span class="hs-special">[</span><a href="#local-6989586621679149487"><span class="hs-identifier hs-type">a</span></a><span class="hs-special">]</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-type">Seq</span><span> </span><span class="hs-special">(</span><span class="hs-identifier hs-type">MVar</span><span> </span><a href="#local-6989586621679149487"><span class="hs-identifier hs-type">a</span></a><span class="hs-special">)</span><span class="hs-special">)</span><span>
+</span><a name="line-121"></a><a name="signal"><a href="Data.Array.Accelerate.LLVM.PTX.Pool.html#signal"><span class="hs-identifier">signal</span></a></a><span> </span><a name="local-6989586621679149800"><a href="#local-6989586621679149800"><span class="hs-identifier">a</span></a></a><span> </span><span class="hs-special">(</span><span class="hs-keyword">as</span><span class="hs-special">,</span><span> </span><a name="local-6989586621679149802"><a href="#local-6989586621679149802"><span class="hs-identifier">blocked</span></a></a><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span>
+</span><a name="line-122"></a><span>  </span><span class="hs-keyword">if</span><span> </span><span class="hs-identifier hs-var">null</span><span> </span><span class="hs-keyword">as</span><span>
+</span><a name="line-123"></a><span>    </span><span class="hs-keyword">then</span><span> </span><a href="#local-6989586621679149803"><span class="hs-identifier hs-var">loop</span></a><span> </span><a href="#local-6989586621679149802"><span class="hs-identifier hs-var">blocked</span></a><span>           </span><span class="hs-comment">-- there may be waiting threads; wake one up</span><span>
+</span><a name="line-124"></a><span>    </span><span class="hs-keyword">else</span><span> </span><span class="hs-identifier hs-var">return</span><span> </span><span class="hs-special">(</span><a href="#local-6989586621679149800"><span class="hs-identifier hs-var">a</span></a><span class="hs-glyph">:</span><span class="hs-keyword">as</span><span class="hs-special">,</span><span> </span><a href="#local-6989586621679149802"><span class="hs-identifier hs-var">blocked</span></a><span class="hs-special">)</span><span> </span><span class="hs-comment">-- nobody waiting</span><span>
+</span><a name="line-125"></a><span>  </span><span class="hs-keyword">where</span><span>
+</span><a name="line-126"></a><span>    </span><a name="local-6989586621679149803"><a href="#local-6989586621679149803"><span class="hs-identifier">loop</span></a></a><span> </span><a name="local-6989586621679149804"><a href="#local-6989586621679149804"><span class="hs-identifier">blocked'</span></a></a><span> </span><span class="hs-glyph">=</span><span>
+</span><a name="line-127"></a><span>      </span><span class="hs-keyword">case</span><span> </span><span class="hs-identifier hs-var">Seq.viewl</span><span> </span><a href="#local-6989586621679149804"><span class="hs-identifier hs-var">blocked'</span></a><span> </span><span class="hs-keyword">of</span><span>
+</span><a name="line-128"></a><span>        </span><span class="hs-identifier hs-var">Seq.EmptyL</span><span>  </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier hs-var">return</span><span> </span><span class="hs-special">(</span><span class="hs-special">[</span><a href="#local-6989586621679149800"><span class="hs-identifier hs-var">a</span></a><span class="hs-special">]</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-var">Seq.empty</span><span class="hs-special">)</span><span>
+</span><a name="line-129"></a><span>        </span><a name="local-6989586621679149805"><a href="#local-6989586621679149805"><span class="hs-identifier">b</span></a></a><span> </span><span class="hs-operator hs-var">Seq.:&lt;</span><span> </span><a name="local-6989586621679149806"><a href="#local-6989586621679149806"><span class="hs-identifier">bs</span></a></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">do</span><span>
+</span><a name="line-130"></a><span>          </span><a name="local-6989586621679149807"><a href="#local-6989586621679149807"><span class="hs-identifier">r</span></a></a><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="hs-identifier hs-var">tryPutMVar</span><span> </span><a href="#local-6989586621679149805"><span class="hs-identifier hs-var">b</span></a><span> </span><a href="#local-6989586621679149800"><span class="hs-identifier hs-var">a</span></a><span>
+</span><a name="line-131"></a><span>          </span><span class="hs-keyword">if</span><span> </span><a href="#local-6989586621679149807"><span class="hs-identifier hs-var">r</span></a><span> </span><span class="hs-keyword">then</span><span> </span><span class="hs-identifier hs-var">return</span><span> </span><span class="hs-special">(</span><span class="hs-special">[</span><span class="hs-special">]</span><span class="hs-special">,</span><span> </span><a href="#local-6989586621679149806"><span class="hs-identifier hs-var">bs</span></a><span class="hs-special">)</span><span>     </span><span class="hs-comment">-- we woke up a thread</span><span>
+</span><a name="line-132"></a><span>               </span><span class="hs-keyword">else</span><span> </span><a href="#local-6989586621679149803"><span class="hs-identifier hs-var">loop</span></a><span> </span><a href="#local-6989586621679149806"><span class="hs-identifier hs-var">bs</span></a><span>             </span><span class="hs-comment">-- already unblocked; drop from the queue</span><span>
+</span><a name="line-133"></a><span>
+</span><a name="line-134"></a><span class="hs-comment">{--
+-- | An item pool
+--
+data Pool a = Pool {-# UNPACK #-} !(MVar (NonEmpty a))
+
+
+-- | Create a new pooled resource containing the given items
+--
+create :: [a] -&gt; IO (Pool a)
+create []     = Pool &lt;$&gt; newEmptyMVar
+create (x:xs) = Pool &lt;$&gt; newMVar (x :| xs)
+
+
+-- | Execute an operation using an item from the pool. Like 'take', the function
+-- blocks until one becomes available.
+--
+with :: Pool a -&gt; (a -&gt; IO b) -&gt; IO b
+with pool action =
+  bracket (take pool) (put pool) action
+
+unsafeWith :: Pool a -&gt; (a -&gt; b) -&gt; b
+unsafeWith pool action =
+  unsafePerformIO $ with pool (pure . action)
+
+
+-- | Take an item from the pool. This will block until one is available.
+--
+take :: Pool a -&gt; IO a
+take (Pool ref) = do
+  x :| xs &lt;- takeMVar ref -- blocking
+  case xs of
+    []     -&gt; return ()   -- leave the pool empty; subsequent 'take's will block
+    (a:as) -&gt; mask_ $ do r &lt;- tryTakeMVar ref
+                         case r of
+                           Nothing        -&gt; putMVar ref (a :| as)
+                           Just (b :| bs) -&gt; putMVar ref (a :| b : bs ++ as)
+  return x
+
+
+-- | Return an item back to the pool for later reuse. This should be
+-- a non-blocking operation.
+--
+put :: Pool a -&gt; a -&gt; IO ()
+put (Pool ref) a =
+  mask_ $ do
+    it &lt;- tryTakeMVar ref
+    case it of
+      Just (b :| bs) -&gt; putMVar ref (a :| b : bs)
+      Nothing        -&gt; putMVar ref (a :| [])
+
+
+#if __GLASGOW_HASKELL__ &lt; 800
+-- | Non-empty (and non-strict) list type.
+--
+infixr 5 :|
+data NonEmpty a = a :| [a]
+  deriving ( Eq, Ord, Show, Read )
+#endif
+--}</span><span>
+</span><a name="line-193"></a><span>
+</span><a name="line-194"></a></pre></body></html>

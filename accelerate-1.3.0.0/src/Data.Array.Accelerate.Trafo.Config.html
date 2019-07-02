@@ -1,0 +1,53 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-pragma">{-# LANGUAGE RecordWildCards #-}</span><span>
+</span><a name="line-2"></a><span class="hs-pragma">{-# OPTIONS_GHC -fno-warn-missing-signatures #-}</span><span>
+</span><a name="line-3"></a><span class="hs-comment">-- |</span><span>
+</span><a name="line-4"></a><span class="hs-comment">-- Module      : Data.Array.Accelerate.Trafo.Config</span><span>
+</span><a name="line-5"></a><span class="hs-comment">-- Copyright   : [2008..2019] The Accelerate Team</span><span>
+</span><a name="line-6"></a><span class="hs-comment">-- License     : BSD3</span><span>
+</span><a name="line-7"></a><span class="hs-comment">--</span><span>
+</span><a name="line-8"></a><span class="hs-comment">-- Maintainer  : Trevor L. McDonell &lt;trevor.mcdonell@gmail.com&gt;</span><span>
+</span><a name="line-9"></a><span class="hs-comment">-- Stability   : experimental</span><span>
+</span><a name="line-10"></a><span class="hs-comment">-- Portability : non-portable (GHC extensions)</span><span>
+</span><a name="line-11"></a><span class="hs-comment">--</span><span>
+</span><a name="line-12"></a><span>
+</span><a name="line-13"></a><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">Data.Array.Accelerate.Trafo.Config</span><span> </span><span class="hs-special">(</span><span>
+</span><a name="line-14"></a><span>
+</span><a name="line-15"></a><span>  </span><a href="Data.Array.Accelerate.Trafo.Config.html#Config"><span class="hs-identifier hs-type">Config</span></a><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span class="hs-special">,</span><span>
+</span><a name="line-16"></a><span>  </span><a href="Data.Array.Accelerate.Debug.Flags.html#Flag"><span class="hs-identifier hs-type">Flag</span></a><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span class="hs-special">,</span><span>
+</span><a name="line-17"></a><span>  </span><a href="Data.Array.Accelerate.Trafo.Config.html#defaultOptions"><span class="hs-identifier hs-var">defaultOptions</span></a><span class="hs-special">,</span><span>
+</span><a name="line-18"></a><span>
+</span><a name="line-19"></a><span>  </span><span class="hs-comment">-- Other options not controlled by the command line flags</span><span>
+</span><a name="line-20"></a><span>  </span><a href="Data.Array.Accelerate.Trafo.Config.html#convert_segment_offset"><span class="hs-identifier hs-var">convert_segment_offset</span></a><span class="hs-special">,</span><span>
+</span><a name="line-21"></a><span>  </span><a href="Data.Array.Accelerate.Trafo.Config.html#float_out_acc"><span class="hs-identifier hs-var">float_out_acc</span></a><span class="hs-special">,</span><span>
+</span><a name="line-22"></a><span>
+</span><a name="line-23"></a><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><a name="line-24"></a><span>
+</span><a name="line-25"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">Data.Bits</span><span>
+</span><a name="line-26"></a><span class="hs-keyword">import</span><span> </span><a href="Data.BitSet.html"><span class="hs-identifier">Data.BitSet</span></a><span>
+</span><a name="line-27"></a><span class="hs-keyword">import</span><span> </span><a href="Data.Array.Accelerate.Debug.Flags.html"><span class="hs-identifier">Data.Array.Accelerate.Debug.Flags</span></a><span>                  </span><span class="hs-keyword">as</span><span> </span><span class="hs-identifier">F</span><span>
+</span><a name="line-28"></a><span>
+</span><a name="line-29"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">Data.Word</span><span>
+</span><a name="line-30"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">System.IO.Unsafe</span><span>
+</span><a name="line-31"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">Foreign.Storable</span><span>
+</span><a name="line-32"></a><span>
+</span><a name="line-33"></a><span>
+</span><a name="line-34"></a><span class="hs-keyword">data</span><span> </span><a name="Config"><a href="Data.Array.Accelerate.Trafo.Config.html#Config"><span class="hs-identifier">Config</span></a></a><span> </span><span class="hs-glyph">=</span><span> </span><a name="Config"><a href="Data.Array.Accelerate.Trafo.Config.html#Config"><span class="hs-identifier">Config</span></a></a><span>
+</span><a name="line-35"></a><span>  </span><span class="hs-special">{</span><span> </span><a name="options"><a href="Data.Array.Accelerate.Trafo.Config.html#options"><span class="hs-identifier">options</span></a></a><span>                   </span><span class="hs-glyph">::</span><span> </span><span class="hs-pragma">{-# UNPACK</span><span> </span><span class="hs-pragma">#-}</span><span> </span><span class="hs-glyph">!</span><span class="hs-special">(</span><a href="Data.BitSet.html#BitSet"><span class="hs-identifier hs-type">BitSet</span></a><span> </span><span class="hs-identifier hs-type">Word32</span><span> </span><a href="Data.Array.Accelerate.Debug.Flags.html#Flag"><span class="hs-identifier hs-type">Flag</span></a><span class="hs-special">)</span><span>
+</span><a name="line-36"></a><span>  </span><span class="hs-special">,</span><span> </span><a name="unfolding_use_threshold"><a href="Data.Array.Accelerate.Trafo.Config.html#unfolding_use_threshold"><span class="hs-identifier">unfolding_use_threshold</span></a></a><span>   </span><span class="hs-glyph">::</span><span> </span><span class="hs-pragma">{-# UNPACK</span><span> </span><span class="hs-pragma">#-}</span><span> </span><span class="hs-glyph">!</span><span class="hs-identifier hs-type">Int</span><span>
+</span><a name="line-37"></a><span>  </span><span class="hs-special">,</span><span> </span><a name="max_simplifier_iterations"><a href="Data.Array.Accelerate.Trafo.Config.html#max_simplifier_iterations"><span class="hs-identifier">max_simplifier_iterations</span></a></a><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-pragma">{-# UNPACK</span><span> </span><span class="hs-pragma">#-}</span><span> </span><span class="hs-glyph">!</span><span class="hs-identifier hs-type">Int</span><span>
+</span><a name="line-38"></a><span>  </span><span class="hs-special">}</span><span>
+</span><a name="line-39"></a><span>  </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-identifier hs-type">Show</span><span>
+</span><a name="line-40"></a><span>
+</span><a name="line-41"></a><span class="hs-pragma">{-# NOINLINE</span><span> </span><span class="hs-pragma">defaultOptions</span><span> </span><span class="hs-pragma">#-}</span><span>
+</span><a name="line-42"></a><span class="hs-identifier">defaultOptions</span><span> </span><span class="hs-glyph">::</span><span> </span><a href="Data.Array.Accelerate.Trafo.Config.html#Config"><span class="hs-identifier hs-type">Config</span></a><span>
+</span><a name="line-43"></a><a name="defaultOptions"><a href="Data.Array.Accelerate.Trafo.Config.html#defaultOptions"><span class="hs-identifier">defaultOptions</span></a></a><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier hs-var">unsafePerformIO</span><span> </span><span class="hs-operator hs-var">$!</span><span>
+</span><a name="line-44"></a><span>  </span><a href="Data.Array.Accelerate.Trafo.Config.html#Config"><span class="hs-identifier hs-var">Config</span></a><span> </span><span class="hs-operator hs-var">&lt;$&gt;</span><span> </span><span class="hs-special">(</span><a href="Data.BitSet.html#BitSet"><span class="hs-identifier hs-var">BitSet</span></a><span> </span><span class="hs-operator hs-var">.</span><span> </span><span class="hs-special">(</span><span class="hs-number">0x80000000</span><span> </span><span class="hs-operator hs-var">.|.</span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-operator hs-var">&lt;$&gt;</span><span> </span><span class="hs-identifier hs-var">peek</span><span> </span><a href="Data.Array.Accelerate.Debug.Flags.html#__cmd_line_flags"><span class="hs-identifier hs-var">F.__cmd_line_flags</span></a><span>
+</span><a name="line-45"></a><span>         </span><span class="hs-operator hs-var">&lt;*&gt;</span><span> </span><a href="Data.Array.Accelerate.Debug.Flags.html#getValue"><span class="hs-identifier hs-var">F.getValue</span></a><span> </span><a href="Data.Array.Accelerate.Debug.Flags.html#unfolding_use_threshold"><span class="hs-identifier hs-var">F.unfolding_use_threshold</span></a><span>
+</span><a name="line-46"></a><span>         </span><span class="hs-operator hs-var">&lt;*&gt;</span><span> </span><a href="Data.Array.Accelerate.Debug.Flags.html#getValue"><span class="hs-identifier hs-var">F.getValue</span></a><span> </span><a href="Data.Array.Accelerate.Debug.Flags.html#max_simplifier_iterations"><span class="hs-identifier hs-var">F.max_simplifier_iterations</span></a><span>
+</span><a name="line-47"></a><span>
+</span><a name="line-48"></a><span class="hs-comment">-- Extra options not covered by command line flags</span><span>
+</span><a name="line-49"></a><span class="hs-comment">--</span><span>
+</span><a name="line-50"></a><a name="convert_segment_offset"><a href="Data.Array.Accelerate.Trafo.Config.html#convert_segment_offset"><span class="hs-identifier">convert_segment_offset</span></a></a><span> </span><span class="hs-glyph">=</span><span> </span><a href="Data.Array.Accelerate.Debug.Flags.html#Flag"><span class="hs-identifier hs-var">Flag</span></a><span> </span><span class="hs-number">30</span><span>  </span><span class="hs-comment">-- TLM: let's remove the need for this</span><span>
+</span><a name="line-51"></a><a name="float_out_acc"><a href="Data.Array.Accelerate.Trafo.Config.html#float_out_acc"><span class="hs-identifier">float_out_acc</span></a></a><span>          </span><span class="hs-glyph">=</span><span> </span><a href="Data.Array.Accelerate.Debug.Flags.html#Flag"><span class="hs-identifier hs-var">Flag</span></a><span> </span><span class="hs-number">31</span><span>
+</span><a name="line-52"></a><span>
+</span><a name="line-53"></a></pre></body></html>

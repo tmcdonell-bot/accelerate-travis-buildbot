@@ -1,0 +1,29 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-comment">{- |
+This is the only module that normal users should need to import.
+
+As an example, allocate 1GB of memory, zero it, and crash:
+
+@
+import System.Posix.DynamicLinker
+import Foreign.Ptr
+import Foreign.LibFFI
+
+main = do
+    malloc &lt;- dlsym Default \&quot;malloc\&quot;
+    memset &lt;- dlsym Default \&quot;memset\&quot;
+    p &lt;- callFFI malloc (retPtr retVoid) [argCSize (2^30)]
+    callFFI memset (retPtr retVoid) [argPtr p, argCInt 0, argCSize (2^30)]
+    callFFI memset (retPtr retVoid) [argPtr nullPtr, argCInt 0, argCSize 1]
+@
+-}</span><span>
+</span><a name="line-19"></a><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">Foreign.LibFFI</span><span>
+</span><a name="line-20"></a><span>    </span><span class="hs-special">(</span><a href="Foreign.LibFFI.Base.html#Arg"><span class="hs-identifier hs-type">Arg</span></a><span>
+</span><a name="line-21"></a><span>    </span><span class="hs-special">,</span><a href="Foreign.LibFFI.Base.html#RetType"><span class="hs-identifier hs-type">RetType</span></a><span>
+</span><a name="line-22"></a><span>    </span><span class="hs-special">,</span><a href="Foreign.LibFFI.Base.html#callFFI"><span class="hs-identifier hs-var">callFFI</span></a><span>
+</span><a name="line-23"></a><span>    </span><span class="hs-special">,</span><a href="Foreign.LibFFI.Base.html#withRetType"><span class="hs-identifier hs-var">withRetType</span></a><span>
+</span><a name="line-24"></a><span>    </span><span class="hs-special">,</span><span class="hs-keyword">module</span><span> </span><a href="Foreign.LibFFI.Types.html"><span class="hs-identifier">Foreign.LibFFI.Types</span></a><span>
+</span><a name="line-25"></a><span>    </span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><a name="line-26"></a><span>
+</span><a name="line-27"></a><span class="hs-keyword">import</span><span> </span><a href="Foreign.LibFFI.Base.html"><span class="hs-identifier">Foreign.LibFFI.Base</span></a><span>
+</span><a name="line-28"></a><span class="hs-keyword">import</span><span> </span><a href="Foreign.LibFFI.Types.html"><span class="hs-identifier">Foreign.LibFFI.Types</span></a><span>
+</span><a name="line-29"></a></pre></body></html>

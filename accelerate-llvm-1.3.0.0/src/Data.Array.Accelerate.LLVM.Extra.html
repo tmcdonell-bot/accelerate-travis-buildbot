@@ -1,0 +1,49 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-pragma">{-# LANGUAGE TemplateHaskell #-}</span><span>
+</span><a name="line-2"></a><span class="hs-pragma">{-# OPTIONS_HADDOCK hide #-}</span><span>
+</span><a name="line-3"></a><span class="hs-comment">-- |</span><span>
+</span><a name="line-4"></a><span class="hs-comment">-- Module      : Data.Array.Accelerate.LLVM.Extra</span><span>
+</span><a name="line-5"></a><span class="hs-comment">-- Copyright   : [2014..2019] The Accelerate Team</span><span>
+</span><a name="line-6"></a><span class="hs-comment">-- License     : BSD3</span><span>
+</span><a name="line-7"></a><span class="hs-comment">--</span><span>
+</span><a name="line-8"></a><span class="hs-comment">-- Maintainer  : Trevor L. McDonell &lt;trevor.mcdonell@gmail.com&gt;</span><span>
+</span><a name="line-9"></a><span class="hs-comment">-- Stability   : experimental</span><span>
+</span><a name="line-10"></a><span class="hs-comment">-- Portability : non-portable (GHC extensions)</span><span>
+</span><a name="line-11"></a><span class="hs-comment">--</span><span>
+</span><a name="line-12"></a><span>
+</span><a name="line-13"></a><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">Data.Array.Accelerate.LLVM.Extra</span><span>
+</span><a name="line-14"></a><span>  </span><span class="hs-keyword">where</span><span>
+</span><a name="line-15"></a><span>
+</span><a name="line-16"></a><span class="hs-comment">-- accelerate</span><span>
+</span><a name="line-17"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">Data.Array.Accelerate.Error</span><span>
+</span><a name="line-18"></a><span>
+</span><a name="line-19"></a><span class="hs-comment">-- standard library</span><span>
+</span><a name="line-20"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">Data.Word</span><span>
+</span><a name="line-21"></a><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="hs-identifier">Data.Bits</span><span> </span><span class="hs-keyword">as</span><span> </span><span class="hs-identifier">B</span><span>
+</span><a name="line-22"></a><span>
+</span><a name="line-23"></a><span>
+</span><a name="line-24"></a><span class="hs-comment">-- | The number of bits in a type</span><span>
+</span><a name="line-25"></a><span class="hs-comment">--</span><span>
+</span><a name="line-26"></a><span class="hs-pragma">{-# INLINE</span><span> </span><span class="hs-pragma">bitSize</span><span> </span><span class="hs-pragma">#-}</span><span>
+</span><a name="line-27"></a><span class="hs-identifier">bitSize</span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-identifier hs-type">B.Bits</span><span> </span><a href="#local-6989586621679139994"><span class="hs-identifier hs-type">a</span></a><span> </span><span class="hs-glyph">=&gt;</span><span> </span><a href="#local-6989586621679139994"><span class="hs-identifier hs-type">a</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier hs-type">Word32</span><span>
+</span><a name="line-28"></a><a name="bitSize"><a href="Data.Array.Accelerate.LLVM.Extra.html#bitSize"><span class="hs-identifier">bitSize</span></a></a><span> </span><a name="local-6989586621679139995"><a href="#local-6989586621679139995"><span class="hs-identifier">x</span></a></a><span>
+</span><a name="line-29"></a><span>  </span><span class="hs-glyph">|</span><span> </span><span class="hs-identifier hs-var">Just</span><span> </span><a name="local-6989586621679139996"><a href="#local-6989586621679139996"><span class="hs-identifier">s</span></a></a><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="hs-identifier hs-var">B.bitSizeMaybe</span><span> </span><a href="#local-6989586621679139995"><span class="hs-identifier hs-var">x</span></a><span>  </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier hs-var">fromIntegral</span><span> </span><a href="#local-6989586621679139996"><span class="hs-identifier hs-var">s</span></a><span>
+</span><a name="line-30"></a><span>  </span><span class="hs-glyph">|</span><span> </span><span class="hs-identifier hs-var">otherwise</span><span>                   </span><span class="hs-glyph">=</span><span> </span><span class="">$internalError</span><span> </span><span class="hs-string">&quot;bitSize&quot;</span><span> </span><span class="hs-string">&quot;could not determine bit size of type&quot;</span><span>
+</span><a name="line-31"></a><span>
+</span><a name="line-32"></a><span>
+</span><a name="line-33"></a><span class="hs-comment">-- | Convert a boolean value into an integral value, where False is zero and</span><span>
+</span><a name="line-34"></a><span class="hs-comment">-- True is one.</span><span>
+</span><a name="line-35"></a><span class="hs-comment">--</span><span>
+</span><a name="line-36"></a><span class="hs-pragma">{-# INLINE</span><span> </span><span class="hs-pragma">fromBool</span><span> </span><span class="hs-pragma">#-}</span><span>
+</span><a name="line-37"></a><span class="hs-identifier">fromBool</span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-identifier hs-type">Integral</span><span> </span><a href="#local-6989586621679139993"><span class="hs-identifier hs-type">i</span></a><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="hs-identifier hs-type">Bool</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><a href="#local-6989586621679139993"><span class="hs-identifier hs-type">i</span></a><span>
+</span><a name="line-38"></a><a name="fromBool"><a href="Data.Array.Accelerate.LLVM.Extra.html#fromBool"><span class="hs-identifier">fromBool</span></a></a><span> </span><span class="hs-identifier hs-var">True</span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="hs-number">1</span><span>
+</span><a name="line-39"></a><span class="hs-identifier">fromBool</span><span> </span><span class="hs-identifier hs-var">False</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-number">0</span><span>
+</span><a name="line-40"></a><span>
+</span><a name="line-41"></a><span class="hs-comment">-- | Convert an integral value into a boolean. We follow the C convention, where</span><span>
+</span><a name="line-42"></a><span class="hs-comment">-- zero is False and all other values represent True.</span><span>
+</span><a name="line-43"></a><span class="hs-comment">--</span><span>
+</span><a name="line-44"></a><span class="hs-pragma">{-# INLINE</span><span> </span><span class="hs-pragma">toBool</span><span> </span><span class="hs-pragma">#-}</span><span>
+</span><a name="line-45"></a><span class="hs-identifier">toBool</span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-identifier hs-type">Integral</span><span> </span><a href="#local-6989586621679139502"><span class="hs-identifier hs-type">i</span></a><span> </span><span class="hs-glyph">=&gt;</span><span> </span><a href="#local-6989586621679139502"><span class="hs-identifier hs-type">i</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier hs-type">Bool</span><span>
+</span><a name="line-46"></a><a name="toBool"><a href="Data.Array.Accelerate.LLVM.Extra.html#toBool"><span class="hs-identifier">toBool</span></a></a><span> </span><span class="hs-number">0</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier hs-var">False</span><span>
+</span><a name="line-47"></a><span class="hs-identifier">toBool</span><span> </span><span class="hs-identifier">_</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier hs-var">True</span><span>
+</span><a name="line-48"></a><span>
+</span><a name="line-49"></a></pre></body></html>

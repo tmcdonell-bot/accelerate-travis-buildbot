@@ -1,0 +1,36 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-comment">-- | Render 'SimpleDocStream' in a terminal.</span><span>
+</span><a name="line-2"></a><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">Data.Text.Prettyprint.Doc.Render.Terminal</span><span> </span><span class="hs-special">(</span><span>
+</span><a name="line-3"></a><span>    </span><span class="hs-comment">-- * Styling</span><span>
+</span><a name="line-4"></a><span>    </span><a href="Data.Text.Prettyprint.Doc.Render.Terminal.Internal.html#AnsiStyle"><span class="hs-identifier hs-type">AnsiStyle</span></a><span class="hs-special">,</span><span>
+</span><a name="line-5"></a><span>    </span><a href="Data.Text.Prettyprint.Doc.Render.Terminal.Internal.html#Color"><span class="hs-identifier hs-type">Color</span></a><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span class="hs-special">,</span><span>
+</span><a name="line-6"></a><span>
+</span><a name="line-7"></a><span>    </span><span class="hs-comment">-- ** Font color</span><span>
+</span><a name="line-8"></a><span>    </span><a href="Data.Text.Prettyprint.Doc.Render.Terminal.Internal.html#color"><span class="hs-identifier hs-var">color</span></a><span class="hs-special">,</span><span> </span><a href="Data.Text.Prettyprint.Doc.Render.Terminal.Internal.html#colorDull"><span class="hs-identifier hs-var">colorDull</span></a><span class="hs-special">,</span><span>
+</span><a name="line-9"></a><span>
+</span><a name="line-10"></a><span>    </span><span class="hs-comment">-- ** Background color</span><span>
+</span><a name="line-11"></a><span>    </span><a href="Data.Text.Prettyprint.Doc.Render.Terminal.Internal.html#bgColor"><span class="hs-identifier hs-var">bgColor</span></a><span class="hs-special">,</span><span> </span><a href="Data.Text.Prettyprint.Doc.Render.Terminal.Internal.html#bgColorDull"><span class="hs-identifier hs-var">bgColorDull</span></a><span class="hs-special">,</span><span>
+</span><a name="line-12"></a><span>
+</span><a name="line-13"></a><span>    </span><span class="hs-comment">-- ** Font style</span><span>
+</span><a name="line-14"></a><span>    </span><a href="Data.Text.Prettyprint.Doc.Render.Terminal.Internal.html#bold"><span class="hs-identifier hs-var">bold</span></a><span class="hs-special">,</span><span> </span><a href="Data.Text.Prettyprint.Doc.Render.Terminal.Internal.html#italicized"><span class="hs-identifier hs-var">italicized</span></a><span class="hs-special">,</span><span> </span><a href="Data.Text.Prettyprint.Doc.Render.Terminal.Internal.html#underlined"><span class="hs-identifier hs-var">underlined</span></a><span class="hs-special">,</span><span>
+</span><a name="line-15"></a><span>
+</span><a name="line-16"></a><span>    </span><span class="hs-comment">-- ** Internal markers</span><span>
+</span><a name="line-17"></a><span>    </span><span class="hs-comment">--</span><span>
+</span><a name="line-18"></a><span>    </span><span class="hs-comment">-- | These should only be used for writing adaptors to other libraries; for</span><span>
+</span><a name="line-19"></a><span>    </span><span class="hs-comment">-- the average use case, use 'bold', 'bgColorDull', etc.</span><span>
+</span><a name="line-20"></a><span>    </span><a href="Data.Text.Prettyprint.Doc.Render.Terminal.Internal.html#Intensity"><span class="hs-identifier hs-type">Intensity</span></a><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span class="hs-special">,</span><span>
+</span><a name="line-21"></a><span>    </span><a href="Data.Text.Prettyprint.Doc.Render.Terminal.Internal.html#Bold"><span class="hs-identifier hs-type">Bold</span></a><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span class="hs-special">,</span><span>
+</span><a name="line-22"></a><span>    </span><a href="Data.Text.Prettyprint.Doc.Render.Terminal.Internal.html#Underlined"><span class="hs-identifier hs-type">Underlined</span></a><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span class="hs-special">,</span><span>
+</span><a name="line-23"></a><span>    </span><a href="Data.Text.Prettyprint.Doc.Render.Terminal.Internal.html#Italicized"><span class="hs-identifier hs-type">Italicized</span></a><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span class="hs-special">,</span><span>
+</span><a name="line-24"></a><span>
+</span><a name="line-25"></a><span>    </span><span class="hs-comment">-- * Conversion to ANSI-infused 'Text'</span><span>
+</span><a name="line-26"></a><span>    </span><a href="Data.Text.Prettyprint.Doc.Render.Terminal.Internal.html#renderLazy"><span class="hs-identifier hs-var">renderLazy</span></a><span class="hs-special">,</span><span> </span><a href="Data.Text.Prettyprint.Doc.Render.Terminal.Internal.html#renderStrict"><span class="hs-identifier hs-var">renderStrict</span></a><span class="hs-special">,</span><span>
+</span><a name="line-27"></a><span>
+</span><a name="line-28"></a><span>    </span><span class="hs-comment">-- * Render directly to 'stdout'</span><span>
+</span><a name="line-29"></a><span>    </span><a href="Data.Text.Prettyprint.Doc.Render.Terminal.Internal.html#renderIO"><span class="hs-identifier hs-var">renderIO</span></a><span class="hs-special">,</span><span>
+</span><a name="line-30"></a><span>
+</span><a name="line-31"></a><span>    </span><span class="hs-comment">-- ** Convenience functions</span><span>
+</span><a name="line-32"></a><span>    </span><a href="Data.Text.Prettyprint.Doc.Render.Terminal.Internal.html#putDoc"><span class="hs-identifier hs-var">putDoc</span></a><span class="hs-special">,</span><span> </span><a href="Data.Text.Prettyprint.Doc.Render.Terminal.Internal.html#hPutDoc"><span class="hs-identifier hs-var">hPutDoc</span></a><span class="hs-special">,</span><span>
+</span><a name="line-33"></a><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><a name="line-34"></a><span>
+</span><a name="line-35"></a><span class="hs-keyword">import</span><span> </span><a href="Data.Text.Prettyprint.Doc.Render.Terminal.Internal.html"><span class="hs-identifier">Data.Text.Prettyprint.Doc.Render.Terminal.Internal</span></a><span>
+</span><a name="line-36"></a></pre></body></html>

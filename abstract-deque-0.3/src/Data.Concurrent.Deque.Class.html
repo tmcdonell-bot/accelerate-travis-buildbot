@@ -1,0 +1,198 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-pragma">{-# LANGUAGE TypeFamilies, CPP, TypeSynonymInstances, MultiParamTypeClasses,
+    FlexibleInstances, EmptyDataDecls  #-}</span><span>
+</span><a name="line-3"></a><span>
+</span><a name="line-4"></a><span class="hs-cpp">#ifdef DEFAULT_SIGNATURES
+</span><span class="hs-pragma">{-# LANGUAGE DefaultSignatures #-}</span><span>
+</span><a name="line-6"></a><span class="hs-cpp">#endif
+</span><span>
+</span><a name="line-8"></a><span class="hs-comment">{- |
+   An abstract, parameterizable interface for queues.  
+
+   This interface includes a non-associated type family for Deques
+   plus separate type classes encapsulating the Deque operations.
+   That is, we separate type selection (type family) from function overloading
+   (vanilla type classes).
+
+   This design strives to hide the extra phantom-type parameters from
+   the Class constraints and therefore from the type signatures of
+   client code.
+
+-}</span><span>
+</span><a name="line-21"></a><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">Data.Concurrent.Deque.Class</span><span>
+</span><a name="line-22"></a><span> </span><span class="hs-special">(</span><span>
+</span><a name="line-23"></a><span>  </span><span class="hs-comment">-- * Highly parameterized Deque type(s)</span><span>
+</span><a name="line-24"></a><span>   </span><a href="Data.Concurrent.Deque.Class.html#Deque"><span class="hs-identifier hs-type">Deque</span></a><span>
+</span><a name="line-25"></a><span>  </span><span class="hs-comment">-- ** The choices that select a queue-variant.</span><span>
+</span><a name="line-26"></a><span>  </span><span class="hs-comment">-- *** Choice #1 -- thread safety.</span><span>
+</span><a name="line-27"></a><span> </span><span class="hs-special">,</span><span> </span><a href="Data.Concurrent.Deque.Class.html#Threadsafe"><span class="hs-identifier hs-type">Threadsafe</span></a><span class="hs-special">,</span><span> </span><a href="Data.Concurrent.Deque.Class.html#Nonthreadsafe"><span class="hs-identifier hs-type">Nonthreadsafe</span></a><span>
+</span><a name="line-28"></a><span>  </span><span class="hs-comment">-- *** Choice #2 -- double or single functionality on an end.</span><span>
+</span><a name="line-29"></a><span> </span><span class="hs-special">,</span><span> </span><a href="Data.Concurrent.Deque.Class.html#SingleEnd"><span class="hs-identifier hs-type">SingleEnd</span></a><span class="hs-special">,</span><span> </span><a href="Data.Concurrent.Deque.Class.html#DoubleEnd"><span class="hs-identifier hs-type">DoubleEnd</span></a><span>
+</span><a name="line-30"></a><span>  </span><span class="hs-comment">-- *** Choice #3 -- bounded or growing queues:</span><span>
+</span><a name="line-31"></a><span> </span><span class="hs-special">,</span><span> </span><a href="Data.Concurrent.Deque.Class.html#Bound"><span class="hs-identifier hs-type">Bound</span></a><span class="hs-special">,</span><span> </span><a href="Data.Concurrent.Deque.Class.html#Grow"><span class="hs-identifier hs-type">Grow</span></a><span>
+</span><a name="line-32"></a><span>  </span><span class="hs-comment">-- *** Choice #4 -- duplication of elements.</span><span>
+</span><a name="line-33"></a><span> </span><span class="hs-special">,</span><span> </span><a href="Data.Concurrent.Deque.Class.html#Safe"><span class="hs-identifier hs-type">Safe</span></a><span class="hs-special">,</span><span> </span><a href="Data.Concurrent.Deque.Class.html#Dup"><span class="hs-identifier hs-type">Dup</span></a><span>
+</span><a name="line-34"></a><span>  </span><span class="hs-comment">-- ** Aliases enabling more concise Deque types:</span><span>
+</span><a name="line-35"></a><span> </span><span class="hs-special">,</span><span> </span><a href="Data.Concurrent.Deque.Class.html#S"><span class="hs-identifier hs-type">S</span></a><span class="hs-special">,</span><span> </span><a href="Data.Concurrent.Deque.Class.html#D"><span class="hs-identifier hs-type">D</span></a><span class="hs-special">,</span><span> </span><a href="Data.Concurrent.Deque.Class.html#NT"><span class="hs-identifier hs-type">NT</span></a><span class="hs-special">,</span><span> </span><a href="Data.Concurrent.Deque.Class.html#T"><span class="hs-identifier hs-type">T</span></a><span>
+</span><a name="line-36"></a><span>
+</span><a name="line-37"></a><span>  </span><span class="hs-comment">-- ** Aliases for commonly used Deque configurations:</span><span>
+</span><a name="line-38"></a><span> </span><span class="hs-special">,</span><span> </span><a href="Data.Concurrent.Deque.Class.html#Queue"><span class="hs-identifier hs-type">Queue</span></a><span class="hs-special">,</span><span> </span><a href="Data.Concurrent.Deque.Class.html#ConcQueue"><span class="hs-identifier hs-type">ConcQueue</span></a><span class="hs-special">,</span><span> </span><a href="Data.Concurrent.Deque.Class.html#ConcDeque"><span class="hs-identifier hs-type">ConcDeque</span></a><span class="hs-special">,</span><span> </span><a href="Data.Concurrent.Deque.Class.html#WSDeque"><span class="hs-identifier hs-type">WSDeque</span></a><span>
+</span><a name="line-39"></a><span>
+</span><a name="line-40"></a><span>  </span><span class="hs-comment">-- * Class for basic Queue operations</span><span>
+</span><a name="line-41"></a><span> </span><span class="hs-special">,</span><span> </span><a href="Data.Concurrent.Deque.Class.html#DequeClass"><span class="hs-identifier hs-type">DequeClass</span></a><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span>
+</span><a name="line-42"></a><span>
+</span><a name="line-43"></a><span>  </span><span class="hs-comment">-- * Extra capabilities: type classes</span><span>
+</span><a name="line-44"></a><span>
+</span><a name="line-45"></a><span>   </span><span class="hs-comment">-- | These classes provide a more programmer-friendly constraints than directly</span><span>
+</span><a name="line-46"></a><span>   </span><span class="hs-comment">-- using the phantom type parameters to constrain queues in user code.  Also note</span><span>
+</span><a name="line-47"></a><span>   </span><span class="hs-comment">-- that instances can be provided for types outside the type `Deque` type family.</span><span>
+</span><a name="line-48"></a><span>   </span><span class="hs-comment">-- </span><span>
+</span><a name="line-49"></a><span>   </span><span class="hs-comment">-- We still make a distinction between the different capabilities</span><span>
+</span><a name="line-50"></a><span>   </span><span class="hs-comment">-- (e.g. single-ended / double ended), and thus we need the below type classes for</span><span>
+</span><a name="line-51"></a><span>   </span><span class="hs-comment">-- the additional operations unsupported by the minimal &quot;DequeClass&quot;.</span><span>
+</span><a name="line-52"></a><span>
+</span><a name="line-53"></a><span>  </span><span class="hs-comment">-- ** The \&quot;unnatural\&quot; double ended cases: pop left, push right.</span><span>
+</span><a name="line-54"></a><span> </span><span class="hs-special">,</span><span> </span><a href="Data.Concurrent.Deque.Class.html#PopL"><span class="hs-identifier hs-type">PopL</span></a><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span class="hs-special">,</span><span> </span><a href="Data.Concurrent.Deque.Class.html#PushR"><span class="hs-identifier hs-type">PushR</span></a><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span>
+</span><a name="line-55"></a><span>
+</span><a name="line-56"></a><span>  </span><span class="hs-comment">-- ** Operations that only make sense for bounded queues.</span><span>
+</span><a name="line-57"></a><span> </span><span class="hs-special">,</span><span> </span><a href="Data.Concurrent.Deque.Class.html#BoundedL"><span class="hs-identifier hs-type">BoundedL</span></a><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span class="hs-special">,</span><span> </span><a href="Data.Concurrent.Deque.Class.html#BoundedR"><span class="hs-identifier hs-type">BoundedR</span></a><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span>
+</span><a name="line-58"></a><span class="hs-special">)</span><span>
+</span><a name="line-59"></a><span>
+</span><a name="line-60"></a><span>
+</span><a name="line-61"></a><span>   </span><span class="hs-keyword">where</span><span>
+</span><a name="line-62"></a><span>
+</span><a name="line-63"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">Prelude</span><span> </span><span class="hs-keyword">hiding</span><span> </span><span class="hs-special">(</span><span class="hs-identifier hs-type">Bounded</span><span class="hs-special">)</span><span>
+</span><a name="line-64"></a><span>
+</span><a name="line-65"></a><span class="hs-comment">{- | 
+
+ A family of Deques implementations.  A concrete Deque implementation
+ is selected based on the (phantom) type parameters, which encode
+ several choices.
+
+ For example, a work stealing deque is threadsafe only on one end and
+ supports push/pop on one end (and pop-only) on the other:
+
+  &gt;&gt; (Deque NT T  D S Grow elt)
+
+ Note, however, that the above example is overconstraining in many
+ situations.  It demands an implementation which is NOT threadsafe on
+ one end and does NOT support push on one end, whereas both these
+ features would not hurt, if present.
+
+ Thus when accepting a queue as input to a function you probably never
+ want to overconstrain by demanding a less-featureful option.
+
+   For example, rather than @(Deque NT D T S Grow elt)@
+   You would probably want: @(Deque nt D T s Grow elt)@
+
+ -}</span><span>
+</span><a name="line-88"></a><span class="hs-comment">-- data family Deque lThreaded rThreaded lDbl rDbl bnd safe elt </span><span>
+</span><a name="line-89"></a><span class="hs-keyword">type</span><span> </span><span class="hs-keyword">family</span><span> </span><a name="Deque"><a href="Data.Concurrent.Deque.Class.html#Deque"><span class="hs-identifier">Deque</span></a></a><span> </span><a name="local-6989586621679021017"><a href="#local-6989586621679021017"><span class="hs-identifier">lThreaded</span></a></a><span> </span><a name="local-6989586621679021018"><a href="#local-6989586621679021018"><span class="hs-identifier">rThreaded</span></a></a><span> </span><a name="local-6989586621679021019"><a href="#local-6989586621679021019"><span class="hs-identifier">lDbl</span></a></a><span> </span><a name="local-6989586621679021020"><a href="#local-6989586621679021020"><span class="hs-identifier">rDbl</span></a></a><span> </span><a name="local-6989586621679021021"><a href="#local-6989586621679021021"><span class="hs-identifier">bnd</span></a></a><span> </span><a name="local-6989586621679021022"><a href="#local-6989586621679021022"><span class="hs-identifier">safe</span></a></a><span> </span><a name="local-6989586621679021023"><a href="#local-6989586621679021023"><span class="hs-identifier">elt</span></a></a><span>
+</span><a name="line-90"></a><span>
+</span><a name="line-91"></a><span class="hs-comment">-- | Haskell IO threads (&quot;Control.Concurrent&quot;) may concurrently access</span><span>
+</span><a name="line-92"></a><span class="hs-comment">--   this end of the queue.  Note that this attribute is set</span><span>
+</span><a name="line-93"></a><span class="hs-comment">--   separately for the left and right ends.</span><span>
+</span><a name="line-94"></a><span class="hs-keyword">data</span><span> </span><a name="Threadsafe"><a href="Data.Concurrent.Deque.Class.html#Threadsafe"><span class="hs-identifier">Threadsafe</span></a></a><span>
+</span><a name="line-95"></a><span class="hs-comment">-- | Only one thread at a time may access this end of the queue.</span><span>
+</span><a name="line-96"></a><span class="hs-keyword">data</span><span> </span><a name="Nonthreadsafe"><a href="Data.Concurrent.Deque.Class.html#Nonthreadsafe"><span class="hs-identifier">Nonthreadsafe</span></a></a><span>
+</span><a name="line-97"></a><span>
+</span><a name="line-98"></a><span class="hs-comment">-- | This end of the queue provides push-only (left) or pop-only</span><span>
+</span><a name="line-99"></a><span class="hs-comment">--   (right) functionality. Thus a 'SingleEnd' / 'SingleEnd' combination</span><span>
+</span><a name="line-100"></a><span class="hs-comment">--   is what is commonly referred to as a /single ended queue/, whereas</span><span>
+</span><a name="line-101"></a><span class="hs-comment">--   'DoubleEnd' / 'DoubleEnd' is </span><span>
+</span><a name="line-102"></a><span class="hs-comment">--   a /double ended queue/.  Heterogeneous combinations are sometimes</span><span>
+</span><a name="line-103"></a><span class="hs-comment">--   colloquially referred to as \&quot;1.5 ended queues\&quot;.</span><span>
+</span><a name="line-104"></a><span class="hs-keyword">data</span><span> </span><a name="SingleEnd"><a href="Data.Concurrent.Deque.Class.html#SingleEnd"><span class="hs-identifier">SingleEnd</span></a></a><span>
+</span><a name="line-105"></a><span class="hs-comment">-- | This end of the queue supports both push and pop.</span><span>
+</span><a name="line-106"></a><span class="hs-keyword">data</span><span> </span><a name="DoubleEnd"><a href="Data.Concurrent.Deque.Class.html#DoubleEnd"><span class="hs-identifier">DoubleEnd</span></a></a><span>
+</span><a name="line-107"></a><span>
+</span><a name="line-108"></a><span class="hs-comment">-- | The queue has bounded capacity.</span><span>
+</span><a name="line-109"></a><span class="hs-keyword">data</span><span> </span><a name="Bound"><a href="Data.Concurrent.Deque.Class.html#Bound"><span class="hs-identifier">Bound</span></a></a><span>
+</span><a name="line-110"></a><span class="hs-comment">-- | The queue can grow as elements are added.</span><span>
+</span><a name="line-111"></a><span class="hs-keyword">data</span><span> </span><a name="Grow"><a href="Data.Concurrent.Deque.Class.html#Grow"><span class="hs-identifier">Grow</span></a></a><span>
+</span><a name="line-112"></a><span>
+</span><a name="line-113"></a><span class="hs-comment">-- | The queue will not duplicate elements.</span><span>
+</span><a name="line-114"></a><span class="hs-keyword">data</span><span> </span><a name="Safe"><a href="Data.Concurrent.Deque.Class.html#Safe"><span class="hs-identifier">Safe</span></a></a><span>
+</span><a name="line-115"></a><span class="hs-comment">-- | Pop operations may possibly duplicate elements.  Hopefully with low probability!</span><span>
+</span><a name="line-116"></a><span class="hs-keyword">data</span><span> </span><a name="Dup"><a href="Data.Concurrent.Deque.Class.html#Dup"><span class="hs-identifier">Dup</span></a></a><span>
+</span><a name="line-117"></a><span>
+</span><a name="line-118"></a><span class="hs-comment">-- Possible #5:</span><span>
+</span><a name="line-119"></a><span class="hs-comment">-- data Lossy -- I know of no algorithm which would motivate having a Lossy mode.</span><span>
+</span><a name="line-120"></a><span>
+</span><a name="line-121"></a><span class="hs-comment">----------------------------------------</span><span>
+</span><a name="line-122"></a><span>
+</span><a name="line-123"></a><span class="hs-keyword">type</span><span> </span><a name="T"><a href="Data.Concurrent.Deque.Class.html#T"><span class="hs-identifier">T</span></a></a><span>  </span><span class="hs-glyph">=</span><span> </span><a href="Data.Concurrent.Deque.Class.html#Threadsafe"><span class="hs-identifier hs-type">Threadsafe</span></a><span>
+</span><a name="line-124"></a><span class="hs-keyword">type</span><span> </span><a name="NT"><a href="Data.Concurrent.Deque.Class.html#NT"><span class="hs-identifier">NT</span></a></a><span> </span><span class="hs-glyph">=</span><span> </span><a href="Data.Concurrent.Deque.Class.html#Nonthreadsafe"><span class="hs-identifier hs-type">Nonthreadsafe</span></a><span>
+</span><a name="line-125"></a><span class="hs-keyword">type</span><span> </span><a name="S"><a href="Data.Concurrent.Deque.Class.html#S"><span class="hs-identifier">S</span></a></a><span>  </span><span class="hs-glyph">=</span><span> </span><a href="Data.Concurrent.Deque.Class.html#SingleEnd"><span class="hs-identifier hs-type">SingleEnd</span></a><span>
+</span><a name="line-126"></a><span class="hs-keyword">type</span><span> </span><a name="D"><a href="Data.Concurrent.Deque.Class.html#D"><span class="hs-identifier">D</span></a></a><span>  </span><span class="hs-glyph">=</span><span> </span><a href="Data.Concurrent.Deque.Class.html#DoubleEnd"><span class="hs-identifier hs-type">DoubleEnd</span></a><span>
+</span><a name="line-127"></a><span>
+</span><a name="line-128"></a><span class="hs-comment">-- | A traditional single-threaded, single-ended queue.</span><span>
+</span><a name="line-129"></a><span class="hs-keyword">type</span><span> </span><a name="Queue"><a href="Data.Concurrent.Deque.Class.html#Queue"><span class="hs-identifier">Queue</span></a></a><span> </span><a name="local-6989586621679021016"><a href="#local-6989586621679021016"><span class="hs-identifier">a</span></a></a><span> </span><span class="hs-glyph">=</span><span> </span><a href="Data.Concurrent.Deque.Class.html#Deque"><span class="hs-identifier hs-type">Deque</span></a><span> </span><a href="Data.Concurrent.Deque.Class.html#Nonthreadsafe"><span class="hs-identifier hs-type">Nonthreadsafe</span></a><span> </span><a href="Data.Concurrent.Deque.Class.html#Nonthreadsafe"><span class="hs-identifier hs-type">Nonthreadsafe</span></a><span> </span><a href="Data.Concurrent.Deque.Class.html#SingleEnd"><span class="hs-identifier hs-type">SingleEnd</span></a><span> </span><a href="Data.Concurrent.Deque.Class.html#SingleEnd"><span class="hs-identifier hs-type">SingleEnd</span></a><span> </span><a href="Data.Concurrent.Deque.Class.html#Grow"><span class="hs-identifier hs-type">Grow</span></a><span> </span><a href="Data.Concurrent.Deque.Class.html#Safe"><span class="hs-identifier hs-type">Safe</span></a><span> </span><a href="#local-6989586621679021016"><span class="hs-identifier hs-type">a</span></a><span>
+</span><a name="line-130"></a><span class="hs-comment">-- | A concurrent queue.</span><span>
+</span><a name="line-131"></a><span class="hs-keyword">type</span><span> </span><a name="ConcQueue"><a href="Data.Concurrent.Deque.Class.html#ConcQueue"><span class="hs-identifier">ConcQueue</span></a></a><span> </span><a name="local-6989586621679021015"><a href="#local-6989586621679021015"><span class="hs-identifier">a</span></a></a><span> </span><span class="hs-glyph">=</span><span> </span><a href="Data.Concurrent.Deque.Class.html#Deque"><span class="hs-identifier hs-type">Deque</span></a><span> </span><a href="Data.Concurrent.Deque.Class.html#Threadsafe"><span class="hs-identifier hs-type">Threadsafe</span></a><span> </span><a href="Data.Concurrent.Deque.Class.html#Threadsafe"><span class="hs-identifier hs-type">Threadsafe</span></a><span> </span><a href="Data.Concurrent.Deque.Class.html#SingleEnd"><span class="hs-identifier hs-type">SingleEnd</span></a><span> </span><a href="Data.Concurrent.Deque.Class.html#SingleEnd"><span class="hs-identifier hs-type">SingleEnd</span></a><span> </span><a href="Data.Concurrent.Deque.Class.html#Grow"><span class="hs-identifier hs-type">Grow</span></a><span> </span><a href="Data.Concurrent.Deque.Class.html#Safe"><span class="hs-identifier hs-type">Safe</span></a><span> </span><a href="#local-6989586621679021015"><span class="hs-identifier hs-type">a</span></a><span>
+</span><a name="line-132"></a><span class="hs-comment">-- | A concurrent deque.</span><span>
+</span><a name="line-133"></a><span class="hs-keyword">type</span><span> </span><a name="ConcDeque"><a href="Data.Concurrent.Deque.Class.html#ConcDeque"><span class="hs-identifier">ConcDeque</span></a></a><span> </span><a name="local-6989586621679021014"><a href="#local-6989586621679021014"><span class="hs-identifier">a</span></a></a><span> </span><span class="hs-glyph">=</span><span> </span><a href="Data.Concurrent.Deque.Class.html#Deque"><span class="hs-identifier hs-type">Deque</span></a><span> </span><a href="Data.Concurrent.Deque.Class.html#Threadsafe"><span class="hs-identifier hs-type">Threadsafe</span></a><span> </span><a href="Data.Concurrent.Deque.Class.html#Threadsafe"><span class="hs-identifier hs-type">Threadsafe</span></a><span> </span><a href="Data.Concurrent.Deque.Class.html#DoubleEnd"><span class="hs-identifier hs-type">DoubleEnd</span></a><span> </span><a href="Data.Concurrent.Deque.Class.html#DoubleEnd"><span class="hs-identifier hs-type">DoubleEnd</span></a><span> </span><a href="Data.Concurrent.Deque.Class.html#Grow"><span class="hs-identifier hs-type">Grow</span></a><span> </span><a href="Data.Concurrent.Deque.Class.html#Safe"><span class="hs-identifier hs-type">Safe</span></a><span> </span><a href="#local-6989586621679021014"><span class="hs-identifier hs-type">a</span></a><span>
+</span><a name="line-134"></a><span class="hs-comment">-- | Work-stealing deques (1.5 ended).  Typically the worker pushes</span><span>
+</span><a name="line-135"></a><span class="hs-comment">--   and pops its own queue (left) whereas thieves only pop (right).</span><span>
+</span><a name="line-136"></a><span class="hs-keyword">type</span><span> </span><a name="WSDeque"><a href="Data.Concurrent.Deque.Class.html#WSDeque"><span class="hs-identifier">WSDeque</span></a></a><span> </span><a name="local-6989586621679021013"><a href="#local-6989586621679021013"><span class="hs-identifier">a</span></a></a><span> </span><span class="hs-glyph">=</span><span> </span><a href="Data.Concurrent.Deque.Class.html#Deque"><span class="hs-identifier hs-type">Deque</span></a><span> </span><a href="Data.Concurrent.Deque.Class.html#Nonthreadsafe"><span class="hs-identifier hs-type">Nonthreadsafe</span></a><span> </span><a href="Data.Concurrent.Deque.Class.html#Threadsafe"><span class="hs-identifier hs-type">Threadsafe</span></a><span> </span><a href="Data.Concurrent.Deque.Class.html#DoubleEnd"><span class="hs-identifier hs-type">DoubleEnd</span></a><span> </span><a href="Data.Concurrent.Deque.Class.html#SingleEnd"><span class="hs-identifier hs-type">SingleEnd</span></a><span> </span><a href="Data.Concurrent.Deque.Class.html#Grow"><span class="hs-identifier hs-type">Grow</span></a><span> </span><a href="Data.Concurrent.Deque.Class.html#Safe"><span class="hs-identifier hs-type">Safe</span></a><span> </span><a href="#local-6989586621679021013"><span class="hs-identifier hs-type">a</span></a><span>
+</span><a name="line-137"></a><span>
+</span><a name="line-138"></a><span class="hs-comment">--------------------------------------------------------------------------------</span><span>
+</span><a name="line-139"></a><span>
+</span><a name="line-140"></a><span class="hs-comment">-- | Class encompassing the basic queue operations that hold for all</span><span>
+</span><a name="line-141"></a><span class="hs-comment">--   single, 1.5, and double ended modes.  We arbitrarily call the</span><span>
+</span><a name="line-142"></a><span class="hs-comment">--   ends \&quot;left\&quot; and \&quot;right\&quot; and choose the natural operations to be</span><span>
+</span><a name="line-143"></a><span class="hs-comment">--   pushing on the left and popping on the right.</span><span>
+</span><a name="line-144"></a><span class="hs-keyword">class</span><span> </span><a name="DequeClass"><a href="Data.Concurrent.Deque.Class.html#DequeClass"><span class="hs-identifier">DequeClass</span></a></a><span> </span><a name="local-6989586621679021006"><a href="#local-6989586621679021006"><span class="hs-identifier">d</span></a></a><span> </span><span class="hs-keyword">where</span><span>
+</span><a name="line-145"></a><span>   </span><span class="hs-comment">-- | Create a new deque.  Most appropriate for unbounded deques.</span><span>
+</span><a name="line-146"></a><span>   </span><span class="hs-comment">--   If bounded, the size is unspecified.</span><span>
+</span><a name="line-147"></a><span>   </span><a name="newQ"><a href="Data.Concurrent.Deque.Class.html#newQ"><span class="hs-identifier">newQ</span></a></a><span>  </span><span class="hs-glyph">::</span><span> </span><span class="hs-identifier hs-type">IO</span><span> </span><span class="hs-special">(</span><a href="#local-6989586621679021006"><span class="hs-identifier hs-type">d</span></a><span> </span><a href="#local-6989586621679021007"><span class="hs-identifier hs-type">elt</span></a><span class="hs-special">)</span><span>
+</span><a name="line-148"></a><span>
+</span><a name="line-149"></a><span class="hs-cpp">#ifdef DEFAULT_SIGNATURES
+#warning &quot;Providing default binding and signature for newQ...&quot;
+</span><span>   </span><span class="hs-keyword">default</span><span> </span><span class="hs-identifier">newQ</span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-identifier">BoundedL</span><span> </span><span class="hs-identifier">d</span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="hs-identifier">IO</span><span> </span><span class="hs-special">(</span><span class="hs-identifier">d</span><span> </span><span class="hs-identifier">elt</span><span class="hs-special">)</span><span>
+</span><a name="line-152"></a><span>   </span><span class="hs-identifier">newQ</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">newBoundedQ</span><span> </span><span class="hs-number">256</span><span>
+</span><a name="line-153"></a><span class="hs-cpp">#endif
+</span><span>
+</span><a name="line-155"></a><span>   </span><span class="hs-comment">-- | Is the queue currently empty?  Beware that this can be a highly transient state.</span><span>
+</span><a name="line-156"></a><span>   </span><a name="nullQ"><a href="Data.Concurrent.Deque.Class.html#nullQ"><span class="hs-identifier">nullQ</span></a></a><span> </span><span class="hs-glyph">::</span><span> </span><a href="#local-6989586621679021006"><span class="hs-identifier hs-type">d</span></a><span> </span><a href="#local-6989586621679021008"><span class="hs-identifier hs-type">elt</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier hs-type">IO</span><span> </span><span class="hs-identifier hs-type">Bool</span><span>
+</span><a name="line-157"></a><span>
+</span><a name="line-158"></a><span>   </span><span class="hs-comment">-- | Natural push: push onto the left end of the deque.</span><span>
+</span><a name="line-159"></a><span>   </span><a name="pushL"><a href="Data.Concurrent.Deque.Class.html#pushL"><span class="hs-identifier">pushL</span></a></a><span> </span><span class="hs-glyph">::</span><span> </span><a href="#local-6989586621679021006"><span class="hs-identifier hs-type">d</span></a><span> </span><a href="#local-6989586621679021009"><span class="hs-identifier hs-type">elt</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><a href="#local-6989586621679021009"><span class="hs-identifier hs-type">elt</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier hs-type">IO</span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span>
+</span><a name="line-160"></a><span>   </span><span class="hs-comment">-- | Natural pop: pop from the right end of the deque.</span><span>
+</span><a name="line-161"></a><span>   </span><a name="tryPopR"><a href="Data.Concurrent.Deque.Class.html#tryPopR"><span class="hs-identifier">tryPopR</span></a></a><span>  </span><span class="hs-glyph">::</span><span> </span><a href="#local-6989586621679021006"><span class="hs-identifier hs-type">d</span></a><span> </span><a href="#local-6989586621679021010"><span class="hs-identifier hs-type">elt</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier hs-type">IO</span><span> </span><span class="hs-special">(</span><span class="hs-identifier hs-type">Maybe</span><span> </span><a href="#local-6989586621679021010"><span class="hs-identifier hs-type">elt</span></a><span class="hs-special">)</span><span>
+</span><a name="line-162"></a><span>
+</span><a name="line-163"></a><span>   </span><span class="hs-comment">-- TODO: Consider adding a peek operation?</span><span>
+</span><a name="line-164"></a><span>
+</span><a name="line-165"></a><span>   </span><span class="hs-comment">-- TODO: It would also be possible to include blocking/spinning pops.</span><span>
+</span><a name="line-166"></a><span>   </span><span class="hs-comment">-- But maybe those should go in separate type classes...</span><span>
+</span><a name="line-167"></a><span>
+</span><a name="line-168"></a><span>   </span><span class="hs-comment">-- | Runtime indication of thread saftey for `pushL` (and `popL`).</span><span>
+</span><a name="line-169"></a><span>   </span><span class="hs-comment">-- (Argument unused.)            </span><span>
+</span><a name="line-170"></a><span>   </span><a name="leftThreadSafe"><a href="Data.Concurrent.Deque.Class.html#leftThreadSafe"><span class="hs-identifier">leftThreadSafe</span></a></a><span>  </span><span class="hs-glyph">::</span><span> </span><a href="#local-6989586621679021006"><span class="hs-identifier hs-type">d</span></a><span> </span><a href="#local-6989586621679021011"><span class="hs-identifier hs-type">elt</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier hs-type">Bool</span><span>
+</span><a name="line-171"></a><span>
+</span><a name="line-172"></a><span>   </span><span class="hs-comment">-- | Runtime indication of thread saftey for `tryPopR` (and `pushR`).</span><span>
+</span><a name="line-173"></a><span>   </span><span class="hs-comment">-- (Argument unused.) </span><span>
+</span><a name="line-174"></a><span>   </span><a name="rightThreadSafe"><a href="Data.Concurrent.Deque.Class.html#rightThreadSafe"><span class="hs-identifier">rightThreadSafe</span></a></a><span> </span><span class="hs-glyph">::</span><span> </span><a href="#local-6989586621679021006"><span class="hs-identifier hs-type">d</span></a><span> </span><a href="#local-6989586621679021012"><span class="hs-identifier hs-type">elt</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier hs-type">Bool</span><span>
+</span><a name="line-175"></a><span>
+</span><a name="line-176"></a><span class="hs-keyword">class</span><span> </span><a href="Data.Concurrent.Deque.Class.html#DequeClass"><span class="hs-identifier hs-type">DequeClass</span></a><span> </span><a href="#local-6989586621679020953"><span class="hs-identifier hs-type">d</span></a><span> </span><span class="hs-glyph">=&gt;</span><span> </span><a name="PopL"><a href="Data.Concurrent.Deque.Class.html#PopL"><span class="hs-identifier">PopL</span></a></a><span> </span><a name="local-6989586621679020953"><a href="#local-6989586621679020953"><span class="hs-identifier">d</span></a></a><span> </span><span class="hs-keyword">where</span><span>
+</span><a name="line-177"></a><span>   </span><span class="hs-comment">-- | PopL is not the native operation for the left end, so it requires</span><span>
+</span><a name="line-178"></a><span>   </span><span class="hs-comment">--   that the left end be a 'DoubleEnd', but places no other requirements</span><span>
+</span><a name="line-179"></a><span>   </span><span class="hs-comment">--   on the input queue.</span><span>
+</span><a name="line-180"></a><span>   </span><span class="hs-comment">-- </span><span>
+</span><a name="line-181"></a><span>   </span><a name="tryPopL"><a href="Data.Concurrent.Deque.Class.html#tryPopL"><span class="hs-identifier">tryPopL</span></a></a><span>  </span><span class="hs-glyph">::</span><span> </span><a href="#local-6989586621679020953"><span class="hs-identifier hs-type">d</span></a><span> </span><a href="#local-6989586621679020954"><span class="hs-identifier hs-type">elt</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier hs-type">IO</span><span> </span><span class="hs-special">(</span><span class="hs-identifier hs-type">Maybe</span><span> </span><a href="#local-6989586621679020954"><span class="hs-identifier hs-type">elt</span></a><span class="hs-special">)</span><span>
+</span><a name="line-182"></a><span>
+</span><a name="line-183"></a><span class="hs-keyword">class</span><span> </span><a href="Data.Concurrent.Deque.Class.html#DequeClass"><span class="hs-identifier hs-type">DequeClass</span></a><span> </span><a href="#local-6989586621679020951"><span class="hs-identifier hs-type">d</span></a><span> </span><span class="hs-glyph">=&gt;</span><span> </span><a name="PushR"><a href="Data.Concurrent.Deque.Class.html#PushR"><span class="hs-identifier">PushR</span></a></a><span> </span><a name="local-6989586621679020951"><a href="#local-6989586621679020951"><span class="hs-identifier">d</span></a></a><span> </span><span class="hs-keyword">where</span><span>
+</span><a name="line-184"></a><span>   </span><span class="hs-comment">-- | Pushing is not the native operation for the right end, so it requires</span><span>
+</span><a name="line-185"></a><span>   </span><span class="hs-comment">--   that end be a 'DoubleEnd'.</span><span>
+</span><a name="line-186"></a><span>   </span><a name="pushR"><a href="Data.Concurrent.Deque.Class.html#pushR"><span class="hs-identifier">pushR</span></a></a><span> </span><span class="hs-glyph">::</span><span> </span><a href="#local-6989586621679020951"><span class="hs-identifier hs-type">d</span></a><span> </span><a href="#local-6989586621679020952"><span class="hs-identifier hs-type">elt</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><a href="#local-6989586621679020952"><span class="hs-identifier hs-type">elt</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier hs-type">IO</span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span>
+</span><a name="line-187"></a><span>
+</span><a name="line-188"></a><span class="hs-keyword">class</span><span> </span><a href="Data.Concurrent.Deque.Class.html#DequeClass"><span class="hs-identifier hs-type">DequeClass</span></a><span> </span><a href="#local-6989586621679020948"><span class="hs-identifier hs-type">d</span></a><span> </span><span class="hs-glyph">=&gt;</span><span> </span><a name="BoundedL"><a href="Data.Concurrent.Deque.Class.html#BoundedL"><span class="hs-identifier">BoundedL</span></a></a><span> </span><a name="local-6989586621679020948"><a href="#local-6989586621679020948"><span class="hs-identifier">d</span></a></a><span> </span><span class="hs-keyword">where</span><span>
+</span><a name="line-189"></a><span>   </span><span class="hs-comment">-- | Create a new, bounded deque with a specified capacity.</span><span>
+</span><a name="line-190"></a><span>   </span><a name="newBoundedQ"><a href="Data.Concurrent.Deque.Class.html#newBoundedQ"><span class="hs-identifier">newBoundedQ</span></a></a><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-identifier hs-type">Int</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier hs-type">IO</span><span> </span><span class="hs-special">(</span><a href="#local-6989586621679020948"><span class="hs-identifier hs-type">d</span></a><span> </span><a href="#local-6989586621679020949"><span class="hs-identifier hs-type">elt</span></a><span class="hs-special">)</span><span>
+</span><a name="line-191"></a><span>   </span><span class="hs-comment">-- | For a bounded deque, pushing may fail if the deque is full.</span><span>
+</span><a name="line-192"></a><span>   </span><a name="tryPushL"><a href="Data.Concurrent.Deque.Class.html#tryPushL"><span class="hs-identifier">tryPushL</span></a></a><span> </span><span class="hs-glyph">::</span><span> </span><a href="#local-6989586621679020948"><span class="hs-identifier hs-type">d</span></a><span> </span><a href="#local-6989586621679020950"><span class="hs-identifier hs-type">elt</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><a href="#local-6989586621679020950"><span class="hs-identifier hs-type">elt</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier hs-type">IO</span><span> </span><span class="hs-identifier hs-type">Bool</span><span>
+</span><a name="line-193"></a><span>
+</span><a name="line-194"></a><span class="hs-keyword">class</span><span> </span><a href="Data.Concurrent.Deque.Class.html#PushR"><span class="hs-identifier hs-type">PushR</span></a><span> </span><a href="#local-6989586621679019105"><span class="hs-identifier hs-type">d</span></a><span> </span><span class="hs-glyph">=&gt;</span><span> </span><a name="BoundedR"><a href="Data.Concurrent.Deque.Class.html#BoundedR"><span class="hs-identifier">BoundedR</span></a></a><span> </span><a name="local-6989586621679019105"><a href="#local-6989586621679019105"><span class="hs-identifier">d</span></a></a><span> </span><span class="hs-keyword">where</span><span>
+</span><a name="line-195"></a><span>   </span><span class="hs-comment">-- | For a bounded deque, pushing may fail if the deque is full.</span><span>
+</span><a name="line-196"></a><span>   </span><a name="tryPushR"><a href="Data.Concurrent.Deque.Class.html#tryPushR"><span class="hs-identifier">tryPushR</span></a></a><span> </span><span class="hs-glyph">::</span><span> </span><a href="#local-6989586621679019105"><span class="hs-identifier hs-type">d</span></a><span> </span><a href="#local-6989586621679019106"><span class="hs-identifier hs-type">elt</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><a href="#local-6989586621679019106"><span class="hs-identifier hs-type">elt</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier hs-type">IO</span><span> </span><span class="hs-identifier hs-type">Bool</span><span>
+</span><a name="line-197"></a><span>
+</span><a name="line-198"></a></pre></body></html>

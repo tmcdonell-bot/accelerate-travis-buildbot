@@ -1,0 +1,330 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-pragma">{-# LANGUAGE Trustworthy #-}</span><span>
+</span><a name="line-2"></a><span class="hs-comment">-- |</span><span>
+</span><a name="line-3"></a><span class="hs-comment">-- Module      : Data.Text.Short</span><span>
+</span><a name="line-4"></a><span class="hs-comment">-- Copyright   : &#169; Herbert Valerio Riedel 2017</span><span>
+</span><a name="line-5"></a><span class="hs-comment">-- License     : BSD3</span><span>
+</span><a name="line-6"></a><span class="hs-comment">--</span><span>
+</span><a name="line-7"></a><span class="hs-comment">-- Maintainer  : hvr@gnu.org</span><span>
+</span><a name="line-8"></a><span class="hs-comment">-- Stability   : stable</span><span>
+</span><a name="line-9"></a><span class="hs-comment">--</span><span>
+</span><a name="line-10"></a><span class="hs-comment">-- Memory-efficient representation of Unicode text strings.</span><span>
+</span><a name="line-11"></a><span class="hs-comment">--</span><span>
+</span><a name="line-12"></a><span class="hs-comment">-- This module is intended to be imported @qualified@, to avoid name</span><span>
+</span><a name="line-13"></a><span class="hs-comment">-- clashes with &quot;Prelude&quot; functions, e.g.</span><span>
+</span><a name="line-14"></a><span class="hs-comment">--</span><span>
+</span><a name="line-15"></a><span class="hs-comment">-- &gt; import qualified Data.Text.Short as TS</span><span>
+</span><a name="line-16"></a><span class="hs-comment">-- &gt; import qualified Data.Text.Short (ShortText)</span><span>
+</span><a name="line-17"></a><span class="hs-comment">--</span><span>
+</span><a name="line-18"></a><span class="hs-comment">-- This modules deliberately omits (common) partial functions, which</span><span>
+</span><a name="line-19"></a><span class="hs-comment">-- can be found in &quot;Data.Text.Short.Partial&quot; instead.</span><span>
+</span><a name="line-20"></a><span class="hs-comment">--</span><span>
+</span><a name="line-21"></a><span class="hs-comment">-- @since 0.1</span><span>
+</span><a name="line-22"></a><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">Data.Text.Short</span><span>
+</span><a name="line-23"></a><span>    </span><span class="hs-special">(</span><span> </span><span class="hs-comment">-- * The 'ShortText' type</span><span>
+</span><a name="line-24"></a><span>      </span><a href="Data.Text.Short.Internal.html#ShortText"><span class="hs-identifier hs-type">ShortText</span></a><span>
+</span><a name="line-25"></a><span>
+</span><a name="line-26"></a><span>      </span><span class="hs-comment">-- * Basic operations</span><span>
+</span><a name="line-27"></a><span>      </span><span class="hs-comment">-- ** Construction</span><span>
+</span><a name="line-28"></a><span>    </span><span class="hs-special">,</span><span> </span><a href="Data.Text.Short.html#empty"><span class="hs-identifier hs-var">empty</span></a><span>
+</span><a name="line-29"></a><span>    </span><span class="hs-special">,</span><span> </span><a href="Data.Text.Short.Internal.html#singleton"><span class="hs-identifier hs-var">singleton</span></a><span>
+</span><a name="line-30"></a><span>    </span><span class="hs-special">,</span><span> </span><a href="Data.Text.Short.html#pack"><span class="hs-identifier hs-var">pack</span></a><span>
+</span><a name="line-31"></a><span>    </span><span class="hs-special">,</span><span> </span><a href="Data.Text.Short.html#append"><span class="hs-identifier hs-var">append</span></a><span>
+</span><a name="line-32"></a><span>    </span><span class="hs-special">,</span><span> </span><a href="Data.Text.Short.html#concat"><span class="hs-identifier hs-var">concat</span></a><span>
+</span><a name="line-33"></a><span>    </span><span class="hs-special">,</span><span> </span><a href="Data.Text.Short.Internal.html#cons"><span class="hs-identifier hs-var">cons</span></a><span>
+</span><a name="line-34"></a><span>    </span><span class="hs-special">,</span><span> </span><a href="Data.Text.Short.Internal.html#snoc"><span class="hs-identifier hs-var">snoc</span></a><span>
+</span><a name="line-35"></a><span>    </span><span class="hs-special">,</span><span> </span><a href="Data.Text.Short.Internal.html#replicate"><span class="hs-identifier hs-var">replicate</span></a><span>
+</span><a name="line-36"></a><span>
+</span><a name="line-37"></a><span>      </span><span class="hs-comment">-- ** Deconstruction</span><span>
+</span><a name="line-38"></a><span>    </span><span class="hs-special">,</span><span> </span><a href="Data.Text.Short.html#unpack"><span class="hs-identifier hs-var">unpack</span></a><span>
+</span><a name="line-39"></a><span>    </span><span class="hs-special">,</span><span> </span><a href="Data.Text.Short.Internal.html#uncons"><span class="hs-identifier hs-var">uncons</span></a><span>
+</span><a name="line-40"></a><span>    </span><span class="hs-special">,</span><span> </span><a href="Data.Text.Short.Internal.html#unsnoc"><span class="hs-identifier hs-var">unsnoc</span></a><span>
+</span><a name="line-41"></a><span>
+</span><a name="line-42"></a><span>      </span><span class="hs-comment">-- ** Querying &amp; predicates</span><span>
+</span><a name="line-43"></a><span>    </span><span class="hs-special">,</span><span> </span><a href="Data.Text.Short.Internal.html#null"><span class="hs-identifier hs-var">null</span></a><span>
+</span><a name="line-44"></a><span>    </span><span class="hs-special">,</span><span> </span><a href="Data.Text.Short.Internal.html#length"><span class="hs-identifier hs-var">length</span></a><span>
+</span><a name="line-45"></a><span>    </span><span class="hs-special">,</span><span> </span><a href="Data.Text.Short.Internal.html#isAscii"><span class="hs-identifier hs-var">isAscii</span></a><span>
+</span><a name="line-46"></a><span>    </span><span class="hs-special">,</span><span> </span><a href="Data.Text.Short.Internal.html#all"><span class="hs-identifier hs-var">all</span></a><span>
+</span><a name="line-47"></a><span>    </span><span class="hs-special">,</span><span> </span><a href="Data.Text.Short.html#any"><span class="hs-identifier hs-var">any</span></a><span>
+</span><a name="line-48"></a><span>    </span><span class="hs-special">,</span><span> </span><a href="Data.Text.Short.Internal.html#find"><span class="hs-identifier hs-var">find</span></a><span>
+</span><a name="line-49"></a><span>    </span><span class="hs-special">,</span><span> </span><a href="Data.Text.Short.Internal.html#isPrefixOf"><span class="hs-identifier hs-var">isPrefixOf</span></a><span>
+</span><a name="line-50"></a><span>    </span><span class="hs-special">,</span><span> </span><a href="Data.Text.Short.Internal.html#isSuffixOf"><span class="hs-identifier hs-var">isSuffixOf</span></a><span>
+</span><a name="line-51"></a><span>
+</span><a name="line-52"></a><span>      </span><span class="hs-comment">-- ** Lookup &amp; indexing</span><span>
+</span><a name="line-53"></a><span>    </span><span class="hs-special">,</span><span> </span><span class="hs-special">(</span><a href="Data.Text.Short.html#%21%3F"><span class="hs-operator hs-var">!?</span></a><span class="hs-special">)</span><span>
+</span><a name="line-54"></a><span>    </span><span class="hs-special">,</span><span> </span><a href="Data.Text.Short.Internal.html#indexMaybe"><span class="hs-identifier hs-var">indexMaybe</span></a><span>
+</span><a name="line-55"></a><span>    </span><span class="hs-special">,</span><span> </span><a href="Data.Text.Short.Internal.html#indexEndMaybe"><span class="hs-identifier hs-var">indexEndMaybe</span></a><span>
+</span><a name="line-56"></a><span>    </span><span class="hs-special">,</span><span> </span><a href="Data.Text.Short.Internal.html#findIndex"><span class="hs-identifier hs-var">findIndex</span></a><span>
+</span><a name="line-57"></a><span>
+</span><a name="line-58"></a><span>      </span><span class="hs-comment">-- * Splitting 'ShortText's</span><span>
+</span><a name="line-59"></a><span>      </span><span class="hs-comment">-- ** Basic functions</span><span>
+</span><a name="line-60"></a><span>    </span><span class="hs-special">,</span><span> </span><a href="Data.Text.Short.html#take"><span class="hs-identifier hs-var">take</span></a><span>
+</span><a name="line-61"></a><span>    </span><span class="hs-special">,</span><span> </span><a href="Data.Text.Short.html#takeEnd"><span class="hs-identifier hs-var">takeEnd</span></a><span>
+</span><a name="line-62"></a><span>    </span><span class="hs-special">,</span><span> </span><a href="Data.Text.Short.html#drop"><span class="hs-identifier hs-var">drop</span></a><span>
+</span><a name="line-63"></a><span>    </span><span class="hs-special">,</span><span> </span><a href="Data.Text.Short.html#dropEnd"><span class="hs-identifier hs-var">dropEnd</span></a><span>
+</span><a name="line-64"></a><span>    </span><span class="hs-special">,</span><span> </span><a href="Data.Text.Short.html#takeWhile"><span class="hs-identifier hs-var">takeWhile</span></a><span>
+</span><a name="line-65"></a><span>    </span><span class="hs-special">,</span><span> </span><a href="Data.Text.Short.html#takeWhileEnd"><span class="hs-identifier hs-var">takeWhileEnd</span></a><span>
+</span><a name="line-66"></a><span>    </span><span class="hs-special">,</span><span> </span><a href="Data.Text.Short.html#dropWhile"><span class="hs-identifier hs-var">dropWhile</span></a><span>
+</span><a name="line-67"></a><span>    </span><span class="hs-special">,</span><span> </span><a href="Data.Text.Short.html#dropWhileEnd"><span class="hs-identifier hs-var">dropWhileEnd</span></a><span>
+</span><a name="line-68"></a><span>
+</span><a name="line-69"></a><span>    </span><span class="hs-special">,</span><span> </span><a href="Data.Text.Short.Internal.html#dropAround"><span class="hs-identifier hs-var">dropAround</span></a><span>
+</span><a name="line-70"></a><span>
+</span><a name="line-71"></a><span>      </span><span class="hs-comment">-- ** Pair-valued functions</span><span>
+</span><a name="line-72"></a><span>    </span><span class="hs-special">,</span><span> </span><a href="Data.Text.Short.Internal.html#splitAt"><span class="hs-identifier hs-var">splitAt</span></a><span>
+</span><a name="line-73"></a><span>    </span><span class="hs-special">,</span><span> </span><a href="Data.Text.Short.Internal.html#splitAtEnd"><span class="hs-identifier hs-var">splitAtEnd</span></a><span>
+</span><a name="line-74"></a><span>    </span><span class="hs-special">,</span><span> </span><a href="Data.Text.Short.Internal.html#span"><span class="hs-identifier hs-var">span</span></a><span>
+</span><a name="line-75"></a><span>    </span><span class="hs-special">,</span><span> </span><a href="Data.Text.Short.html#break"><span class="hs-identifier hs-var">break</span></a><span>
+</span><a name="line-76"></a><span>    </span><span class="hs-special">,</span><span> </span><a href="Data.Text.Short.Internal.html#spanEnd"><span class="hs-identifier hs-var">spanEnd</span></a><span>
+</span><a name="line-77"></a><span>    </span><span class="hs-special">,</span><span> </span><a href="Data.Text.Short.html#breakEnd"><span class="hs-identifier hs-var">breakEnd</span></a><span>
+</span><a name="line-78"></a><span>
+</span><a name="line-79"></a><span>      </span><span class="hs-comment">-- ** Suffix &amp; Prefix operations</span><span>
+</span><a name="line-80"></a><span>    </span><span class="hs-special">,</span><span> </span><a href="Data.Text.Short.Internal.html#stripPrefix"><span class="hs-identifier hs-var">stripPrefix</span></a><span>
+</span><a name="line-81"></a><span>    </span><span class="hs-special">,</span><span> </span><a href="Data.Text.Short.Internal.html#stripSuffix"><span class="hs-identifier hs-var">stripSuffix</span></a><span>
+</span><a name="line-82"></a><span>
+</span><a name="line-83"></a><span>      </span><span class="hs-comment">-- * Transformations</span><span>
+</span><a name="line-84"></a><span>    </span><span class="hs-special">,</span><span> </span><a href="Data.Text.Short.Internal.html#intersperse"><span class="hs-identifier hs-var">intersperse</span></a><span>
+</span><a name="line-85"></a><span>    </span><span class="hs-special">,</span><span> </span><a href="Data.Text.Short.Internal.html#intercalate"><span class="hs-identifier hs-var">intercalate</span></a><span>
+</span><a name="line-86"></a><span>    </span><span class="hs-special">,</span><span> </span><a href="Data.Text.Short.Internal.html#reverse"><span class="hs-identifier hs-var">reverse</span></a><span>
+</span><a name="line-87"></a><span>    </span><span class="hs-special">,</span><span> </span><a href="Data.Text.Short.Internal.html#filter"><span class="hs-identifier hs-var">filter</span></a><span>
+</span><a name="line-88"></a><span>
+</span><a name="line-89"></a><span>      </span><span class="hs-comment">-- * Folds</span><span>
+</span><a name="line-90"></a><span>    </span><span class="hs-special">,</span><span> </span><a href="Data.Text.Short.Internal.html#foldl"><span class="hs-identifier hs-var">foldl</span></a><span>
+</span><a name="line-91"></a><span>    </span><span class="hs-special">,</span><span> </span><a href="Data.Text.Short.Internal.html#foldl%27"><span class="hs-identifier hs-var">foldl'</span></a><span>
+</span><a name="line-92"></a><span>    </span><span class="hs-special">,</span><span> </span><a href="Data.Text.Short.Internal.html#foldr"><span class="hs-identifier hs-var">foldr</span></a><span>
+</span><a name="line-93"></a><span>
+</span><a name="line-94"></a><span>      </span><span class="hs-comment">-- * Conversions</span><span>
+</span><a name="line-95"></a><span>      </span><span class="hs-comment">-- ** 'String'</span><span>
+</span><a name="line-96"></a><span>    </span><span class="hs-special">,</span><span> </span><a href="Data.Text.Short.Internal.html#fromString"><span class="hs-identifier hs-var">fromString</span></a><span>
+</span><a name="line-97"></a><span>    </span><span class="hs-special">,</span><span> </span><a href="Data.Text.Short.Internal.html#toString"><span class="hs-identifier hs-var">toString</span></a><span>
+</span><a name="line-98"></a><span>
+</span><a name="line-99"></a><span>      </span><span class="hs-comment">-- ** 'Text'</span><span>
+</span><a name="line-100"></a><span>    </span><span class="hs-special">,</span><span> </span><a href="Data.Text.Short.Internal.html#fromText"><span class="hs-identifier hs-var">fromText</span></a><span>
+</span><a name="line-101"></a><span>    </span><span class="hs-special">,</span><span> </span><a href="Data.Text.Short.Internal.html#toText"><span class="hs-identifier hs-var">toText</span></a><span>
+</span><a name="line-102"></a><span>
+</span><a name="line-103"></a><span>      </span><span class="hs-comment">-- ** 'ByteString'</span><span>
+</span><a name="line-104"></a><span>    </span><span class="hs-special">,</span><span> </span><a href="Data.Text.Short.Internal.html#fromShortByteString"><span class="hs-identifier hs-var">fromShortByteString</span></a><span>
+</span><a name="line-105"></a><span>    </span><span class="hs-special">,</span><span> </span><a href="Data.Text.Short.Internal.html#toShortByteString"><span class="hs-identifier hs-var">toShortByteString</span></a><span>
+</span><a name="line-106"></a><span>
+</span><a name="line-107"></a><span>    </span><span class="hs-special">,</span><span> </span><a href="Data.Text.Short.Internal.html#fromByteString"><span class="hs-identifier hs-var">fromByteString</span></a><span>
+</span><a name="line-108"></a><span>    </span><span class="hs-special">,</span><span> </span><a href="Data.Text.Short.Internal.html#toByteString"><span class="hs-identifier hs-var">toByteString</span></a><span>
+</span><a name="line-109"></a><span>
+</span><a name="line-110"></a><span>    </span><span class="hs-special">,</span><span> </span><a href="Data.Text.Short.Internal.html#toBuilder"><span class="hs-identifier hs-var">toBuilder</span></a><span>
+</span><a name="line-111"></a><span>
+</span><a name="line-112"></a><span>    </span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><a name="line-113"></a><span>
+</span><a name="line-114"></a><span class="hs-keyword">import</span><span>           </span><span class="hs-identifier">Data.Semigroup</span><span>
+</span><a name="line-115"></a><span class="hs-keyword">import</span><span>           </span><a href="Data.Text.Short.Internal.html"><span class="hs-identifier">Data.Text.Short.Internal</span></a><span>
+</span><a name="line-116"></a><span class="hs-keyword">import</span><span>           </span><span class="hs-identifier">Prelude</span><span>                  </span><span class="hs-special">(</span><span class="hs-special">)</span><span>
+</span><a name="line-117"></a><span>
+</span><a name="line-118"></a><span class="hs-comment">-- | \(\mathcal{O}(n)\) Variant of 'span' with negated predicate.</span><span>
+</span><a name="line-119"></a><span class="hs-comment">--</span><span>
+</span><a name="line-120"></a><span class="hs-comment">-- &gt;&gt;&gt; break (&gt; 'c') &quot;abcdabcd&quot;</span><span>
+</span><a name="line-121"></a><span class="hs-comment">-- (&quot;abc&quot;,&quot;dabcd&quot;)</span><span>
+</span><a name="line-122"></a><span class="hs-comment">--</span><span>
+</span><a name="line-123"></a><span class="hs-comment">-- prop&gt; break p t == span (not . p) t</span><span>
+</span><a name="line-124"></a><span class="hs-comment">--</span><span>
+</span><a name="line-125"></a><span class="hs-comment">-- prop&gt; fst (break p t) &lt;&gt; snd (break p t) == t</span><span>
+</span><a name="line-126"></a><span class="hs-comment">--</span><span>
+</span><a name="line-127"></a><span class="hs-comment">-- @since 0.1.2</span><span>
+</span><a name="line-128"></a><span class="hs-identifier">break</span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><span class="hs-identifier hs-type">Char</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier hs-type">Bool</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><a href="Data.Text.Short.Internal.html#ShortText"><span class="hs-identifier hs-type">ShortText</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">(</span><a href="Data.Text.Short.Internal.html#ShortText"><span class="hs-identifier hs-type">ShortText</span></a><span class="hs-special">,</span><a href="Data.Text.Short.Internal.html#ShortText"><span class="hs-identifier hs-type">ShortText</span></a><span class="hs-special">)</span><span>
+</span><a name="line-129"></a><a name="break"><a href="Data.Text.Short.html#break"><span class="hs-identifier">break</span></a></a><span> </span><a name="local-6989586621679062649"><a href="#local-6989586621679062649"><span class="hs-identifier">p</span></a></a><span> </span><a name="local-6989586621679062650"><a href="#local-6989586621679062650"><span class="hs-identifier">st</span></a></a><span> </span><span class="hs-glyph">=</span><span> </span><a href="Data.Text.Short.Internal.html#span"><span class="hs-identifier hs-var">span</span></a><span> </span><span class="hs-special">(</span><span class="hs-identifier hs-var">not</span><span> </span><span class="hs-operator hs-var">.</span><span> </span><a href="#local-6989586621679062649"><span class="hs-identifier hs-var">p</span></a><span class="hs-special">)</span><span> </span><a href="#local-6989586621679062650"><span class="hs-identifier hs-var">st</span></a><span>
+</span><a name="line-130"></a><span>
+</span><a name="line-131"></a><span class="hs-comment">-- | \(\mathcal{O}(n)\) Variant of 'spanEnd' with negated predicate.</span><span>
+</span><a name="line-132"></a><span class="hs-comment">--</span><span>
+</span><a name="line-133"></a><span class="hs-comment">-- &gt;&gt;&gt; breakEnd (&lt; 'c') &quot;abcdabcd&quot;</span><span>
+</span><a name="line-134"></a><span class="hs-comment">-- (&quot;abcdab&quot;,&quot;cd&quot;)</span><span>
+</span><a name="line-135"></a><span class="hs-comment">--</span><span>
+</span><a name="line-136"></a><span class="hs-comment">-- prop&gt; breakEnd p t == spanEnd (not . p) t</span><span>
+</span><a name="line-137"></a><span class="hs-comment">--</span><span>
+</span><a name="line-138"></a><span class="hs-comment">-- prop&gt; fst (breakEnd p t) &lt;&gt; snd (breakEnd p t) == t</span><span>
+</span><a name="line-139"></a><span class="hs-comment">--</span><span>
+</span><a name="line-140"></a><span class="hs-comment">-- @since 0.1.2</span><span>
+</span><a name="line-141"></a><span class="hs-identifier">breakEnd</span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><span class="hs-identifier hs-type">Char</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier hs-type">Bool</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><a href="Data.Text.Short.Internal.html#ShortText"><span class="hs-identifier hs-type">ShortText</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">(</span><a href="Data.Text.Short.Internal.html#ShortText"><span class="hs-identifier hs-type">ShortText</span></a><span class="hs-special">,</span><a href="Data.Text.Short.Internal.html#ShortText"><span class="hs-identifier hs-type">ShortText</span></a><span class="hs-special">)</span><span>
+</span><a name="line-142"></a><a name="breakEnd"><a href="Data.Text.Short.html#breakEnd"><span class="hs-identifier">breakEnd</span></a></a><span> </span><a name="local-6989586621679062651"><a href="#local-6989586621679062651"><span class="hs-identifier">p</span></a></a><span> </span><a name="local-6989586621679062652"><a href="#local-6989586621679062652"><span class="hs-identifier">st</span></a></a><span> </span><span class="hs-glyph">=</span><span> </span><a href="Data.Text.Short.Internal.html#spanEnd"><span class="hs-identifier hs-var">spanEnd</span></a><span> </span><span class="hs-special">(</span><span class="hs-identifier hs-var">not</span><span> </span><span class="hs-operator hs-var">.</span><span> </span><a href="#local-6989586621679062651"><span class="hs-identifier hs-var">p</span></a><span class="hs-special">)</span><span> </span><a href="#local-6989586621679062652"><span class="hs-identifier hs-var">st</span></a><span>
+</span><a name="line-143"></a><span>
+</span><a name="line-144"></a><span class="hs-comment">-- | \(\mathcal{O}(n)\) Index /i/-th code-point in 'ShortText'.</span><span>
+</span><a name="line-145"></a><span class="hs-comment">--</span><span>
+</span><a name="line-146"></a><span class="hs-comment">-- Infix operator alias of 'indexMaybe'</span><span>
+</span><a name="line-147"></a><span class="hs-comment">--</span><span>
+</span><a name="line-148"></a><span class="hs-comment">-- &gt;&gt;&gt; &quot;abcdefg&quot; !? 2</span><span>
+</span><a name="line-149"></a><span class="hs-comment">-- Just 'c'</span><span>
+</span><a name="line-150"></a><span class="hs-comment">--</span><span>
+</span><a name="line-151"></a><span class="hs-comment">-- @since 0.1.2</span><span>
+</span><a name="line-152"></a><span class="hs-special">(</span><span class="hs-operator">!?</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">::</span><span> </span><a href="Data.Text.Short.Internal.html#ShortText"><span class="hs-identifier hs-type">ShortText</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier hs-type">Int</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier hs-type">Maybe</span><span> </span><span class="hs-identifier hs-type">Char</span><span>
+</span><a name="line-153"></a><span class="hs-special">(</span><a name="%21%3F"><a href="Data.Text.Short.html#%21%3F"><span class="hs-operator">!?</span></a></a><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><a href="Data.Text.Short.Internal.html#indexMaybe"><span class="hs-identifier hs-var">indexMaybe</span></a><span>
+</span><a name="line-154"></a><span>
+</span><a name="line-155"></a><span class="hs-comment">-- | \(\mathcal{O}(n)\) Test whether /any/ code points in 'ShortText' satisfy a predicate.</span><span>
+</span><a name="line-156"></a><span class="hs-comment">--</span><span>
+</span><a name="line-157"></a><span class="hs-comment">-- &gt;&gt;&gt; any (&gt; 'c') &quot;abcdabcd&quot;</span><span>
+</span><a name="line-158"></a><span class="hs-comment">-- True</span><span>
+</span><a name="line-159"></a><span class="hs-comment">--</span><span>
+</span><a name="line-160"></a><span class="hs-comment">-- &gt;&gt;&gt; any (const True) &quot;&quot;</span><span>
+</span><a name="line-161"></a><span class="hs-comment">-- False</span><span>
+</span><a name="line-162"></a><span class="hs-comment">--</span><span>
+</span><a name="line-163"></a><span class="hs-comment">-- &gt;&gt;&gt; any (== 'c') &quot;abdabd&quot;</span><span>
+</span><a name="line-164"></a><span class="hs-comment">-- False</span><span>
+</span><a name="line-165"></a><span class="hs-comment">--</span><span>
+</span><a name="line-166"></a><span class="hs-comment">-- prop&gt; any p t == not (all (not . p) t)</span><span>
+</span><a name="line-167"></a><span class="hs-comment">--</span><span>
+</span><a name="line-168"></a><span class="hs-comment">-- @since 0.1.2</span><span>
+</span><a name="line-169"></a><span class="hs-identifier">any</span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><span class="hs-identifier hs-type">Char</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier hs-type">Bool</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><a href="Data.Text.Short.Internal.html#ShortText"><span class="hs-identifier hs-type">ShortText</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier hs-type">Bool</span><span>
+</span><a name="line-170"></a><a name="any"><a href="Data.Text.Short.html#any"><span class="hs-identifier">any</span></a></a><span> </span><a name="local-6989586621679062653"><a href="#local-6989586621679062653"><span class="hs-identifier">p</span></a></a><span> </span><a name="local-6989586621679062654"><a href="#local-6989586621679062654"><span class="hs-identifier">st</span></a></a><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">case</span><span> </span><a href="Data.Text.Short.Internal.html#find"><span class="hs-identifier hs-var">find</span></a><span> </span><a href="#local-6989586621679062653"><span class="hs-identifier hs-var">p</span></a><span> </span><a href="#local-6989586621679062654"><span class="hs-identifier hs-var">st</span></a><span> </span><span class="hs-keyword">of</span><span>
+</span><a name="line-171"></a><span>             </span><span class="hs-identifier hs-var">Nothing</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier hs-var">False</span><span>
+</span><a name="line-172"></a><span>             </span><span class="hs-identifier hs-var">Just</span><span> </span><span class="hs-identifier">_</span><span>  </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier hs-var">True</span><span>
+</span><a name="line-173"></a><span>
+</span><a name="line-174"></a><span class="hs-comment">-- | \(\mathcal{O}(n)\) Concatenate two 'ShortText's</span><span>
+</span><a name="line-175"></a><span class="hs-comment">--</span><span>
+</span><a name="line-176"></a><span class="hs-comment">-- This is a type-specialised alias of '&lt;&gt;'.</span><span>
+</span><a name="line-177"></a><span class="hs-comment">--</span><span>
+</span><a name="line-178"></a><span class="hs-comment">-- &gt;&gt;&gt; append &quot;foo&quot; &quot;bar&quot;</span><span>
+</span><a name="line-179"></a><span class="hs-comment">-- &quot;foobar&quot;</span><span>
+</span><a name="line-180"></a><span class="hs-comment">--</span><span>
+</span><a name="line-181"></a><span class="hs-comment">-- prop&gt; length (append t1 t2) == length t1 + length t2</span><span>
+</span><a name="line-182"></a><span class="hs-comment">--</span><span>
+</span><a name="line-183"></a><span class="hs-comment">-- @since 0.1.2</span><span>
+</span><a name="line-184"></a><span class="hs-identifier">append</span><span> </span><span class="hs-glyph">::</span><span> </span><a href="Data.Text.Short.Internal.html#ShortText"><span class="hs-identifier hs-type">ShortText</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><a href="Data.Text.Short.Internal.html#ShortText"><span class="hs-identifier hs-type">ShortText</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><a href="Data.Text.Short.Internal.html#ShortText"><span class="hs-identifier hs-type">ShortText</span></a><span>
+</span><a name="line-185"></a><a name="append"><a href="Data.Text.Short.html#append"><span class="hs-identifier">append</span></a></a><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">(</span><span class="hs-operator hs-var">&lt;&gt;</span><span class="hs-special">)</span><span>
+</span><a name="line-186"></a><span>
+</span><a name="line-187"></a><span class="hs-comment">-- | \(\mathcal{O}(n)\) Concatenate list of 'ShortText's</span><span>
+</span><a name="line-188"></a><span class="hs-comment">--</span><span>
+</span><a name="line-189"></a><span class="hs-comment">-- This is a type-specialised alias of 'mconcat'.</span><span>
+</span><a name="line-190"></a><span class="hs-comment">--</span><span>
+</span><a name="line-191"></a><span class="hs-comment">-- &gt;&gt;&gt; concat []</span><span>
+</span><a name="line-192"></a><span class="hs-comment">-- &quot;&quot;</span><span>
+</span><a name="line-193"></a><span class="hs-comment">--</span><span>
+</span><a name="line-194"></a><span class="hs-comment">-- &gt;&gt;&gt; concat [&quot;foo&quot;,&quot;bar&quot;,&quot;doo&quot;]</span><span>
+</span><a name="line-195"></a><span class="hs-comment">-- &quot;foobardoo&quot;</span><span>
+</span><a name="line-196"></a><span class="hs-comment">--</span><span>
+</span><a name="line-197"></a><span class="hs-comment">-- @since 0.1.2</span><span>
+</span><a name="line-198"></a><span class="hs-identifier">concat</span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">[</span><a href="Data.Text.Short.Internal.html#ShortText"><span class="hs-identifier hs-type">ShortText</span></a><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><a href="Data.Text.Short.Internal.html#ShortText"><span class="hs-identifier hs-type">ShortText</span></a><span>
+</span><a name="line-199"></a><a name="concat"><a href="Data.Text.Short.html#concat"><span class="hs-identifier">concat</span></a></a><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier hs-var">mconcat</span><span>
+</span><a name="line-200"></a><span>
+</span><a name="line-201"></a><span class="hs-comment">-- | \(\mathcal{O}(0)\) The /empty/ 'ShortText'.</span><span>
+</span><a name="line-202"></a><span class="hs-comment">--</span><span>
+</span><a name="line-203"></a><span class="hs-comment">-- This is a type-specialised alias of 'mempty'.</span><span>
+</span><a name="line-204"></a><span class="hs-comment">--</span><span>
+</span><a name="line-205"></a><span class="hs-comment">-- &gt;&gt;&gt; empty</span><span>
+</span><a name="line-206"></a><span class="hs-comment">-- &quot;&quot;</span><span>
+</span><a name="line-207"></a><span class="hs-comment">--</span><span>
+</span><a name="line-208"></a><span class="hs-comment">-- &gt;&gt;&gt; null empty</span><span>
+</span><a name="line-209"></a><span class="hs-comment">-- True</span><span>
+</span><a name="line-210"></a><span class="hs-comment">--</span><span>
+</span><a name="line-211"></a><span class="hs-comment">-- @since 0.1.2</span><span>
+</span><a name="line-212"></a><span class="hs-identifier">empty</span><span> </span><span class="hs-glyph">::</span><span> </span><a href="Data.Text.Short.Internal.html#ShortText"><span class="hs-identifier hs-type">ShortText</span></a><span>
+</span><a name="line-213"></a><a name="empty"><a href="Data.Text.Short.html#empty"><span class="hs-identifier">empty</span></a></a><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier hs-var">mempty</span><span>
+</span><a name="line-214"></a><span>
+</span><a name="line-215"></a><span class="hs-comment">-- | \(\mathcal{O}(n)\) Construct a 'ShortText' from a list of 'Char's.</span><span>
+</span><a name="line-216"></a><span class="hs-comment">--</span><span>
+</span><a name="line-217"></a><span class="hs-comment">-- This is an alias for 'fromString'.</span><span>
+</span><a name="line-218"></a><span class="hs-comment">--</span><span>
+</span><a name="line-219"></a><span class="hs-comment">-- @since 0.1.2</span><span>
+</span><a name="line-220"></a><span class="hs-identifier">pack</span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">[</span><span class="hs-identifier hs-type">Char</span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><a href="Data.Text.Short.Internal.html#ShortText"><span class="hs-identifier hs-type">ShortText</span></a><span>
+</span><a name="line-221"></a><a name="pack"><a href="Data.Text.Short.html#pack"><span class="hs-identifier">pack</span></a></a><span> </span><span class="hs-glyph">=</span><span> </span><a href="Data.Text.Short.Internal.html#fromString"><span class="hs-identifier hs-var">fromString</span></a><span>
+</span><a name="line-222"></a><span>
+</span><a name="line-223"></a><span class="hs-comment">-- | \(\mathcal{O}(n)\) Convert 'ShortText' into a list of 'Char's.</span><span>
+</span><a name="line-224"></a><span class="hs-comment">--</span><span>
+</span><a name="line-225"></a><span class="hs-comment">-- This is an alias for 'toString'.</span><span>
+</span><a name="line-226"></a><span class="hs-comment">--</span><span>
+</span><a name="line-227"></a><span class="hs-comment">-- prop&gt; (pack . unpack) t == t</span><span>
+</span><a name="line-228"></a><span class="hs-comment">--</span><span>
+</span><a name="line-229"></a><span class="hs-comment">-- @since 0.1.2</span><span>
+</span><a name="line-230"></a><span class="hs-identifier">unpack</span><span> </span><span class="hs-glyph">::</span><span> </span><a href="Data.Text.Short.Internal.html#ShortText"><span class="hs-identifier hs-type">ShortText</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="hs-identifier hs-type">Char</span><span class="hs-special">]</span><span>
+</span><a name="line-231"></a><a name="unpack"><a href="Data.Text.Short.html#unpack"><span class="hs-identifier">unpack</span></a></a><span> </span><span class="hs-glyph">=</span><span> </span><a href="Data.Text.Short.Internal.html#toString"><span class="hs-identifier hs-var">toString</span></a><span>
+</span><a name="line-232"></a><span>
+</span><a name="line-233"></a><span class="hs-comment">-- | \(\mathcal{O}(n)\) Take prefix of given length or return whole 'ShortText' if too short.</span><span>
+</span><a name="line-234"></a><span class="hs-comment">--</span><span>
+</span><a name="line-235"></a><span class="hs-comment">-- &gt;&gt;&gt; take 3 &quot;abcdef&quot;</span><span>
+</span><a name="line-236"></a><span class="hs-comment">-- &quot;abc&quot;</span><span>
+</span><a name="line-237"></a><span class="hs-comment">--</span><span>
+</span><a name="line-238"></a><span class="hs-comment">-- &gt;&gt;&gt; take 3 &quot;ab&quot;</span><span>
+</span><a name="line-239"></a><span class="hs-comment">-- &quot;ab&quot;</span><span>
+</span><a name="line-240"></a><span class="hs-comment">--</span><span>
+</span><a name="line-241"></a><span class="hs-comment">-- @since 0.1.2</span><span>
+</span><a name="line-242"></a><span class="hs-identifier">take</span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-identifier hs-type">Int</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><a href="Data.Text.Short.Internal.html#ShortText"><span class="hs-identifier hs-type">ShortText</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><a href="Data.Text.Short.Internal.html#ShortText"><span class="hs-identifier hs-type">ShortText</span></a><span>
+</span><a name="line-243"></a><a name="take"><a href="Data.Text.Short.html#take"><span class="hs-identifier">take</span></a></a><span> </span><a name="local-6989586621679062655"><a href="#local-6989586621679062655"><span class="hs-identifier">n</span></a></a><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier hs-var">fst</span><span> </span><span class="hs-operator hs-var">.</span><span> </span><a href="Data.Text.Short.Internal.html#splitAt"><span class="hs-identifier hs-var">splitAt</span></a><span> </span><a href="#local-6989586621679062655"><span class="hs-identifier hs-var">n</span></a><span>
+</span><a name="line-244"></a><span>
+</span><a name="line-245"></a><span class="hs-comment">-- | \(\mathcal{O}(n)\) Take suffix of given length or return whole 'ShortText' if too short.</span><span>
+</span><a name="line-246"></a><span class="hs-comment">--</span><span>
+</span><a name="line-247"></a><span class="hs-comment">-- &gt;&gt;&gt; takeEnd 3 &quot;abcdefg&quot;</span><span>
+</span><a name="line-248"></a><span class="hs-comment">-- &quot;efg&quot;</span><span>
+</span><a name="line-249"></a><span class="hs-comment">--</span><span>
+</span><a name="line-250"></a><span class="hs-comment">-- &gt;&gt;&gt; takeEnd 3 &quot;ab&quot;</span><span>
+</span><a name="line-251"></a><span class="hs-comment">-- &quot;ab&quot;</span><span>
+</span><a name="line-252"></a><span class="hs-comment">--</span><span>
+</span><a name="line-253"></a><span class="hs-comment">-- @since 0.1.2</span><span>
+</span><a name="line-254"></a><span class="hs-identifier">takeEnd</span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-identifier hs-type">Int</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><a href="Data.Text.Short.Internal.html#ShortText"><span class="hs-identifier hs-type">ShortText</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><a href="Data.Text.Short.Internal.html#ShortText"><span class="hs-identifier hs-type">ShortText</span></a><span>
+</span><a name="line-255"></a><a name="takeEnd"><a href="Data.Text.Short.html#takeEnd"><span class="hs-identifier">takeEnd</span></a></a><span> </span><a name="local-6989586621679062656"><a href="#local-6989586621679062656"><span class="hs-identifier">n</span></a></a><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier hs-var">snd</span><span> </span><span class="hs-operator hs-var">.</span><span> </span><a href="Data.Text.Short.Internal.html#splitAtEnd"><span class="hs-identifier hs-var">splitAtEnd</span></a><span> </span><a href="#local-6989586621679062656"><span class="hs-identifier hs-var">n</span></a><span>
+</span><a name="line-256"></a><span>
+</span><a name="line-257"></a><span class="hs-comment">-- | \(\mathcal{O}(n)\) Take remove prefix of given length from 'ShortText' or return 'empty' 'ShortText' if too short.</span><span>
+</span><a name="line-258"></a><span class="hs-comment">--</span><span>
+</span><a name="line-259"></a><span class="hs-comment">-- &gt;&gt;&gt; drop 4 &quot;abcdef&quot;</span><span>
+</span><a name="line-260"></a><span class="hs-comment">-- &quot;ef&quot;</span><span>
+</span><a name="line-261"></a><span class="hs-comment">--</span><span>
+</span><a name="line-262"></a><span class="hs-comment">-- &gt;&gt;&gt; drop 4 &quot;ab&quot;</span><span>
+</span><a name="line-263"></a><span class="hs-comment">-- &quot;&quot;</span><span>
+</span><a name="line-264"></a><span class="hs-comment">--</span><span>
+</span><a name="line-265"></a><span class="hs-comment">-- @since 0.1.2</span><span>
+</span><a name="line-266"></a><span class="hs-identifier">drop</span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-identifier hs-type">Int</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><a href="Data.Text.Short.Internal.html#ShortText"><span class="hs-identifier hs-type">ShortText</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><a href="Data.Text.Short.Internal.html#ShortText"><span class="hs-identifier hs-type">ShortText</span></a><span>
+</span><a name="line-267"></a><a name="drop"><a href="Data.Text.Short.html#drop"><span class="hs-identifier">drop</span></a></a><span> </span><a name="local-6989586621679062657"><a href="#local-6989586621679062657"><span class="hs-identifier">n</span></a></a><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier hs-var">snd</span><span> </span><span class="hs-operator hs-var">.</span><span> </span><a href="Data.Text.Short.Internal.html#splitAt"><span class="hs-identifier hs-var">splitAt</span></a><span> </span><a href="#local-6989586621679062657"><span class="hs-identifier hs-var">n</span></a><span>
+</span><a name="line-268"></a><span>
+</span><a name="line-269"></a><span class="hs-comment">-- | \(\mathcal{O}(n)\) Take remove suffix of given length from 'ShortText' or return 'empty' 'ShortText' if too short.</span><span>
+</span><a name="line-270"></a><span class="hs-comment">--</span><span>
+</span><a name="line-271"></a><span class="hs-comment">-- &gt;&gt;&gt; drop 4 &quot;abcdefghi&quot;</span><span>
+</span><a name="line-272"></a><span class="hs-comment">-- &quot;efghi&quot;</span><span>
+</span><a name="line-273"></a><span class="hs-comment">--</span><span>
+</span><a name="line-274"></a><span class="hs-comment">-- &gt;&gt;&gt; drop 4 &quot;ab&quot;</span><span>
+</span><a name="line-275"></a><span class="hs-comment">-- &quot;&quot;</span><span>
+</span><a name="line-276"></a><span class="hs-comment">--</span><span>
+</span><a name="line-277"></a><span class="hs-comment">-- @since 0.1.2</span><span>
+</span><a name="line-278"></a><span class="hs-identifier">dropEnd</span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-identifier hs-type">Int</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><a href="Data.Text.Short.Internal.html#ShortText"><span class="hs-identifier hs-type">ShortText</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><a href="Data.Text.Short.Internal.html#ShortText"><span class="hs-identifier hs-type">ShortText</span></a><span>
+</span><a name="line-279"></a><a name="dropEnd"><a href="Data.Text.Short.html#dropEnd"><span class="hs-identifier">dropEnd</span></a></a><span> </span><a name="local-6989586621679062658"><a href="#local-6989586621679062658"><span class="hs-identifier">n</span></a></a><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier hs-var">fst</span><span> </span><span class="hs-operator hs-var">.</span><span> </span><a href="Data.Text.Short.Internal.html#splitAtEnd"><span class="hs-identifier hs-var">splitAtEnd</span></a><span> </span><a href="#local-6989586621679062658"><span class="hs-identifier hs-var">n</span></a><span>
+</span><a name="line-280"></a><span>
+</span><a name="line-281"></a><span class="hs-comment">-- | \(\mathcal{O}(n)\) Take longest prefix satisfying given predicate.</span><span>
+</span><a name="line-282"></a><span class="hs-comment">--</span><span>
+</span><a name="line-283"></a><span class="hs-comment">-- prop&gt; takeWhile p t == fst (span p t)</span><span>
+</span><a name="line-284"></a><span class="hs-comment">--</span><span>
+</span><a name="line-285"></a><span class="hs-comment">-- &gt;&gt;&gt; takeWhile (&lt; 'c') &quot;abcdabcd&quot;</span><span>
+</span><a name="line-286"></a><span class="hs-comment">-- &quot;ab&quot;</span><span>
+</span><a name="line-287"></a><span class="hs-comment">--</span><span>
+</span><a name="line-288"></a><span class="hs-comment">-- @since 0.1.2</span><span>
+</span><a name="line-289"></a><span class="hs-identifier">takeWhile</span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><span class="hs-identifier hs-type">Char</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier hs-type">Bool</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><a href="Data.Text.Short.Internal.html#ShortText"><span class="hs-identifier hs-type">ShortText</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><a href="Data.Text.Short.Internal.html#ShortText"><span class="hs-identifier hs-type">ShortText</span></a><span>
+</span><a name="line-290"></a><a name="takeWhile"><a href="Data.Text.Short.html#takeWhile"><span class="hs-identifier">takeWhile</span></a></a><span> </span><a name="local-6989586621679062659"><a href="#local-6989586621679062659"><span class="hs-identifier">p</span></a></a><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier hs-var">fst</span><span> </span><span class="hs-operator hs-var">.</span><span> </span><a href="Data.Text.Short.Internal.html#span"><span class="hs-identifier hs-var">span</span></a><span> </span><a href="#local-6989586621679062659"><span class="hs-identifier hs-var">p</span></a><span>
+</span><a name="line-291"></a><span>
+</span><a name="line-292"></a><span class="hs-comment">-- | \(\mathcal{O}(n)\) Take longest suffix satisfying given predicate.</span><span>
+</span><a name="line-293"></a><span class="hs-comment">--</span><span>
+</span><a name="line-294"></a><span class="hs-comment">-- prop&gt; takeWhileEnd p t == snd (spanEnd p t)</span><span>
+</span><a name="line-295"></a><span class="hs-comment">--</span><span>
+</span><a name="line-296"></a><span class="hs-comment">-- &gt;&gt;&gt; takeWhileEnd (&gt;= 'c') &quot;abcdabcd&quot;</span><span>
+</span><a name="line-297"></a><span class="hs-comment">-- &quot;cd&quot;</span><span>
+</span><a name="line-298"></a><span class="hs-comment">--</span><span>
+</span><a name="line-299"></a><span class="hs-comment">-- @since 0.1.2</span><span>
+</span><a name="line-300"></a><span class="hs-identifier">takeWhileEnd</span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><span class="hs-identifier hs-type">Char</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier hs-type">Bool</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><a href="Data.Text.Short.Internal.html#ShortText"><span class="hs-identifier hs-type">ShortText</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><a href="Data.Text.Short.Internal.html#ShortText"><span class="hs-identifier hs-type">ShortText</span></a><span>
+</span><a name="line-301"></a><a name="takeWhileEnd"><a href="Data.Text.Short.html#takeWhileEnd"><span class="hs-identifier">takeWhileEnd</span></a></a><span> </span><a name="local-6989586621679062660"><a href="#local-6989586621679062660"><span class="hs-identifier">p</span></a></a><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier hs-var">snd</span><span> </span><span class="hs-operator hs-var">.</span><span> </span><a href="Data.Text.Short.Internal.html#spanEnd"><span class="hs-identifier hs-var">spanEnd</span></a><span> </span><a href="#local-6989586621679062660"><span class="hs-identifier hs-var">p</span></a><span>
+</span><a name="line-302"></a><span>
+</span><a name="line-303"></a><span class="hs-comment">-- | \(\mathcal{O}(n)\) Remove longest prefix satisfying given predicate.</span><span>
+</span><a name="line-304"></a><span class="hs-comment">--</span><span>
+</span><a name="line-305"></a><span class="hs-comment">-- prop&gt; dropWhile p t == snd (span p t)</span><span>
+</span><a name="line-306"></a><span class="hs-comment">--</span><span>
+</span><a name="line-307"></a><span class="hs-comment">-- &gt;&gt;&gt; dropWhile (&lt; 'c') &quot;abcdabcd&quot;</span><span>
+</span><a name="line-308"></a><span class="hs-comment">-- &quot;cdabcd&quot;</span><span>
+</span><a name="line-309"></a><span class="hs-comment">--</span><span>
+</span><a name="line-310"></a><span class="hs-comment">-- @since 0.1.2</span><span>
+</span><a name="line-311"></a><span class="hs-identifier">dropWhile</span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><span class="hs-identifier hs-type">Char</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier hs-type">Bool</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><a href="Data.Text.Short.Internal.html#ShortText"><span class="hs-identifier hs-type">ShortText</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><a href="Data.Text.Short.Internal.html#ShortText"><span class="hs-identifier hs-type">ShortText</span></a><span>
+</span><a name="line-312"></a><a name="dropWhile"><a href="Data.Text.Short.html#dropWhile"><span class="hs-identifier">dropWhile</span></a></a><span> </span><a name="local-6989586621679062661"><a href="#local-6989586621679062661"><span class="hs-identifier">p</span></a></a><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier hs-var">snd</span><span> </span><span class="hs-operator hs-var">.</span><span> </span><a href="Data.Text.Short.Internal.html#span"><span class="hs-identifier hs-var">span</span></a><span> </span><a href="#local-6989586621679062661"><span class="hs-identifier hs-var">p</span></a><span>
+</span><a name="line-313"></a><span>
+</span><a name="line-314"></a><span class="hs-comment">-- | \(\mathcal{O}(n)\) Remove longest suffix satisfying given predicate.</span><span>
+</span><a name="line-315"></a><span class="hs-comment">--</span><span>
+</span><a name="line-316"></a><span class="hs-comment">-- prop&gt; dropWhileEnd p t == fst (spanEnd p t)</span><span>
+</span><a name="line-317"></a><span class="hs-comment">--</span><span>
+</span><a name="line-318"></a><span class="hs-comment">-- &gt;&gt;&gt; dropWhileEnd (&gt;= 'c') &quot;abcdabcd&quot;</span><span>
+</span><a name="line-319"></a><span class="hs-comment">-- &quot;abcdab&quot;</span><span>
+</span><a name="line-320"></a><span class="hs-comment">--</span><span>
+</span><a name="line-321"></a><span class="hs-comment">-- @since 0.1.2</span><span>
+</span><a name="line-322"></a><span class="hs-identifier">dropWhileEnd</span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><span class="hs-identifier hs-type">Char</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier hs-type">Bool</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><a href="Data.Text.Short.Internal.html#ShortText"><span class="hs-identifier hs-type">ShortText</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><a href="Data.Text.Short.Internal.html#ShortText"><span class="hs-identifier hs-type">ShortText</span></a><span>
+</span><a name="line-323"></a><a name="dropWhileEnd"><a href="Data.Text.Short.html#dropWhileEnd"><span class="hs-identifier">dropWhileEnd</span></a></a><span> </span><a name="local-6989586621679062662"><a href="#local-6989586621679062662"><span class="hs-identifier">p</span></a></a><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier hs-var">fst</span><span> </span><span class="hs-operator hs-var">.</span><span> </span><a href="Data.Text.Short.Internal.html#spanEnd"><span class="hs-identifier hs-var">spanEnd</span></a><span> </span><a href="#local-6989586621679062662"><span class="hs-identifier hs-var">p</span></a><span>
+</span><a name="line-324"></a><span>
+</span><a name="line-325"></a><span class="hs-comment">-- $setup</span><span>
+</span><a name="line-326"></a><span class="hs-comment">-- &gt;&gt;&gt; :set -XOverloadedStrings</span><span>
+</span><a name="line-327"></a><span class="hs-comment">-- &gt;&gt;&gt; import Text.Show.Functions ()</span><span>
+</span><a name="line-328"></a><span class="hs-comment">-- &gt;&gt;&gt; import qualified Test.QuickCheck.Arbitrary as QC</span><span>
+</span><a name="line-329"></a><span class="hs-comment">-- &gt;&gt;&gt; instance QC.Arbitrary ShortText where { arbitrary = fmap fromString QC.arbitrary }</span><span>
+</span><a name="line-330"></a></pre></body></html>

@@ -1,0 +1,212 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-pragma">{-# LANGUAGE TypeOperators #-}</span><span>
+</span><a name="line-2"></a><span class="hs-comment">{- |
+This package provides first class labels that can act as bidirectional record
+fields. The labels can be derived automatically using Template Haskell which
+means you don't have to write any boilerplate yourself. The labels are
+implemented as lenses and are fully composable. Labels can be used to /get/,
+/set/ and /modify/ parts of a datatype in a consistent way.
+-}</span><span>
+</span><a name="line-9"></a><span>
+</span><a name="line-10"></a><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">Data.Label</span><span>
+</span><a name="line-11"></a><span class="hs-special">(</span><span>
+</span><a name="line-12"></a><span>
+</span><a name="line-13"></a><span class="hs-comment">-- * Working with @fclabels@.</span><span>
+</span><a name="line-14"></a><span>
+</span><a name="line-15"></a><span class="hs-comment">{- |
+The lens datatype, conveniently called `:-&gt;', is an instance of the
+&quot;Control.Category&quot; type class: meaning it has a proper identity and
+composition. The library has support for automatically deriving labels from
+record selectors that start with an underscore.
+
+To illustrate this package, let's take the following two example datatypes.
+-}</span><span>
+</span><a name="line-23"></a><span>
+</span><a name="line-24"></a><span class="hs-comment">-- |</span><span>
+</span><a name="line-25"></a><span class="hs-comment">-- &gt;{-# LANGUAGE TemplateHaskell, TypeOperators #-}</span><span>
+</span><a name="line-26"></a><span class="hs-comment">-- &gt;import Control.Category</span><span>
+</span><a name="line-27"></a><span class="hs-comment">-- &gt;import Data.Label</span><span>
+</span><a name="line-28"></a><span class="hs-comment">-- &gt;import Prelude hiding ((.), id)</span><span>
+</span><a name="line-29"></a><span class="hs-comment">-- &gt;</span><span>
+</span><a name="line-30"></a><span class="hs-comment">-- &gt;data Person = Person</span><span>
+</span><a name="line-31"></a><span class="hs-comment">-- &gt;  { _name   :: String</span><span>
+</span><a name="line-32"></a><span class="hs-comment">-- &gt;  , _age    :: Int</span><span>
+</span><a name="line-33"></a><span class="hs-comment">-- &gt;  , _place  :: Place</span><span>
+</span><a name="line-34"></a><span class="hs-comment">-- &gt;  } deriving Show</span><span>
+</span><a name="line-35"></a><span class="hs-comment">-- &gt;</span><span>
+</span><a name="line-36"></a><span class="hs-comment">-- &gt;data Place = Place</span><span>
+</span><a name="line-37"></a><span class="hs-comment">-- &gt;  { _city</span><span>
+</span><a name="line-38"></a><span class="hs-comment">-- &gt;  , _country</span><span>
+</span><a name="line-39"></a><span class="hs-comment">-- &gt;  , _continent :: String</span><span>
+</span><a name="line-40"></a><span class="hs-comment">-- &gt;  } deriving Show</span><span>
+</span><a name="line-41"></a><span>
+</span><a name="line-42"></a><span class="hs-comment">{- |
+Both datatypes are record types with all the labels prefixed with an
+underscore. This underscore is an indication for our Template Haskell code to
+derive lenses for these fields. Deriving lenses can be done with this simple
+one-liner:
+
+&gt;mkLabels [''Person, ''Place]
+
+For all labels a lens will created.
+
+Now let's look at this example. This 71 year old fellow, my neighbour called
+Jan, didn't mind using him as an example:
+
+&gt;jan :: Person
+&gt;jan = Person &quot;Jan&quot; 71 (Place &quot;Utrecht&quot; &quot;The Netherlands&quot; &quot;Europe&quot;)
+
+When we want to be sure Jan is really as old as he claims we can use the `get`
+function to get the age out as an integer:
+
+&gt;hisAge :: Int
+&gt;hisAge = get age jan
+
+Consider he now wants to move to Amsterdam: what better place to spend your old
+days. Using composition we can change the city value deep inside the structure:
+
+&gt;moveToAmsterdam :: Person -&gt; Person
+&gt;moveToAmsterdam = set (city . place) &quot;Amsterdam&quot;
+
+And now:
+
+&gt;ghci&gt; moveToAmsterdam jan
+&gt;Person &quot;Jan&quot; 71 (Place &quot;Amsterdam&quot; &quot;The Netherlands&quot; &quot;Europe&quot;)
+
+Composition is done using the @(`.`)@ operator which is part of the
+&quot;Control.Category&quot; module. Make sure to import this module and hide the default
+@(`.`)@, `id` function from the Haskell &quot;Prelude&quot;.
+
+-}</span><span>
+</span><a name="line-80"></a><span>
+</span><a name="line-81"></a><span class="hs-comment">-- * Total monomorphic lenses.</span><span>
+</span><a name="line-82"></a><span>
+</span><a name="line-83"></a><span>  </span><span class="hs-special">(</span><a href="Data.Label.Mono.html#%3A-%3E"><span class="hs-operator hs-type">:-&gt;</span></a><span class="hs-special">)</span><span>
+</span><a name="line-84"></a><span class="hs-special">,</span><span> </span><a href="Data.Label.html#lens"><span class="hs-identifier hs-var">lens</span></a><span>
+</span><a name="line-85"></a><span class="hs-special">,</span><span> </span><a href="Data.Label.html#get"><span class="hs-identifier hs-var">get</span></a><span>
+</span><a name="line-86"></a><span class="hs-special">,</span><span> </span><a href="Data.Label.html#set"><span class="hs-identifier hs-var">set</span></a><span>
+</span><a name="line-87"></a><span class="hs-special">,</span><span> </span><a href="Data.Label.html#modify"><span class="hs-identifier hs-var">modify</span></a><span>
+</span><a name="line-88"></a><span>
+</span><a name="line-89"></a><span class="hs-comment">-- * Vertical composition using @Applicative@.</span><span>
+</span><a name="line-90"></a><span>
+</span><a name="line-91"></a><span class="hs-comment">{- |
+
+Now, because Jan is an old guy, moving to another city is not a very easy task,
+this really takes a while. It will probably take no less than two years before
+he will actually be settled. To reflect this change it might be useful to have
+a first class view on the `Person` datatype that only reveals the age and
+city. This can be done by using a neat `Applicative` functor instance:
+
+&gt;import Control.Applicative
+
+&gt;(fstL, sndL) = $(getLabel ''(,))
+
+&gt;ageAndCity :: Person :-&gt; (Int, String)
+&gt;ageAndCity = point $
+&gt;  (,) &lt;$&gt; fstL &gt;- age
+&gt;      &lt;*&gt; sndL &gt;- city . place
+
+Because the applicative type class on its own is not capable of expressing
+bidirectional relations, which we need for our lenses, the actual instance is
+defined for an internal helper structure called `Point`. Points are a more
+general than lenses. As you can see above, the `point` function has to be
+used to convert a `Point` back into a `Lens`. The (`&gt;-`) operator is used to
+indicate which partial destructor to use per arm of the applicative
+composition.
+
+Now that we have an appropriate age+city view on the `Person` datatype (which
+is itself a lens again), we can use the `modify` function to make Jan move to
+Amsterdam over exactly two years:
+
+&gt;moveToAmsterdamOverTwoYears :: Person -&gt; Person
+&gt;moveToAmsterdamOverTwoYears = modify ageAndCity (\(a, _) -&gt; (a+2, &quot;Amsterdam&quot;))
+
+&gt;ghci&gt; moveToAmsterdamOverTwoYears jan
+&gt;Person &quot;Jan&quot; 73 True (Place &quot;Amsterdam&quot; &quot;The Netherlands&quot; &quot;Europe&quot;)
+
+-}</span><span>
+</span><a name="line-127"></a><span>
+</span><a name="line-128"></a><span class="hs-special">,</span><span> </span><a href="Data.Label.Poly.html#point"><span class="hs-identifier hs-var">point</span></a><span>
+</span><a name="line-129"></a><span class="hs-special">,</span><span> </span><span class="hs-special">(</span><a href="Data.Label.Poly.html#%3E-"><span class="hs-operator hs-var">&gt;-</span></a><span class="hs-special">)</span><span>
+</span><a name="line-130"></a><span class="hs-special">,</span><span> </span><a href="Data.Label.Poly.html#for"><span class="hs-identifier hs-var">for</span></a><span>
+</span><a name="line-131"></a><span>
+</span><a name="line-132"></a><span class="hs-comment">-- * Working with isomorphisms.</span><span>
+</span><a name="line-133"></a><span class="hs-comment">--</span><span>
+</span><a name="line-134"></a><span class="hs-comment">-- | This package contains an isomorphisms datatype that encodes bidirectional</span><span>
+</span><a name="line-135"></a><span class="hs-comment">-- functions, or better bidirectional categories. Just like lenses,</span><span>
+</span><a name="line-136"></a><span class="hs-comment">-- isomorphisms can be composed using the `Category` type class. Isomorphisms</span><span>
+</span><a name="line-137"></a><span class="hs-comment">-- can be used to change the type of a lens. Every isomorphism can be lifted</span><span>
+</span><a name="line-138"></a><span class="hs-comment">-- into a lens.</span><span>
+</span><a name="line-139"></a><span class="hs-comment">--</span><span>
+</span><a name="line-140"></a><span class="hs-comment">-- For example, when we want to treat the age of a person as a string we can do</span><span>
+</span><a name="line-141"></a><span class="hs-comment">-- the following:</span><span>
+</span><a name="line-142"></a><span class="hs-comment">--</span><span>
+</span><a name="line-143"></a><span class="hs-comment">-- &gt; ageAsString :: Person :-&gt; String</span><span>
+</span><a name="line-144"></a><span class="hs-comment">-- &gt; ageAsString = iso (Iso show read) . age</span><span>
+</span><a name="line-145"></a><span>
+</span><a name="line-146"></a><span class="hs-special">,</span><span> </span><a href="Data.Label.Point.html#Iso"><span class="hs-identifier hs-type">Iso</span></a><span> </span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span>
+</span><a name="line-147"></a><span class="hs-special">,</span><span> </span><a href="Data.Label.Point.html#inv"><span class="hs-identifier hs-var">inv</span></a><span>
+</span><a name="line-148"></a><span class="hs-special">,</span><span> </span><a href="Data.Label.Mono.html#iso"><span class="hs-identifier hs-var">iso</span></a><span>
+</span><a name="line-149"></a><span>
+</span><a name="line-150"></a><span class="hs-comment">-- * Derive labels using Template Haskell.</span><span>
+</span><a name="line-151"></a><span class="hs-comment">--</span><span>
+</span><a name="line-152"></a><span class="hs-comment">-- | Template Haskell functions for automatically generating labels for</span><span>
+</span><a name="line-153"></a><span class="hs-comment">-- algebraic datatypes, newtypes and GADTs. There are two basic modes of label</span><span>
+</span><a name="line-154"></a><span class="hs-comment">-- generation, the `mkLabels` family of functions create labels (and optionally</span><span>
+</span><a name="line-155"></a><span class="hs-comment">-- type signatures) in scope as top level funtions, the `getLabel` family of</span><span>
+</span><a name="line-156"></a><span class="hs-comment">-- funtions create labels as expressions that can be named and typed manually.</span><span>
+</span><a name="line-157"></a><span class="hs-comment">--</span><span>
+</span><a name="line-158"></a><span class="hs-comment">-- In the case of multi-constructor datatypes some fields might not always be</span><span>
+</span><a name="line-159"></a><span class="hs-comment">-- available and the derived labels will be partial. Partial labels are</span><span>
+</span><a name="line-160"></a><span class="hs-comment">-- provided with an additional type context that forces them to be only usable</span><span>
+</span><a name="line-161"></a><span class="hs-comment">-- in the `Partial' or `Failing` context.</span><span>
+</span><a name="line-162"></a><span class="hs-comment">--</span><span>
+</span><a name="line-163"></a><span class="hs-comment">-- More derivation functions can be found in &quot;Data.Label.Derive&quot;.</span><span>
+</span><a name="line-164"></a><span>
+</span><a name="line-165"></a><span class="hs-special">,</span><span> </span><a href="Data.Label.Derive.html#mkLabel"><span class="hs-identifier hs-var">mkLabel</span></a><span>
+</span><a name="line-166"></a><span class="hs-special">,</span><span> </span><a href="Data.Label.Derive.html#mkLabels"><span class="hs-identifier hs-var">mkLabels</span></a><span>
+</span><a name="line-167"></a><span class="hs-special">,</span><span> </span><a href="Data.Label.Derive.html#getLabel"><span class="hs-identifier hs-var">getLabel</span></a><span>
+</span><a name="line-168"></a><span class="hs-special">,</span><span> </span><a href="Data.Label.Derive.html#fclabels"><span class="hs-identifier hs-var">fclabels</span></a><span>
+</span><a name="line-169"></a><span class="hs-special">)</span><span>
+</span><a name="line-170"></a><span class="hs-keyword">where</span><span>
+</span><a name="line-171"></a><span>
+</span><a name="line-172"></a><span class="hs-keyword">import</span><span> </span><a href="Data.Label.Point.html"><span class="hs-identifier">Data.Label.Point</span></a><span> </span><span class="hs-special">(</span><a href="Data.Label.Point.html#Iso"><span class="hs-identifier hs-type">Iso</span></a><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span class="hs-special">,</span><span> </span><a href="Data.Label.Point.html#inv"><span class="hs-identifier hs-var">inv</span></a><span class="hs-special">)</span><span>
+</span><a name="line-173"></a><span class="hs-keyword">import</span><span> </span><a href="Data.Label.Poly.html"><span class="hs-identifier">Data.Label.Poly</span></a><span> </span><span class="hs-special">(</span><a href="Data.Label.Poly.html#point"><span class="hs-identifier hs-var">point</span></a><span class="hs-special">,</span><span> </span><span class="hs-special">(</span><a href="Data.Label.Poly.html#%3E-"><span class="hs-operator hs-var">&gt;-</span></a><span class="hs-special">)</span><span class="hs-special">,</span><span> </span><a href="Data.Label.Poly.html#for"><span class="hs-identifier hs-var">for</span></a><span class="hs-special">)</span><span>
+</span><a name="line-174"></a><span class="hs-keyword">import</span><span> </span><a href="Data.Label.Mono.html"><span class="hs-identifier">Data.Label.Mono</span></a><span> </span><span class="hs-special">(</span><a href="Data.Label.Mono.html#iso"><span class="hs-identifier hs-var">iso</span></a><span class="hs-special">,</span><span> </span><span class="hs-special">(</span><a href="Data.Label.Mono.html#%3A-%3E"><span class="hs-operator hs-type">:-&gt;</span></a><span class="hs-special">)</span><span class="hs-special">)</span><span>
+</span><a name="line-175"></a><span class="hs-keyword">import</span><span> </span><a href="Data.Label.Derive.html"><span class="hs-identifier">Data.Label.Derive</span></a><span> </span><span class="hs-special">(</span><a href="Data.Label.Derive.html#mkLabel"><span class="hs-identifier hs-var">mkLabel</span></a><span class="hs-special">,</span><span> </span><a href="Data.Label.Derive.html#mkLabels"><span class="hs-identifier hs-var">mkLabels</span></a><span class="hs-special">,</span><span> </span><a href="Data.Label.Derive.html#getLabel"><span class="hs-identifier hs-var">getLabel</span></a><span class="hs-special">,</span><span> </span><a href="Data.Label.Derive.html#fclabels"><span class="hs-identifier hs-var">fclabels</span></a><span class="hs-special">)</span><span>
+</span><a name="line-176"></a><span>
+</span><a name="line-177"></a><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><a href="Data.Label.Mono.html"><span class="hs-identifier">Data.Label.Mono</span></a><span> </span><span class="hs-keyword">as</span><span> </span><span class="hs-identifier">Mono</span><span>
+</span><a name="line-178"></a><span>
+</span><a name="line-179"></a><span class="hs-pragma">{-# INLINE</span><span> </span><span class="hs-pragma">lens</span><span>   </span><span class="hs-pragma">#-}</span><span>
+</span><a name="line-180"></a><span class="hs-pragma">{-# INLINE</span><span> </span><span class="hs-pragma">get</span><span>    </span><span class="hs-pragma">#-}</span><span>
+</span><a name="line-181"></a><span class="hs-pragma">{-# INLINE</span><span> </span><span class="hs-pragma">modify</span><span> </span><span class="hs-pragma">#-}</span><span>
+</span><a name="line-182"></a><span class="hs-pragma">{-# INLINE</span><span> </span><span class="hs-pragma">set</span><span>    </span><span class="hs-pragma">#-}</span><span>
+</span><a name="line-183"></a><span>
+</span><a name="line-184"></a><span class="hs-comment">-------------------------------------------------------------------------------</span><span>
+</span><a name="line-185"></a><span>
+</span><a name="line-186"></a><span class="hs-comment">-- | Create a total lens from a getter and a modifier.</span><span>
+</span><a name="line-187"></a><span class="hs-comment">--</span><span>
+</span><a name="line-188"></a><span class="hs-comment">-- We expect the following law to hold:</span><span>
+</span><a name="line-189"></a><span class="hs-comment">--</span><span>
+</span><a name="line-190"></a><span class="hs-comment">-- &gt; get l (modify l m f) == m (get l f)</span><span>
+</span><a name="line-191"></a><span>
+</span><a name="line-192"></a><span class="hs-identifier">lens</span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><a href="#local-6989586621679094096"><span class="hs-identifier hs-type">f</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><a href="#local-6989586621679094097"><span class="hs-identifier hs-type">a</span></a><span class="hs-special">)</span><span>              </span><span class="hs-comment">-- ^ Getter.</span><span>
+</span><a name="line-193"></a><span>     </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">(</span><span class="hs-special">(</span><a href="#local-6989586621679094097"><span class="hs-identifier hs-type">a</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><a href="#local-6989586621679094097"><span class="hs-identifier hs-type">a</span></a><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><a href="#local-6989586621679094096"><span class="hs-identifier hs-type">f</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><a href="#local-6989586621679094096"><span class="hs-identifier hs-type">f</span></a><span class="hs-special">)</span><span>  </span><span class="hs-comment">-- ^ Modifier.</span><span>
+</span><a name="line-194"></a><span>     </span><span class="hs-glyph">-&gt;</span><span> </span><a href="Data.Label.Mono.html#%3A-%3E"><span class="hs-identifier hs-type">f</span></a><span> </span><a href="Data.Label.Mono.html#%3A-%3E"><span class="hs-operator hs-type">:-&gt;</span></a><span> </span><a href="#local-6989586621679094097"><span class="hs-identifier hs-type">a</span></a><span>
+</span><a name="line-195"></a><a name="lens"><a href="Data.Label.html#lens"><span class="hs-identifier">lens</span></a></a><span> </span><a name="local-6989586621679094098"><a href="#local-6989586621679094098"><span class="hs-identifier">g</span></a></a><span> </span><a name="local-6989586621679094099"><a href="#local-6989586621679094099"><span class="hs-identifier">s</span></a></a><span> </span><span class="hs-glyph">=</span><span> </span><a href="Data.Label.Mono.html#lens"><span class="hs-identifier hs-var">Mono.lens</span></a><span> </span><a href="#local-6989586621679094098"><span class="hs-identifier hs-var">g</span></a><span> </span><span class="hs-special">(</span><span class="hs-identifier hs-var">uncurry</span><span> </span><a href="#local-6989586621679094099"><span class="hs-identifier hs-var">s</span></a><span class="hs-special">)</span><span>
+</span><a name="line-196"></a><span>
+</span><a name="line-197"></a><span class="hs-comment">-- | Get the getter function from a lens.</span><span>
+</span><a name="line-198"></a><span>
+</span><a name="line-199"></a><span class="hs-identifier">get</span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><a href="Data.Label.Mono.html#%3A-%3E"><span class="hs-identifier hs-type">f</span></a><span> </span><a href="Data.Label.Mono.html#%3A-%3E"><span class="hs-operator hs-type">:-&gt;</span></a><span> </span><a href="#local-6989586621679094095"><span class="hs-identifier hs-type">a</span></a><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><a href="#local-6989586621679094094"><span class="hs-identifier hs-type">f</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><a href="#local-6989586621679094095"><span class="hs-identifier hs-type">a</span></a><span>
+</span><a name="line-200"></a><a name="get"><a href="Data.Label.html#get"><span class="hs-identifier">get</span></a></a><span> </span><span class="hs-glyph">=</span><span> </span><a href="Data.Label.Mono.html#get"><span class="hs-identifier hs-var">Mono.get</span></a><span>
+</span><a name="line-201"></a><span>
+</span><a name="line-202"></a><span class="hs-comment">-- | Get the modifier function from a lens.</span><span>
+</span><a name="line-203"></a><span>
+</span><a name="line-204"></a><span class="hs-identifier">modify</span><span> </span><span class="hs-glyph">::</span><span> </span><a href="Data.Label.Mono.html#%3A-%3E"><span class="hs-identifier hs-type">f</span></a><span> </span><a href="Data.Label.Mono.html#%3A-%3E"><span class="hs-operator hs-type">:-&gt;</span></a><span> </span><a href="#local-6989586621679094093"><span class="hs-identifier hs-type">a</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">(</span><a href="#local-6989586621679094093"><span class="hs-identifier hs-type">a</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><a href="#local-6989586621679094093"><span class="hs-identifier hs-type">a</span></a><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><a href="#local-6989586621679094092"><span class="hs-identifier hs-type">f</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><a href="#local-6989586621679094092"><span class="hs-identifier hs-type">f</span></a><span>
+</span><a name="line-205"></a><a name="modify"><a href="Data.Label.html#modify"><span class="hs-identifier">modify</span></a></a><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier hs-var">curry</span><span> </span><span class="hs-operator hs-var">.</span><span> </span><a href="Data.Label.Mono.html#modify"><span class="hs-identifier hs-var">Mono.modify</span></a><span>
+</span><a name="line-206"></a><span>
+</span><a name="line-207"></a><span class="hs-comment">-- | Get the setter function from a lens.</span><span>
+</span><a name="line-208"></a><span>
+</span><a name="line-209"></a><span class="hs-identifier">set</span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><a href="Data.Label.Mono.html#%3A-%3E"><span class="hs-identifier hs-type">f</span></a><span> </span><a href="Data.Label.Mono.html#%3A-%3E"><span class="hs-operator hs-type">:-&gt;</span></a><span> </span><a href="#local-6989586621679094091"><span class="hs-identifier hs-type">a</span></a><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><a href="#local-6989586621679094091"><span class="hs-identifier hs-type">a</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><a href="#local-6989586621679094090"><span class="hs-identifier hs-type">f</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><a href="#local-6989586621679094090"><span class="hs-identifier hs-type">f</span></a><span>
+</span><a name="line-210"></a><a name="set"><a href="Data.Label.html#set"><span class="hs-identifier">set</span></a></a><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier hs-var">curry</span><span> </span><span class="hs-operator hs-var">.</span><span> </span><a href="Data.Label.Mono.html#set"><span class="hs-identifier hs-var">Mono.set</span></a><span>
+</span><a name="line-211"></a><span>
+</span><a name="line-212"></a></pre></body></html>

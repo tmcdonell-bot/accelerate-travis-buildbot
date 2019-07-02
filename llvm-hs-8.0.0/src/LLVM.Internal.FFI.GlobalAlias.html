@@ -1,0 +1,27 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-pragma">{-# LANGUAGE
+  ForeignFunctionInterface,
+  MultiParamTypeClasses,
+  UndecidableInstances
+  #-}</span><span>
+</span><a name="line-6"></a><span class="hs-comment">-- | FFI functions for handling the LLVM GlobalAlias class</span><span>
+</span><a name="line-7"></a><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">LLVM.Internal.FFI.GlobalAlias</span><span> </span><span class="hs-keyword">where</span><span>
+</span><a name="line-8"></a><span>
+</span><a name="line-9"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">LLVM.Prelude</span><span>
+</span><a name="line-10"></a><span>
+</span><a name="line-11"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">Foreign.Ptr</span><span>
+</span><a name="line-12"></a><span>
+</span><a name="line-13"></a><span class="hs-keyword">import</span><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html"><span class="hs-identifier">LLVM.Internal.FFI.PtrHierarchy</span></a><span>
+</span><a name="line-14"></a><span>
+</span><a name="line-15"></a><span class="hs-comment">-- | test if a 'Value' is a 'GlobalAlias'</span><span>
+</span><a name="line-16"></a><span class="hs-keyword">foreign</span><span> </span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">ccall</span><span> </span><span class="hs-keyword">unsafe</span><span> </span><span class="hs-string">&quot;LLVMIsAGlobalAlias&quot;</span><span> </span><span class="hs-identifier">isAGlobalAlias</span><span> </span><span class="hs-glyph">::</span><span>
+</span><a name="line-17"></a><span>    </span><span class="hs-identifier hs-type">Ptr</span><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#Value"><span class="hs-identifier hs-type">Value</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier hs-type">IO</span><span> </span><span class="hs-special">(</span><span class="hs-identifier hs-type">Ptr</span><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#GlobalAlias"><span class="hs-identifier hs-type">GlobalAlias</span></a><span class="hs-special">)</span><span>
+</span><a name="line-18"></a><span>
+</span><a name="line-19"></a><span class="hs-comment">-- | get the constant aliased by this alias</span><span>
+</span><a name="line-20"></a><span class="hs-keyword">foreign</span><span> </span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">ccall</span><span> </span><span class="hs-keyword">unsafe</span><span> </span><span class="hs-string">&quot;LLVM_Hs_GetAliasee&quot;</span><span> </span><span class="hs-identifier">getAliasee</span><span> </span><span class="hs-glyph">::</span><span>
+</span><a name="line-21"></a><span>    </span><span class="hs-identifier hs-type">Ptr</span><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#GlobalAlias"><span class="hs-identifier hs-type">GlobalAlias</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier hs-type">IO</span><span> </span><span class="hs-special">(</span><span class="hs-identifier hs-type">Ptr</span><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#Constant"><span class="hs-identifier hs-type">Constant</span></a><span class="hs-special">)</span><span>
+</span><a name="line-22"></a><span>
+</span><a name="line-23"></a><span class="hs-comment">-- | set the constant aliased by this alias</span><span>
+</span><a name="line-24"></a><span class="hs-keyword">foreign</span><span> </span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">ccall</span><span> </span><span class="hs-keyword">unsafe</span><span> </span><span class="hs-string">&quot;LLVM_Hs_SetAliasee&quot;</span><span> </span><span class="hs-identifier">setAliasee</span><span> </span><span class="hs-glyph">::</span><span>
+</span><a name="line-25"></a><span>    </span><span class="hs-identifier hs-type">Ptr</span><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#GlobalAlias"><span class="hs-identifier hs-type">GlobalAlias</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier hs-type">Ptr</span><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#Constant"><span class="hs-identifier hs-type">Constant</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier hs-type">IO</span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span>
+</span><a name="line-26"></a><span>
+</span><a name="line-27"></a></pre></body></html>

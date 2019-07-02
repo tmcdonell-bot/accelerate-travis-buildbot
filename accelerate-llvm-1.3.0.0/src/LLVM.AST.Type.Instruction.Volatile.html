@@ -1,0 +1,35 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-pragma">{-# LANGUAGE MultiParamTypeClasses #-}</span><span>
+</span><a name="line-2"></a><span class="hs-pragma">{-# OPTIONS_HADDOCK hide #-}</span><span>
+</span><a name="line-3"></a><span class="hs-comment">-- |</span><span>
+</span><a name="line-4"></a><span class="hs-comment">-- Module      : LLVM.AST.Type.Instruction.Volatile</span><span>
+</span><a name="line-5"></a><span class="hs-comment">-- Copyright   : [2016..2019] The Accelerate Team</span><span>
+</span><a name="line-6"></a><span class="hs-comment">-- License     : BSD3</span><span>
+</span><a name="line-7"></a><span class="hs-comment">--</span><span>
+</span><a name="line-8"></a><span class="hs-comment">-- Maintainer  : Trevor L. McDonell &lt;trevor.mcdonell@gmail.com&gt;</span><span>
+</span><a name="line-9"></a><span class="hs-comment">-- Stability   : experimental</span><span>
+</span><a name="line-10"></a><span class="hs-comment">-- Portability : non-portable (GHC extensions)</span><span>
+</span><a name="line-11"></a><span class="hs-comment">--</span><span>
+</span><a name="line-12"></a><span>
+</span><a name="line-13"></a><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">LLVM.AST.Type.Instruction.Volatile</span><span>
+</span><a name="line-14"></a><span>  </span><span class="hs-keyword">where</span><span>
+</span><a name="line-15"></a><span>
+</span><a name="line-16"></a><span class="hs-keyword">import</span><span> </span><a href="LLVM.AST.Type.Downcast.html"><span class="hs-identifier">LLVM.AST.Type.Downcast</span></a><span>
+</span><a name="line-17"></a><span>
+</span><a name="line-18"></a><span>
+</span><a name="line-19"></a><span class="hs-comment">-- | Loads and stores may be marked as 'volatile'. The LLVM optimiser will not</span><span>
+</span><a name="line-20"></a><span class="hs-comment">-- change the number of volatile operations or their order with respect to other</span><span>
+</span><a name="line-21"></a><span class="hs-comment">-- volatile operations, but may change the order of volatile operations relative</span><span>
+</span><a name="line-22"></a><span class="hs-comment">-- to non-volatile operations.</span><span>
+</span><a name="line-23"></a><span class="hs-comment">--</span><span>
+</span><a name="line-24"></a><span class="hs-comment">-- Note that in LLVM IR, volatility and atomicity are orthogonal; 'volatile' has</span><span>
+</span><a name="line-25"></a><span class="hs-comment">-- no cross-thread synchronisation behaviour.</span><span>
+</span><a name="line-26"></a><span class="hs-comment">--</span><span>
+</span><a name="line-27"></a><span class="hs-comment">-- &lt;http://llvm.org/docs/LangRef.html#volatile-memory-accesses&gt;</span><span>
+</span><a name="line-28"></a><span class="hs-comment">--</span><span>
+</span><a name="line-29"></a><span class="hs-keyword">data</span><span> </span><a name="Volatility"><a href="LLVM.AST.Type.Instruction.Volatile.html#Volatility"><span class="hs-identifier">Volatility</span></a></a><span> </span><span class="hs-glyph">=</span><span> </span><a name="Volatile"><a href="LLVM.AST.Type.Instruction.Volatile.html#Volatile"><span class="hs-identifier">Volatile</span></a></a><span> </span><span class="hs-glyph">|</span><span> </span><a name="NonVolatile"><a href="LLVM.AST.Type.Instruction.Volatile.html#NonVolatile"><span class="hs-identifier">NonVolatile</span></a></a><span>
+</span><a name="line-30"></a><span>
+</span><a name="line-31"></a><span class="hs-keyword">instance</span><span> </span><a href="LLVM.AST.Type.Downcast.html#Downcast"><span class="hs-identifier hs-type">Downcast</span></a><span> </span><a href="LLVM.AST.Type.Instruction.Volatile.html#Volatility"><span class="hs-identifier hs-type">Volatility</span></a><span> </span><span class="hs-identifier hs-type">Bool</span><span> </span><span class="hs-keyword">where</span><span>
+</span><a name="line-32"></a><span>  </span><a name="local-8214565720323928152"><a href="LLVM.AST.Type.Downcast.html#downcast"><span class="hs-identifier">downcast</span></a></a><span> </span><a href="LLVM.AST.Type.Instruction.Volatile.html#Volatile"><span class="hs-identifier hs-var">Volatile</span></a><span>    </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier hs-var">True</span><span>
+</span><a name="line-33"></a><span>  </span><span class="hs-identifier">downcast</span><span> </span><a href="LLVM.AST.Type.Instruction.Volatile.html#NonVolatile"><span class="hs-identifier hs-var">NonVolatile</span></a><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier hs-var">False</span><span>
+</span><a name="line-34"></a><span>
+</span><a name="line-35"></a></pre></body></html>

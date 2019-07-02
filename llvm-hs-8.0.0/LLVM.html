@@ -1,0 +1,48 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>LLVM</title><link href="ocean.css" rel="stylesheet" type="text/css" title="Ocean" /><link rel="stylesheet" type="text/css" href="quick-jump.css" /><script src="haddock-bundle.min.js" async="async" type="text/javascript"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script></head><body><div id="package-header"><ul class="links" id="page-menu"><li><a href="src/LLVM.html">Source</a></li><li><a href="index.html">Contents</a></li><li><a href="doc-index.html">Index</a></li></ul><p class="caption">llvm-hs-8.0.0: General purpose LLVM bindings</p></div><div id="content"><div id="module-header"><table class="info"><tr><th valign="top">Copyright</th><td>(c) Moritz Kiefer 2018<br />Stephen Diehl 2018<br />Benjamin Scarlett 2016</td></tr><tr><th>Maintainer</th><td>moritz.kiefer@purelyfunctional.org</td></tr><tr><th>Safe Haskell</th><td>None</td></tr><tr><th>Language</th><td>Haskell2010</td></tr></table><p class="caption">LLVM</p></div><div id="table-of-contents"><p class="caption">Contents</p><ul><li><a href="#g:1">Overview of the <code>llvm-hs</code> library ecosystem</a></li><li><a href="#g:2">Constructing the C++ representation of an LLVM module</a></li><li><a href="#g:3"> Generating object code</a></li><li><a href="#g:4"> JIT compilation</a></li></ul></div><div id="description"><p class="caption">Description</p><div class="doc empty">&nbsp;</div></div><div id="synopsis"><details id="syn"><summary>Synopsis</summary><ul class="details-toggle" data-details-id="syn"><li class="src short">module <a href="LLVM-Module.html">LLVM.Module</a></li></ul></details></div><div id="interface"><h1>Documentation</h1><div class="top"><p class="src">module <a href="LLVM-Module.html">LLVM.Module</a></p></div><a href="#g:1" id="g:1"><h1>Overview of the <code>llvm-hs</code> library ecosystem</h1></a><div class="doc"><p>The main two libraries in the <code>llvm-hs</code> ecosystem are <code>llvm-hs-pure</code>
+and <code>llvm-hs</code>.</p><ul><li><code>llvm-hs-pure</code> defines a pure Haskell representation of the LLVM
+AST. It has no dependency on the LLVM C/C++ libraries so even if you
+have trouble installing those or want to avoid that dependency, you
+should be able to use it. The documentation
+in <a href="https://hackage.haskell.org/package/llvm-hs-pure/docs/LLVM-AST.html">LLVM.AST</a>
+describes the different options for constructing the AST.</li><li><code>llvm-hs</code> then builds upon <code>llvm-hs-pure</code> and provides the actual FFI
+bindings to LLVM&#8217;s C++ libraries. Most importantly this includes
+bidirectional conversions from the Haskell representation of an LLVM
+module to the C++ representation and the other way around.</li></ul><p>Once you have constructed the C++ representation, there are two main options:</p><ol><li>Generate object code as described in <a href="LLVM.html#objectcode">LLVM</a></li><li>or JIT compile the module as described in <a href="LLVM.html#jitcompilation">LLVM</a>.</li></ol><p>In addition to <code>llvm-hs</code> and <code>llvm-hs-pure</code>, there are a couple of
+other libraries that you be interested in:</p><ul><li><a href="https://hackage.haskell.org/package/llvm-hs-pretty">llvm-hs-pretty</a>
+  a pure Haskell prettyprinter for the AST in <code>llvm-hs-pure</code>. This is
+  useful if you just want to render your AST to LLVM&#8217;s textual IR
+  format either for debugging purposes (<code>llc</code> will usually give pretty
+  good error messages for invalid IR) or because you prefer to call
+  the LLVM CLI tools over the linking against the LLVM libraries.</li><li><a href="https://github.com/llvm-hs/llvm-hs-typed">llvm-hs-typed</a> contains a
+  strongly-typed wrapper for the AST in <code>llvm-hs-pure</code> which makes it
+  harder to accidentally construct invalid LLVM IR.</li><li><a href="https://github.com/llvm-hs/llvm-hs-quote">llvm-hs-quote</a> contains a
+  Haskell quasiquoter that can be used for splicing larger chunks of
+  existing LLVM IR into your Haskell code.</li></ul><p>Finally, there is a <a href="https://github.com/llvm-hs/llvm-hs-kaleidoscope">translation</a> of
+LLVM&#8217;s official Kaleidoscope tutorial to <code>llvm-hs</code> and you can find
+small, self-contained examples covering various parts of the API in
+the <a href="https://github.com/llvm-hs/llvm-hs-examples">llvm-hs-examples</a>
+repository.</p></div><a href="#g:2" id="g:2"><h1>Constructing the C++ representation of an LLVM module</h1></a><div class="doc"><p>Interacting with the LLVM libraries requires that you first construct
+the C++ representation of an LLVM <code><a href="LLVM-Internal-Module.html#t:Module" title="LLVM.Internal.Module">Module</a></code>.</p><p>The most common way of doing that is to first construct the Haskell
+representation of an LLVM module using <code>llvm-hs-pure</code>. You can then
+use <code><a href="LLVM-Internal-Module.html#v:withModuleFromAST" title="LLVM.Internal.Module">withModuleFromAST</a></code> to convert the Haskell AST to the C++
+representation.</p><p>Alternatively, you can also construct a module from LLVM&#8217;s textual IR
+or the binary bitcode format using <code><a href="LLVM-Internal-Module.html#v:withModuleFromLLVMAssembly" title="LLVM.Internal.Module">withModuleFromLLVMAssembly</a></code> and
+<code><a href="LLVM-Internal-Module.html#v:withModuleFromBitcode" title="LLVM.Internal.Module">withModuleFromBitcode</a></code>.</p></div><a href="#g:3" id="g:3"><h1><a id="objectcode"></a> Generating object code</h1></a><div class="doc"><p>Once you have constructed the C++ representation of an LLVM <code><a href="LLVM-Internal-Module.html#t:Module" title="LLVM.Internal.Module">Module</a></code>,
+you can generate an object file using <code><a href="LLVM-Internal-Module.html#v:moduleObject" title="LLVM.Internal.Module">moduleObject</a></code> which will give
+you a <code><a href="../bytestring-0.10.8.2/Data-ByteString.html#v:ByteString" title="Data.ByteString">ByteString</a></code> or write it to a file using
+<code><a href="LLVM-Internal-Module.html#v:writeObjectToFile" title="LLVM.Internal.Module">writeObjectToFile</a></code>. To construct the <code>TargetMachine</code> for these
+functions you can use <code><a href="LLVM-Target.html#v:withHostTargetMachine" title="LLVM.Target">withHostTargetMachine</a></code> if you want
+to generate object code for the machine you are currently running on
+or use <code><a href="LLVM-Target.html#v:withTargetMachine" title="LLVM.Target">withTargetMachine</a></code> and customize the target
+machine based on your needs.</p></div><a href="#g:4" id="g:4"><h1><a id="jitcompilation"></a> JIT compilation</h1></a><div class="doc"><p>In addition to generating object code, you can also JIT-compile LLVM
+modules and call functions in the resulting <code><a href="LLVM-Internal-Module.html#t:Module" title="LLVM.Internal.Module">Module</a></code> from Haskell.</p><p>LLVM has several JIT compilers but ORC JIT is the one that is actively
+being developed and the one best supported by <code>llvm-hs</code>.</p><p>To use ORC JIT you first have to create a
+<code><a href="LLVM-OrcJIT.html#v:CompileLayer" title="LLVM.OrcJIT">CompileLayer</a></code>. You can then use <code><a href="LLVM-OrcJIT.html#v:withModule" title="LLVM.OrcJIT">withModule</a></code>
+to add an LLVM module to the compile layer and finally use
+<code><a href="LLVM-Internal-OrcJIT-CompileLayer.html#v:findSymbol" title="LLVM.Internal.OrcJIT.CompileLayer">findSymbol</a></code> to get the address of a
+symbol in the module.  In most cases, you want to lookup the address
+of a function so you have to first convert the <code><a href="../base-4.12.0.0/Foreign-Ptr.html#v:WordPtr" title="Foreign.Ptr">WordPtr</a></code>
+to a <code><a href="../base-4.12.0.0/Foreign-Ptr.html#v:FunPtr" title="Foreign.Ptr">FunPtr</a></code> using <code><a href="../base-4.12.0.0/Foreign-Ptr.html#v:wordPtrToPtr" title="Foreign.Ptr">wordPtrToPtr</a></code> and
+<code><a href="../base-4.12.0.0/Foreign-Ptr.html#v:castPtrToFunPtr" title="Foreign.Ptr">castPtrToFunPtr</a></code>. Then you can use a foreign dynamic
+import to construct a Haskell function which will call the function
+located at the <code><a href="../base-4.12.0.0/Foreign-Ptr.html#v:FunPtr" title="Foreign.Ptr">FunPtr</a></code>.</p></div></div></div><div id="footer"><p>Produced by <a href="http://www.haskell.org/haddock/">Haddock</a> version 2.22.0</p></div></body></html>

@@ -1,0 +1,26 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-pragma">{-# LANGUAGE
+  TemplateHaskell,
+  MultiParamTypeClasses
+  #-}</span><span>
+</span><a name="line-5"></a><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">LLVM.Internal.RMWOperation</span><span> </span><span class="hs-keyword">where</span><span>
+</span><a name="line-6"></a><span>
+</span><a name="line-7"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">LLVM.AST.RMWOperation</span><span>
+</span><a name="line-8"></a><span>
+</span><a name="line-9"></a><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><a href="LLVM.Internal.FFI.LLVMCTypes.html"><span class="hs-identifier">LLVM.Internal.FFI.LLVMCTypes</span></a><span> </span><span class="hs-keyword">as</span><span> </span><span class="hs-identifier">FFI</span><span>
+</span><a name="line-10"></a><span>
+</span><a name="line-11"></a><span class="hs-keyword">import</span><span> </span><a href="LLVM.Internal.Coding.html"><span class="hs-identifier">LLVM.Internal.Coding</span></a><span>
+</span><a name="line-12"></a><span>
+</span><a name="line-13"></a><span class="hs-identifier hs-var">genCodingInstance</span><span> </span><span class="hs-special">[t|</span><span> </span><span class="hs-identifier hs-var">RMWOperation</span><span> </span><span class="hs-special">|]</span><span> </span><span class="hs-special">''</span><span class="hs-identifier hs-var">FFI.RMWOperation</span><span> </span><span class="hs-special">[</span><span>
+</span><a name="line-14"></a><span>  </span><span class="hs-special">(</span><span class="hs-identifier hs-var">FFI.rmwOperationXchg</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-var">Xchg</span><span class="hs-special">)</span><span class="hs-special">,</span><span>
+</span><a name="line-15"></a><span>  </span><span class="hs-special">(</span><span class="hs-identifier hs-var">FFI.rmwOperationAdd</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-var">Add</span><span class="hs-special">)</span><span class="hs-special">,</span><span>
+</span><a name="line-16"></a><span>  </span><span class="hs-special">(</span><span class="hs-identifier hs-var">FFI.rmwOperationSub</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-var">Sub</span><span class="hs-special">)</span><span class="hs-special">,</span><span>
+</span><a name="line-17"></a><span>  </span><span class="hs-special">(</span><span class="hs-identifier hs-var">FFI.rmwOperationAnd</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-var">And</span><span class="hs-special">)</span><span class="hs-special">,</span><span>
+</span><a name="line-18"></a><span>  </span><span class="hs-special">(</span><span class="hs-identifier hs-var">FFI.rmwOperationNand</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-var">Nand</span><span class="hs-special">)</span><span class="hs-special">,</span><span>
+</span><a name="line-19"></a><span>  </span><span class="hs-special">(</span><span class="hs-identifier hs-var">FFI.rmwOperationOr</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-var">Or</span><span class="hs-special">)</span><span class="hs-special">,</span><span>
+</span><a name="line-20"></a><span>  </span><span class="hs-special">(</span><span class="hs-identifier hs-var">FFI.rmwOperationXor</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-var">Xor</span><span class="hs-special">)</span><span class="hs-special">,</span><span>
+</span><a name="line-21"></a><span>  </span><span class="hs-special">(</span><span class="hs-identifier hs-var">FFI.rmwOperationMax</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-var">Max</span><span class="hs-special">)</span><span class="hs-special">,</span><span>
+</span><a name="line-22"></a><span>  </span><span class="hs-special">(</span><span class="hs-identifier hs-var">FFI.rmwOperationMin</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-var">Min</span><span class="hs-special">)</span><span class="hs-special">,</span><span>
+</span><a name="line-23"></a><span>  </span><span class="hs-special">(</span><span class="hs-identifier hs-var">FFI.rmwOperationUMax</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-var">UMax</span><span class="hs-special">)</span><span class="hs-special">,</span><span>
+</span><a name="line-24"></a><span>  </span><span class="hs-special">(</span><span class="hs-identifier hs-var">FFI.rmwOperationUMin</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-var">UMin</span><span class="hs-special">)</span><span>
+</span><a name="line-25"></a><span> </span><span class="hs-special">]</span><span>
+</span><a name="line-26"></a></pre></body></html>

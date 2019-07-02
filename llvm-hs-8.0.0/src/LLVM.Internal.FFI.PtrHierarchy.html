@@ -1,0 +1,295 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-pragma">{-# LANGUAGE
+  ForeignFunctionInterface,
+  MultiParamTypeClasses,
+  FunctionalDependencies,
+  UndecidableInstances
+  #-}</span><span>
+</span><a name="line-7"></a><span class="hs-comment">-- | This module defines typeclasses to represent the relationships of an object-oriented inheritance hierarchy</span><span>
+</span><a name="line-8"></a><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">LLVM.Internal.FFI.PtrHierarchy</span><span> </span><span class="hs-keyword">where</span><span>
+</span><a name="line-9"></a><span>
+</span><a name="line-10"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">LLVM.Prelude</span><span>
+</span><a name="line-11"></a><span>
+</span><a name="line-12"></a><span class="hs-keyword">import</span><span> </span><span class="hs-identifier">Foreign.Ptr</span><span>
+</span><a name="line-13"></a><span>
+</span><a name="line-14"></a><span class="hs-comment">-- | a class to represent safe casting of pointers to objects of descendant-classes to ancestor-classes.</span><span>
+</span><a name="line-15"></a><span class="hs-keyword">class</span><span> </span><a name="DescendentOf"><a href="LLVM.Internal.FFI.PtrHierarchy.html#DescendentOf"><span class="hs-identifier">DescendentOf</span></a></a><span> </span><a name="local-6989586621679412574"><a href="#local-6989586621679412574"><span class="hs-identifier">a</span></a></a><span> </span><a name="local-6989586621679412575"><a href="#local-6989586621679412575"><span class="hs-identifier">b</span></a></a><span> </span><span class="hs-keyword">where</span><span>
+</span><a name="line-16"></a><span>    </span><a name="upCast"><a href="LLVM.Internal.FFI.PtrHierarchy.html#upCast"><span class="hs-identifier">upCast</span></a></a><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-identifier hs-type">Ptr</span><span> </span><a href="#local-6989586621679412575"><span class="hs-identifier hs-type">b</span></a><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier hs-type">Ptr</span><span> </span><a href="#local-6989586621679412574"><span class="hs-identifier hs-type">a</span></a><span>
+</span><a name="line-17"></a><span>    </span><a name="local-8214565720324187482"><a href="LLVM.Internal.FFI.PtrHierarchy.html#upCast"><span class="hs-identifier">upCast</span></a></a><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier hs-var">castPtr</span><span>
+</span><a name="line-18"></a><span>
+</span><a name="line-19"></a><span class="hs-comment">-- | trivial casts</span><span>
+</span><a name="line-20"></a><span class="hs-keyword">instance</span><span> </span><span class="hs-pragma">{-# OVERLAPPING</span><span> </span><span class="hs-pragma">#-}</span><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#DescendentOf"><span class="hs-identifier hs-type">DescendentOf</span></a><span> </span><a href="#local-6989586621679412579"><span class="hs-identifier hs-type">a</span></a><span> </span><a href="#local-6989586621679412579"><span class="hs-identifier hs-type">a</span></a><span> </span><span class="hs-keyword">where</span><span>
+</span><a name="line-21"></a><span>    </span><a name="local-8214565720324187482"><a href="LLVM.Internal.FFI.PtrHierarchy.html#upCast"><span class="hs-identifier">upCast</span></a></a><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier hs-var">id</span><span>
+</span><a name="line-22"></a><span>
+</span><a name="line-23"></a><span class="hs-comment">-- | a class to represent direct parent-child relationships</span><span>
+</span><a name="line-24"></a><span class="hs-keyword">class</span><span> </span><a name="ChildOf"><a href="LLVM.Internal.FFI.PtrHierarchy.html#ChildOf"><span class="hs-identifier">ChildOf</span></a></a><span> </span><a name="local-6989586621679412572"><a href="#local-6989586621679412572"><span class="hs-identifier">b</span></a></a><span> </span><a name="local-6989586621679412573"><a href="#local-6989586621679412573"><span class="hs-identifier">c</span></a></a><span> </span><span class="hs-glyph">|</span><span> </span><span class="hs-identifier">c</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-identifier">b</span><span>
+</span><a name="line-25"></a><span>
+</span><a name="line-26"></a><span class="hs-comment">-- | ancestor-descentant relationships are build out of parent-child relationships</span><span>
+</span><a name="line-27"></a><span class="hs-keyword">instance</span><span> </span><span class="hs-special">(</span><a href="LLVM.Internal.FFI.PtrHierarchy.html#DescendentOf"><span class="hs-identifier hs-type">DescendentOf</span></a><span> </span><a href="#local-6989586621679412576"><span class="hs-identifier hs-type">a</span></a><span> </span><a href="#local-6989586621679412577"><span class="hs-identifier hs-type">b</span></a><span class="hs-special">,</span><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#ChildOf"><span class="hs-identifier hs-type">ChildOf</span></a><span> </span><a href="#local-6989586621679412577"><span class="hs-identifier hs-type">b</span></a><span> </span><a href="#local-6989586621679412578"><span class="hs-identifier hs-type">c</span></a><span class="hs-special">)</span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#DescendentOf"><span class="hs-identifier hs-type">DescendentOf</span></a><span> </span><a href="#local-6989586621679412576"><span class="hs-identifier hs-type">a</span></a><span> </span><a href="#local-6989586621679412578"><span class="hs-identifier hs-type">c</span></a><span>
+</span><a name="line-28"></a><span>
+</span><a name="line-29"></a><span class="hs-comment">-- | &lt;http://llvm.org/doxygen/classllvm_1_1Value.html&gt;</span><span>
+</span><a name="line-30"></a><span class="hs-keyword">data</span><span> </span><a name="Value"><a href="LLVM.Internal.FFI.PtrHierarchy.html#Value"><span class="hs-identifier">Value</span></a></a><span>
+</span><a name="line-31"></a><span>
+</span><a name="line-32"></a><span class="hs-comment">-- | &lt;http://llvm.org/doxygen/classllvm_1_1Constant.html&gt;</span><span>
+</span><a name="line-33"></a><span class="hs-keyword">data</span><span> </span><a name="Constant"><a href="LLVM.Internal.FFI.PtrHierarchy.html#Constant"><span class="hs-identifier">Constant</span></a></a><span>
+</span><a name="line-34"></a><span>
+</span><a name="line-35"></a><span class="hs-keyword">instance</span><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#ChildOf"><span class="hs-identifier hs-type">ChildOf</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#User"><span class="hs-identifier hs-type">User</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#Constant"><span class="hs-identifier hs-type">Constant</span></a><span>
+</span><a name="line-36"></a><span>
+</span><a name="line-37"></a><span class="hs-comment">-- | &lt;http://llvm.org/doxygen/classllvm_1_1GlobalValue.html&gt;</span><span>
+</span><a name="line-38"></a><span class="hs-keyword">data</span><span> </span><a name="GlobalValue"><a href="LLVM.Internal.FFI.PtrHierarchy.html#GlobalValue"><span class="hs-identifier">GlobalValue</span></a></a><span>
+</span><a name="line-39"></a><span>
+</span><a name="line-40"></a><span class="hs-keyword">instance</span><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#ChildOf"><span class="hs-identifier hs-type">ChildOf</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#Constant"><span class="hs-identifier hs-type">Constant</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#GlobalValue"><span class="hs-identifier hs-type">GlobalValue</span></a><span>
+</span><a name="line-41"></a><span>
+</span><a name="line-42"></a><span class="hs-comment">-- | &lt;http://llvm.org/doxygen/classllvm_1_1GlobalObject.html&gt;</span><span>
+</span><a name="line-43"></a><span class="hs-keyword">data</span><span> </span><a name="GlobalObject"><a href="LLVM.Internal.FFI.PtrHierarchy.html#GlobalObject"><span class="hs-identifier">GlobalObject</span></a></a><span>
+</span><a name="line-44"></a><span>
+</span><a name="line-45"></a><span class="hs-keyword">instance</span><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#ChildOf"><span class="hs-identifier hs-type">ChildOf</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#GlobalValue"><span class="hs-identifier hs-type">GlobalValue</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#GlobalObject"><span class="hs-identifier hs-type">GlobalObject</span></a><span>
+</span><a name="line-46"></a><span>
+</span><a name="line-47"></a><span class="hs-comment">-- | &lt;http://llvm.org/doxygen/classllvm_1_1GlobalVariable.html&gt;</span><span>
+</span><a name="line-48"></a><span class="hs-keyword">data</span><span> </span><a name="GlobalVariable"><a href="LLVM.Internal.FFI.PtrHierarchy.html#GlobalVariable"><span class="hs-identifier">GlobalVariable</span></a></a><span>
+</span><a name="line-49"></a><span>
+</span><a name="line-50"></a><span class="hs-keyword">instance</span><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#ChildOf"><span class="hs-identifier hs-type">ChildOf</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#GlobalObject"><span class="hs-identifier hs-type">GlobalObject</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#GlobalVariable"><span class="hs-identifier hs-type">GlobalVariable</span></a><span>
+</span><a name="line-51"></a><span>
+</span><a name="line-52"></a><span class="hs-comment">-- | &lt;http://llvm.org/doxygen/classllvm_1_1GlobalAlias.html&gt;</span><span>
+</span><a name="line-53"></a><span class="hs-keyword">data</span><span> </span><a name="GlobalAlias"><a href="LLVM.Internal.FFI.PtrHierarchy.html#GlobalAlias"><span class="hs-identifier">GlobalAlias</span></a></a><span>
+</span><a name="line-54"></a><span>
+</span><a name="line-55"></a><span class="hs-keyword">instance</span><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#ChildOf"><span class="hs-identifier hs-type">ChildOf</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#GlobalValue"><span class="hs-identifier hs-type">GlobalValue</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#GlobalAlias"><span class="hs-identifier hs-type">GlobalAlias</span></a><span>
+</span><a name="line-56"></a><span>
+</span><a name="line-57"></a><span class="hs-comment">-- | &lt;http://llvm.org/doxygen/classllvm_1_1Function.html&gt;</span><span>
+</span><a name="line-58"></a><span class="hs-keyword">data</span><span> </span><a name="Function"><a href="LLVM.Internal.FFI.PtrHierarchy.html#Function"><span class="hs-identifier">Function</span></a></a><span>
+</span><a name="line-59"></a><span>
+</span><a name="line-60"></a><span class="hs-keyword">instance</span><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#ChildOf"><span class="hs-identifier hs-type">ChildOf</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#GlobalObject"><span class="hs-identifier hs-type">GlobalObject</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#Function"><span class="hs-identifier hs-type">Function</span></a><span>
+</span><a name="line-61"></a><span>
+</span><a name="line-62"></a><span class="hs-comment">-- | &lt;http://llvm.org/doxygen/classllvm_1_1BasicBlock.html&gt;</span><span>
+</span><a name="line-63"></a><span class="hs-keyword">data</span><span> </span><a name="BasicBlock"><a href="LLVM.Internal.FFI.PtrHierarchy.html#BasicBlock"><span class="hs-identifier">BasicBlock</span></a></a><span>
+</span><a name="line-64"></a><span>
+</span><a name="line-65"></a><span class="hs-keyword">instance</span><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#ChildOf"><span class="hs-identifier hs-type">ChildOf</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#Value"><span class="hs-identifier hs-type">Value</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#BasicBlock"><span class="hs-identifier hs-type">BasicBlock</span></a><span>
+</span><a name="line-66"></a><span>
+</span><a name="line-67"></a><span class="hs-comment">-- | &lt;http://llvm.org/doxygen/classllvm_1_1Argument.html&gt;</span><span>
+</span><a name="line-68"></a><span class="hs-keyword">data</span><span> </span><a name="Parameter"><a href="LLVM.Internal.FFI.PtrHierarchy.html#Parameter"><span class="hs-identifier">Parameter</span></a></a><span>
+</span><a name="line-69"></a><span>
+</span><a name="line-70"></a><span class="hs-keyword">instance</span><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#ChildOf"><span class="hs-identifier hs-type">ChildOf</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#Value"><span class="hs-identifier hs-type">Value</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#Parameter"><span class="hs-identifier hs-type">Parameter</span></a><span>
+</span><a name="line-71"></a><span>
+</span><a name="line-72"></a><span class="hs-comment">-- | &lt;http://llvm.org/doxygen/classllvm_1_1Instruction.html&gt;</span><span>
+</span><a name="line-73"></a><span class="hs-keyword">data</span><span> </span><a name="Instruction"><a href="LLVM.Internal.FFI.PtrHierarchy.html#Instruction"><span class="hs-identifier">Instruction</span></a></a><span>
+</span><a name="line-74"></a><span>
+</span><a name="line-75"></a><span class="hs-keyword">instance</span><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#ChildOf"><span class="hs-identifier hs-type">ChildOf</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#User"><span class="hs-identifier hs-type">User</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#Instruction"><span class="hs-identifier hs-type">Instruction</span></a><span>
+</span><a name="line-76"></a><span>
+</span><a name="line-77"></a><span class="hs-comment">-- | &lt;http://llvm.org/doxygen/classllvm_1_1BinaryOperator.html&gt;</span><span>
+</span><a name="line-78"></a><span class="hs-keyword">data</span><span> </span><a name="BinaryOperator"><a href="LLVM.Internal.FFI.PtrHierarchy.html#BinaryOperator"><span class="hs-identifier">BinaryOperator</span></a></a><span>
+</span><a name="line-79"></a><span>
+</span><a name="line-80"></a><span class="hs-keyword">instance</span><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#ChildOf"><span class="hs-identifier hs-type">ChildOf</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#Instruction"><span class="hs-identifier hs-type">Instruction</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#BinaryOperator"><span class="hs-identifier hs-type">BinaryOperator</span></a><span>
+</span><a name="line-81"></a><span>
+</span><a name="line-82"></a><span class="hs-comment">-- | &lt;http://llvm.org/doxygen/classllvm_1_1User.html&gt;</span><span>
+</span><a name="line-83"></a><span class="hs-keyword">data</span><span> </span><a name="User"><a href="LLVM.Internal.FFI.PtrHierarchy.html#User"><span class="hs-identifier">User</span></a></a><span>
+</span><a name="line-84"></a><span>
+</span><a name="line-85"></a><span class="hs-keyword">instance</span><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#ChildOf"><span class="hs-identifier hs-type">ChildOf</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#Value"><span class="hs-identifier hs-type">Value</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#User"><span class="hs-identifier hs-type">User</span></a><span>
+</span><a name="line-86"></a><span>
+</span><a name="line-87"></a><span class="hs-comment">-- | &lt;http://llvm.org/doxygen/classllvm_1_1MDNode.html&gt;</span><span>
+</span><a name="line-88"></a><span class="hs-keyword">data</span><span> </span><a name="MDNode"><a href="LLVM.Internal.FFI.PtrHierarchy.html#MDNode"><span class="hs-identifier">MDNode</span></a></a><span>
+</span><a name="line-89"></a><span>
+</span><a name="line-90"></a><span class="hs-keyword">instance</span><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#ChildOf"><span class="hs-identifier hs-type">ChildOf</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#Metadata"><span class="hs-identifier hs-type">Metadata</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#MDNode"><span class="hs-identifier hs-type">MDNode</span></a><span>
+</span><a name="line-91"></a><span>
+</span><a name="line-92"></a><span class="hs-keyword">data</span><span> </span><a name="MDTuple"><a href="LLVM.Internal.FFI.PtrHierarchy.html#MDTuple"><span class="hs-identifier">MDTuple</span></a></a><span>
+</span><a name="line-93"></a><span>
+</span><a name="line-94"></a><span class="hs-keyword">instance</span><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#ChildOf"><span class="hs-identifier hs-type">ChildOf</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#MDNode"><span class="hs-identifier hs-type">MDNode</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#MDTuple"><span class="hs-identifier hs-type">MDTuple</span></a><span>
+</span><a name="line-95"></a><span>
+</span><a name="line-96"></a><span class="hs-comment">-- | &lt;http://llvm.org/doxygen/classllvm_1_1MDString.html&gt;</span><span>
+</span><a name="line-97"></a><span class="hs-keyword">data</span><span> </span><a name="MDString"><a href="LLVM.Internal.FFI.PtrHierarchy.html#MDString"><span class="hs-identifier">MDString</span></a></a><span>
+</span><a name="line-98"></a><span>
+</span><a name="line-99"></a><span class="hs-keyword">instance</span><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#ChildOf"><span class="hs-identifier hs-type">ChildOf</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#Metadata"><span class="hs-identifier hs-type">Metadata</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#MDString"><span class="hs-identifier hs-type">MDString</span></a><span>
+</span><a name="line-100"></a><span>
+</span><a name="line-101"></a><span class="hs-comment">-- | http://llvm.org/doxygen/classllvm_1_1ValueAsMetadata.html</span><span>
+</span><a name="line-102"></a><span class="hs-keyword">data</span><span> </span><a name="MDValue"><a href="LLVM.Internal.FFI.PtrHierarchy.html#MDValue"><span class="hs-identifier">MDValue</span></a></a><span>
+</span><a name="line-103"></a><span>
+</span><a name="line-104"></a><span class="hs-keyword">instance</span><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#ChildOf"><span class="hs-identifier hs-type">ChildOf</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#Metadata"><span class="hs-identifier hs-type">Metadata</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#MDValue"><span class="hs-identifier hs-type">MDValue</span></a><span>
+</span><a name="line-105"></a><span>
+</span><a name="line-106"></a><span class="hs-comment">-- | https://llvm.org/doxygen/classllvm_1_1DIExpression.html</span><span>
+</span><a name="line-107"></a><span class="hs-keyword">data</span><span> </span><a name="DIExpression"><a href="LLVM.Internal.FFI.PtrHierarchy.html#DIExpression"><span class="hs-identifier">DIExpression</span></a></a><span>
+</span><a name="line-108"></a><span>
+</span><a name="line-109"></a><span class="hs-keyword">instance</span><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#ChildOf"><span class="hs-identifier hs-type">ChildOf</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#MDNode"><span class="hs-identifier hs-type">MDNode</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#DIExpression"><span class="hs-identifier hs-type">DIExpression</span></a><span>
+</span><a name="line-110"></a><span>
+</span><a name="line-111"></a><span class="hs-comment">-- | https://llvm.org/doxygen/classllvm_1_1DIGlobalVariableExpression.html</span><span>
+</span><a name="line-112"></a><span class="hs-keyword">data</span><span> </span><a name="DIGlobalVariableExpression"><a href="LLVM.Internal.FFI.PtrHierarchy.html#DIGlobalVariableExpression"><span class="hs-identifier">DIGlobalVariableExpression</span></a></a><span>
+</span><a name="line-113"></a><span>
+</span><a name="line-114"></a><span class="hs-keyword">instance</span><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#ChildOf"><span class="hs-identifier hs-type">ChildOf</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#MDNode"><span class="hs-identifier hs-type">MDNode</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#DIGlobalVariableExpression"><span class="hs-identifier hs-type">DIGlobalVariableExpression</span></a><span>
+</span><a name="line-115"></a><span>
+</span><a name="line-116"></a><span class="hs-comment">-- | https://llvm.org/doxygen/classllvm_1_1DILocation.html</span><span>
+</span><a name="line-117"></a><span class="hs-keyword">data</span><span> </span><a name="DILocation"><a href="LLVM.Internal.FFI.PtrHierarchy.html#DILocation"><span class="hs-identifier">DILocation</span></a></a><span>
+</span><a name="line-118"></a><span>
+</span><a name="line-119"></a><span class="hs-keyword">instance</span><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#ChildOf"><span class="hs-identifier hs-type">ChildOf</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#MDNode"><span class="hs-identifier hs-type">MDNode</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#DILocation"><span class="hs-identifier hs-type">DILocation</span></a><span>
+</span><a name="line-120"></a><span>
+</span><a name="line-121"></a><span class="hs-comment">-- | https://llvm.org/doxygen/classllvm_1_1DINode.html</span><span>
+</span><a name="line-122"></a><span class="hs-keyword">data</span><span> </span><a name="DINode"><a href="LLVM.Internal.FFI.PtrHierarchy.html#DINode"><span class="hs-identifier">DINode</span></a></a><span>
+</span><a name="line-123"></a><span>
+</span><a name="line-124"></a><span class="hs-keyword">instance</span><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#ChildOf"><span class="hs-identifier hs-type">ChildOf</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#MDNode"><span class="hs-identifier hs-type">MDNode</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#DINode"><span class="hs-identifier hs-type">DINode</span></a><span>
+</span><a name="line-125"></a><span>
+</span><a name="line-126"></a><span class="hs-comment">-- | https://llvm.org/doxygen/classllvm_1_1DIImportedEntity.html</span><span>
+</span><a name="line-127"></a><span class="hs-keyword">data</span><span> </span><a name="DIImportedEntity"><a href="LLVM.Internal.FFI.PtrHierarchy.html#DIImportedEntity"><span class="hs-identifier">DIImportedEntity</span></a></a><span>
+</span><a name="line-128"></a><span>
+</span><a name="line-129"></a><span class="hs-keyword">instance</span><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#ChildOf"><span class="hs-identifier hs-type">ChildOf</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#DINode"><span class="hs-identifier hs-type">DINode</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#DIImportedEntity"><span class="hs-identifier hs-type">DIImportedEntity</span></a><span>
+</span><a name="line-130"></a><span>
+</span><a name="line-131"></a><span class="hs-comment">-- | https://llvm.org/doxygen/classllvm_1_1DIObjCProperty.html</span><span>
+</span><a name="line-132"></a><span class="hs-keyword">data</span><span> </span><a name="DIObjCProperty"><a href="LLVM.Internal.FFI.PtrHierarchy.html#DIObjCProperty"><span class="hs-identifier">DIObjCProperty</span></a></a><span>
+</span><a name="line-133"></a><span>
+</span><a name="line-134"></a><span class="hs-keyword">instance</span><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#ChildOf"><span class="hs-identifier hs-type">ChildOf</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#DINode"><span class="hs-identifier hs-type">DINode</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#DIObjCProperty"><span class="hs-identifier hs-type">DIObjCProperty</span></a><span>
+</span><a name="line-135"></a><span>
+</span><a name="line-136"></a><span class="hs-comment">-- | https://llvm.org/doxygen/classllvm_1_1DISubrange.html</span><span>
+</span><a name="line-137"></a><span class="hs-keyword">data</span><span> </span><a name="DISubrange"><a href="LLVM.Internal.FFI.PtrHierarchy.html#DISubrange"><span class="hs-identifier">DISubrange</span></a></a><span>
+</span><a name="line-138"></a><span>
+</span><a name="line-139"></a><span class="hs-keyword">instance</span><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#ChildOf"><span class="hs-identifier hs-type">ChildOf</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#DINode"><span class="hs-identifier hs-type">DINode</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#DISubrange"><span class="hs-identifier hs-type">DISubrange</span></a><span>
+</span><a name="line-140"></a><span>
+</span><a name="line-141"></a><span class="hs-comment">-- | https://llvm.org/doxygen/classllvm_1_1DIEnumerator.html</span><span>
+</span><a name="line-142"></a><span class="hs-keyword">data</span><span> </span><a name="DIEnumerator"><a href="LLVM.Internal.FFI.PtrHierarchy.html#DIEnumerator"><span class="hs-identifier">DIEnumerator</span></a></a><span>
+</span><a name="line-143"></a><span>
+</span><a name="line-144"></a><span class="hs-keyword">instance</span><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#ChildOf"><span class="hs-identifier hs-type">ChildOf</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#DINode"><span class="hs-identifier hs-type">DINode</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#DIEnumerator"><span class="hs-identifier hs-type">DIEnumerator</span></a><span>
+</span><a name="line-145"></a><span>
+</span><a name="line-146"></a><span class="hs-comment">-- | https://llvm.org/doxygen/classllvm_1_1DIVariable.html</span><span>
+</span><a name="line-147"></a><span class="hs-keyword">data</span><span> </span><a name="DIVariable"><a href="LLVM.Internal.FFI.PtrHierarchy.html#DIVariable"><span class="hs-identifier">DIVariable</span></a></a><span>
+</span><a name="line-148"></a><span>
+</span><a name="line-149"></a><span class="hs-keyword">instance</span><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#ChildOf"><span class="hs-identifier hs-type">ChildOf</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#DINode"><span class="hs-identifier hs-type">DINode</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#DIVariable"><span class="hs-identifier hs-type">DIVariable</span></a><span>
+</span><a name="line-150"></a><span>
+</span><a name="line-151"></a><span class="hs-comment">-- | https://llvm.org/doxygen/classllvm_1_1DILocalVariable.html</span><span>
+</span><a name="line-152"></a><span class="hs-keyword">data</span><span> </span><a name="DILocalVariable"><a href="LLVM.Internal.FFI.PtrHierarchy.html#DILocalVariable"><span class="hs-identifier">DILocalVariable</span></a></a><span>
+</span><a name="line-153"></a><span>
+</span><a name="line-154"></a><span class="hs-keyword">instance</span><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#ChildOf"><span class="hs-identifier hs-type">ChildOf</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#DIVariable"><span class="hs-identifier hs-type">DIVariable</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#DILocalVariable"><span class="hs-identifier hs-type">DILocalVariable</span></a><span>
+</span><a name="line-155"></a><span>
+</span><a name="line-156"></a><span class="hs-comment">-- | https://llvm.org/doxygen/classllvm_1_1DIGlobalVariable.html</span><span>
+</span><a name="line-157"></a><span class="hs-keyword">data</span><span> </span><a name="DIGlobalVariable"><a href="LLVM.Internal.FFI.PtrHierarchy.html#DIGlobalVariable"><span class="hs-identifier">DIGlobalVariable</span></a></a><span>
+</span><a name="line-158"></a><span>
+</span><a name="line-159"></a><span class="hs-keyword">instance</span><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#ChildOf"><span class="hs-identifier hs-type">ChildOf</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#DIVariable"><span class="hs-identifier hs-type">DIVariable</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#DIGlobalVariable"><span class="hs-identifier hs-type">DIGlobalVariable</span></a><span>
+</span><a name="line-160"></a><span>
+</span><a name="line-161"></a><span class="hs-comment">-- | https://llvm.org/doxygen/classllvm_1_1DITemplateParameter.html</span><span>
+</span><a name="line-162"></a><span class="hs-keyword">data</span><span> </span><a name="DITemplateParameter"><a href="LLVM.Internal.FFI.PtrHierarchy.html#DITemplateParameter"><span class="hs-identifier">DITemplateParameter</span></a></a><span>
+</span><a name="line-163"></a><span>
+</span><a name="line-164"></a><span class="hs-keyword">instance</span><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#ChildOf"><span class="hs-identifier hs-type">ChildOf</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#DINode"><span class="hs-identifier hs-type">DINode</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#DITemplateParameter"><span class="hs-identifier hs-type">DITemplateParameter</span></a><span>
+</span><a name="line-165"></a><span>
+</span><a name="line-166"></a><span class="hs-comment">-- | https://llvm.org/doxygen/classllvm_1_1DITemplateTypeParameter.html</span><span>
+</span><a name="line-167"></a><span class="hs-keyword">data</span><span> </span><a name="DITemplateTypeParameter"><a href="LLVM.Internal.FFI.PtrHierarchy.html#DITemplateTypeParameter"><span class="hs-identifier">DITemplateTypeParameter</span></a></a><span>
+</span><a name="line-168"></a><span>
+</span><a name="line-169"></a><span class="hs-keyword">instance</span><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#ChildOf"><span class="hs-identifier hs-type">ChildOf</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#DITemplateParameter"><span class="hs-identifier hs-type">DITemplateParameter</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#DITemplateTypeParameter"><span class="hs-identifier hs-type">DITemplateTypeParameter</span></a><span>
+</span><a name="line-170"></a><span>
+</span><a name="line-171"></a><span class="hs-comment">-- | https://llvm.org/doxygen/classllvm_1_1DITemplateValueParameter.html</span><span>
+</span><a name="line-172"></a><span class="hs-keyword">data</span><span> </span><a name="DITemplateValueParameter"><a href="LLVM.Internal.FFI.PtrHierarchy.html#DITemplateValueParameter"><span class="hs-identifier">DITemplateValueParameter</span></a></a><span>
+</span><a name="line-173"></a><span>
+</span><a name="line-174"></a><span class="hs-keyword">instance</span><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#ChildOf"><span class="hs-identifier hs-type">ChildOf</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#DITemplateParameter"><span class="hs-identifier hs-type">DITemplateParameter</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#DITemplateValueParameter"><span class="hs-identifier hs-type">DITemplateValueParameter</span></a><span>
+</span><a name="line-175"></a><span>
+</span><a name="line-176"></a><span class="hs-comment">-- | https://llvm.org/doxygen/classllvm_1_1DIScope.html</span><span>
+</span><a name="line-177"></a><span class="hs-keyword">data</span><span> </span><a name="DIScope"><a href="LLVM.Internal.FFI.PtrHierarchy.html#DIScope"><span class="hs-identifier">DIScope</span></a></a><span>
+</span><a name="line-178"></a><span>
+</span><a name="line-179"></a><span class="hs-keyword">instance</span><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#ChildOf"><span class="hs-identifier hs-type">ChildOf</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#DINode"><span class="hs-identifier hs-type">DINode</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#DIScope"><span class="hs-identifier hs-type">DIScope</span></a><span>
+</span><a name="line-180"></a><span>
+</span><a name="line-181"></a><span class="hs-comment">-- | https://llvm.org/doxygen/classllvm_1_1DIModule.html</span><span>
+</span><a name="line-182"></a><span class="hs-keyword">data</span><span> </span><a name="DIModule"><a href="LLVM.Internal.FFI.PtrHierarchy.html#DIModule"><span class="hs-identifier">DIModule</span></a></a><span>
+</span><a name="line-183"></a><span>
+</span><a name="line-184"></a><span class="hs-keyword">instance</span><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#ChildOf"><span class="hs-identifier hs-type">ChildOf</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#DIScope"><span class="hs-identifier hs-type">DIScope</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#DIModule"><span class="hs-identifier hs-type">DIModule</span></a><span>
+</span><a name="line-185"></a><span>
+</span><a name="line-186"></a><span class="hs-comment">-- | https://llvm.org/doxygen/classllvm_1_1DINamespace.html</span><span>
+</span><a name="line-187"></a><span class="hs-keyword">data</span><span> </span><a name="DINamespace"><a href="LLVM.Internal.FFI.PtrHierarchy.html#DINamespace"><span class="hs-identifier">DINamespace</span></a></a><span>
+</span><a name="line-188"></a><span>
+</span><a name="line-189"></a><span class="hs-keyword">instance</span><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#ChildOf"><span class="hs-identifier hs-type">ChildOf</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#DIScope"><span class="hs-identifier hs-type">DIScope</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#DINamespace"><span class="hs-identifier hs-type">DINamespace</span></a><span>
+</span><a name="line-190"></a><span>
+</span><a name="line-191"></a><span class="hs-comment">-- | https://llvm.org/doxygen/classllvm_1_1DIFile.html</span><span>
+</span><a name="line-192"></a><span class="hs-keyword">data</span><span> </span><a name="DIFile"><a href="LLVM.Internal.FFI.PtrHierarchy.html#DIFile"><span class="hs-identifier">DIFile</span></a></a><span>
+</span><a name="line-193"></a><span>
+</span><a name="line-194"></a><span class="hs-keyword">instance</span><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#ChildOf"><span class="hs-identifier hs-type">ChildOf</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#DIScope"><span class="hs-identifier hs-type">DIScope</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#DIFile"><span class="hs-identifier hs-type">DIFile</span></a><span>
+</span><a name="line-195"></a><span>
+</span><a name="line-196"></a><span class="hs-comment">-- | https://llvm.org/doxygen/classllvm_1_1DICompileUnit.html</span><span>
+</span><a name="line-197"></a><span class="hs-keyword">data</span><span> </span><a name="DICompileUnit"><a href="LLVM.Internal.FFI.PtrHierarchy.html#DICompileUnit"><span class="hs-identifier">DICompileUnit</span></a></a><span>
+</span><a name="line-198"></a><span>
+</span><a name="line-199"></a><span class="hs-keyword">instance</span><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#ChildOf"><span class="hs-identifier hs-type">ChildOf</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#DIScope"><span class="hs-identifier hs-type">DIScope</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#DICompileUnit"><span class="hs-identifier hs-type">DICompileUnit</span></a><span>
+</span><a name="line-200"></a><span>
+</span><a name="line-201"></a><span class="hs-comment">-- | https://llvm.org/doxygen/classllvm_1_1DIType.html</span><span>
+</span><a name="line-202"></a><span class="hs-keyword">data</span><span> </span><a name="DIType"><a href="LLVM.Internal.FFI.PtrHierarchy.html#DIType"><span class="hs-identifier">DIType</span></a></a><span>
+</span><a name="line-203"></a><span>
+</span><a name="line-204"></a><span class="hs-keyword">instance</span><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#ChildOf"><span class="hs-identifier hs-type">ChildOf</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#DIScope"><span class="hs-identifier hs-type">DIScope</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#DIType"><span class="hs-identifier hs-type">DIType</span></a><span>
+</span><a name="line-205"></a><span>
+</span><a name="line-206"></a><span class="hs-comment">-- | https://llvm.org/doxygen/classllvm_1_1DIBasicType.html</span><span>
+</span><a name="line-207"></a><span class="hs-keyword">data</span><span> </span><a name="DIBasicType"><a href="LLVM.Internal.FFI.PtrHierarchy.html#DIBasicType"><span class="hs-identifier">DIBasicType</span></a></a><span>
+</span><a name="line-208"></a><span>
+</span><a name="line-209"></a><span class="hs-keyword">instance</span><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#ChildOf"><span class="hs-identifier hs-type">ChildOf</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#DIType"><span class="hs-identifier hs-type">DIType</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#DIBasicType"><span class="hs-identifier hs-type">DIBasicType</span></a><span>
+</span><a name="line-210"></a><span>
+</span><a name="line-211"></a><span class="hs-comment">-- | https://llvm.org/doxygen/classllvm_1_1DIDerivedType.html</span><span>
+</span><a name="line-212"></a><span class="hs-keyword">data</span><span> </span><a name="DIDerivedType"><a href="LLVM.Internal.FFI.PtrHierarchy.html#DIDerivedType"><span class="hs-identifier">DIDerivedType</span></a></a><span>
+</span><a name="line-213"></a><span>
+</span><a name="line-214"></a><span class="hs-keyword">instance</span><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#ChildOf"><span class="hs-identifier hs-type">ChildOf</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#DIType"><span class="hs-identifier hs-type">DIType</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#DIDerivedType"><span class="hs-identifier hs-type">DIDerivedType</span></a><span>
+</span><a name="line-215"></a><span>
+</span><a name="line-216"></a><span class="hs-comment">-- | https://llvm.org/doxygen/classllvm_1_1DISubroutineType.html</span><span>
+</span><a name="line-217"></a><span class="hs-keyword">data</span><span> </span><a name="DISubroutineType"><a href="LLVM.Internal.FFI.PtrHierarchy.html#DISubroutineType"><span class="hs-identifier">DISubroutineType</span></a></a><span>
+</span><a name="line-218"></a><span>
+</span><a name="line-219"></a><span class="hs-keyword">instance</span><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#ChildOf"><span class="hs-identifier hs-type">ChildOf</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#DIType"><span class="hs-identifier hs-type">DIType</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#DISubroutineType"><span class="hs-identifier hs-type">DISubroutineType</span></a><span>
+</span><a name="line-220"></a><span>
+</span><a name="line-221"></a><span class="hs-comment">-- | https://llvm.org/doxygen/classllvm_1_1DICompositeType.html</span><span>
+</span><a name="line-222"></a><span class="hs-keyword">data</span><span> </span><a name="DICompositeType"><a href="LLVM.Internal.FFI.PtrHierarchy.html#DICompositeType"><span class="hs-identifier">DICompositeType</span></a></a><span>
+</span><a name="line-223"></a><span>
+</span><a name="line-224"></a><span class="hs-keyword">instance</span><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#ChildOf"><span class="hs-identifier hs-type">ChildOf</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#DIType"><span class="hs-identifier hs-type">DIType</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#DICompositeType"><span class="hs-identifier hs-type">DICompositeType</span></a><span>
+</span><a name="line-225"></a><span>
+</span><a name="line-226"></a><span class="hs-comment">-- | https://llvm.org/doxygen/classllvm_1_1DILocalScope.html</span><span>
+</span><a name="line-227"></a><span class="hs-keyword">data</span><span> </span><a name="DILocalScope"><a href="LLVM.Internal.FFI.PtrHierarchy.html#DILocalScope"><span class="hs-identifier">DILocalScope</span></a></a><span>
+</span><a name="line-228"></a><span>
+</span><a name="line-229"></a><span class="hs-keyword">instance</span><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#ChildOf"><span class="hs-identifier hs-type">ChildOf</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#DIScope"><span class="hs-identifier hs-type">DIScope</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#DILocalScope"><span class="hs-identifier hs-type">DILocalScope</span></a><span>
+</span><a name="line-230"></a><span>
+</span><a name="line-231"></a><span class="hs-comment">-- | &lt;https://llvm.org/doxygen/classllvm_1_1DILexicalBlockBase.html&gt;</span><span>
+</span><a name="line-232"></a><span class="hs-keyword">data</span><span> </span><a name="DILexicalBlockBase"><a href="LLVM.Internal.FFI.PtrHierarchy.html#DILexicalBlockBase"><span class="hs-identifier">DILexicalBlockBase</span></a></a><span>
+</span><a name="line-233"></a><span>
+</span><a name="line-234"></a><span class="hs-keyword">instance</span><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#ChildOf"><span class="hs-identifier hs-type">ChildOf</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#DILocalScope"><span class="hs-identifier hs-type">DILocalScope</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#DILexicalBlockBase"><span class="hs-identifier hs-type">DILexicalBlockBase</span></a><span>
+</span><a name="line-235"></a><span>
+</span><a name="line-236"></a><span class="hs-comment">-- | &lt;https://llvm.org/doxygen/classllvm_1_1DILexicalBlock.html&gt;</span><span>
+</span><a name="line-237"></a><span class="hs-keyword">data</span><span> </span><a name="DILexicalBlock"><a href="LLVM.Internal.FFI.PtrHierarchy.html#DILexicalBlock"><span class="hs-identifier">DILexicalBlock</span></a></a><span>
+</span><a name="line-238"></a><span>
+</span><a name="line-239"></a><span class="hs-keyword">instance</span><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#ChildOf"><span class="hs-identifier hs-type">ChildOf</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#DILexicalBlockBase"><span class="hs-identifier hs-type">DILexicalBlockBase</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#DILexicalBlock"><span class="hs-identifier hs-type">DILexicalBlock</span></a><span>
+</span><a name="line-240"></a><span>
+</span><a name="line-241"></a><span class="hs-comment">-- | &lt;https://llvm.org/doxygen/classllvm_1_1DILexicalBlockFile.html&gt;</span><span>
+</span><a name="line-242"></a><span class="hs-keyword">data</span><span> </span><a name="DILexicalBlockFile"><a href="LLVM.Internal.FFI.PtrHierarchy.html#DILexicalBlockFile"><span class="hs-identifier">DILexicalBlockFile</span></a></a><span>
+</span><a name="line-243"></a><span>
+</span><a name="line-244"></a><span class="hs-keyword">instance</span><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#ChildOf"><span class="hs-identifier hs-type">ChildOf</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#DILexicalBlockBase"><span class="hs-identifier hs-type">DILexicalBlockBase</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#DILexicalBlockFile"><span class="hs-identifier hs-type">DILexicalBlockFile</span></a><span>
+</span><a name="line-245"></a><span>
+</span><a name="line-246"></a><span class="hs-comment">-- | &lt;https://llvm.org/doxygen/classllvm_1_1DISubprogram.html&gt;</span><span>
+</span><a name="line-247"></a><span class="hs-keyword">data</span><span> </span><a name="DISubprogram"><a href="LLVM.Internal.FFI.PtrHierarchy.html#DISubprogram"><span class="hs-identifier">DISubprogram</span></a></a><span>
+</span><a name="line-248"></a><span>
+</span><a name="line-249"></a><span class="hs-keyword">instance</span><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#ChildOf"><span class="hs-identifier hs-type">ChildOf</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#DILocalScope"><span class="hs-identifier hs-type">DILocalScope</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#DISubprogram"><span class="hs-identifier hs-type">DISubprogram</span></a><span>
+</span><a name="line-250"></a><span>
+</span><a name="line-251"></a><span class="hs-comment">-- &lt;https://llvm.org/doxygen/classllvm_1_1DIMacroNode.html&gt;</span><span>
+</span><a name="line-252"></a><span class="hs-keyword">data</span><span> </span><a name="DIMacroNode"><a href="LLVM.Internal.FFI.PtrHierarchy.html#DIMacroNode"><span class="hs-identifier">DIMacroNode</span></a></a><span>
+</span><a name="line-253"></a><span>
+</span><a name="line-254"></a><span class="hs-keyword">instance</span><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#ChildOf"><span class="hs-identifier hs-type">ChildOf</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#MDNode"><span class="hs-identifier hs-type">MDNode</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#DIMacroNode"><span class="hs-identifier hs-type">DIMacroNode</span></a><span>
+</span><a name="line-255"></a><span>
+</span><a name="line-256"></a><span class="hs-comment">-- &lt;https://llvm.org/doxygen/classllvm_1_1DIMacro.html&gt;</span><span>
+</span><a name="line-257"></a><span class="hs-keyword">data</span><span> </span><a name="DIMacro"><a href="LLVM.Internal.FFI.PtrHierarchy.html#DIMacro"><span class="hs-identifier">DIMacro</span></a></a><span>
+</span><a name="line-258"></a><span>
+</span><a name="line-259"></a><span class="hs-keyword">instance</span><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#ChildOf"><span class="hs-identifier hs-type">ChildOf</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#DIMacroNode"><span class="hs-identifier hs-type">DIMacroNode</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#DIMacro"><span class="hs-identifier hs-type">DIMacro</span></a><span>
+</span><a name="line-260"></a><span>
+</span><a name="line-261"></a><span class="hs-comment">-- &lt;https://llvm.org/doxygen/classllvm_1_1DIMacroFile.html&gt;</span><span>
+</span><a name="line-262"></a><span class="hs-keyword">data</span><span> </span><a name="DIMacroFile"><a href="LLVM.Internal.FFI.PtrHierarchy.html#DIMacroFile"><span class="hs-identifier">DIMacroFile</span></a></a><span>
+</span><a name="line-263"></a><span>
+</span><a name="line-264"></a><span class="hs-keyword">instance</span><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#ChildOf"><span class="hs-identifier hs-type">ChildOf</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#DIMacroNode"><span class="hs-identifier hs-type">DIMacroNode</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#DIMacroFile"><span class="hs-identifier hs-type">DIMacroFile</span></a><span>
+</span><a name="line-265"></a><span>
+</span><a name="line-266"></a><span class="hs-comment">-- | &lt;http://llvm.org/doxygen/classllvm_1_1NamedMDNode.html&gt;</span><span>
+</span><a name="line-267"></a><span class="hs-keyword">data</span><span> </span><a name="NamedMetadata"><a href="LLVM.Internal.FFI.PtrHierarchy.html#NamedMetadata"><span class="hs-identifier">NamedMetadata</span></a></a><span>
+</span><a name="line-268"></a><span>
+</span><a name="line-269"></a><span class="hs-comment">-- | &lt;http://llvm.org/doxygen/classllvm_1_1InlineAsm.html&gt;</span><span>
+</span><a name="line-270"></a><span class="hs-keyword">data</span><span> </span><a name="InlineAsm"><a href="LLVM.Internal.FFI.PtrHierarchy.html#InlineAsm"><span class="hs-identifier">InlineAsm</span></a></a><span>
+</span><a name="line-271"></a><span>
+</span><a name="line-272"></a><span class="hs-keyword">instance</span><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#ChildOf"><span class="hs-identifier hs-type">ChildOf</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#Value"><span class="hs-identifier hs-type">Value</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#InlineAsm"><span class="hs-identifier hs-type">InlineAsm</span></a><span>
+</span><a name="line-273"></a><span>
+</span><a name="line-274"></a><span class="hs-comment">-- | &lt;http://llvm.org/doxygen/classllvm_1_1Type.html&gt;</span><span>
+</span><a name="line-275"></a><span class="hs-keyword">data</span><span> </span><a name="Type"><a href="LLVM.Internal.FFI.PtrHierarchy.html#Type"><span class="hs-identifier">Type</span></a></a><span>
+</span><a name="line-276"></a><span>
+</span><a name="line-277"></a><span class="hs-comment">-- | &lt;http://llvm.org/doxygen/classllvm_1_1Metadata.html&gt;</span><span>
+</span><a name="line-278"></a><span class="hs-keyword">data</span><span> </span><a name="Metadata"><a href="LLVM.Internal.FFI.PtrHierarchy.html#Metadata"><span class="hs-identifier">Metadata</span></a></a><span>
+</span><a name="line-279"></a><span>
+</span><a name="line-280"></a><span class="hs-comment">-- | &lt;http://www.llvm.org/docs/doxygen/html/classllvm_1_1MetadataAsValue.html&gt;</span><span>
+</span><a name="line-281"></a><span class="hs-keyword">data</span><span> </span><a name="MetadataAsVal"><a href="LLVM.Internal.FFI.PtrHierarchy.html#MetadataAsVal"><span class="hs-identifier">MetadataAsVal</span></a></a><span>
+</span><a name="line-282"></a><span>
+</span><a name="line-283"></a><span class="hs-keyword">instance</span><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#ChildOf"><span class="hs-identifier hs-type">ChildOf</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#Value"><span class="hs-identifier hs-type">Value</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#MetadataAsVal"><span class="hs-identifier hs-type">MetadataAsVal</span></a><span>
+</span><a name="line-284"></a><span>
+</span><a name="line-285"></a><span class="hs-comment">-- | &lt;http://llvm.org/docs/doxygen/html/classllvm_1_1raw__ostream.html&gt;</span><span>
+</span><a name="line-286"></a><span class="hs-keyword">data</span><span> </span><a name="RawOStream"><a href="LLVM.Internal.FFI.PtrHierarchy.html#RawOStream"><span class="hs-identifier">RawOStream</span></a></a><span>
+</span><a name="line-287"></a><span>
+</span><a name="line-288"></a><span class="hs-comment">-- | &lt;http://llvm.org/docs/doxygen/html/classllvm_1_1raw__pwrite__stream.html&gt;</span><span>
+</span><a name="line-289"></a><span class="hs-keyword">data</span><span> </span><a name="RawPWriteStream"><a href="LLVM.Internal.FFI.PtrHierarchy.html#RawPWriteStream"><span class="hs-identifier">RawPWriteStream</span></a></a><span>
+</span><a name="line-290"></a><span>
+</span><a name="line-291"></a><span class="hs-keyword">instance</span><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#ChildOf"><span class="hs-identifier hs-type">ChildOf</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#RawOStream"><span class="hs-identifier hs-type">RawOStream</span></a><span> </span><a href="LLVM.Internal.FFI.PtrHierarchy.html#RawPWriteStream"><span class="hs-identifier hs-type">RawPWriteStream</span></a><span>
+</span><a name="line-292"></a><span>
+</span><a name="line-293"></a><span class="hs-comment">-- | &lt;https://llvm.org/doxygen/classllvm_1_1StringRef.html&gt;</span><span>
+</span><a name="line-294"></a><span class="hs-keyword">data</span><span> </span><a name="StringRef"><a href="LLVM.Internal.FFI.PtrHierarchy.html#StringRef"><span class="hs-identifier">StringRef</span></a></a><span>
+</span><a name="line-295"></a></pre></body></html>

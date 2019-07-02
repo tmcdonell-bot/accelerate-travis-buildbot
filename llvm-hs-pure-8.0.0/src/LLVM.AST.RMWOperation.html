@@ -1,0 +1,23 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-comment">-- | Operations for the 'LLVM.AST.Instruction.AtomicRMW' instruction</span><span>
+</span><a name="line-2"></a><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">LLVM.AST.RMWOperation</span><span> </span><span class="hs-keyword">where</span><span>
+</span><a name="line-3"></a><span>
+</span><a name="line-4"></a><span class="hs-keyword">import</span><span> </span><a href="LLVM.Prelude.html"><span class="hs-identifier">LLVM.Prelude</span></a><span>
+</span><a name="line-5"></a><span>
+</span><a name="line-6"></a><span class="hs-comment">-- | &lt;http://llvm.org/docs/LangRef.html#atomicrmw-instruction&gt;</span><span>
+</span><a name="line-7"></a><span class="hs-keyword">data</span><span> </span><a name="RMWOperation"><a href="LLVM.AST.RMWOperation.html#RMWOperation"><span class="hs-identifier">RMWOperation</span></a></a><span>
+</span><a name="line-8"></a><span>  </span><span class="hs-glyph">=</span><span> </span><a name="Xchg"><a href="LLVM.AST.RMWOperation.html#Xchg"><span class="hs-identifier">Xchg</span></a></a><span>
+</span><a name="line-9"></a><span>  </span><span class="hs-glyph">|</span><span> </span><a name="Add"><a href="LLVM.AST.RMWOperation.html#Add"><span class="hs-identifier">Add</span></a></a><span>
+</span><a name="line-10"></a><span>  </span><span class="hs-glyph">|</span><span> </span><a name="Sub"><a href="LLVM.AST.RMWOperation.html#Sub"><span class="hs-identifier">Sub</span></a></a><span>
+</span><a name="line-11"></a><span>  </span><span class="hs-glyph">|</span><span> </span><a name="And"><a href="LLVM.AST.RMWOperation.html#And"><span class="hs-identifier">And</span></a></a><span>
+</span><a name="line-12"></a><span>  </span><span class="hs-glyph">|</span><span> </span><a name="Nand"><a href="LLVM.AST.RMWOperation.html#Nand"><span class="hs-identifier">Nand</span></a></a><span>
+</span><a name="line-13"></a><span>  </span><span class="hs-glyph">|</span><span> </span><a name="Or"><a href="LLVM.AST.RMWOperation.html#Or"><span class="hs-identifier">Or</span></a></a><span>
+</span><a name="line-14"></a><span>  </span><span class="hs-glyph">|</span><span> </span><a name="Xor"><a href="LLVM.AST.RMWOperation.html#Xor"><span class="hs-identifier">Xor</span></a></a><span>
+</span><a name="line-15"></a><span>  </span><span class="hs-glyph">|</span><span> </span><a name="Max"><a href="LLVM.AST.RMWOperation.html#Max"><span class="hs-identifier">Max</span></a></a><span>
+</span><a name="line-16"></a><span>  </span><span class="hs-glyph">|</span><span> </span><a name="Min"><a href="LLVM.AST.RMWOperation.html#Min"><span class="hs-identifier">Min</span></a></a><span>
+</span><a name="line-17"></a><span>  </span><span class="hs-glyph">|</span><span> </span><a name="UMax"><a href="LLVM.AST.RMWOperation.html#UMax"><span class="hs-identifier">UMax</span></a></a><span>
+</span><a name="line-18"></a><span>  </span><span class="hs-glyph">|</span><span> </span><a name="UMin"><a href="LLVM.AST.RMWOperation.html#UMin"><span class="hs-identifier">UMin</span></a></a><span>
+</span><a name="line-19"></a><span>  </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span class="hs-identifier hs-type">Eq</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-type">Ord</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-type">Read</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-type">Show</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-type">Data</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-type">Typeable</span><span class="hs-special">,</span><span> </span><span class="hs-identifier hs-type">Generic</span><span class="hs-special">)</span><span>
+</span><a name="line-20"></a><span>
+</span><a name="line-21"></a><span>
+</span><a name="line-22"></a><span>
+</span><a name="line-23"></a></pre></body></html>
