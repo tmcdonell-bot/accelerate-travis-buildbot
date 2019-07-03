@@ -80,7 +80,7 @@ extra-deps:
   commit: cf69ada3bb5bf3a0fa3a150a8fa4bca1228a0f85
 
 - git:    https://github.com/tmcdonell/nvvm.git
-  commit: 70fcc1af71027ae5e0d0cdd5faa8c2b0c78ab4fa
+  commit: 44df64cdd4c82f970f610296f0b30a75ede0f7bf
 
 - criterion-measurement-0.1.1.0
 - half-0.3
