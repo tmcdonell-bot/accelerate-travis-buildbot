@@ -24,7 +24,7 @@ extra-deps:
   commit: d6c6d0e0d3b882fcadc8e0565e5d6325c1b1c71c
 
 - git:    https://github.com/tmcdonell/accelerate-io.git
-  commit: e23dc7ad0dde35a6236c3f141f92d65d70677f83
+  commit: e83461b194bb046a6f129a6be7f0e865653ed365
   subdirs:
     - accelerate-io
     - accelerate-io-array
