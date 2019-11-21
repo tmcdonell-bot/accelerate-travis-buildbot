@@ -41,7 +41,7 @@ extra-deps:
   commit: 57546e83e14f642ce9e13b5687578a824521cfd7
 
 - git:    https://github.com/tmcdonell/colour-accelerate.git
-  commit: edc575cc6a810f5cce8d4b4423ef3968f30a93a3
+  commit: 4b0d58d329ddd78a011e3d28d016e2d932813eea
 
 - git:    https://github.com/tmcdonell/gloss-accelerate.git
   commit: de4da479dfa236f4b7c08348cfc7e9fef70476ea
