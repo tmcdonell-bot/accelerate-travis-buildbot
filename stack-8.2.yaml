@@ -8,7 +8,7 @@ packages:
 
 extra-deps:
 - git:    https://github.com/tmcdonell/accelerate.git
-  commit: 584ecd16699d32b673f15d9f7760acee45d607c7
+  commit: 4cd524ac01b1f2fa5c78972d0a038074ea152158
 
 - git:    https://github.com/tmcdonell/accelerate-llvm.git
   commit: 0f92cd6ad324f87378bffbb9b74bbd0722cee417
