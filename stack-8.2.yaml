@@ -35,7 +35,7 @@ extra-deps:
     - accelerate-io-vector
 
 - git:    https://github.com/tmcdonell/accelerate-bignum.git
-  commit: fb24d06c1868797a89797d543d39cba8e156097c
+  commit: 262c48e88e71b9154844b96d77164d266bdbb643
 
 - git:    https://github.com/tmcdonell/accelerate-examples.git
   commit: 57546e83e14f642ce9e13b5687578a824521cfd7
