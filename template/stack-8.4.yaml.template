@@ -4,7 +4,7 @@
 resolver: lts-12.26
 
 packages:
-- '.'
+- .
 
 extra-deps:
 - git:    https://github.com/{REPO_accelerate}.git
@@ -83,8 +83,6 @@ extra-deps:
   commit: {SHA_nvvm}
 
 - normaldistribution-1.1.0.3
-- primitive-0.6.4.0
-- repa-io-3.4.1.1
 
 # Override default flag values for local packages and extra-deps
 flags:
