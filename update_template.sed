@@ -27,7 +27,7 @@ s|{SHA_cufft}|1fec492ee2bd70559f889e456a15e1ee996aec0a|
 s|{SHA_cublas}|d0523c3ebb4dbcc9cd73c811c8273a39a0691c7d|
 s|{SHA_cusparse}|52586c8344c3194015d67aadf68d7f4839b967ac|
 s|{SHA_cusolver}|cf69ada3bb5bf3a0fa3a150a8fa4bca1228a0f85|
-s|{SHA_nvvm}|44df64cdd4c82f970f610296f0b30a75ede0f7bf|
+s|{SHA_nvvm}|949502570d3e5a2ccd2b24f8315d83992e451c80|
 
 # TRAVIS_REPO_SLUG
 s|{REPO_accelerate}|tmcdonell/accelerate|g
