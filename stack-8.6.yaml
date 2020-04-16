@@ -80,7 +80,7 @@ extra-deps:
   commit: cf69ada3bb5bf3a0fa3a150a8fa4bca1228a0f85
 
 - git:    https://github.com/tmcdonell/nvvm.git
-  commit: 949502570d3e5a2ccd2b24f8315d83992e451c80
+  commit: 219637eab3aab7275ce0a0c9b0e1855be912fe8a
 
 - normaldistribution-1.1.0.3
 
