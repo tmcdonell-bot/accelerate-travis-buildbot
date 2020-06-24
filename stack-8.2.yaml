@@ -53,7 +53,7 @@ extra-deps:
   commit: b74eb8098735b1ad6cff3c5655af03d3f29b9f8e
 
 - git:    https://github.com/tmcdonell/linear-accelerate.git
-  commit: b2de0920f9ec59c1b8c364a53b39f37a46ea7e6e
+  commit: 1f69959d985f8c3c116795fa896b227f03ac37d6
 
 - git:    https://github.com/tmcdonell/mwc-random-accelerate.git
   commit: e840871e2edbc583bc90230b1bb9d9452e89d3d6
